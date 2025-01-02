@@ -7,7 +7,7 @@ import com.spoony.spoony.domain.repository.DummyRepository
 import javax.inject.Inject
 
 class DummyRepositoryImpl @Inject constructor(
-    private val dummyRemoteDataSource: DummyRemoteDataSource,
+    private val dummyRemoteDataSource: DummyRemoteDataSource
 ) : DummyRepository {
     override suspend fun getDummyUser(page: Int): Result<DummyEntity> =
         runCatching {

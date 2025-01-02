@@ -7,6 +7,6 @@ import retrofit2.http.Path
 interface DummyService {
     @GET("api/users/{page}")
     suspend fun getDummyUser(
-        @Path("page") page: Int,
+        @Path("page") page: Int
     ): GetDummyUserResponse
 }

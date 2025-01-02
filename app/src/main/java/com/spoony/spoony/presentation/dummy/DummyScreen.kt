@@ -19,7 +19,7 @@ import com.spoony.spoony.domain.entity.DummyEntity
 
 @Composable
 fun DummyScreen(
-    viewModel: DummyViewModel = hiltViewModel(),
+    viewModel: DummyViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -41,14 +41,14 @@ fun DummyScreen(
 
 @Composable
 fun ShowUser(
-    user: DummyEntity,
+    user: DummyEntity
 ) {
     Column {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(user.avatar)
                 .build(),
-            contentDescription = "",
+            contentDescription = ""
         )
         Text(
             text = user.firstName,

@@ -8,7 +8,7 @@ class GetDummyUserResponse(
     @SerialName("data")
     val data: User,
     @SerialName("support")
-    val support: Support,
+    val support: Support
 ) {
     @Serializable
     data class User(
@@ -21,7 +21,7 @@ class GetDummyUserResponse(
         @SerialName("last_name")
         val lastName: String,
         @SerialName("avatar")
-        val avatar: String,
+        val avatar: String
     )
 
     @Serializable
@@ -29,6 +29,6 @@ class GetDummyUserResponse(
         @SerialName("url")
         val url: String,
         @SerialName("text")
-        val text: String,
+        val text: String
     )
 }
