@@ -1,4 +1,4 @@
-package com.spoony.spoony.ui.theme
+package com.spoony.spoony.core.designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

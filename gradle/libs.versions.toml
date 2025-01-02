@@ -52,6 +52,7 @@ playServicesLocation = "21.0.1"
 
 ## Kotlin Symbol Processing
 ksp = "2.0.0-1.0.24"
+appcompat = "1.7.0"
 
 [libraries]
 # Test
@@ -111,6 +112,7 @@ lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = 
 naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.ref = "naverMapCompose" }
 naver-map-location = { module = "io.github.fornewid:naver-map-location", version.ref = "naverMapLocation" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -135,6 +137,7 @@ androidx = [
     "androidx-material3",
     "androidx-navigation",
     "androidx-security",
+    "androidx-appcompat"
 ]
 
 test = [
