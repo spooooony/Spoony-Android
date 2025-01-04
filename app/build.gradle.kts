@@ -26,17 +26,15 @@ android {
         versionName = libs.versions.versionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            properties.getProperty("test.base.url")
+        )
     }
 
     buildTypes {
-        debug {
-            buildConfigField(
-                "String",
-                "BASE_URL",
-                properties.getProperty("test.base.url")
-            )
-        }
-
         release {
             isMinifyEnabled = false
             proguardFiles(
