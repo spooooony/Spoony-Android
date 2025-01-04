@@ -278,7 +278,7 @@ private val LocalSpoonyTypography = staticCompositionLocalOf<SpoonyTypography> {
 * Color에 접근하고 싶을때 SpoonyTheme.colors.primary 이런식으로 접근하면 됩니다.
 * Typo를 변경하고 싶다면 SpoonyTheme.typography.heading48B 이런식으로 접근하면 됩니다.
 * */
-object SpoonyTheme {
+object SpoonyAndroidTheme {
     val colors: SpoonyColors
         @Composable
         @ReadOnlyComposable
@@ -308,7 +308,7 @@ fun ProvideSpoonyColorsAndTypography(
 }
 
 @Composable
-fun SpoonyTheme(darkTheme: Boolean = false, content: @Composable () -> Unit) {
+fun SpoonyAndroidTheme(darkTheme: Boolean = false, content: @Composable () -> Unit) {
     val colors = SpoonyLightColors()
     val typography = SpoonyTypography()
     ProvideSpoonyColorsAndTypography(colors, typography) {
