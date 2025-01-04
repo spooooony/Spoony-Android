@@ -2,10 +2,12 @@ name: Spoony pr checker
 on:
   pull_request:
     branches: [ develop, main ]
+
 defaults:
   run:
     shell: bash
     working-directory: .
+
 jobs:
   build:
     name: PR Checker
@@ -44,8 +46,8 @@ jobs:
           HFM_BASE_URL: ${{ secrets.BASE_URL }}
           TEST_BASE_URL: ${{ secrets.TEST_BASE_URL }}
         run: |
-          echo "base.url=\"$BASE_URL\"" >> local.properties
-          echo "test.base.url=\"$TEST_BASE_URL\"" >> local.properties
+          echo base.url=\"$BASE_URL\" >> local.properties
+          echo test.base.url=\"$TEST_BASE_URL\" >> local.properties
 
       - name: Lint Check
         run: ./gradlew ktlintCheck -PcompileSdkVersion=35
