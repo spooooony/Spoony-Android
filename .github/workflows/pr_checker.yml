@@ -45,7 +45,7 @@ jobs:
           TEST_BASE_URL: ${{ secrets.TEST_BASE_URL }}
         run: |
           echo "base.url=\"$BASE_URL\"" >> local.properties
-          echo "test.base.url=\"TEST_BASE_URL\"" >> local.properties
+          echo "test.base.url=\"$TEST_BASE_URL\"" >> local.properties
 
       - name: Lint Check
         run: ./gradlew ktlintCheck -PcompileSdkVersion=35
