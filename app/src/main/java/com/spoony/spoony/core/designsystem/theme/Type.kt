@@ -1,34 +1,105 @@
 package com.spoony.spoony.core.designsystem.theme
 
-import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
+data class SpoonyTypography(
+    val title1: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
     ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
+    val title2b: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val title2sb: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val body1b: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val body1sb: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val body1m: TextStyle = TextStyle(
+        fontFamily = Pretendard,
         fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
+        fontSize = 16.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val body2b: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val body2sb: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val body2m: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val caption1b: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val caption1m: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val caption2b: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Bold,
+        fontSize = 10.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+    val caption2m: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        lineHeight = 23.2.sp,
+        letterSpacing = 0.32.sp,
+    ),
+) {
+    fun copy(): SpoonyTypography = this
+
+    fun update(other: SpoonyTypography) {}
+}
+
+fun SpoonyTypography(): SpoonyTypography = SpoonyTypography()
