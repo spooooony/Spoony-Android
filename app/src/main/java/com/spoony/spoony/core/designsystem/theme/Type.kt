@@ -1,5 +1,7 @@
 package com.spoony.spoony.core.designsystem.theme
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -9,6 +11,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.spoony.spoony.R
@@ -109,86 +114,163 @@ class SpoonyTypography internal constructor(
     }
 }
 
+private fun SpoonyTextStyle(
+    fontFamily: FontFamily,
+    fontSize: TextUnit,
+    lineHeight: TextUnit,
+    letterSpacing: TextUnit
+): TextStyle = TextStyle(
+    fontFamily = fontFamily,
+    fontSize = fontSize,
+    lineHeight = lineHeight,
+    letterSpacing = letterSpacing,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.None
+    )
+)
+
 @Composable
 fun SpoonyTypography(): SpoonyTypography {
     return SpoonyTypography(
-        title1 = TextStyle(
+        title1 = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 20.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        title2b = TextStyle(
+        title2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 18.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        title2sb = TextStyle(
+        title2sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 18.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        body1b = TextStyle(
+        body1b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 16.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        body1sb = TextStyle(
+        body1sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 16.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        body1m = TextStyle(
+        body1m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 16.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        body2b = TextStyle(
+        body2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 14.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        body2sb = TextStyle(
+        body2sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 14.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        body2m = TextStyle(
+        body2m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 14.sp,
             lineHeight = 23.2.sp,
             letterSpacing = 0.32.sp,
         ),
-        caption1b = TextStyle(
+        caption1b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 12.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        caption1m = TextStyle(
+        caption1m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 12.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        caption2b = TextStyle(
+        caption2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 10.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         ),
-        caption2m = TextStyle(
+        caption2m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 10.sp,
             lineHeight = 1.45.em,
             letterSpacing = (-0.02).em,
         )
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SpoonyTypographyPreview() {
+    SpoonyAndroidTheme {
+        Column {
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.title1
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.title2b
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.title2sb
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.body1b
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.body1sb
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.body1m
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.body2b
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.body2sb
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.body2m
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.caption1b
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.caption1m
+                )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.caption2b
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.caption2m
+            )
+        }
+    }
 }
