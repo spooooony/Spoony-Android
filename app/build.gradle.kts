@@ -30,7 +30,7 @@ android {
         buildConfigField(
             "String",
             "BASE_URL",
-            properties.getProperty("test.base.url")
+            properties.getProperty("dev.base.url")
         )
     }
 
