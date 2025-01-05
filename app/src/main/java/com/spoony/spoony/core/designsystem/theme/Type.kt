@@ -9,6 +9,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.spoony.spoony.R
 
@@ -114,50 +115,50 @@ fun SpoonyTypography(): SpoonyTypography {
         title1 = TextStyle(
             fontFamily = PretendardBold,
             fontSize = 20.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         title2b = TextStyle(
             fontFamily = PretendardBold,
             fontSize = 18.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         title2sb = TextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 18.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         body1b = TextStyle(
             fontFamily = PretendardBold,
             fontSize = 16.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         body1sb = TextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 16.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         body1m = TextStyle(
             fontFamily = PretendardMedium,
             fontSize = 16.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         body2b = TextStyle(
             fontFamily = PretendardBold,
             fontSize = 14.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         body2sb = TextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 14.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         body2m = TextStyle(
             fontFamily = PretendardMedium,
@@ -168,26 +169,26 @@ fun SpoonyTypography(): SpoonyTypography {
         caption1b = TextStyle(
             fontFamily = PretendardBold,
             fontSize = 12.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         caption1m = TextStyle(
             fontFamily = PretendardMedium,
             fontSize = 12.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         caption2b = TextStyle(
             fontFamily = PretendardBold,
             fontSize = 10.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         ),
         caption2m = TextStyle(
             fontFamily = PretendardMedium,
             fontSize = 10.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
+            lineHeight = 1.45.em,
+            letterSpacing = (-0.02).em,
         )
     )
 }
