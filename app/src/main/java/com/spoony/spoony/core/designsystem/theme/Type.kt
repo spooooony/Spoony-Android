@@ -117,8 +117,8 @@ class SpoonyTypography internal constructor(
 private fun SpoonyTextStyle(
     fontFamily: FontFamily,
     fontSize: TextUnit,
-    lineHeight: TextUnit,
-    letterSpacing: TextUnit
+    lineHeight: TextUnit = 1.45.em,
+    letterSpacing: TextUnit = (-0.02).em
 ): TextStyle = TextStyle(
     fontFamily = fontFamily,
     fontSize = fontSize,
@@ -136,80 +136,54 @@ fun SpoonyTypography(): SpoonyTypography {
         title1 = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 20.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         title2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 18.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         title2sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 18.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         body1b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 16.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         body1sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 16.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         body1m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 16.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         body2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 14.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         body2sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 14.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         body2m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 14.sp,
-            lineHeight = 23.2.sp,
-            letterSpacing = 0.32.sp,
         ),
         caption1b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 12.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         caption1m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 12.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         caption2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 10.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         ),
         caption2m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
             fontSize = 10.sp,
-            lineHeight = 1.45.em,
-            letterSpacing = (-0.02).em,
         )
     )
 }
