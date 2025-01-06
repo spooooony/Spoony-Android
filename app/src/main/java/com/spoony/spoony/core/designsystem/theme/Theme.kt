@@ -7,7 +7,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 
-
 private val LocalSpoonyColors = staticCompositionLocalOf<SpoonyColors> {
     error("No SpoonyColors provided")
 }
@@ -32,7 +31,6 @@ object SpoonyAndroidTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalSpoonyTypography.current
-
 }
 
 @Composable

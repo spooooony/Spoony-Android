@@ -266,7 +266,7 @@ fun SpoonyLightColors(
     Gray600: Color = gray600,
     Gray700: Color = gray700,
     Gray800: Color = gray800,
-    Gray900: Color = gray900,
+    Gray900: Color = gray900
 ) = SpoonyColors(
     Main0,
     Main100,
@@ -365,7 +365,6 @@ fun SpoonyMainColorsPreview() {
                 style = SpoonyAndroidTheme.typography.title1,
                 color = SpoonyAndroidTheme.colors.main900
             )
-
         }
     }
 }
@@ -457,7 +456,7 @@ fun SpoonyStateColorsPreview() {
             Text(
                 "SpoonyAndroidTheme",
                 style = SpoonyAndroidTheme.typography.title1,
-                color = SpoonyAndroidTheme.colors.error400,
+                color = SpoonyAndroidTheme.colors.error400
             )
         }
     }

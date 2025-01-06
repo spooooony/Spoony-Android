@@ -36,7 +36,7 @@ class SpoonyTypography(
     caption1b: TextStyle,
     caption1m: TextStyle,
     caption2b: TextStyle,
-    caption2m: TextStyle,
+    caption2m: TextStyle
 ) {
 
     var title1 by mutableStateOf(title1)
@@ -79,7 +79,7 @@ class SpoonyTypography(
         caption1b: TextStyle = this.caption1b,
         caption1m: TextStyle = this.caption1m,
         caption2b: TextStyle = this.caption2b,
-        caption2m: TextStyle = this.caption2m,
+        caption2m: TextStyle = this.caption2m
 
     ): SpoonyTypography = SpoonyTypography(
         title1,
@@ -94,7 +94,7 @@ class SpoonyTypography(
         caption1b,
         caption1m,
         caption2b,
-        caption2m,
+        caption2m
     )
 
     fun update(other: SpoonyTypography) {
@@ -135,55 +135,55 @@ fun SpoonyTypography(): SpoonyTypography {
     return SpoonyTypography(
         title1 = SpoonyTextStyle(
             fontFamily = PretendardBold,
-            fontSize = 20.sp,
+            fontSize = 20.sp
         ),
         title2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
-            fontSize = 18.sp,
+            fontSize = 18.sp
         ),
         title2sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
-            fontSize = 18.sp,
+            fontSize = 18.sp
         ),
         body1b = SpoonyTextStyle(
             fontFamily = PretendardBold,
-            fontSize = 16.sp,
+            fontSize = 16.sp
         ),
         body1sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
-            fontSize = 16.sp,
+            fontSize = 16.sp
         ),
         body1m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
-            fontSize = 16.sp,
+            fontSize = 16.sp
         ),
         body2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
-            fontSize = 14.sp,
+            fontSize = 14.sp
         ),
         body2sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
-            fontSize = 14.sp,
+            fontSize = 14.sp
         ),
         body2m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
-            fontSize = 14.sp,
+            fontSize = 14.sp
         ),
         caption1b = SpoonyTextStyle(
             fontFamily = PretendardBold,
-            fontSize = 12.sp,
+            fontSize = 12.sp
         ),
         caption1m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
-            fontSize = 12.sp,
+            fontSize = 12.sp
         ),
         caption2b = SpoonyTextStyle(
             fontFamily = PretendardBold,
-            fontSize = 10.sp,
+            fontSize = 10.sp
         ),
         caption2m = SpoonyTextStyle(
             fontFamily = PretendardMedium,
-            fontSize = 10.sp,
+            fontSize = 10.sp
         )
     )
 }
@@ -236,7 +236,7 @@ fun SpoonyTypographyPreview() {
             Text(
                 "SpoonyAndroidTheme",
                 style = SpoonyAndroidTheme.typography.caption1m
-                )
+            )
             Text(
                 "SpoonyAndroidTheme",
                 style = SpoonyAndroidTheme.typography.caption2b
