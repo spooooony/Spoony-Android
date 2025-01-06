@@ -23,7 +23,7 @@ val PretendardSemiBold = FontFamily(Font(R.font.pretendard_semibold, FontWeight.
 val PretendardMedium = FontFamily(Font(R.font.pretendard_medium, FontWeight.Medium))
 
 @Stable
-class SpoonyTypography internal constructor(
+class SpoonyTypography(
     title1: TextStyle,
     title2b: TextStyle,
     title2sb: TextStyle,
