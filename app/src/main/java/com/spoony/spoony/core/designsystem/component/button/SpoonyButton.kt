@@ -1,6 +1,7 @@
 package com.spoony.spoony.core.designsystem.component.button
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +30,6 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
-import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun SpoonyButton(
@@ -88,7 +88,8 @@ fun SpoonyButton(
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadius))
             .background(color = backgroundColor)
-            .noRippleClickable(
+            .clickable(
+                indication = null,
                 interactionSource = interactionSource,
                 onClick = onClick
             )
