@@ -81,10 +81,15 @@ fun SpoonyButton(
         else -> SpoonyAndroidTheme.colors.white
     }
 
+    val cornerRadius = when (size) {
+        ButtonSize.Xlarge -> 8.dp
+        ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small, ButtonSize.Xsmall -> 10.dp
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(cornerRadius))
             .background(color = backgroundColor)
             .noRippleClickable(
                 interactionSource = interactionSource,
