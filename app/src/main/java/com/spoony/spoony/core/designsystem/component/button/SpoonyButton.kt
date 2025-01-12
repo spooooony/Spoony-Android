@@ -88,7 +88,6 @@ fun SpoonyButton(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .clip(RoundedCornerShape(cornerRadius))
             .background(color = backgroundColor)
             .noRippleClickable(
