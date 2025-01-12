@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -85,8 +84,7 @@ fun SpoonyButton(
         ButtonSize.Xlarge -> 8.dp
         ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small, ButtonSize.Xsmall -> 10.dp
     }
-
-    Box(
+    Row(
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadius))
             .background(color = backgroundColor)
@@ -95,22 +93,18 @@ fun SpoonyButton(
                 onClick = onClick
             )
             .padding(paddingValues),
-        contentAlignment = Alignment.Center
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            if (icon != null) {
-                icon()
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-            Text(
-                text = text,
-                color = textColor,
-                style = textStyle
-            )
+        if (icon != null) {
+            icon()
+            Spacer(modifier = Modifier.width(8.dp))
         }
+        Text(
+            text = text,
+            color = textColor,
+            style = textStyle
+        )
     }
 }
 
