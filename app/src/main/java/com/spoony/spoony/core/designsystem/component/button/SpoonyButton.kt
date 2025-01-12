@@ -46,7 +46,8 @@ fun SpoonyButton(
 ) {
     val isPressed by interactionSource.collectIsPressedAsState()
     val spoonyColors = SpoonyAndroidTheme.colors
-    val backgroundColor = remember(enabled, isPressed) {
+    val spoonyTypography = SpoonyAndroidTheme.typography
+    val backgroundColor = remember(enabled, isPressed, style) {
         when {
             !enabled -> when (style) {
                 ButtonStyle.Primary -> spoonyColors.main100
@@ -65,28 +66,36 @@ fun SpoonyButton(
             }
         }
     }
-    val paddingValues = when (size) {
-        ButtonSize.Xlarge -> PaddingValues(horizontal = 16.dp, vertical = 16.dp)
-        ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small -> PaddingValues(horizontal = 16.dp, vertical = 18.dp)
-        ButtonSize.Xsmall -> PaddingValues(horizontal = 16.dp, vertical = 12.dp)
-    }
-
-    val textStyle = when (size) {
-        ButtonSize.Xlarge -> SpoonyAndroidTheme.typography.body1b
-        ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small, ButtonSize.Xsmall -> SpoonyAndroidTheme.typography.body2b
-    }
-
-    val textColor = when (style) {
-        ButtonStyle.Tertiary -> when {
-            !enabled -> SpoonyAndroidTheme.colors.gray400
-            else -> SpoonyAndroidTheme.colors.gray600
+    val paddingValues = remember(size) {
+        when (size) {
+            ButtonSize.Xlarge -> PaddingValues(horizontal = 16.dp, vertical = 16.dp)
+            ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small -> PaddingValues(horizontal = 16.dp, vertical = 18.dp)
+            ButtonSize.Xsmall -> PaddingValues(horizontal = 16.dp, vertical = 12.dp)
         }
-        else -> SpoonyAndroidTheme.colors.white
     }
 
-    val cornerRadius = when (size) {
-        ButtonSize.Xlarge -> 8.dp
-        ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small, ButtonSize.Xsmall -> 10.dp
+    val textStyle = remember(size) {
+        when (size) {
+            ButtonSize.Xlarge -> spoonyTypography.body1b
+            ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small, ButtonSize.Xsmall -> spoonyTypography.body2b
+        }
+    }
+
+    val textColor = remember(style) {
+        when (style) {
+            ButtonStyle.Tertiary -> when {
+                !enabled -> spoonyColors.gray400
+                else -> spoonyColors.gray600
+            }
+            else -> spoonyColors.white
+        }
+    }
+
+    val cornerRadius = remember(size) {
+        when (size) {
+            ButtonSize.Xlarge -> 8.dp
+            ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small, ButtonSize.Xsmall -> 10.dp
+        }
     }
     Row(
         modifier = modifier
