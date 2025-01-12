@@ -42,8 +42,8 @@ fun SpoonyButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     icon: (@Composable () -> Unit)? = null,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val spoonyColors = SpoonyAndroidTheme.colors
     val backgroundColor = remember(enabled, isPressed) {
