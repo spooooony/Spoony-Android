@@ -25,6 +25,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -111,418 +113,85 @@ fun SpoonyButton(
     }
 }
 
+private class ButtonStyleProvider : PreviewParameterProvider<ButtonStyle> {
+    override val values: Sequence<ButtonStyle> = sequenceOf(
+        ButtonStyle.Primary,
+        ButtonStyle.Secondary,
+        ButtonStyle.Tertiary
+    )
+}
+
 @Preview
 @Composable
-private fun SpoonyButtonPrimaryEnabledPreview() {
+fun SpoonyButtonEnabledPreview(
+    @PreviewParameter(ButtonStyleProvider::class) style: ButtonStyle
+) {
     SpoonyAndroidTheme {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Xlarge
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Large
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Medium
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Small
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Xsmall
-            )
+            ButtonSize.entries.forEach { size ->
+                SpoonyButton(
+                    text = "버튼",
+                    style = style,
+                    size = size,
+                    onClick = { }
+                )
+            }
         }
     }
 }
 
 @Preview
 @Composable
-private fun SpoonyButtonPrimaryDisabledPreview() {
+fun SpoonyButtonEnabledIconPreview(
+    @PreviewParameter(ButtonStyleProvider::class) style: ButtonStyle
+) {
     SpoonyAndroidTheme {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Xlarge,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Large,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Medium,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Small,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Xsmall,
-                enabled = false
-            )
+            ButtonSize.entries.forEach { size ->
+                SpoonyButton(
+                    text = "버튼",
+                    style = style,
+                    size = size,
+                    onClick = { },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            modifier = Modifier.size(32.dp),
+                            contentDescription = "ic_spoon_button",
+                            tint = Color.Unspecified
+                        )
+                    }
+                )
+            }
         }
     }
 }
 
 @Preview
 @Composable
-private fun SpoonyButtonPrimaryIconTextPreview() {
+fun SpoonyButtonDisabledPreview(
+    @PreviewParameter(ButtonStyleProvider::class) style: ButtonStyle
+) {
     SpoonyAndroidTheme {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Xlarge,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Large,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Medium,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Small,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Primary,
-                size = ButtonSize.Xsmall,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun SpoonyButtonSecondaryEnabledPreview() {
-    SpoonyAndroidTheme {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Xlarge
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Large
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Medium
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Small
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Xsmall
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun SpoonyButtonSecondaryDisabledPreview() {
-    SpoonyAndroidTheme {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Xlarge,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Large,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Medium,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Small,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Xsmall,
-                enabled = false
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun SpoonyButtonSecondaryIconTextPreview() {
-    SpoonyAndroidTheme {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Xlarge,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Large,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Medium,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Small,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Xsmall,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = "ic_spoon_button",
-                        tint = Color.Unspecified
-                    )
-                }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun SpoonyButtonTertiaryEnabledPreview() {
-    SpoonyAndroidTheme {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Xlarge
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Large
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Medium
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Small
-            )
-            SpoonyButton(
-                text = "버튼",
-                onClick = {},
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Xsmall
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun SpoonyButtonTertiaryDisabledPreview() {
-    SpoonyAndroidTheme {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Xlarge,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Large,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Medium,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Small,
-                enabled = false
-            )
-            SpoonyButton(
-                text = "버튼",
-                style = ButtonStyle.Tertiary,
-                size = ButtonSize.Xsmall,
-                enabled = false
-            )
+            ButtonSize.entries.forEach { size ->
+                SpoonyButton(
+                    text = "버튼",
+                    style = style,
+                    size = size,
+                    enabled = false,
+                    onClick = { }
+                )
+            }
         }
     }
 }
