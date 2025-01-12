@@ -66,7 +66,7 @@ fun SpoonyButton(
         }
     }
     val paddingValues = when (size) {
-        ButtonSize.Xlarge -> PaddingValues(horizontal = 16.dp, vertical = 16.5.dp)
+        ButtonSize.Xlarge -> PaddingValues(horizontal = 16.dp, vertical = 16.dp)
         ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small -> PaddingValues(horizontal = 16.dp, vertical = 18.dp)
         ButtonSize.Xsmall -> PaddingValues(horizontal = 16.dp, vertical = 12.dp)
     }
