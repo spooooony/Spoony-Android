@@ -1,4 +1,4 @@
-package com.spoony.spoony.core.util.modifier
+package com.spoony.spoony.core.util.extension
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

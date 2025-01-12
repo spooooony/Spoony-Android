@@ -29,7 +29,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
-import com.spoony.spoony.core.util.modifier.noRippleClickable
+import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun SpoonyButton(
