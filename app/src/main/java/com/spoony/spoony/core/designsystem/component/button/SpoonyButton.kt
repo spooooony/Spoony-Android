@@ -36,12 +36,12 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 @Composable
 fun SpoonyButton(
     text: String,
-    size: ButtonSize = ButtonSize.Medium,
-    style: ButtonStyle = ButtonStyle.Primary,
+    size: ButtonSize,
+    style: ButtonStyle,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     icon: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -243,6 +243,7 @@ private fun SpoonyButtonTwoButtonPreview() {
             ) {
                 SpoonyButton(
                     text = "버튼",
+                    onClick = {},
                     style = ButtonStyle.Tertiary,
                     size = ButtonSize.Xsmall,
                     enabled = false,
@@ -251,6 +252,7 @@ private fun SpoonyButtonTwoButtonPreview() {
                 Spacer(modifier = Modifier.width(13.dp))
                 SpoonyButton(
                     text = "버튼",
+                    onClick = {},
                     style = ButtonStyle.Secondary,
                     size = ButtonSize.Xsmall,
                     enabled = false,
