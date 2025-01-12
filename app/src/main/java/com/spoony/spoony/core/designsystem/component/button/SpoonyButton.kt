@@ -43,22 +43,24 @@ fun SpoonyButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val backgroundColor = when {
-        !enabled -> when (style) {
-            ButtonStyle.Primary -> SpoonyAndroidTheme.colors.main100
-            ButtonStyle.Secondary -> SpoonyAndroidTheme.colors.gray300
-            ButtonStyle.Tertiary -> SpoonyAndroidTheme.colors.gray100
-        }
-        isPressed -> when (style) {
-            ButtonStyle.Primary -> SpoonyAndroidTheme.colors.main500
-            ButtonStyle.Secondary -> SpoonyAndroidTheme.colors.gray800
-            ButtonStyle.Tertiary -> SpoonyAndroidTheme.colors.gray100
-        }
-
-        else -> when (style) {
-            ButtonStyle.Primary -> SpoonyAndroidTheme.colors.main400
-            ButtonStyle.Secondary -> SpoonyAndroidTheme.colors.black
-            ButtonStyle.Tertiary -> SpoonyAndroidTheme.colors.gray0
+    val spoonyColors = SpoonyAndroidTheme.colors
+    val backgroundColor = remember(enabled, isPressed) {
+        when {
+            !enabled -> when (style) {
+                ButtonStyle.Primary -> spoonyColors.main100
+                ButtonStyle.Secondary -> spoonyColors.gray300
+                ButtonStyle.Tertiary -> spoonyColors.gray100
+            }
+            isPressed -> when (style) {
+                ButtonStyle.Primary -> spoonyColors.main500
+                ButtonStyle.Secondary -> spoonyColors.gray800
+                ButtonStyle.Tertiary -> spoonyColors.gray100
+            }
+            else -> when (style) {
+                ButtonStyle.Primary -> spoonyColors.main400
+                ButtonStyle.Secondary -> spoonyColors.black
+                ButtonStyle.Tertiary -> spoonyColors.gray0
+            }
         }
     }
     val paddingValues = when (size) {
