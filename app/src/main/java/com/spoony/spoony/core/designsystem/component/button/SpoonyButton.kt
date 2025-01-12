@@ -102,6 +102,7 @@ fun SpoonyButton(
             .clip(RoundedCornerShape(cornerRadius))
             .background(color = backgroundColor)
             .clickable(
+                enabled = enabled,
                 indication = null,
                 interactionSource = interactionSource,
                 onClick = onClick
