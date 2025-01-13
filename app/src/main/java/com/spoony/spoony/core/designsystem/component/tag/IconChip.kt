@@ -42,13 +42,17 @@ fun IconChip(
 ) {
     val spoonTypography = SpoonyAndroidTheme.typography
     val spoonyColor = SpoonyAndroidTheme.colors
-    val textStyle = remember(tagSize) {
+    val (textStyle, paddingValues) = remember(tagSize) {
         when (tagSize) {
-            TagSize.Large -> spoonTypography.body2sb
-            TagSize.Small -> spoonTypography.caption1m
+            TagSize.Large ->
+                spoonTypography.body2sb to
+                        PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+            TagSize.Small ->
+                spoonTypography.caption1m to
+                        PaddingValues(horizontal = 10.dp, vertical = 4.dp)
         }
     }
-    val backgroundBrush = remember(tagSize, tagColor) {
+    val (backgroundBrush, iconTextColor) = remember(tagSize, tagColor) {
         when (tagSize) {
             TagSize.Large -> when (tagColor) {
                 IconChipColor.Black -> Brush.linearGradient(
@@ -59,44 +63,39 @@ fun IconChip(
                     ),
                     start = Offset(0f, Float.POSITIVE_INFINITY),
                     end = Offset(Float.POSITIVE_INFINITY, 0f)
-                )
-                IconChipColor.White -> SolidColor(spoonyColor.white)
-                IconChipColor.Main -> SolidColor(spoonyColor.main400)
-                else -> SolidColor(spoonyColor.white)
+                ) to spoonyColor.white
+                IconChipColor.White ->
+                    SolidColor(spoonyColor.white) to
+                            spoonyColor.gray600
+                IconChipColor.Main ->
+                    SolidColor(spoonyColor.main400) to
+                            spoonyColor.white
+                else ->
+                    SolidColor(spoonyColor.white) to
+                            spoonyColor.black
             }
             TagSize.Small -> when (tagColor) {
-                IconChipColor.Main -> SolidColor(spoonyColor.main0)
-                IconChipColor.Orange -> SolidColor(spoonyColor.orange100)
-                IconChipColor.Pink -> SolidColor(spoonyColor.pink100)
-                IconChipColor.Green -> SolidColor(spoonyColor.green100)
-                IconChipColor.Blue -> SolidColor(spoonyColor.blue100)
-                IconChipColor.Purple -> SolidColor(spoonyColor.purple100)
-                else -> SolidColor(spoonyColor.black)
-            }
-        }
-    }
-    val paddingValues = remember(tagSize) {
-        when (tagSize) {
-            TagSize.Large -> PaddingValues(horizontal = 16.dp, vertical = 6.dp)
-            TagSize.Small -> PaddingValues(horizontal = 10.dp, vertical = 4.dp)
-        }
-    }
-    val iconTextColor = remember(tagSize, tagColor) {
-        when (tagSize) {
-            TagSize.Large -> when (tagColor) {
-                IconChipColor.Black -> spoonyColor.white
-                IconChipColor.White -> spoonyColor.gray600
-                IconChipColor.Main -> spoonyColor.white
-                else -> spoonyColor.black
-            }
-            TagSize.Small -> when (tagColor) {
-                IconChipColor.Main -> spoonyColor.main400
-                IconChipColor.Orange -> spoonyColor.orange400
-                IconChipColor.Pink -> spoonyColor.pink400
-                IconChipColor.Green -> spoonyColor.green400
-                IconChipColor.Blue -> spoonyColor.blue400
-                IconChipColor.Purple -> spoonyColor.purple400
-                else -> spoonyColor.white
+                IconChipColor.Main ->
+                    SolidColor(spoonyColor.main0) to
+                            spoonyColor.main400
+                IconChipColor.Orange ->
+                    SolidColor(spoonyColor.orange100) to
+                            spoonyColor.orange400
+                IconChipColor.Pink ->
+                    SolidColor(spoonyColor.pink100) to
+                            spoonyColor.pink400
+                IconChipColor.Green ->
+                    SolidColor(spoonyColor.green100) to
+                            spoonyColor.green400
+                IconChipColor.Blue ->
+                    SolidColor(spoonyColor.blue100) to
+                            spoonyColor.blue400
+                IconChipColor.Purple ->
+                    SolidColor(spoonyColor.purple100) to
+                            spoonyColor.purple400
+                else ->
+                    SolidColor(spoonyColor.black) to
+                        spoonyColor.white
             }
         }
     }
