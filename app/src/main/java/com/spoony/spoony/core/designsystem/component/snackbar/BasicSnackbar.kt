@@ -17,7 +17,11 @@ fun BasicSnackbar(
 ) {
     Box(
         modifier = modifier
-            .padding(bottom = 20.dp, start = 20.dp, end = 20.dp)
+            .padding(
+                bottom = 20.dp,
+                start = 20.dp,
+                end = 20.dp
+            )
             .clip(RoundedCornerShape(10.dp))
             .background(SpoonyAndroidTheme.colors.gray600)
     ) {

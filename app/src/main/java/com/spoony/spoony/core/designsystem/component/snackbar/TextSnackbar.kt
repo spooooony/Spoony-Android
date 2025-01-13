@@ -35,7 +35,10 @@ fun TextSnackbar(
                 text = text,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp, horizontal = 8.dp),
+                    .padding(
+                        vertical = 12.dp,
+                        horizontal = 8.dp
+                    ),
                 textAlign = TextAlign.Center,
                 style = SpoonyAndroidTheme.typography.body2m,
                 color = SpoonyAndroidTheme.colors.white
