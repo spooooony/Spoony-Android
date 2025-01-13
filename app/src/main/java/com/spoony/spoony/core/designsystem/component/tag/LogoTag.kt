@@ -29,7 +29,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.TagSize
 
 @Composable
-fun SpoonyTag(
+fun LogoTag(
     count: Int,
     onClick: () -> Unit,
     tagSize: TagSize = TagSize.Small,
@@ -97,7 +97,7 @@ fun SpoonyTag(
     }
 }
 
-private class TagSizeProvider : PreviewParameterProvider<TagSize> {
+class TagSizeProvider : PreviewParameterProvider<TagSize> {
     override val values: Sequence<TagSize> = sequenceOf(
         TagSize.Large,
         TagSize.Small
@@ -106,11 +106,11 @@ private class TagSizeProvider : PreviewParameterProvider<TagSize> {
 
 @Preview
 @Composable
-private fun SpoonyTagPreview(
+private fun LogoTagPreview(
     @PreviewParameter(TagSizeProvider::class) size: TagSize
 ) {
     SpoonyAndroidTheme {
-        SpoonyTag(
+        LogoTag(
             count = 99,
             tagSize = size,
             onClick = {}
