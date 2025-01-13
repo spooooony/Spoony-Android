@@ -70,9 +70,9 @@ private fun TwoButtonDialogPreview() {
     SpoonyAndroidTheme {
         TwoButtonDialog(
             message = "수저 1개를 사용하여 떠먹어 볼까요?",
-            cancelText = "나중에 먹을래요",
+            cancelText = "아니요",
             onCancel = {},
-            confirmText = "떠먹기",
+            confirmText = "떠먹을래요",
             onConfirm = {},
             onDismiss = {},
             content = {
