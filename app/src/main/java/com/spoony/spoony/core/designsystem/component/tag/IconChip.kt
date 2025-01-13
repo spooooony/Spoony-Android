@@ -28,14 +28,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.type.IconTagColor
+import com.spoony.spoony.core.designsystem.type.IconChipColor
 import com.spoony.spoony.core.designsystem.type.TagSize
 
 @Composable
-fun IconTag(
+fun IconChip(
     text: String,
     tagSize: TagSize,
-    tagColor: IconTagColor,
+    tagColor: IconChipColor,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: (@Composable (Color) -> Unit)? = null
@@ -51,7 +51,7 @@ fun IconTag(
     val backgroundBrush = remember(tagSize, tagColor) {
         when (tagSize) {
             TagSize.Large -> when (tagColor) {
-                IconTagColor.Black -> Brush.linearGradient(
+                IconChipColor.Black -> Brush.linearGradient(
                     colors = listOf(
                         spoonyColor.gray800,
                         spoonyColor.gray900,
@@ -60,17 +60,17 @@ fun IconTag(
                     start = Offset(0f, Float.POSITIVE_INFINITY),
                     end = Offset(Float.POSITIVE_INFINITY, 0f)
                 )
-                IconTagColor.White -> SolidColor(spoonyColor.white)
-                IconTagColor.Main -> SolidColor(spoonyColor.main400)
+                IconChipColor.White -> SolidColor(spoonyColor.white)
+                IconChipColor.Main -> SolidColor(spoonyColor.main400)
                 else -> SolidColor(spoonyColor.white)
             }
             TagSize.Small -> when (tagColor) {
-                IconTagColor.Main -> SolidColor(spoonyColor.main0)
-                IconTagColor.Orange -> SolidColor(spoonyColor.orange100)
-                IconTagColor.Pink -> SolidColor(spoonyColor.pink100)
-                IconTagColor.Green -> SolidColor(spoonyColor.green100)
-                IconTagColor.Blue -> SolidColor(spoonyColor.blue100)
-                IconTagColor.Purple -> SolidColor(spoonyColor.purple100)
+                IconChipColor.Main -> SolidColor(spoonyColor.main0)
+                IconChipColor.Orange -> SolidColor(spoonyColor.orange100)
+                IconChipColor.Pink -> SolidColor(spoonyColor.pink100)
+                IconChipColor.Green -> SolidColor(spoonyColor.green100)
+                IconChipColor.Blue -> SolidColor(spoonyColor.blue100)
+                IconChipColor.Purple -> SolidColor(spoonyColor.purple100)
                 else -> SolidColor(spoonyColor.black)
             }
         }
@@ -84,18 +84,18 @@ fun IconTag(
     val iconTextColor = remember(tagSize, tagColor) {
         when (tagSize) {
             TagSize.Large -> when (tagColor) {
-                IconTagColor.Black -> spoonyColor.white
-                IconTagColor.White -> spoonyColor.gray600
-                IconTagColor.Main -> spoonyColor.white
+                IconChipColor.Black -> spoonyColor.white
+                IconChipColor.White -> spoonyColor.gray600
+                IconChipColor.Main -> spoonyColor.white
                 else -> spoonyColor.black
             }
             TagSize.Small -> when (tagColor) {
-                IconTagColor.Main -> spoonyColor.main400
-                IconTagColor.Orange -> spoonyColor.orange400
-                IconTagColor.Pink -> spoonyColor.pink400
-                IconTagColor.Green -> spoonyColor.green400
-                IconTagColor.Blue -> spoonyColor.blue400
-                IconTagColor.Purple -> spoonyColor.purple400
+                IconChipColor.Main -> spoonyColor.main400
+                IconChipColor.Orange -> spoonyColor.orange400
+                IconChipColor.Pink -> spoonyColor.pink400
+                IconChipColor.Green -> spoonyColor.green400
+                IconChipColor.Blue -> spoonyColor.blue400
+                IconChipColor.Purple -> spoonyColor.purple400
                 else -> spoonyColor.white
             }
         }
@@ -123,7 +123,7 @@ fun IconTag(
 
 @Preview
 @Composable
-private fun IconTagPreview(
+private fun IconChipPreview(
     @PreviewParameter(TagSizeProvider::class) size: TagSize
 ) {
     SpoonyAndroidTheme {
@@ -131,18 +131,18 @@ private fun IconTagPreview(
             modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            IconTagColor.entries
+            IconChipColor.entries
                 .filter { color ->
                     if (size == TagSize.Large) {
-                        color == IconTagColor.Black ||
-                            color == IconTagColor.White ||
-                            color == IconTagColor.Main
+                        color == IconChipColor.Black ||
+                            color == IconChipColor.White ||
+                            color == IconChipColor.Main
                     } else {
-                        color != IconTagColor.Black && color != IconTagColor.White
+                        color != IconChipColor.Black && color != IconChipColor.White
                     }
                 }
                 .forEach { color ->
-                    IconTag(
+                    IconChip(
                         text = "chip",
                         tagSize = size,
                         tagColor = color,
