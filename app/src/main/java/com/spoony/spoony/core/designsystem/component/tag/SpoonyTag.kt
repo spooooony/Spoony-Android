@@ -26,41 +26,41 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.type.TagType
+import com.spoony.spoony.core.designsystem.type.TagSize
 
 @Composable
 fun SpoonyTag(
     count: Int,
     onClick: () -> Unit,
-    tagType: TagType = TagType.Small,
+    tagSize: TagSize = TagSize.Small,
     modifier: Modifier = Modifier
 ) {
     val spoonTypography = SpoonyAndroidTheme.typography
-    val textSize = remember(tagType) {
-        when (tagType) {
-            TagType.Large -> spoonTypography.body1sb
-            TagType.Small -> spoonTypography.body2sb
+    val textSize = remember(tagSize) {
+        when (tagSize) {
+            TagSize.Large -> spoonTypography.body1sb
+            TagSize.Small -> spoonTypography.body2sb
         }
     }
 
-    val paddingValues = remember(tagType) {
-        when (tagType) {
-            TagType.Large -> PaddingValues(start = 12.dp, end = 4.dp, top = 5.dp, bottom = 4.dp)
-            TagType.Small -> PaddingValues(start = 8.dp, end = 2.dp, top = 4.dp, bottom = 4.dp)
+    val paddingValues = remember(tagSize) {
+        when (tagSize) {
+            TagSize.Large -> PaddingValues(start = 12.dp, end = 4.dp, top = 5.dp, bottom = 4.dp)
+            TagSize.Small -> PaddingValues(start = 8.dp, end = 2.dp, top = 4.dp, bottom = 4.dp)
         }
     }
 
-    val betweenPaddingValues = remember(tagType) {
-        when (tagType) {
-            TagType.Large -> 6.dp
-            TagType.Small -> 5.dp
+    val betweenPaddingValues = remember(tagSize) {
+        when (tagSize) {
+            TagSize.Large -> 6.dp
+            TagSize.Small -> 5.dp
         }
     }
 
-    val verticalAlignment = remember(tagType) {
-        when (tagType) {
-            TagType.Large -> Alignment.Top
-            TagType.Small -> Alignment.CenterVertically
+    val verticalAlignment = remember(tagSize) {
+        when (tagSize) {
+            TagSize.Large -> Alignment.Top
+            TagSize.Small -> Alignment.CenterVertically
         }
     }
 
@@ -97,22 +97,22 @@ fun SpoonyTag(
     }
 }
 
-private class TagTypeProvider : PreviewParameterProvider<TagType> {
-    override val values: Sequence<TagType> = sequenceOf(
-        TagType.Large,
-        TagType.Small
+private class TagSizeProvider : PreviewParameterProvider<TagSize> {
+    override val values: Sequence<TagSize> = sequenceOf(
+        TagSize.Large,
+        TagSize.Small
     )
 }
 
 @Preview
 @Composable
 private fun SpoonyTagPreview(
-    @PreviewParameter(TagTypeProvider::class) type: TagType
+    @PreviewParameter(TagSizeProvider::class) size: TagSize
 ) {
     SpoonyAndroidTheme {
         SpoonyTag(
             count = 99,
-            tagType = type,
+            tagSize = size,
             onClick = {}
         )
     }
