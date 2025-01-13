@@ -1,4 +1,4 @@
-package com.spoony.spoony.core.components.dialog
+package com.spoony.spoony.core.designsystem.component.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
