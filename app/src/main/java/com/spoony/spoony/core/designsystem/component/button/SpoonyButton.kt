@@ -68,16 +68,8 @@ fun SpoonyButton(
     }
     val paddingValues = remember(size) {
         when (size) {
-            ButtonSize.Xlarge -> PaddingValues(horizontal = 16.dp, vertical = 16.dp)
-            ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small -> PaddingValues(horizontal = 16.dp, vertical = 18.dp)
+            ButtonSize.Xlarge, ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small -> PaddingValues(horizontal = 16.dp, vertical = 18.dp)
             ButtonSize.Xsmall -> PaddingValues(horizontal = 16.dp, vertical = 12.dp)
-        }
-    }
-
-    val textStyle = remember(size) {
-        when (size) {
-            ButtonSize.Xlarge -> spoonyTypography.body1b
-            ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small, ButtonSize.Xsmall -> spoonyTypography.body2b
         }
     }
 
@@ -118,7 +110,7 @@ fun SpoonyButton(
         Text(
             text = text,
             color = textColor,
-            style = textStyle
+            style = SpoonyAndroidTheme.typography.body2b
         )
     }
 }
