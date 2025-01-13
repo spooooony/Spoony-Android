@@ -23,6 +23,8 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val SNACK_BAR_DURATION = 3000L
+
 @Composable
 fun TextSnackbar(
     text: String,
@@ -54,8 +56,6 @@ private fun SpoonySnackbarPreview() {
         TextSnackbar("내 지도에 추가되었어요.")
     }
 }
-
-private const val SNACK_BAR_DURATION = 3000L
 
 @Preview
 @Composable
