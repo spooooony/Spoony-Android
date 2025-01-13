@@ -46,10 +46,10 @@ fun IconChip(
         when (tagSize) {
             TagSize.Large ->
                 spoonTypography.body2sb to
-                        PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+                    PaddingValues(horizontal = 16.dp, vertical = 6.dp)
             TagSize.Small ->
                 spoonTypography.caption1m to
-                        PaddingValues(horizontal = 10.dp, vertical = 4.dp)
+                    PaddingValues(horizontal = 10.dp, vertical = 4.dp)
         }
     }
     val (backgroundBrush, iconTextColor) = remember(tagSize, tagColor) {
@@ -66,33 +66,33 @@ fun IconChip(
                 ) to spoonyColor.white
                 IconChipColor.White ->
                     SolidColor(spoonyColor.white) to
-                            spoonyColor.gray600
+                        spoonyColor.gray600
                 IconChipColor.Main ->
                     SolidColor(spoonyColor.main400) to
-                            spoonyColor.white
+                        spoonyColor.white
                 else ->
                     SolidColor(spoonyColor.white) to
-                            spoonyColor.black
+                        spoonyColor.black
             }
             TagSize.Small -> when (tagColor) {
                 IconChipColor.Main ->
                     SolidColor(spoonyColor.main0) to
-                            spoonyColor.main400
+                        spoonyColor.main400
                 IconChipColor.Orange ->
                     SolidColor(spoonyColor.orange100) to
-                            spoonyColor.orange400
+                        spoonyColor.orange400
                 IconChipColor.Pink ->
                     SolidColor(spoonyColor.pink100) to
-                            spoonyColor.pink400
+                        spoonyColor.pink400
                 IconChipColor.Green ->
                     SolidColor(spoonyColor.green100) to
-                            spoonyColor.green400
+                        spoonyColor.green400
                 IconChipColor.Blue ->
                     SolidColor(spoonyColor.blue100) to
-                            spoonyColor.blue400
+                        spoonyColor.blue400
                 IconChipColor.Purple ->
                     SolidColor(spoonyColor.purple100) to
-                            spoonyColor.purple400
+                        spoonyColor.purple400
                 else ->
                     SolidColor(spoonyColor.black) to
                         spoonyColor.white
