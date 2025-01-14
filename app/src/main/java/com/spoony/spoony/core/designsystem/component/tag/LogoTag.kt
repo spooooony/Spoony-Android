@@ -74,7 +74,7 @@ fun LogoTag(
         Spacer(modifier = Modifier.width(betweenValues))
         Icon(
             painter = painterResource(id = R.drawable.ic_tag_spoon_20),
-            contentDescription = "Arrow Icon",
+            contentDescription = null,
             tint = Color.Unspecified
         )
     }
