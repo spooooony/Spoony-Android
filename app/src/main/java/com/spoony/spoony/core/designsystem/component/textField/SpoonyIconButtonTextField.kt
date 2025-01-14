@@ -57,7 +57,7 @@ fun SpoonyIconButtonTextField(
             trailingIcon = {
                 if (showDeleteIcon && value.isNotEmpty()) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_delete_filled_24),
+                        painter = painterResource(id = R.drawable.ic_minus_gray400_24),
                         contentDescription = null,
                         tint = spoonyColors.gray400,
                         modifier = Modifier.clickable(onClick = onDeleteClick)
