@@ -14,7 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
@@ -57,7 +58,7 @@ fun SpoonyIconButtonTextField(
             trailingIcon = {
                 if (showDeleteIcon && value.isNotEmpty()) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_minus_gray400_24),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_minus_gray400_24),
                         contentDescription = null,
                         tint = spoonyColors.gray400,
                         modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
@@ -72,7 +73,7 @@ fun SpoonyIconButtonTextField(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_error_24),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_error_24),
                     contentDescription = null,
                     tint = spoonyColors.gray500,
                     modifier = Modifier.size(16.dp)
@@ -113,7 +114,6 @@ private fun SpoonyIconButtonTextFieldPreview() {
                 onDeleteClick = { text2 = "" },
                 maxLength = 30,
                 helperText = "헬퍼 코멘트입니다"
-
             )
         }
     }

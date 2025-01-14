@@ -14,7 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
@@ -35,6 +36,7 @@ fun SpoonyLineTextField(
     var isError: Boolean by remember { mutableStateOf(false) }
     var selectText: Boolean by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
+    val counterText = "${value.length} / $maxLength"
 
     val borderColor = remember(isError, isFocused) {
         when {
@@ -72,7 +74,7 @@ fun SpoonyLineTextField(
             },
             trailingIcon = {
                 Text(
-                    text = "${value.length} / $maxLength",
+                    text = counterText,
                     style = SpoonyAndroidTheme.typography.caption1m,
                     color = subContentColor
                 )
@@ -85,7 +87,7 @@ fun SpoonyLineTextField(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_error_24),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_error_24),
                     contentDescription = null,
                     tint = subContentColor,
                     modifier = Modifier.size(16.dp)

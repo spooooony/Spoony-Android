@@ -12,7 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,7 @@ fun SpoonySearchTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     maxLength: Int = Int.MAX_VALUE,
-    onDoneAction: (() -> Unit)? = null
+    onDoneAction: (() -> Unit),
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -44,7 +45,7 @@ fun SpoonySearchTextField(
         onFocusChanged = { isFocused = it },
         leadingIcon = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_search_24),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_search_24),
                 contentDescription = null,
                 tint = SpoonyAndroidTheme.colors.gray600,
                 modifier = Modifier
@@ -56,7 +57,7 @@ fun SpoonySearchTextField(
         trailingIcon = {
             if (value.isNotEmpty()) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_delete_filled_24),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_delete_filled_24),
                     contentDescription = null,
                     tint = SpoonyAndroidTheme.colors.gray400,
                     modifier = Modifier
@@ -75,7 +76,7 @@ fun SpoonySearchTextField(
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                onDoneAction?.invoke()
+                onDoneAction.invoke()
             }
         )
     )

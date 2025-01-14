@@ -48,9 +48,9 @@ fun SpoonyLargeTextField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
-    var selectText: Boolean by remember { mutableStateOf(false) }
+    var isOverflowed: Boolean by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
-
+    val errorText = if (isOverflowed) maxErrorText else minErrorText
     val borderColor = remember(isError, isFocused) {
         when {
             isError -> spoonyColors.error400
@@ -72,7 +72,7 @@ fun SpoonyLargeTextField(
             placeholder = placeholder,
             onValueChanged = { newText ->
                 isError = (newText.length > maxLength || newText.trim().length < minLength)
-                selectText = newText.length > maxLength
+                isOverflowed = newText.length > maxLength
                 if (newText.length <= maxLength) {
                     onValueChanged(newText)
                 }
@@ -100,9 +100,9 @@ fun SpoonyLargeTextField(
                     tint = subContentColor,
                     modifier = Modifier.size(16.dp)
                 )
-                (if (selectText) maxErrorText else minErrorText)?.let {
+                if (errorText != null) {
                     Text(
-                        text = it,
+                        text = errorText,
                         style = SpoonyAndroidTheme.typography.caption1m,
                         color = subContentColor
                     )
@@ -113,7 +113,7 @@ fun SpoonyLargeTextField(
 }
 
 @Composable
-fun CustomBasicTextField(
+private fun CustomBasicTextField(
     value: String,
     placeholder: String,
     onValueChanged: (String) -> Unit,
@@ -128,6 +128,7 @@ fun CustomBasicTextField(
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+    val counterText = "${value.length} / $maxLength"
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         BasicTextField(
@@ -175,7 +176,7 @@ fun CustomBasicTextField(
                         }
                     }
                     Text(
-                        text = "${value.length} / $maxLength",
+                        text = counterText,
                         style = SpoonyAndroidTheme.typography.caption1m,
                         color = subContentColor,
                         modifier = Modifier.align(Alignment.End)
