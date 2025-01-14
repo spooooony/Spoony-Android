@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,7 @@ fun SpoonyLineTextField(
     var isError: Boolean by remember { mutableStateOf(false) }
     var selectText: Boolean by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
-    val counterText = "${value.length} / $maxLength"
+    val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
 
     val borderColor = remember(isError, isFocused) {
         when {

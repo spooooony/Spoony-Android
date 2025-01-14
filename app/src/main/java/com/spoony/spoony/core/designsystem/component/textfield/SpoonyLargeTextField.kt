@@ -30,6 +30,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
@@ -128,7 +129,7 @@ private fun CustomBasicTextField(
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    val counterText = "${value.length} / $maxLength"
+    val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         BasicTextField(
