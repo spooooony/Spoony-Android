@@ -1,6 +1,5 @@
 package com.spoony.spoony.core.designsystem.component.textField
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun SpoonyIconButtonTextField(
@@ -60,7 +60,7 @@ fun SpoonyIconButtonTextField(
                         painter = painterResource(id = R.drawable.ic_minus_gray400_24),
                         contentDescription = null,
                         tint = spoonyColors.gray400,
-                        modifier = Modifier.clickable(onClick = onDeleteClick)
+                        modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
                     )
                 }
             }
