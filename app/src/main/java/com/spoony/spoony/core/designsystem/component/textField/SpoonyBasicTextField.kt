@@ -46,7 +46,11 @@ fun SpoonyBasicTextField(
 
     BasicTextField(
         value = value,
-        onValueChange = onValueChanged,
+        onValueChange = { newValue ->
+            if (!SpoonyValidator.containsEmoji(newValue)) {
+                onValueChanged(newValue)
+            }
+        },
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .border(
@@ -90,6 +94,14 @@ fun SpoonyBasicTextField(
             }
         }
     )
+}
+
+object SpoonyValidator {
+    private val emojiPattern = Regex("[\\uD83C-\\uDBFF\\uDC00-\\uDFFF]")
+
+    fun containsEmoji(input: String): Boolean {
+        return emojiPattern.containsMatchIn(input)
+    }
 }
 
 @Preview(showBackground = true)
