@@ -61,7 +61,7 @@ fun TwoButtonDialog(
                         size = ButtonSize.Xsmall,
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.width(13.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     SpoonyButton(
                         text = confirmText,
                         onClick = onConfirm,
