@@ -61,7 +61,7 @@ fun LogoTag(
                     end = Offset(Float.POSITIVE_INFINITY, 0f)
                 )
             )
-            .clickable { onClick() }
+            .clickable(onClick = onClick)
             .padding(paddingValues),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = verticalAlignment
