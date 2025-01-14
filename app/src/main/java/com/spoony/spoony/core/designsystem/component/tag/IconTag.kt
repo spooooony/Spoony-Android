@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.theme.SpoonyColors
 import com.spoony.spoony.core.designsystem.type.TagChipColor
 
 @Composable
@@ -33,33 +34,8 @@ fun IconTag(
     modifier: Modifier = Modifier,
     icon: (@Composable (Color) -> Unit)? = null
 ) {
-    val spoonTypography = SpoonyAndroidTheme.typography
-    val spoonyColor = SpoonyAndroidTheme.colors
-    val (backgroundColor, iconTextColor) = remember(tagColor) {
-        when (tagColor) {
-            TagChipColor.Main ->
-                spoonyColor.main0 to
-                    spoonyColor.main400
-            TagChipColor.Orange ->
-                spoonyColor.orange100 to
-                    spoonyColor.orange400
-            TagChipColor.Pink ->
-                spoonyColor.pink100 to
-                    spoonyColor.pink400
-            TagChipColor.Green ->
-                spoonyColor.green100 to
-                    spoonyColor.green400
-            TagChipColor.Blue ->
-                spoonyColor.blue100 to
-                    spoonyColor.blue400
-            TagChipColor.Purple ->
-                spoonyColor.purple100 to
-                    spoonyColor.purple400
-            else ->
-                spoonyColor.black to
-                    spoonyColor.white
-        }
-    }
+    val (backgroundColor, iconTextColor) = rememberTagStyle(tagColor)
+
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -79,8 +55,43 @@ fun IconTag(
         Text(
             text = text,
             color = iconTextColor,
-            style = spoonTypography.caption1m
+            style = SpoonyAndroidTheme.typography.caption1m
         )
+    }
+}
+
+private fun getIconTagStyle(tagColor: TagChipColor, spoonyColor: SpoonyColors): Pair<Color, Color> {
+    return when (tagColor) {
+        TagChipColor.Main ->
+            spoonyColor.main0 to
+                spoonyColor.main400
+        TagChipColor.Orange ->
+            spoonyColor.orange100 to
+                spoonyColor.orange400
+        TagChipColor.Pink ->
+            spoonyColor.pink100 to
+                spoonyColor.pink400
+        TagChipColor.Green ->
+            spoonyColor.green100 to
+                spoonyColor.green400
+        TagChipColor.Blue ->
+            spoonyColor.blue100 to
+                spoonyColor.blue400
+        TagChipColor.Purple ->
+            spoonyColor.purple100 to
+                spoonyColor.purple400
+        else ->
+            spoonyColor.black to
+                spoonyColor.white
+    }
+}
+
+@Composable
+private fun rememberTagStyle(tagColor: TagChipColor): Pair<Color, Color> {
+    val spoonyColor = SpoonyAndroidTheme.colors
+
+    return remember(tagColor) {
+        getIconTagStyle(tagColor, spoonyColor)
     }
 }
 

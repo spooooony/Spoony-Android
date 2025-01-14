@@ -20,12 +20,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.theme.SpoonyTypography
 import com.spoony.spoony.core.designsystem.type.TagSize
 
 @Composable
@@ -36,37 +39,17 @@ fun LogoTag(
     modifier: Modifier = Modifier
 ) {
     val spoonTypography = SpoonyAndroidTheme.typography
-    val textSize = remember(tagSize) {
-        when (tagSize) {
-            TagSize.Large -> spoonTypography.body1sb
-            TagSize.Small -> spoonTypography.body2sb
-        }
+    val (betweenValues, paddingValues) = remember(tagSize) {
+        getLogoTagPaddingAndSpacing(tagSize)
     }
 
-    val paddingValues = remember(tagSize) {
-        when (tagSize) {
-            TagSize.Large -> PaddingValues(start = 12.dp, end = 4.dp, top = 5.dp, bottom = 4.dp)
-            TagSize.Small -> PaddingValues(start = 8.dp, end = 2.dp, top = 4.dp, bottom = 4.dp)
-        }
-    }
-
-    val betweenPaddingValues = remember(tagSize) {
-        when (tagSize) {
-            TagSize.Large -> 6.dp
-            TagSize.Small -> 5.dp
-        }
-    }
-
-    val verticalAlignment = remember(tagSize) {
-        when (tagSize) {
-            TagSize.Large -> Alignment.Top
-            TagSize.Small -> Alignment.CenterVertically
-        }
+    val (textSize, verticalAlignment) = remember(tagSize) {
+        getLogoTagStyleAndAlignment(tagSize, spoonTypography)
     }
 
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(999.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(
                 Brush.linearGradient(
                     colors = listOf(
@@ -88,12 +71,30 @@ fun LogoTag(
             style = textSize,
             color = SpoonyAndroidTheme.colors.white
         )
-        Spacer(modifier = Modifier.width(betweenPaddingValues))
+        Spacer(modifier = Modifier.width(betweenValues))
         Icon(
             painter = painterResource(id = R.drawable.ic_tag_spoon_20),
             contentDescription = "Arrow Icon",
             tint = Color.Unspecified
         )
+    }
+}
+
+private fun getLogoTagPaddingAndSpacing(tagSize: TagSize): Pair<Dp, PaddingValues> {
+    return when (tagSize) {
+        TagSize.Large ->
+            6.dp to PaddingValues(start = 12.dp, end = 4.dp, top = 5.dp, bottom = 4.dp)
+        TagSize.Small ->
+            5.dp to PaddingValues(start = 8.dp, end = 2.dp, top = 4.dp, bottom = 4.dp)
+    }
+}
+
+private fun getLogoTagStyleAndAlignment(tagSize: TagSize, spoonTypography: SpoonyTypography): Pair<TextStyle, Alignment.Vertical> {
+    return when (tagSize) {
+        TagSize.Large ->
+            spoonTypography.body1sb to Alignment.Top
+        TagSize.Small ->
+            spoonTypography.body2sb to Alignment.CenterVertically
     }
 }
 

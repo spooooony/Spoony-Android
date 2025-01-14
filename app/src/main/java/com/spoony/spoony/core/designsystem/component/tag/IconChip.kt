@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.theme.SpoonyColors
 import com.spoony.spoony.core.designsystem.type.TagChipColor
 
 @Composable
@@ -36,37 +37,15 @@ fun IconChip(
     modifier: Modifier = Modifier,
     icon: (@Composable (Color) -> Unit)? = null
 ) {
-    val spoonTypography = SpoonyAndroidTheme.typography
-    val spoonyColor = SpoonyAndroidTheme.colors
-    val (backgroundBrush, iconTextColor) = remember(tagColor) {
-        when (tagColor) {
-            TagChipColor.Black -> Brush.linearGradient(
-                colors = listOf(
-                    spoonyColor.gray800,
-                    spoonyColor.gray900,
-                    spoonyColor.black
-                ),
-                start = Offset(0f, Float.POSITIVE_INFINITY),
-                end = Offset(Float.POSITIVE_INFINITY, 0f)
-            ) to spoonyColor.white
-            TagChipColor.White ->
-                SolidColor(spoonyColor.white) to
-                    spoonyColor.gray600
-            TagChipColor.Main ->
-                SolidColor(spoonyColor.main400) to
-                    spoonyColor.white
-            else ->
-                SolidColor(spoonyColor.white) to
-                    spoonyColor.black
-        }
-    }
+    val (backgroundBrush, iconTextColor) = rememberChipStyle(tagColor)
+
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(brush = backgroundBrush)
             .clickable(onClick = onClick)
             .padding(
-                horizontal = 16.dp,
+                horizontal = 14.dp,
                 vertical = 6.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -79,8 +58,40 @@ fun IconChip(
         Text(
             text = text,
             color = iconTextColor,
-            style = spoonTypography.body2sb
+            style = SpoonyAndroidTheme.typography.body2sb
         )
+    }
+}
+
+private fun getChipStyle(tagColor: TagChipColor, spoonyColor: SpoonyColors): Pair<Brush, Color> {
+    return when (tagColor) {
+        TagChipColor.Black -> Brush.linearGradient(
+            colors = listOf(
+                spoonyColor.gray800,
+                spoonyColor.gray900,
+                spoonyColor.black
+            ),
+            start = Offset(0f, Float.POSITIVE_INFINITY),
+            end = Offset(Float.POSITIVE_INFINITY, 0f)
+        ) to spoonyColor.white
+        TagChipColor.White ->
+            SolidColor(spoonyColor.white) to
+                spoonyColor.gray600
+        TagChipColor.Main ->
+            SolidColor(spoonyColor.main400) to
+                spoonyColor.white
+        else ->
+            SolidColor(spoonyColor.white) to
+                spoonyColor.black
+    }
+}
+
+@Composable
+private fun rememberChipStyle(tagColor: TagChipColor): Pair<Brush, Color> {
+    val spoonyColor = SpoonyAndroidTheme.colors
+
+    return remember(tagColor) {
+        getChipStyle(tagColor, spoonyColor)
     }
 }
 
