@@ -4,6 +4,6 @@ enum class TagSize {
     Large, Small
 }
 
-enum class IconChipColor {
+enum class TagChipColor {
     Black, White, Main, Orange, Pink, Green, Blue, Purple
 }

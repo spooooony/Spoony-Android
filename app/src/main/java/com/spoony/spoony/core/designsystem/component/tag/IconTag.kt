@@ -17,10 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +26,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.TagChipColor
 
 @Composable
-fun IconChip(
+fun IconTag(
     text: String,
     tagColor: TagChipColor,
     onClick: () -> Unit,
@@ -38,36 +35,39 @@ fun IconChip(
 ) {
     val spoonTypography = SpoonyAndroidTheme.typography
     val spoonyColor = SpoonyAndroidTheme.colors
-    val (backgroundBrush, iconTextColor) = remember(tagColor) {
+    val (backgroundColor, iconTextColor) = remember(tagColor) {
         when (tagColor) {
-            TagChipColor.Black -> Brush.linearGradient(
-                colors = listOf(
-                    spoonyColor.gray800,
-                    spoonyColor.gray900,
-                    spoonyColor.black
-                ),
-                start = Offset(0f, Float.POSITIVE_INFINITY),
-                end = Offset(Float.POSITIVE_INFINITY, 0f)
-            ) to spoonyColor.white
-            TagChipColor.White ->
-                SolidColor(spoonyColor.white) to
-                    spoonyColor.gray600
             TagChipColor.Main ->
-                SolidColor(spoonyColor.main400) to
-                    spoonyColor.white
+                spoonyColor.main0 to
+                    spoonyColor.main400
+            TagChipColor.Orange ->
+                spoonyColor.orange100 to
+                    spoonyColor.orange400
+            TagChipColor.Pink ->
+                spoonyColor.pink100 to
+                    spoonyColor.pink400
+            TagChipColor.Green ->
+                spoonyColor.green100 to
+                    spoonyColor.green400
+            TagChipColor.Blue ->
+                spoonyColor.blue100 to
+                    spoonyColor.blue400
+            TagChipColor.Purple ->
+                spoonyColor.purple100 to
+                    spoonyColor.purple400
             else ->
-                SolidColor(spoonyColor.white) to
-                    spoonyColor.black
+                spoonyColor.black to
+                    spoonyColor.white
         }
     }
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(brush = backgroundBrush)
+            .background(color = backgroundColor)
             .clickable(onClick = onClick)
             .padding(
-                horizontal = 16.dp,
-                vertical = 6.dp
+                horizontal = 10.dp,
+                vertical = 4.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -79,14 +79,14 @@ fun IconChip(
         Text(
             text = text,
             color = iconTextColor,
-            style = spoonTypography.body2sb
+            style = spoonTypography.caption1m
         )
     }
 }
 
 @Preview
 @Composable
-private fun IconChipPreview() {
+private fun IconTagPreview() {
     SpoonyAndroidTheme {
         Column(
             modifier = Modifier,
@@ -95,12 +95,11 @@ private fun IconChipPreview() {
             TagChipColor.entries
                 .filter {
                         color ->
-                    color == TagChipColor.Black ||
-                        color == TagChipColor.White ||
-                        color == TagChipColor.Main
+                    color != TagChipColor.Black &&
+                        color != TagChipColor.White
                 }
                 .forEach { color ->
-                    IconChip(
+                    IconTag(
                         text = "chip",
                         tagColor = color,
                         onClick = { },
