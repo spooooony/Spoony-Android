@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Spoony-Android</string>
+    <string name="COUNTER_TEXT">%1$s / %2$s</string>
 </resources>
