@@ -1,4 +1,4 @@
-package com.spoony.spoony.core.designsystem.component.tag
+package com.spoony.spoony.core.designsystem.component.chip
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
