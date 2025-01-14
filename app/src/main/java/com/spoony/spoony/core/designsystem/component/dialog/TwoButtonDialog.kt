@@ -30,10 +30,10 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 @Composable
 fun TwoButtonDialog(
     message: String,
-    cancelText: String,
-    onCancel: () -> Unit,
-    confirmText: String,
-    onConfirm: () -> Unit,
+    negativeText: String,
+    onClickNegative: () -> Unit,
+    positiveText: String,
+    onClickPositive: () -> Unit,
     onDismiss: () -> Unit,
     content: @Composable () -> Unit = {}
 ) {
@@ -55,16 +55,16 @@ fun TwoButtonDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     SpoonyButton(
-                        text = cancelText,
-                        onClick = onCancel,
+                        text = negativeText,
+                        onClick = onClickNegative,
                         style = ButtonStyle.Tertiary,
                         size = ButtonSize.Xsmall,
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     SpoonyButton(
-                        text = confirmText,
-                        onClick = onConfirm,
+                        text = positiveText,
+                        onClick = onClickPositive,
                         style = ButtonStyle.Secondary,
                         size = ButtonSize.Xsmall,
                         modifier = Modifier.weight(1f)
@@ -81,10 +81,10 @@ private fun TwoButtonDialogPreview() {
     SpoonyAndroidTheme {
         TwoButtonDialog(
             message = "수저 1개를 사용하여 떠먹어 볼까요?",
-            cancelText = "아니요",
-            onCancel = {},
-            confirmText = "떠먹을래요",
-            onConfirm = {},
+            negativeText = "아니요",
+            onClickNegative = {},
+            positiveText = "떠먹을래요",
+            onClickPositive = {},
             onDismiss = {},
             content = {
                 Box(
@@ -119,12 +119,12 @@ fun TwoButtonDialogTestPreview() {
             if (isDialogVisible) {
                 TwoButtonDialog(
                     message = "수저 1개를 사용하여 떠먹어 볼까요?",
-                    cancelText = "아니요",
-                    onCancel = {
+                    negativeText = "아니요",
+                    onClickNegative = {
                         isDialogVisible = false
                     },
-                    confirmText = "떠먹을래요",
-                    onConfirm = {
+                    positiveText = "떠먹을래요",
+                    onClickPositive = {
                         isDialogVisible = false
                     },
                     onDismiss = {

@@ -28,9 +28,9 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 @Composable
 fun SingleButtonDialog(
     message: String,
-    confirmText: String,
+    text: String,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onClick: () -> Unit,
     content: @Composable () -> Unit = {}
 ) {
     SpoonyBasicDialog(
@@ -47,10 +47,10 @@ fun SingleButtonDialog(
                     textAlign = TextAlign.Center
                 )
                 SpoonyButton(
-                    text = confirmText,
+                    text = text,
                     size = ButtonSize.Large,
                     style = ButtonStyle.Secondary,
-                    onClick = onConfirm,
+                    onClick = onClick,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -64,8 +64,8 @@ private fun SingleButtonDialogPreview() {
     SpoonyAndroidTheme {
         SingleButtonDialog(
             message = "수저 1개를 획득했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
-            confirmText = "갈래요!",
-            onConfirm = {},
+            text = "갈래요!",
+            onClick = {},
             onDismiss = {},
             content = {
                 Box(
@@ -101,8 +101,8 @@ fun SingleButtonDialogTestPreview() {
             if (isDialogVisible) {
                 SingleButtonDialog(
                     message = "수저 1개를 획득했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
-                    confirmText = "갈래요!",
-                    onConfirm = {
+                    text = "갈래요!",
+                    onClick = {
                         isDialogVisible = false
                     },
                     onDismiss = {
