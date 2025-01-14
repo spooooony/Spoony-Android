@@ -28,7 +28,7 @@ fun SpoonySearchTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     maxLength: Int = Int.MAX_VALUE,
-    onDoneAction: (() -> Unit),
+    onDoneAction: (() -> Unit)
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
