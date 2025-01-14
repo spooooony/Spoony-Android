@@ -43,7 +43,7 @@ fun SpoonyIconButtonTextField(
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        SpoonyTextField(
+        SpoonyBasicTextField(
             value = value,
             placeholder = placeholder,
             onValueChanged = { newText ->
