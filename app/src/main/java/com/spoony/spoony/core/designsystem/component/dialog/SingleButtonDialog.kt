@@ -30,7 +30,7 @@ fun SingleButtonDialog(
     onConfirm: () -> Unit,
     content: @Composable () -> Unit = {}
 ) {
-    BasicDialog(
+    SpoonyBasicDialog(
         message = message,
         content = content,
         onDismiss = onDismiss,
