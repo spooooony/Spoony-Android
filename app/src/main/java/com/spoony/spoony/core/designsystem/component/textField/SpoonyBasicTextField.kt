@@ -44,7 +44,6 @@ fun SpoonyBasicTextField(
     trailingIcon: @Composable () -> Unit = {},
 ) {
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
 
     BasicTextField(
         value = value,
@@ -64,14 +63,7 @@ fun SpoonyBasicTextField(
             },
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        keyboardActions = KeyboardActions(
-            onDone = {
-                focusManager.clearFocus()
-            },
-            onSearch = {
-                focusManager.clearFocus()
-            }
-        ),
+        keyboardActions = keyboardActions,
         textStyle = SpoonyAndroidTheme.typography.body2m.copy(
             color = SpoonyAndroidTheme.colors.gray900
         ),
