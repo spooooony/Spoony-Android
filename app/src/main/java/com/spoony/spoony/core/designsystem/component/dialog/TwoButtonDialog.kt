@@ -35,7 +35,7 @@ fun TwoButtonDialog(
     onDismiss: () -> Unit,
     content: @Composable () -> Unit = {}
 ) {
-    BaseDialog(
+    BasicDialog(
         message = message,
         content = content,
         onDismiss = onDismiss,

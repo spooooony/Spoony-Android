@@ -18,7 +18,7 @@ import androidx.compose.ui.window.Dialog
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
-fun BaseDialog(
+fun BasicDialog(
     message: String,
     onDismiss: () -> Unit,
     buttons: @Composable () -> Unit,
