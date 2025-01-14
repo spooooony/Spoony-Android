@@ -165,7 +165,7 @@ fun SpoonyButtonEnabledIconPreview(
                         Icon(
                             painter = painterResource(R.drawable.ic_launcher_foreground),
                             modifier = Modifier.size(32.dp),
-                            contentDescription = "ic_spoon_button",
+                            contentDescription = null,
                             tint = Color.Unspecified
                         )
                     }
