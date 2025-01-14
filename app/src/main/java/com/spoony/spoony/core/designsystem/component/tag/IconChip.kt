@@ -1,6 +1,7 @@
 package com.spoony.spoony.core.designsystem.component.tag
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,11 @@ fun IconChip(
             .clip(RoundedCornerShape(12.dp))
             .background(brush = backgroundBrush)
             .clickable(onClick = onClick)
+            .border(
+                width = 1.dp,
+                color = SpoonyAndroidTheme.colors.gray100,
+                shape = RoundedCornerShape(12.dp)
+            )
             .padding(
                 horizontal = 14.dp,
                 vertical = 6.dp
@@ -75,7 +81,7 @@ private fun getChipStyle(tagColor: TagChipColor, spoonyColor: SpoonyColors): Pai
             end = Offset(Float.POSITIVE_INFINITY, 0f)
         ) to spoonyColor.white
         TagChipColor.White ->
-            SolidColor(spoonyColor.white) to
+            SolidColor(spoonyColor.gray0) to
                 spoonyColor.gray600
         TagChipColor.Main ->
             SolidColor(spoonyColor.main400) to
@@ -95,7 +101,7 @@ private fun rememberChipStyle(tagColor: TagChipColor): Pair<Brush, Color> {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun IconChipPreview() {
     SpoonyAndroidTheme {
