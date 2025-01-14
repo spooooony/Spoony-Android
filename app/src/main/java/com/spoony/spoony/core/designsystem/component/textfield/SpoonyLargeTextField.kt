@@ -1,4 +1,4 @@
-package com.spoony.spoony.core.designsystem.component.textField
+package com.spoony.spoony.core.designsystem.component.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

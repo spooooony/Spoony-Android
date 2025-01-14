@@ -1,4 +1,4 @@
-package com.spoony.spoony.core.designsystem.component.textField
+package com.spoony.spoony.core.designsystem.component.textfield
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding

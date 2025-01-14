@@ -1,4 +1,4 @@
-package com.spoony.spoony.core.designsystem.component.textField
+package com.spoony.spoony.core.designsystem.component.textfield
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,26 +19,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
-fun SpoonyIconButtonTextField(
+fun SpoonyLineTextField(
     value: String,
     onValueChanged: (String) -> Unit,
     placeholder: String,
-    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
-    showDeleteIcon: Boolean = true,
     maxLength: Int = Int.MAX_VALUE,
-    helperText: String? = null
+    minLength: Int = 0,
+    minErrorText: String? = null,
+    maxErrorText: String? = null
 ) {
     var isFocused by remember { mutableStateOf(false) }
+    var isError: Boolean by remember { mutableStateOf(false) }
+    var selectText: Boolean by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
 
-    val borderColor = remember(isFocused) {
+    val borderColor = remember(isError, isFocused) {
         when {
+            isError -> spoonyColors.error400
             isFocused -> spoonyColors.main400
             else -> spoonyColors.gray100
+        }
+    }
+
+    val subContentColor = remember(isError) {
+        when {
+            isError -> spoonyColors.error400
+            else -> spoonyColors.gray500
         }
     }
 
@@ -47,26 +56,30 @@ fun SpoonyIconButtonTextField(
             value = value,
             placeholder = placeholder,
             onValueChanged = { newText ->
+                isError = (newText.length > maxLength || newText.trim().length < minLength)
+                selectText = newText.length > maxLength
                 if (newText.length <= maxLength) {
                     onValueChanged(newText)
                 }
             },
             borderColor = borderColor,
             modifier = modifier,
-            onFocusChanged = { isFocused = it },
-            trailingIcon = {
-                if (showDeleteIcon && value.isNotEmpty()) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_minus_gray400_24),
-                        contentDescription = null,
-                        tint = spoonyColors.gray400,
-                        modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
-                    )
+            onFocusChanged = {
+                isFocused = it
+                if (value.length >= minLength) {
+                    isError = false
                 }
+            },
+            trailingIcon = {
+                Text(
+                    text = "${value.length} / $maxLength",
+                    style = SpoonyAndroidTheme.typography.caption1m,
+                    color = subContentColor
+                )
             }
         )
 
-        if (helperText != null) {
+        if (((minErrorText != null || maxErrorText != null) && isError)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -74,14 +87,16 @@ fun SpoonyIconButtonTextField(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_error_24),
                     contentDescription = null,
-                    tint = spoonyColors.gray500,
+                    tint = subContentColor,
                     modifier = Modifier.size(16.dp)
                 )
-                Text(
-                    text = helperText,
-                    style = SpoonyAndroidTheme.typography.caption1m,
-                    color = spoonyColors.gray500
-                )
+                (if (selectText) maxErrorText else minErrorText)?.let {
+                    Text(
+                        text = it,
+                        style = SpoonyAndroidTheme.typography.caption1m,
+                        color = subContentColor
+                    )
+                }
             }
         }
     }
@@ -89,31 +104,24 @@ fun SpoonyIconButtonTextField(
 
 @Preview(showBackground = true)
 @Composable
-private fun SpoonyIconButtonTextFieldPreview() {
+private fun SpoonyLineTextFieldPreview() {
     var text by remember { mutableStateOf("") }
-    var text2 by remember { mutableStateOf("") }
 
-    SpoonyAndroidTheme {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(16.dp)
-        ) {
-            SpoonyIconButtonTextField(
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(16.dp)
+    ) {
+        SpoonyAndroidTheme {
+            SpoonyLineTextField(
                 value = text,
-                onValueChanged = { text = it },
-                placeholder = "플레이스 홀더",
-                onDeleteClick = { text = "" },
+                placeholder = "장소명 언급은 피해주세요. 우리만의 비밀!",
+                onValueChanged = { newText ->
+                    text = newText
+                },
                 maxLength = 30,
-                showDeleteIcon = text2.isNotEmpty()
-            )
-            SpoonyIconButtonTextField(
-                value = text2,
-                onValueChanged = { text2 = it },
-                placeholder = "플레이스 홀더",
-                onDeleteClick = { text2 = "" },
-                maxLength = 30,
-                helperText = "헬퍼 코멘트입니다"
-
+                minLength = 5,
+                minErrorText = "5글자 이상 입력해주세요",
+                maxErrorText = "글자 수 30자 이하로 입력해 주세요"
             )
         }
     }
