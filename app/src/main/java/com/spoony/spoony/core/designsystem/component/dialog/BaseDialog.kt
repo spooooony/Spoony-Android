@@ -20,7 +20,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 @Composable
 fun BaseDialog(
     message: String,
-    onDismiss: () -> Unit = {},
+    onDismiss: () -> Unit,
     buttons: @Composable () -> Unit,
     content: @Composable () -> Unit = {}
 ) {
