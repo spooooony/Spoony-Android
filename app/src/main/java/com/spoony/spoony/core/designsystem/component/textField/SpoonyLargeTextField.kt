@@ -100,7 +100,7 @@ fun SpoonyLargeTextField(
                     tint = subContentColor,
                     modifier = Modifier.size(16.dp)
                 )
-                (if(selectText) maxErrorText else minErrorText)?.let {
+                (if (selectText) maxErrorText else minErrorText)?.let {
                     Text(
                         text = it,
                         style = SpoonyAndroidTheme.typography.caption1m,
@@ -111,7 +111,6 @@ fun SpoonyLargeTextField(
         }
     }
 }
-
 
 @Composable
 fun CustomBasicTextField(
@@ -125,7 +124,6 @@ fun CustomBasicTextField(
     maxLength: Int = 0,
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -152,9 +150,6 @@ fun CustomBasicTextField(
             keyboardOptions = keyboardOptions,
             keyboardActions = KeyboardActions(
                 onDone = {
-                    focusManager.clearFocus()
-                },
-                onSearch = {
                     focusManager.clearFocus()
                 }
             ),
@@ -188,7 +183,6 @@ fun CustomBasicTextField(
                 }
             }
         )
-
     }
 }
 

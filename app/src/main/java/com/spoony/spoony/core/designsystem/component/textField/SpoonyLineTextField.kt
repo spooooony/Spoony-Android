@@ -90,7 +90,7 @@ fun SpoonyLineTextField(
                     tint = subContentColor,
                     modifier = Modifier.size(16.dp)
                 )
-                (if(selectText) maxErrorText else minErrorText)?.let {
+                (if (selectText) maxErrorText else minErrorText)?.let {
                     Text(
                         text = it,
                         style = SpoonyAndroidTheme.typography.caption1m,

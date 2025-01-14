@@ -93,9 +93,8 @@ private fun SpoonySearchTextFieldPreview() {
             placeholder = "플레이스 홀더",
             maxLength = 30,
             onDoneAction = {
-                Log.d(text,"Enter key pressed with text: $text")
+                Log.d(text, "Enter key pressed with text: $text")
             }
         )
     }
 }
-

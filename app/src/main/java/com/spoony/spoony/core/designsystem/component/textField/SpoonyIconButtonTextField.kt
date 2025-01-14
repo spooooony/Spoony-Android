@@ -30,7 +30,7 @@ fun SpoonyIconButtonTextField(
     modifier: Modifier = Modifier,
     showDeleteIcon: Boolean = true,
     maxLength: Int = Int.MAX_VALUE,
-    helperText: String? = null,
+    helperText: String? = null
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
@@ -67,7 +67,10 @@ fun SpoonyIconButtonTextField(
         )
 
         if (helperText != null) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_error_24),
                     contentDescription = null,
