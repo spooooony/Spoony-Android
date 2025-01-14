@@ -3,6 +3,7 @@ package com.spoony.spoony.core.designsystem.component.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
@@ -36,29 +38,38 @@ fun TwoButtonDialog(
     content: @Composable () -> Unit = {}
 ) {
     SpoonyBasicDialog(
-        message = message,
-        content = content,
         onDismiss = onDismiss,
-        buttons = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+        content = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SpoonyButton(
-                    text = cancelText,
-                    onClick = onCancel,
-                    style = ButtonStyle.Tertiary,
-                    size = ButtonSize.Xsmall,
-                    modifier = Modifier.weight(1f)
+                content()
+                Text(
+                    text = message,
+                    style = SpoonyAndroidTheme.typography.body1b,
+                    textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.width(13.dp))
-                SpoonyButton(
-                    text = confirmText,
-                    onClick = onConfirm,
-                    style = ButtonStyle.Secondary,
-                    size = ButtonSize.Xsmall,
-                    modifier = Modifier.weight(1f)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    SpoonyButton(
+                        text = cancelText,
+                        onClick = onCancel,
+                        style = ButtonStyle.Tertiary,
+                        size = ButtonSize.Xsmall,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(13.dp))
+                    SpoonyButton(
+                        text = confirmText,
+                        onClick = onConfirm,
+                        style = ButtonStyle.Secondary,
+                        size = ButtonSize.Xsmall,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     )
