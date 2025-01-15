@@ -164,7 +164,7 @@ private fun StoreInfoPreview() {
                     }
                 },
                 locationPaddingValues = PaddingValues(
-                    vertical = 22.dp,
+                    vertical = 21.dp,
                     horizontal = 16.dp
                 ),
                 locationShape = RoundedCornerShape(
@@ -226,7 +226,7 @@ private fun StoreInfoPreview() {
                     }
                 },
                 locationPaddingValues = PaddingValues(
-                    vertical = 22.dp,
+                    vertical = 21.dp,
                     horizontal = 16.dp
                 ),
                 locationShape = RoundedCornerShape(
