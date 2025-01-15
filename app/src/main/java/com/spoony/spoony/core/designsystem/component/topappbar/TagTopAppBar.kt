@@ -26,7 +26,6 @@ fun TagTopAppBar(
             LogoTag(
                 count = count,
                 tagSize = tagSize,
-                onClick = {},
                 modifier = Modifier.padding(end = 20.dp)
             )
         },
