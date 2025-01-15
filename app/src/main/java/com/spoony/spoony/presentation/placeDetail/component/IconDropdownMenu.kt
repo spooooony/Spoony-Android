@@ -29,10 +29,12 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun IconDropdownMenu(
-    menuItems: List<String>,
+    menuItems: ImmutableList<String>,
     onMenuItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -95,7 +97,7 @@ fun IconDropdownMenu(
 @Preview
 @Composable
 private fun IconDropdownMenuOnePreview() {
-    val menuItems = listOf("신고하기")
+    val menuItems = listOf("신고하기").toImmutableList()
     SpoonyAndroidTheme {
         IconDropdownMenu(
             menuItems = menuItems,
@@ -109,7 +111,7 @@ private fun IconDropdownMenuOnePreview() {
 @Preview
 @Composable
 private fun IconDropdownMenuTwoPreview() {
-    val menuItems = listOf("신고하기", "수정하기")
+    val menuItems = listOf("신고하기", "수정하기").toImmutableList()
     SpoonyAndroidTheme {
         IconDropdownMenu(
             menuItems = menuItems,
