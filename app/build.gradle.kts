@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.timber)
     implementation(libs.lottie)
+    implementation(libs.advanced.bottom.sheet)
 }
 
 ktlint {
