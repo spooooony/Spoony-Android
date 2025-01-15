@@ -28,16 +28,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.immutableListOf
 
 @Composable
 fun StoreInfo(
-    menuContent: @Composable () -> Unit,
-    menuPaddingValues: PaddingValues,
-    menuShape: RoundedCornerShape,
-    locationContent: @Composable () -> Unit,
-    locationPaddingValues: PaddingValues,
-    locationShape: RoundedCornerShape,
+    menuItems: ImmutableList<String>,
+    locationSubTitle: String,
+    location: String,
     isBlurred: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -54,16 +52,63 @@ fun StoreInfo(
     ) {
         StoreInfoItem(
             title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_MENU_TITLE),
-            content = menuContent,
-            padding = menuPaddingValues,
-            shape = menuShape
+            content = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    menuItems.forEach { menuItem ->
+                        key(menuItem) {
+                            PlaceDetailIconText(
+                                icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
+                                iconSize = 20.dp,
+                                text = menuItem,
+                                textStyle = SpoonyAndroidTheme.typography.body2m,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            },
+            padding = PaddingValues(
+                top = 20.dp,
+                bottom = 28.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            shape = RoundedCornerShape(
+                topStart = 8.dp,
+                topEnd = 8.dp,
+                bottomStart = 20.dp,
+                bottomEnd = 20.dp
+            )
         )
         HorizontalDashedLine()
         StoreInfoItem(
             title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_LOCATION_TITLE),
-            content = locationContent,
-            padding = locationPaddingValues,
-            shape = locationShape
+            content = {
+                Text(
+                    locationSubTitle,
+                    style = SpoonyAndroidTheme.typography.title2sb
+                )
+                Spacer(modifier = Modifier.height(11.dp))
+                PlaceDetailIconText(
+                    icon = ImageVector.vectorResource(R.drawable.ic_pin_24),
+                    iconSize = 20.dp,
+                    text = location,
+                    textStyle = SpoonyAndroidTheme.typography.body2m,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            padding = PaddingValues(
+                vertical = 21.dp,
+                horizontal = 16.dp
+            ),
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp,
+                bottomStart = 8.dp,
+                bottomEnd = 8.dp
+            )
         )
     }
 }
@@ -116,125 +161,17 @@ private fun StoreInfoPreview() {
                 modifier = Modifier
                     .padding(horizontal = 20.dp),
                 isBlurred = true,
-                menuContent = {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        menuItems.forEach { menuItem ->
-                            key(menuItem) {
-                                PlaceDetailIconText(
-                                    icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
-                                    iconSize = 20.dp,
-                                    text = menuItem,
-                                    textStyle = SpoonyAndroidTheme.typography.body2m,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                        }
-                    }
-                },
-                menuPaddingValues = PaddingValues(
-                    top = 20.dp,
-                    bottom = 28.dp,
-                    start = 16.dp,
-                    end = 16.dp
-                ),
-                menuShape = RoundedCornerShape(
-                    topStart = 8.dp,
-                    topEnd = 8.dp,
-                    bottomStart = 20.dp,
-                    bottomEnd = 20.dp
-                ),
-                locationContent = {
-                    Text(
-                        "어키",
-                        style = SpoonyAndroidTheme.typography.title2sb
-                    )
-                    Spacer(modifier = Modifier.height(11.dp))
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        PlaceDetailIconText(
-                            icon = ImageVector.vectorResource(R.drawable.ic_pin_24),
-                            iconSize = 20.dp,
-                            text = "서울 마포구 연희로11가길 39",
-                            textStyle = SpoonyAndroidTheme.typography.body2m,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                },
-                locationPaddingValues = PaddingValues(
-                    vertical = 21.dp,
-                    horizontal = 16.dp
-                ),
-                locationShape = RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp,
-                    bottomStart = 8.dp,
-                    bottomEnd = 8.dp
-                )
+                menuItems = menuItems,
+                locationSubTitle = "어키",
+                location = "서울 마포구 연희로11가길 39"
             )
             StoreInfo(
                 modifier = Modifier
                     .padding(horizontal = 20.dp),
                 isBlurred = false,
-                menuContent = {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        menuItems.forEach { menuItem ->
-                            key(menuItem) {
-                                PlaceDetailIconText(
-                                    icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
-                                    iconSize = 20.dp,
-                                    text = menuItem,
-                                    textStyle = SpoonyAndroidTheme.typography.body2m,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                        }
-                    }
-                },
-                menuPaddingValues = PaddingValues(
-                    top = 20.dp,
-                    bottom = 28.dp,
-                    start = 16.dp,
-                    end = 16.dp
-                ),
-                menuShape = RoundedCornerShape(
-                    topStart = 8.dp,
-                    topEnd = 8.dp,
-                    bottomStart = 20.dp,
-                    bottomEnd = 20.dp
-                ),
-                locationContent = {
-                    Text(
-                        "어키",
-                        style = SpoonyAndroidTheme.typography.title2sb
-                    )
-                    Spacer(modifier = Modifier.height(11.dp))
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        PlaceDetailIconText(
-                            icon = ImageVector.vectorResource(R.drawable.ic_pin_24),
-                            iconSize = 20.dp,
-                            text = "서울 마포구 연희로11가길 39",
-                            textStyle = SpoonyAndroidTheme.typography.body2m,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                },
-                locationPaddingValues = PaddingValues(
-                    vertical = 21.dp,
-                    horizontal = 16.dp
-                ),
-                locationShape = RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp,
-                    bottomStart = 8.dp,
-                    bottomEnd = 8.dp
-                )
+                menuItems = menuItems,
+                locationSubTitle = "어키",
+                location = "서울 마포구 연희로11가길 39"
             )
         }
     }
