@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -36,7 +36,7 @@ fun PlaceDetailImageLazyRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(horizontal = 20.dp)
     ) {
-        items(imageList) { imageUrl ->
+        itemsIndexed(imageList, key = { index, _ -> index }) { _, imageUrl ->
             AsyncImage(
                 modifier = Modifier
                     .size(imageSize)
@@ -46,6 +46,7 @@ fun PlaceDetailImageLazyRow(
                         if (isBlurred) Modifier.blur(24.dp) else Modifier
                     ),
                 model = ImageRequest.Builder(context)
+                    .crossfade(true)
                     .data(imageUrl)
                     .build(),
                 contentScale = ContentScale.Crop,
