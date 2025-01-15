@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,11 @@ import kotlinx.collections.immutable.immutableListOf
 @Composable
 fun StoreInfo(
     menuContent: @Composable () -> Unit,
+    menuPaddingValues: PaddingValues,
+    menuShape: RoundedCornerShape,
     locationContent: @Composable () -> Unit,
+    locationPaddingValues: PaddingValues,
+    locationShape: RoundedCornerShape,
     modifier: Modifier = Modifier,
     isBlurred: Boolean = true
 ) {
@@ -47,35 +52,17 @@ fun StoreInfo(
             )
     ) {
         StoreInfoItem(
-            title = "Menu",
+            title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_MENU_TITLE),
             content = menuContent,
-            padding = PaddingValues(
-                top = 20.dp,
-                bottom = 28.dp,
-                start = 16.dp,
-                end = 16.dp
-            ),
-            shape = RoundedCornerShape(
-                topStart = 8.dp,
-                topEnd = 8.dp,
-                bottomStart = 20.dp,
-                bottomEnd = 20.dp
-            )
+            padding = menuPaddingValues,
+            shape = menuShape
         )
         HorizontalDashedLine()
         StoreInfoItem(
-            title = "Location",
+            title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_LOCATION_TITLE),
             content = locationContent,
-            padding = PaddingValues(
-                vertical = 22.dp,
-                horizontal = 16.dp
-            ),
-            shape = RoundedCornerShape(
-                topStart = 20.dp,
-                topEnd = 20.dp,
-                bottomStart = 8.dp,
-                bottomEnd = 8.dp
-            )
+            padding = locationPaddingValues,
+            shape = locationShape
         )
     }
 }
@@ -144,6 +131,18 @@ private fun StoreInfoPreview() {
                         }
                     }
                 },
+                menuPaddingValues = PaddingValues(
+                    top = 20.dp,
+                    bottom = 28.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                menuShape = RoundedCornerShape(
+                    topStart = 8.dp,
+                    topEnd = 8.dp,
+                    bottomStart = 20.dp,
+                    bottomEnd = 20.dp
+                ),
                 locationContent = {
                     Text(
                         "어키",
@@ -161,7 +160,17 @@ private fun StoreInfoPreview() {
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-                }
+                },
+                locationPaddingValues = PaddingValues(
+                    vertical = 22.dp,
+                    horizontal = 16.dp
+                ),
+                locationShape = RoundedCornerShape(
+                    topStart = 20.dp,
+                    topEnd = 20.dp,
+                    bottomStart = 8.dp,
+                    bottomEnd = 8.dp
+                )
             )
             StoreInfo(
                 modifier = Modifier
@@ -184,6 +193,18 @@ private fun StoreInfoPreview() {
                         }
                     }
                 },
+                menuPaddingValues = PaddingValues(
+                    top = 20.dp,
+                    bottom = 28.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                menuShape = RoundedCornerShape(
+                    topStart = 8.dp,
+                    topEnd = 8.dp,
+                    bottomStart = 20.dp,
+                    bottomEnd = 20.dp
+                ),
                 locationContent = {
                     Text(
                         "어키",
@@ -201,7 +222,17 @@ private fun StoreInfoPreview() {
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-                }
+                },
+                locationPaddingValues = PaddingValues(
+                    vertical = 22.dp,
+                    horizontal = 16.dp
+                ),
+                locationShape = RoundedCornerShape(
+                    topStart = 20.dp,
+                    topEnd = 20.dp,
+                    bottomStart = 8.dp,
+                    bottomEnd = 8.dp
+                )
             )
         }
     }
