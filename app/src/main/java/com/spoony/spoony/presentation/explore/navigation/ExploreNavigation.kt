@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
-import com.spoony.spoony.presentation.map.navigaion.Map
+import com.spoony.spoony.presentation.explore.ExploreScreen
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateExplore(
@@ -15,13 +15,13 @@ fun NavController.navigateExplore(
     navigate(Explore, navOptions)
 }
 
-fun NavGraphBuilder.ExploreNavGraph(
+fun NavGraphBuilder.exploreNavGraph(
     paddingValues: PaddingValues
 ) {
     composable<Explore> {
+        ExploreScreen()
     }
 }
-
 
 @Serializable
 data object Explore : MainTabRoute

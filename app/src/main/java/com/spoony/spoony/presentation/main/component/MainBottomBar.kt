@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,13 +36,12 @@ import com.spoony.spoony.presentation.main.MainTab
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
-
 @Composable
 fun MainBottomBar(
     visible: Boolean,
     tabs: ImmutableList<MainTab>,
     currentTab: MainTab?,
-    onTabSelected: (MainTab) -> Unit,
+    onTabSelected: (MainTab) -> Unit
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -66,11 +66,13 @@ fun MainBottomBar(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 tabs.forEach { tab ->
-                    MainBottomBarItem(
-                        tab = tab,
-                        selected = (tab == currentTab),
-                        onClick = { onTabSelected(tab) },
-                    )
+                    key(tab.route) {
+                        MainBottomBarItem(
+                            tab = tab,
+                            selected = (tab == currentTab),
+                            onClick = { onTabSelected(tab) }
+                        )
+                    }
                 }
             }
         }
@@ -81,7 +83,7 @@ fun MainBottomBar(
 private fun RowScope.MainBottomBarItem(
     tab: MainTab,
     selected: Boolean,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -90,7 +92,7 @@ private fun RowScope.MainBottomBarItem(
                 indication = null,
                 role = null,
                 interactionSource = remember { MutableInteractionSource() },
-                onClick = onClick,
+                onClick = onClick
             )
             .weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -106,7 +108,7 @@ private fun RowScope.MainBottomBarItem(
             ),
             modifier = Modifier.size(24.dp),
             contentDescription = tab.contentDescription,
-            tint = Color.Unspecified,
+            tint = Color.Unspecified
         )
         Text(
             text = tab.contentDescription,
@@ -123,7 +125,7 @@ private fun RowScope.MainBottomBarItem(
 @Preview
 @Composable
 private fun BottomBarPreview() {
-    SpoonyAndroidTheme{
+    SpoonyAndroidTheme {
         Column(modifier = Modifier) {
             MainBottomBar(
                 visible = true,

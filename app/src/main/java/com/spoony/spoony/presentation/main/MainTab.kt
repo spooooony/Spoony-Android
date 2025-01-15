@@ -12,7 +12,8 @@ enum class MainTab(
     val selectedIconResource: Int,
     val unselectedIconResource: Int,
     val contentDescription: String,
-    val route: MainTabRoute
+    val route: MainTabRoute,
+    val showBottomSheet: Boolean = true
 ) {
     MAP(
         selectedIconResource = R.drawable.ic_map_main400_24,
