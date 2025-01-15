@@ -39,7 +39,7 @@ fun StoreInfo(
     locationPaddingValues: PaddingValues,
     locationShape: RoundedCornerShape,
     isBlurred: Boolean,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
