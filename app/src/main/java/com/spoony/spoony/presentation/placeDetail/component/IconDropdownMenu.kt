@@ -94,7 +94,7 @@ fun IconDropdownMenu(
 
 @Preview
 @Composable
-fun IconDropdownMenuOnePreview() {
+private fun IconDropdownMenuOnePreview() {
     val menuItems = listOf("신고하기")
     SpoonyAndroidTheme {
         IconDropdownMenu(
@@ -108,7 +108,7 @@ fun IconDropdownMenuOnePreview() {
 
 @Preview
 @Composable
-fun IconDropdownMenuTwoPreview() {
+private fun IconDropdownMenuTwoPreview() {
     val menuItems = listOf("신고하기", "수정하기")
     SpoonyAndroidTheme {
         IconDropdownMenu(
