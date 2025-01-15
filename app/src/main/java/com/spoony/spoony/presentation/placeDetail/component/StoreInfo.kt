@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,10 +75,11 @@ private fun HorizontalDashedLine(
     strokeWidth: Float = 2f,
     dashLengths: FloatArray = floatArrayOf(30f, 30f)
 ) {
+    val density = LocalDensity.current
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(1.dp)
+            .height(with(density) { 1 / density.density }.dp)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
             val pathEffect = PathEffect.dashPathEffect(
