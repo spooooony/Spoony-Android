@@ -38,8 +38,7 @@ fun UserProfileInfo(
     val context = LocalContext.current
 
     Row(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
@@ -58,9 +57,7 @@ fun UserProfileInfo(
             contentScale = ContentScale.Crop,
             contentDescription = null
         )
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
+        Column {
             Text(
                 text = name,
                 style = SpoonyAndroidTheme.typography.body2b,
