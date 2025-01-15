@@ -51,7 +51,7 @@ fun StoreInfo(
             )
     ) {
         StoreInfoItem(
-            title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_MENU_TITLE),
+            title = stringResource(id = R.string.place_detail_store_info_menu_title),
             padding = PaddingValues(
                 top = 20.dp,
                 bottom = 28.dp,
@@ -83,7 +83,7 @@ fun StoreInfo(
         }
         HorizontalDashedLine()
         StoreInfoItem(
-            title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_LOCATION_TITLE),
+            title = stringResource(id = R.string.place_detail_store_info_location_title),
             padding = PaddingValues(
                 vertical = 21.dp,
                 horizontal = 16.dp
