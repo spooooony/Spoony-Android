@@ -25,7 +25,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.immutableListOf
 
 @Composable
-fun ReportRadioButton (
+fun ReportRadioButton(
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
     options: ImmutableList<String>
@@ -42,7 +42,7 @@ fun ReportRadioButton (
                     onClick = { onOptionSelected(option) },
                     colors = RadioButtonDefaults.colors(
                         selectedColor = SpoonyAndroidTheme.colors.black,
-                        unselectedColor = SpoonyAndroidTheme.colors.gray400,
+                        unselectedColor = SpoonyAndroidTheme.colors.gray400
                     )
                 )
                 Spacer(modifier = Modifier.width(12.dp))
@@ -50,7 +50,7 @@ fun ReportRadioButton (
                     text = option,
                     modifier = Modifier.noRippleClickable { onOptionSelected(option) },
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
