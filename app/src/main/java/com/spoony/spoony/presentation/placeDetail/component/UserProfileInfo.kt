@@ -29,7 +29,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
-fun Profile(
+fun UserProfileInfo(
     imageUrl: String,
     name: String,
     location: String,
@@ -86,9 +86,9 @@ fun Profile(
 
 @Preview
 @Composable
-private fun ProfilePreview() {
+private fun UserProfileInfoPreview() {
     SpoonyAndroidTheme {
-        Profile(
+        UserProfileInfo(
             imageUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
             name = "클레오가트라",
             location = "마포구 수저",
