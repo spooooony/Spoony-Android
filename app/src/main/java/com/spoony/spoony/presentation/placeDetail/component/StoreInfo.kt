@@ -38,8 +38,8 @@ fun StoreInfo(
     locationContent: @Composable () -> Unit,
     locationPaddingValues: PaddingValues,
     locationShape: RoundedCornerShape,
+    isBlurred: Boolean,
     modifier: Modifier = Modifier,
-    isBlurred: Boolean = true
 ) {
     Column(
         modifier = modifier
