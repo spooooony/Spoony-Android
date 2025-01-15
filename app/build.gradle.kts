@@ -82,6 +82,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.timber)
     implementation(libs.lottie)
+
+    implementation(libs.kotlinx.immutable)
 }
 
 ktlint {
