@@ -22,16 +22,6 @@ fun CloseTopAppBar(
     onCloseButtonClick: () -> Unit
 ) {
     SpoonyBasicTopAppBar(
-        content = {
-            Text(
-                text = title,
-                style = SpoonyAndroidTheme.typography.title2b,
-                color = SpoonyAndroidTheme.colors.black,
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .fillMaxWidth()
-            )
-        },
         actions = {
             Row {
                 Icon(
@@ -45,7 +35,16 @@ fun CloseTopAppBar(
                 )
             }
         }
-    )
+    ) {
+        Text(
+            text = title,
+            style = SpoonyAndroidTheme.typography.title2b,
+            color = SpoonyAndroidTheme.colors.black,
+            modifier = Modifier
+                .padding(start = 20.dp)
+                .fillMaxWidth()
+        )
+    }
 }
 
 @Preview

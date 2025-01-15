@@ -21,8 +21,8 @@ fun SpoonyBasicTopAppBar(
     modifier: Modifier = Modifier,
     showBackButton: Boolean = false,
     onBackButtonClick: () -> Unit = {},
-    content: @Composable () -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
+    content: @Composable () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         title = content,

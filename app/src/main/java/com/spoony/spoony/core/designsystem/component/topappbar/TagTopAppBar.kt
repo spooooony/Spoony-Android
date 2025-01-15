@@ -14,10 +14,10 @@ import com.spoony.spoony.core.designsystem.type.TagSize
 @Composable
 fun TagTopAppBar(
     count: Int,
-    content: @Composable () -> Unit = {},
     tagSize: TagSize = TagSize.Small,
     showBackButton: Boolean = false,
-    onBackButtonClick: () -> Unit = {}
+    onBackButtonClick: () -> Unit = {},
+    content: @Composable () -> Unit = {}
 ) {
     SpoonyBasicTopAppBar(
         showBackButton = showBackButton,
@@ -39,14 +39,13 @@ private fun TagTopAppBarPreview() {
     SpoonyAndroidTheme {
         TagTopAppBar(
             count = 99,
-            content = {
-                Text(
-                    text = "홍대입구역",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            },
             showBackButton = false
-        )
+        ) {
+            Text(
+                text = "홍대입구역",
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
 }
