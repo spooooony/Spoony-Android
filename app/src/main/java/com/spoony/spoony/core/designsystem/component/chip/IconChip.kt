@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,24 +21,26 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.spoony.spoony.R
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.SpoonyColors
-import com.spoony.spoony.core.designsystem.type.TagChipColor
+import com.spoony.spoony.core.designsystem.type.ChipColor
 
 @Composable
 fun IconChip(
     text: String,
-    tagColor: TagChipColor,
+    tagColor: ChipColor,
+    iconUrl: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    icon: (@Composable (Color) -> Unit)? = null
+    modifier: Modifier = Modifier
 ) {
     val (backgroundBrush, iconTextColor) = rememberChipStyle(tagColor)
-
+    val context = LocalContext.current
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -57,10 +58,16 @@ fun IconChip(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        if (icon != null) {
-            icon.invoke(iconTextColor)
-            Spacer(modifier = Modifier.width(4.dp))
-        }
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(iconUrl)
+                .crossfade(true)
+                .build(),
+            modifier = Modifier.size(16.dp),
+            contentScale = ContentScale.Crop,
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = text,
             color = iconTextColor,
@@ -69,9 +76,9 @@ fun IconChip(
     }
 }
 
-private fun getChipStyle(tagColor: TagChipColor, spoonyColor: SpoonyColors): Pair<Brush, Color> {
+private fun getChipStyle(tagColor: ChipColor, spoonyColor: SpoonyColors): Pair<Brush, Color> {
     return when (tagColor) {
-        TagChipColor.Black -> Brush.linearGradient(
+        ChipColor.Black -> Brush.linearGradient(
             colors = listOf(
                 spoonyColor.gray800,
                 spoonyColor.gray900,
@@ -80,20 +87,17 @@ private fun getChipStyle(tagColor: TagChipColor, spoonyColor: SpoonyColors): Pai
             start = Offset(0f, Float.POSITIVE_INFINITY),
             end = Offset(Float.POSITIVE_INFINITY, 0f)
         ) to spoonyColor.white
-        TagChipColor.White ->
+        ChipColor.White ->
             SolidColor(spoonyColor.gray0) to
                 spoonyColor.gray600
-        TagChipColor.Main ->
+        ChipColor.Main ->
             SolidColor(spoonyColor.main400) to
                 spoonyColor.white
-        else ->
-            SolidColor(spoonyColor.white) to
-                spoonyColor.black
     }
 }
 
 @Composable
-private fun rememberChipStyle(tagColor: TagChipColor): Pair<Brush, Color> {
+private fun rememberChipStyle(tagColor: ChipColor): Pair<Brush, Color> {
     val spoonyColor = SpoonyAndroidTheme.colors
 
     return remember(tagColor) {
@@ -109,28 +113,24 @@ private fun IconChipPreview() {
             modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            TagChipColor.entries
-                .filter {
-                        color ->
-                    color == TagChipColor.Black ||
-                        color == TagChipColor.White ||
-                        color == TagChipColor.Main
-                }
-                .forEach { color ->
-                    IconChip(
-                        text = "chip",
-                        tagColor = color,
-                        onClick = { },
-                        icon = { tint ->
-                            Icon(
-                                painter = painterResource(R.drawable.ic_american_24),
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                                tint = tint
-                            )
-                        }
-                    )
-                }
+            IconChip(
+                text = "chip",
+                tagColor = ChipColor.Black,
+                onClick = { },
+                iconUrl = "https://github.com/user-attachments/assets/c1752fb8-c771-4931-8a45-3d43a76209f8"
+            )
+            IconChip(
+                text = "chip",
+                tagColor = ChipColor.White,
+                onClick = { },
+                iconUrl = "https://github.com/user-attachments/assets/1e0bc0e5-a1c6-44e8-b6f4-f47aced44441"
+            )
+            IconChip(
+                text = "chip",
+                tagColor = ChipColor.Main,
+                onClick = { },
+                iconUrl = "https://github.com/user-attachments/assets/c3cd06c9-7771-48c3-a0ee-0128d14135fd"
+            )
         }
     }
 }
