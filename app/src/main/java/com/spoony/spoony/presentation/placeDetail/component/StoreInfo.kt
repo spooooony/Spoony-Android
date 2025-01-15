@@ -4,11 +4,15 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -16,14 +20,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import kotlinx.collections.immutable.immutableListOf
 
 @Composable
 fun StoreInfo(
-    menuItems: List<String>,
-    locationItems: List<String>,
+    menuContent: @Composable () -> Unit,
+    locationContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     isBlurred: Boolean = true
 ) {
@@ -40,15 +48,34 @@ fun StoreInfo(
     ) {
         StoreInfoItem(
             title = "Menu",
-            items = menuItems,
-            isMenu = true
+            content = menuContent,
+            padding = PaddingValues(
+                top = 20.dp,
+                bottom = 28.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            shape = RoundedCornerShape(
+                topStart = 8.dp,
+                topEnd = 8.dp,
+                bottomStart = 20.dp,
+                bottomEnd = 20.dp
+            )
         )
         HorizontalDashedLine()
         StoreInfoItem(
             title = "Location",
-            subTitle = "이키",
-            items = locationItems,
-            isMenu = false
+            content = locationContent,
+            padding = PaddingValues(
+                vertical = 22.dp,
+                horizontal = 16.dp
+            ),
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp,
+                bottomStart = 8.dp,
+                bottomEnd = 8.dp
+            )
         )
     }
 }
@@ -86,6 +113,11 @@ private fun HorizontalDashedLine(
 @Preview(showBackground = true)
 @Composable
 private fun StoreInfoPreview() {
+    val menuItems = immutableListOf(
+        "고등어봉초밥",
+        "크렘브륄레",
+        "사케"
+    )
     SpoonyAndroidTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -95,25 +127,81 @@ private fun StoreInfoPreview() {
                 modifier = Modifier
                     .padding(horizontal = 20.dp),
                 isBlurred = true,
-                menuItems = listOf(
-                    "고등어봉초밥",
-                    "크렘브륄레"
-                ),
-                locationItems = listOf(
-                    "서울 서대문구 연희로11가길 39"
-                )
+                menuContent = {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        menuItems.forEach { menuItem ->
+                            key(menuItem) {
+                                PlaceDetailIconText(
+                                    icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
+                                    iconSize = 20.dp,
+                                    text = menuItem,
+                                    textStyle = SpoonyAndroidTheme.typography.body2m,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+                },
+                locationContent = {
+                    Text(
+                        "어키",
+                        style = SpoonyAndroidTheme.typography.title2sb
+                    )
+                    Spacer(modifier = Modifier.height(11.dp))
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        PlaceDetailIconText(
+                            icon = ImageVector.vectorResource(R.drawable.ic_pin_24),
+                            iconSize = 20.dp,
+                            text = "서울 마포구 연희로11가길 39",
+                            textStyle = SpoonyAndroidTheme.typography.body2m,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             )
             StoreInfo(
                 modifier = Modifier
                     .padding(horizontal = 20.dp),
                 isBlurred = false,
-                menuItems = listOf(
-                    "고등어봉초밥",
-                    "크렘브륄레"
-                ),
-                locationItems = listOf(
-                    "서울 서대문구 연희로11가길 39"
-                )
+                menuContent = {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        menuItems.forEach { menuItem ->
+                            key(menuItem) {
+                                PlaceDetailIconText(
+                                    icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
+                                    iconSize = 20.dp,
+                                    text = menuItem,
+                                    textStyle = SpoonyAndroidTheme.typography.body2m,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+                },
+                locationContent = {
+                    Text(
+                        "어키",
+                        style = SpoonyAndroidTheme.typography.title2sb
+                    )
+                    Spacer(modifier = Modifier.height(11.dp))
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        PlaceDetailIconText(
+                            icon = ImageVector.vectorResource(R.drawable.ic_pin_24),
+                            iconSize = 20.dp,
+                            text = "서울 마포구 연희로11가길 39",
+                            textStyle = SpoonyAndroidTheme.typography.body2m,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             )
         }
     }
