@@ -1,7 +1,6 @@
 package com.spoony.spoony.core.designsystem.component.tag
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -34,7 +33,6 @@ import com.spoony.spoony.core.designsystem.type.TagSize
 @Composable
 fun LogoTag(
     count: Int,
-    onClick: () -> Unit,
     tagSize: TagSize = TagSize.Small,
     modifier: Modifier = Modifier
 ) {
@@ -61,7 +59,6 @@ fun LogoTag(
                     end = Offset(Float.POSITIVE_INFINITY, 0f)
                 )
             )
-            .clickable(onClick = onClick)
             .padding(paddingValues),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = verticalAlignment
@@ -113,8 +110,7 @@ private fun LogoTagPreview(
     SpoonyAndroidTheme {
         LogoTag(
             count = 99,
-            tagSize = size,
-            onClick = {}
+            tagSize = size
         )
     }
 }
