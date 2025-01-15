@@ -52,23 +52,6 @@ fun StoreInfo(
     ) {
         StoreInfoItem(
             title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_MENU_TITLE),
-            content = {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    menuItems.forEach { menuItem ->
-                        key(menuItem) {
-                            PlaceDetailIconText(
-                                icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
-                                iconSize = 20.dp,
-                                text = menuItem,
-                                textStyle = SpoonyAndroidTheme.typography.body2m,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                    }
-                }
-            },
             padding = PaddingValues(
                 top = 20.dp,
                 bottom = 28.dp,
@@ -81,24 +64,26 @@ fun StoreInfo(
                 bottomStart = 20.dp,
                 bottomEnd = 20.dp
             )
-        )
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                menuItems.forEach { menuItem ->
+                    key(menuItem) {
+                        PlaceDetailIconText(
+                            icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
+                            iconSize = 20.dp,
+                            text = menuItem,
+                            textStyle = SpoonyAndroidTheme.typography.body2m,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        }
         HorizontalDashedLine()
         StoreInfoItem(
             title = stringResource(id = R.string.PLACE_DETAIL_STORE_INFO_LOCATION_TITLE),
-            content = {
-                Text(
-                    locationSubTitle,
-                    style = SpoonyAndroidTheme.typography.title2sb
-                )
-                Spacer(modifier = Modifier.height(11.dp))
-                PlaceDetailIconText(
-                    icon = ImageVector.vectorResource(R.drawable.ic_pin_24),
-                    iconSize = 20.dp,
-                    text = location,
-                    textStyle = SpoonyAndroidTheme.typography.body2m,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
             padding = PaddingValues(
                 vertical = 21.dp,
                 horizontal = 16.dp
@@ -109,7 +94,20 @@ fun StoreInfo(
                 bottomStart = 8.dp,
                 bottomEnd = 8.dp
             )
-        )
+        ) {
+            Text(
+                locationSubTitle,
+                style = SpoonyAndroidTheme.typography.title2sb
+            )
+            Spacer(modifier = Modifier.height(11.dp))
+            PlaceDetailIconText(
+                icon = ImageVector.vectorResource(R.drawable.ic_pin_24),
+                iconSize = 20.dp,
+                text = location,
+                textStyle = SpoonyAndroidTheme.typography.body2m,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 

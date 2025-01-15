@@ -25,10 +25,10 @@ import kotlinx.collections.immutable.immutableListOf
 @Composable
 fun StoreInfoItem(
     title: String,
-    content: @Composable () -> Unit,
     shape: Shape,
     padding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
     Column(
         modifier = modifier
