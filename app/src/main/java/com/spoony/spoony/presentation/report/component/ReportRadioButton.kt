@@ -29,9 +29,10 @@ import kotlinx.collections.immutable.immutableListOf
 fun ReportRadioButton(
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
-    options: ImmutableList<String>
+    options: ImmutableList<String>,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier = modifier) {
         options.forEach { option ->
             key(option) {
                 Row(
