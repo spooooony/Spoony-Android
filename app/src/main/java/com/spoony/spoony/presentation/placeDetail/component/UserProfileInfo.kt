@@ -33,7 +33,6 @@ fun UserProfileInfo(
     imageUrl: String,
     name: String,
     location: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -74,13 +73,6 @@ fun UserProfileInfo(
                 color = SpoonyAndroidTheme.colors.gray400
             )
         }
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_menu_24),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .noRippleClickable(onClick)
-        )
     }
 }
 
@@ -92,7 +84,6 @@ private fun UserProfileInfoPreview() {
             imageUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
             name = "클레오가트라",
             location = "마포구 수저",
-            onClick = {}
         )
     }
 }
