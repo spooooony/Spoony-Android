@@ -11,6 +11,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,26 +33,28 @@ fun ReportRadioButton(
 ) {
     Column {
         options.forEach { option ->
-            Row(
-                modifier = Modifier.padding(vertical = 9.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    modifier = Modifier.size(24.dp),
-                    selected = selectedOption == option,
-                    onClick = { onOptionSelected(option) },
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = SpoonyAndroidTheme.colors.black,
-                        unselectedColor = SpoonyAndroidTheme.colors.gray400
+            key(option) {
+                Row(
+                    modifier = Modifier.padding(vertical = 9.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        modifier = Modifier.size(24.dp),
+                        selected = selectedOption == option,
+                        onClick = { onOptionSelected(option) },
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = SpoonyAndroidTheme.colors.black,
+                            unselectedColor = SpoonyAndroidTheme.colors.gray400
+                        )
                     )
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = option,
-                    modifier = Modifier.noRippleClickable { onOptionSelected(option) },
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = option,
+                        modifier = Modifier.noRippleClickable { onOptionSelected(option) },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
