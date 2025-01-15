@@ -50,7 +50,7 @@ fun CloseTopAppBar(
 
 @Preview
 @Composable
-fun CloseTopAppBarPreview() {
+private fun CloseTopAppBarPreview() {
     SpoonyAndroidTheme {
         CloseTopAppBar(
             title = "홍대입구역",

@@ -48,7 +48,7 @@ fun SpoonyBasicTopAppBar(
 
 @Preview
 @Composable
-fun SpoonyBasicTopAppBarPreview() {
+private fun SpoonyBasicTopAppBarPreview() {
     SpoonyAndroidTheme {
         SpoonyBasicTopAppBar()
     }

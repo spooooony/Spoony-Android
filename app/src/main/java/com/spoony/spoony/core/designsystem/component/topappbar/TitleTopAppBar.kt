@@ -28,7 +28,7 @@ fun TitleTopAppBar(
 
 @Preview
 @Composable
-fun TitleTopAppBarPreview() {
+private fun TitleTopAppBarPreview() {
     SpoonyAndroidTheme {
         TitleTopAppBar(
             title = "신고하기",

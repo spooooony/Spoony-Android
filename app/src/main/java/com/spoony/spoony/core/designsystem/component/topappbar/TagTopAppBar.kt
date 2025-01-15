@@ -35,7 +35,7 @@ fun TagTopAppBar(
 
 @Preview
 @Composable
-fun TagTopAppBarPreview() {
+private fun TagTopAppBarPreview() {
     SpoonyAndroidTheme {
         TagTopAppBar(
             count = 99,
