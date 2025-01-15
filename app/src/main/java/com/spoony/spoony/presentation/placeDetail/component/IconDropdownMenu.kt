@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -66,21 +67,23 @@ fun IconDropdownMenu(
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     menuItems.forEach { menuItem ->
-                        Box(
-                            modifier = Modifier
-                                .width(91.dp)
-                                .noRippleClickable {
-                                    onMenuItemClick(menuItem)
-                                    expanded = false
-                                }
-                                .padding(6.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Text(
-                                text = menuItem,
-                                style = SpoonyAndroidTheme.typography.caption1b,
-                                color = SpoonyAndroidTheme.colors.gray900
-                            )
+                        key(menuItem) {
+                            Box(
+                                modifier = Modifier
+                                    .width(91.dp)
+                                    .noRippleClickable {
+                                        onMenuItemClick(menuItem)
+                                        expanded = false
+                                    }
+                                    .padding(6.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Text(
+                                    text = menuItem,
+                                    style = SpoonyAndroidTheme.typography.caption1b,
+                                    color = SpoonyAndroidTheme.colors.gray900
+                                )
+                            }
                         }
                     }
                 }
