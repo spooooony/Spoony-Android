@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
 import com.spoony.spoony.presentation.map.navigaion.mapNavGraph
+import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import kotlinx.collections.immutable.toPersistentList
 
@@ -47,6 +48,10 @@ fun MainScreen(
 
             registerNavGraph(
                 paddingValues = innerPadding
+            )
+
+            placeDetailNavGraph(
+                navController = navigator.navController
             )
         }
     }
