@@ -34,7 +34,7 @@ private const val DEFAULT_ANIMATION_DURATION = 300
 @Composable
 fun TopLinearProgressBar(
     currentStep: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
     initialSteps: Float = 0f,
     totalSteps: Float = 3f,
     animationDuration: Int = DEFAULT_ANIMATION_DURATION,
@@ -45,7 +45,7 @@ fun TopLinearProgressBar(
     val progress = remember { Animatable(initialSteps) }
     val targetProgress = currentStep / totalSteps
 
-    LaunchedEffect(currentStep, totalSteps) {
+    LaunchedEffect(currentStep) {
         progress.animateTo(
             targetValue = targetProgress,
             animationSpec = tween(
@@ -66,6 +66,7 @@ fun TopLinearProgressBar(
         strokeCap = StrokeCap.Round
     )
 }
+
 
 @Preview
 @Composable
