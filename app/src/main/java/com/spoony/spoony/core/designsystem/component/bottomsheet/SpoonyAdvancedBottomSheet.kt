@@ -36,13 +36,14 @@ fun SpoonyAdvancedBottomSheet(
         containerColor = SpoonyAndroidTheme.colors.white,
         sheetDragHandle = {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(top = 12.dp)
             ) {
                 Box(
                     modifier = Modifier
                         .width(24.dp)
                         .height(Dp.Hairline.plus(2.dp))
-                        .padding(top = 12.dp)
                         .background(SpoonyAndroidTheme.colors.gray300)
                 )
                 dragHandle()
