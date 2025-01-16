@@ -34,13 +34,15 @@ private const val DEFAULT_ANIMATION_DURATION = 300
 @Composable
 fun TopLinearProgressBar(
     currentStep: Float,
+    modifier: Modifier = Modifier
+    initialSteps: Float = 0f,
     totalSteps: Float = 3f,
     animationDuration: Int = DEFAULT_ANIMATION_DURATION,
     progressColor: Color = SpoonyAndroidTheme.colors.main400,
     trackColor: Color = SpoonyAndroidTheme.colors.gray100,
-    modifier: Modifier = Modifier
+
 ) {
-    val progress = remember { Animatable(0f) }
+    val progress = remember { Animatable(initialSteps) }
     val targetProgress = currentStep / totalSteps
 
     LaunchedEffect(currentStep, totalSteps) {
