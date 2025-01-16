@@ -53,7 +53,7 @@ fun TopLinearProgressBar(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .fillMaxWidth()
-            .height(10.dp),
+            .height(4.dp),
         color = progressColor,
         trackColor = trackColor,
         strokeCap = StrokeCap.Round
