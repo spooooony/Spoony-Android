@@ -38,7 +38,6 @@ fun NextButton(
 @Composable
 private fun NextButtonPreview() {
     var enabled by remember { mutableStateOf(true) }
-
     Column(
         modifier = Modifier
             .background(Color.White)
