@@ -5,9 +5,6 @@ buildscript {
         maven(
             url = uri("https://repository.map.naver.com/archive/maven")
         )
-        maven(
-            url = uri("https://dl.google.com/dl/android/maven2")
-        )
     }
 }
 
