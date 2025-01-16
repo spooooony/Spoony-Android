@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -29,18 +29,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
+private const val DEFAULT_ANIMATION_DURATION = 300
+
 @Composable
 fun TopLinearProgressBar(
-    currentStep: Int
+    currentStep: Float,
+    totalSteps: Float = 3f,
+    animationDuration: Int = DEFAULT_ANIMATION_DURATION,
+    progressColor: Color = SpoonyAndroidTheme.colors.main400,
+    trackColor: Color = SpoonyAndroidTheme.colors.gray100,
+    modifier: Modifier = Modifier
 ) {
     val progress = remember { Animatable(0f) }
-    val targetProgress = currentStep.toFloat() / 3
+    val targetProgress = currentStep / totalSteps
 
-    LaunchedEffect(currentStep) {
+    LaunchedEffect(currentStep, totalSteps) {
         progress.animateTo(
             targetValue = targetProgress,
             animationSpec = tween(
-                durationMillis = 300,
+                durationMillis = animationDuration,
                 easing = FastOutSlowInEasing
             )
         )
@@ -48,12 +55,12 @@ fun TopLinearProgressBar(
 
     LinearProgressIndicator(
         progress = { progress.value },
-        modifier = Modifier
-            .clip(RoundedCornerShape(50))
+        modifier = modifier
+            .clip(CircleShape)
             .fillMaxWidth()
             .height(4.dp),
-        color = SpoonyAndroidTheme.colors.gray100,
-        trackColor = SpoonyAndroidTheme.colors.main400,
+        color = progressColor,
+        trackColor = trackColor,
         strokeCap = StrokeCap.Round
     )
 }
@@ -62,7 +69,7 @@ fun TopLinearProgressBar(
 @Composable
 private fun TopLinearProgressBarPreview() {
     SpoonyAndroidTheme {
-        var currentStep by remember { mutableStateOf(0) }
+        var currentStep by remember { mutableStateOf(0f) }
 
         Column(
             modifier = Modifier
@@ -77,10 +84,10 @@ private fun TopLinearProgressBarPreview() {
             )
 
             Button(onClick = {
-                if (currentStep < 3) {
+                if (currentStep < 3f) {
                     currentStep++
-                } else if (currentStep == 3) {
-                    currentStep = 0
+                } else if (currentStep == 3f) {
+                    currentStep = 0f
                 }
             }) {
                 Text("다음 단계")
