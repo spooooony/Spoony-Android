@@ -18,7 +18,7 @@ fun SpoonyFlexibleBottomSheet(
     modifier: Modifier = Modifier,
     minHeight: Dp = 50.dp,
     dragHandle: @Composable () -> Unit = {},
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp

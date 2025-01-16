@@ -42,7 +42,7 @@ fun FixedBottomSheet(
 private fun FixedBottomSheetPreview() {
     SpoonyAndroidTheme {
         FixedBottomSheet(
-            sheetContent = {},
+            sheetContent = {}
         ) { }
     }
 }
