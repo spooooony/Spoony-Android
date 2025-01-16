@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,6 @@ fun SpoonyButton(
 ) {
     val isPressed by interactionSource.collectIsPressedAsState()
     val spoonyColors = SpoonyAndroidTheme.colors
-    val spoonyTypography = SpoonyAndroidTheme.typography
     val backgroundColor = remember(enabled, isPressed, style) {
         when {
             !enabled -> when (style) {
@@ -68,8 +68,8 @@ fun SpoonyButton(
     }
     val paddingValues = remember(size) {
         when (size) {
-            ButtonSize.Xlarge, ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small -> PaddingValues(horizontal = 16.dp, vertical = 18.dp)
-            ButtonSize.Xsmall -> PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+            ButtonSize.Xlarge, ButtonSize.Large, ButtonSize.Medium, ButtonSize.Small -> PaddingValues(vertical = 18.dp)
+            ButtonSize.Xsmall -> PaddingValues(vertical = 12.dp)
         }
     }
 
@@ -99,7 +99,7 @@ fun SpoonyButton(
                 interactionSource = interactionSource,
                 onClick = onClick
             )
-            .padding(paddingValues),
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -107,11 +107,16 @@ fun SpoonyButton(
             icon()
             Spacer(modifier = Modifier.width(8.dp))
         }
-        Text(
-            text = text,
-            color = textColor,
-            style = SpoonyAndroidTheme.typography.body2b
-        )
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+        ) {
+            Text(
+                text = text,
+                color = textColor,
+                style = SpoonyAndroidTheme.typography.body2b
+            )
+        }
     }
 }
 
