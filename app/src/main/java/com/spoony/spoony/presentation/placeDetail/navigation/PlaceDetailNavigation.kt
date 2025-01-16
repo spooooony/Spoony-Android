@@ -14,13 +14,9 @@ fun NavController.navigateToPlaceDetail(
     navigate(PlaceDetail, navOptions)
 }
 
-fun NavGraphBuilder.placeDetailNavGraph(
-    navController: NavController
-) {
+fun NavGraphBuilder.placeDetailNavGraph() {
     composable<PlaceDetail> {
-        PlaceDetailRoute(
-            navController = navController
-        )
+        PlaceDetailRoute()
     }
 }
 

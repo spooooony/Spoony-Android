@@ -50,9 +50,7 @@ fun MainScreen(
                 paddingValues = innerPadding
             )
 
-            placeDetailNavGraph(
-                navController = navigator.navController
-            )
+            placeDetailNavGraph()
         }
     }
 }
