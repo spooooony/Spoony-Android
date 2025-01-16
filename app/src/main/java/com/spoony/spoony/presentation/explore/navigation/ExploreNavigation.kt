@@ -9,7 +9,7 @@ import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.explore.ExploreScreen
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateExplore(
+fun NavController.navigateToExplore(
     navOptions: NavOptions? = null
 ) {
     navigate(Explore, navOptions)

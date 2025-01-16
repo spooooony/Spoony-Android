@@ -8,11 +8,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.spoony.spoony.core.navigation.Route
-import com.spoony.spoony.presentation.explore.navigation.navigateExplore
+import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.map.navigaion.Map
-import com.spoony.spoony.presentation.map.navigaion.navigateMap
-import com.spoony.spoony.presentation.register.navigation.navigateRegister
+import com.spoony.spoony.presentation.map.navigaion.navigateToMap
+import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 
 class MainNavigator(
     val navController: NavHostController
@@ -41,23 +40,20 @@ class MainNavigator(
         }
 
         when (tab) {
-            MainTab.MAP -> navController.navigateMap(navOptions)
-            MainTab.REGISTER -> navController.navigateRegister(navOptions)
-            MainTab.EXPLORE -> navController.navigateExplore(navOptions)
+            MainTab.MAP -> navController.navigateToMap(navOptions)
+            MainTab.REGISTER -> navController.navigateToRegister(navOptions)
+            MainTab.EXPLORE -> navController.navigateToExplore(navOptions)
         }
     }
 
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true
-    } && (currentTab?.showBottomSheet ?: true)
+    }
 
     inline fun isCurrentDestination(destination: NavDestination): Boolean {
         return navController.currentDestination == destination
     }
-
-    inline fun <reified T : Route> NavHostController.isCurrentDestination() =
-        currentDestination?.hasRoute<T>() == true
 }
 
 @Composable

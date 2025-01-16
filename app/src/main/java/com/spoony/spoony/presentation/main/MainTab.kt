@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.main
 
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import com.spoony.spoony.R
 import com.spoony.spoony.core.navigation.MainTabRoute
@@ -9,28 +10,27 @@ import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.register.navigation.Register
 
 enum class MainTab(
-    val selectedIconResource: Int,
-    val unselectedIconResource: Int,
-    val contentDescription: String,
-    val route: MainTabRoute,
-    val showBottomSheet: Boolean = true
+    @DrawableRes val selectedIconResource: Int,
+    @DrawableRes val unselectedIconResource: Int,
+    val label: String,
+    val route: MainTabRoute
 ) {
     MAP(
         selectedIconResource = R.drawable.ic_map_main400_24,
         unselectedIconResource = R.drawable.ic_map_gray400_24,
-        contentDescription = "내 지도",
+        label = "내 지도",
         route = Map
     ),
     EXPLORE(
         selectedIconResource = R.drawable.ic_explore_main400_24,
         unselectedIconResource = R.drawable.ic_explore_gray400_24,
-        contentDescription = "탐색",
+        label = "탐색",
         route = Explore
     ),
     REGISTER(
         selectedIconResource = R.drawable.ic_register_main400_24,
         unselectedIconResource = R.drawable.ic_register_gray400_24,
-        contentDescription = "등록",
+        label = "등록",
         route = Register
     );
 

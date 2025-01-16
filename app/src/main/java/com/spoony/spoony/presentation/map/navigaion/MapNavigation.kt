@@ -8,7 +8,7 @@ import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.map.MapScreen
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateMap(
+fun NavController.navigateToMap(
     navOptions: NavOptions? = null
 ) {
     navigate(Map, navOptions)

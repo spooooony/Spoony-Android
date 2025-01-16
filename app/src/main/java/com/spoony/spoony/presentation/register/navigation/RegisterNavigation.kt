@@ -9,7 +9,7 @@ import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.register.RegisterScreen
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateRegister(
+fun NavController.navigateToRegister(
     navOptions: NavOptions? = null
 ) {
     navigate(Register, navOptions)

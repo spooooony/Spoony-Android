@@ -107,11 +107,11 @@ private fun RowScope.MainBottomBarItem(
                 }
             ),
             modifier = Modifier.size(24.dp),
-            contentDescription = tab.contentDescription,
+            contentDescription = null,
             tint = Color.Unspecified
         )
         Text(
-            text = tab.contentDescription,
+            text = tab.label,
             style = SpoonyAndroidTheme.typography.caption2b,
             color = if (selected) {
                 SpoonyAndroidTheme.colors.main400
