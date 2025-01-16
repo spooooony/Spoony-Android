@@ -50,7 +50,7 @@ fun SpoonySearchTextField(
                 tint = SpoonyAndroidTheme.colors.gray600,
                 modifier = Modifier
                     .padding(start = 4.dp)
-                    .size(16.dp)
+                    .size(20.dp)
 
             )
         },
@@ -62,7 +62,7 @@ fun SpoonySearchTextField(
                     tint = SpoonyAndroidTheme.colors.gray400,
                     modifier = Modifier
                         .padding(end = 4.dp)
-                        .size(16.dp)
+                        .size(20.dp)
                         .noRippleClickable(
                             onClick = {
                                 onValueChanged("")
