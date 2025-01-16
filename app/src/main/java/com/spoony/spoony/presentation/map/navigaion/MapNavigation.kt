@@ -22,4 +22,3 @@ fun NavGraphBuilder.mapNavGraph() {
 
 @Serializable
 data object Map : MainTabRoute
-{}
