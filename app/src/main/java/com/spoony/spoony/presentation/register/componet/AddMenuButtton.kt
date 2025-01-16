@@ -1,13 +1,12 @@
 package com.spoony.spoony.presentation.register.componet
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,24 +24,21 @@ fun AddMenuButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.clip(RoundedCornerShape(8.dp)),
-        border = BorderStroke(1.dp, SpoonyAndroidTheme.colors.gray100)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .fillMaxWidth()
+            .border(1.dp, SpoonyAndroidTheme.colors.gray100)
+            .background(SpoonyAndroidTheme.colors.gray0)
+            .padding(vertical = 10.dp)
+            .noRippleClickable(onClick = onClick)
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = modifier
-                .fillMaxWidth()
-                .background(SpoonyAndroidTheme.colors.gray0)
-                .padding(vertical = 10.dp)
-                .noRippleClickable(onClick = onClick)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_plus_24),
-                contentDescription = null,
-                tint = SpoonyAndroidTheme.colors.gray400
-            )
-        }
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_plus_24),
+            contentDescription = null,
+            tint = SpoonyAndroidTheme.colors.gray400
+        )
     }
 }
 
