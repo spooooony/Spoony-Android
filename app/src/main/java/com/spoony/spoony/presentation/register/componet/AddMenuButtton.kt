@@ -39,7 +39,8 @@ fun AddMenuButton(
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_plus_24),
-                contentDescription = null
+                contentDescription = null,
+                tint = SpoonyAndroidTheme.colors.gray400
             )
         }
     }
