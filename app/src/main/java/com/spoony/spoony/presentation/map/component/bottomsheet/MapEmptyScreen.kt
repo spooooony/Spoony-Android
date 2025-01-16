@@ -24,7 +24,6 @@ fun MapEmptyBottomSheetContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(vertical = 24.dp)
-            .padding(top = 6.dp, bottom = 1.dp)
     ) {
         Image(
             painter = painterResource(R.drawable.ic_launcher_foreground),
