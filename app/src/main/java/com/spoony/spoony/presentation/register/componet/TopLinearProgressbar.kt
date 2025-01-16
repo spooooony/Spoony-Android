@@ -39,7 +39,7 @@ fun TopLinearProgressBar(
     totalSteps: Float = 3f,
     animationDuration: Int = DEFAULT_ANIMATION_DURATION,
     progressColor: Color = SpoonyAndroidTheme.colors.main400,
-    trackColor: Color = SpoonyAndroidTheme.colors.gray100,
+    trackColor: Color = SpoonyAndroidTheme.colors.gray100
 
 ) {
     val progress = remember { Animatable(initialSteps) }
@@ -66,7 +66,6 @@ fun TopLinearProgressBar(
         strokeCap = StrokeCap.Round
     )
 }
-
 
 @Preview
 @Composable
