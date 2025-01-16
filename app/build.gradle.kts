@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.lottie)
     implementation(libs.advanced.bottom.sheet)
+
+    implementation(libs.kotlinx.immutable)
 }
 
 ktlint {
