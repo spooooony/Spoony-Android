@@ -31,9 +31,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
 fun TopLinearProgressBar(
-    currentStep: Int,
-    progressColor: Color = SpoonyAndroidTheme.colors.main400,
-    trackColor: Color = SpoonyAndroidTheme.colors.gray100
+    currentStep: Int
 ) {
     val progress = remember { Animatable(0f) }
     val targetProgress = currentStep.toFloat() / 3
@@ -54,8 +52,8 @@ fun TopLinearProgressBar(
             .clip(RoundedCornerShape(50))
             .fillMaxWidth()
             .height(4.dp),
-        color = progressColor,
-        trackColor = trackColor,
+        color = SpoonyAndroidTheme.colors.gray100,
+        trackColor = SpoonyAndroidTheme.colors.main400,
         strokeCap = StrokeCap.Round
     )
 }
