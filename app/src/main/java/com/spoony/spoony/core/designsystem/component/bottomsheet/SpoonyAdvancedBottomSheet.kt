@@ -33,6 +33,7 @@ fun SpoonyAdvancedBottomSheet(
             sheetContent()
         },
         modifier = modifier,
+        containerColor = SpoonyAndroidTheme.colors.white,
         sheetDragHandle = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
