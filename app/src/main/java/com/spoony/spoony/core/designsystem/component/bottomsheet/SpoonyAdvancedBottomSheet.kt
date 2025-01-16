@@ -15,6 +15,7 @@ fun SpoonyAdvancedBottomSheet(
     sheetState: BottomSheetScaffoldState<AdvancedSheetState>,
     sheetContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    sheetSwipeEnabled: Boolean = true,
     dragHandle: @Composable () -> Unit = { SpoonyBasicDragHandle() },
     content: @Composable () -> Unit
 ) {
@@ -23,6 +24,7 @@ fun SpoonyAdvancedBottomSheet(
         sheetContent = {
             sheetContent()
         },
+        sheetSwipeEnabled = sheetSwipeEnabled,
         modifier = modifier,
         sheetContainerColor = SpoonyAndroidTheme.colors.white,
         sheetDragHandle = dragHandle
