@@ -53,7 +53,9 @@ fun ReportRoute(
     ReportScreen(
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
-        reportContext = state.reportContext
+        reportContext = state.reportContext,
+        onOptionReportSelected = { viewModel.updateSelectedReportOption(it) },
+        onContextChanged = { viewModel.updateReportContext(it) }
     )
 }
 
@@ -61,11 +63,12 @@ fun ReportRoute(
 private fun ReportScreen(
     reportOptions: ImmutableList<ReportOption>,
     selectedReportOption: ReportOption,
-    reportContext: String
+    reportContext: String,
+    onOptionReportSelected: (ReportOption) -> Unit,
+    onContextChanged: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    var selectedReportOption by remember { mutableStateOf(selectedReportOption) }
-    var reportContext by remember { mutableStateOf(reportContext) }
+
     Column(
         modifier = Modifier
             .addFocusCleaner(focusManager)
@@ -96,7 +99,7 @@ private fun ReportScreen(
             Spacer(modifier = Modifier.height(12.dp))
             ReportRadioButton(
                 selectedOption = selectedReportOption,
-                onOptionSelected = { selectedReportOption = it },
+                onOptionSelected = onOptionReportSelected,
                 options = reportOptions
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -109,9 +112,7 @@ private fun ReportScreen(
             SpoonyLargeTextField(
                 value = reportContext,
                 placeholder = "내용을 자세히 적어주시면 신고에 도움이 돼요",
-                onValueChanged = { newText ->
-                    reportContext = newText
-                },
+                onValueChanged = onContextChanged,
                 maxLength = 300,
                 minLength = 1,
                 minErrorText = "내용 작성은 필수예요",
@@ -154,11 +155,19 @@ private fun ReportScreen(
 @Preview
 @Composable
 private fun ReportScreenPreview() {
+    var selectedReportOption by remember { mutableStateOf(ReportOption.COMMERCIAL) }
+    var reportContext by remember { mutableStateOf("") }
     SpoonyAndroidTheme {
         ReportScreen(
             reportOptions = immutableListOf(*ReportOption.entries.toTypedArray()),
-            selectedReportOption = ReportOption.COMMERCIAL,
-            reportContext = ""
+            selectedReportOption = selectedReportOption,
+            reportContext = reportContext,
+            onOptionReportSelected = {
+                selectedReportOption = it
+            },
+            onContextChanged = {
+                reportContext = it
+            }
         )
     }
 }

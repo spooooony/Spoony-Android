@@ -11,4 +11,12 @@ class ReportViewModel @Inject constructor() : ViewModel() {
     var _state: MutableStateFlow<ReportState> = MutableStateFlow(ReportState())
     val state: StateFlow<ReportState>
         get() = _state
+
+    fun updateSelectedReportOption(newOption: ReportOption) {
+        _state.value = _state.value.copy(selectedReportOption = newOption)
+    }
+
+    fun updateReportContext(newContext: String) {
+        _state.value = _state.value.copy(reportContext = newContext)
+    }
 }
