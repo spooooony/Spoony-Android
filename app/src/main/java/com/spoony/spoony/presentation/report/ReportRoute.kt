@@ -50,6 +50,7 @@ fun ReportRoute(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
+
     ReportScreen(
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
@@ -79,10 +80,12 @@ private fun ReportScreen(
             title = "신고하기",
             onBackButtonClick = {}
         )
+
         HorizontalDivider(
             thickness = Dp.Hairline,
             color = SpoonyAndroidTheme.colors.gray100
         )
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,24 +94,31 @@ private fun ReportScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(31.dp))
+
             Text(
                 text = "후기를 신고하는 이유가 무엇인가요?",
                 color = SpoonyAndroidTheme.colors.black,
                 style = SpoonyAndroidTheme.typography.body1sb
             )
+
             Spacer(modifier = Modifier.height(12.dp))
+
             ReportRadioButton(
                 selectedOption = selectedReportOption,
                 onOptionSelected = onOptionReportSelected,
                 options = reportOptions
             )
+
             Spacer(modifier = Modifier.height(32.dp))
+
             Text(
                 text = "자세한 내용을 적어주세요",
                 color = SpoonyAndroidTheme.colors.black,
                 style = SpoonyAndroidTheme.typography.body1sb
             )
+
             Spacer(modifier = Modifier.height(12.dp))
+
             SpoonyLargeTextField(
                 value = reportContext,
                 placeholder = "내용을 자세히 적어주시면 신고에 도움이 돼요",
@@ -118,7 +128,9 @@ private fun ReportScreen(
                 minErrorText = "내용 작성은 필수예요",
                 maxErrorText = "글자 수 300자 이하로 입력해 주세요"
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Row(
                 modifier = Modifier
                     .background(
@@ -132,14 +144,18 @@ private fun ReportScreen(
                     contentDescription = null,
                     tint = SpoonyAndroidTheme.colors.gray300
                 )
+
                 Spacer(modifier = Modifier.width(10.dp))
+
                 Text(
                     text = "스푸니는 철저한 광고 제한 정책과 모니터링을 실시하고 있어요. 부적절한 후기 작성자를 발견하면, '수저 뺏기'로 그들의 수저를 빼앗아 주세요!",
                     style = SpoonyAndroidTheme.typography.caption1m,
                     color = SpoonyAndroidTheme.colors.gray400
                 )
             }
+
             Spacer(modifier = Modifier.height(20.dp))
+
             SpoonyButton(
                 text = "신고하기",
                 onClick = {},
@@ -147,6 +163,7 @@ private fun ReportScreen(
                 size = ButtonSize.Xlarge,
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -156,7 +173,9 @@ private fun ReportScreen(
 @Composable
 private fun ReportScreenPreview() {
     var selectedReportOption by remember { mutableStateOf(ReportOption.COMMERCIAL) }
+
     var reportContext by remember { mutableStateOf("") }
+
     SpoonyAndroidTheme {
         ReportScreen(
             reportOptions = immutableListOf(*ReportOption.entries.toTypedArray()),
