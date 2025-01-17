@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.report
+package com.spoony.spoony.presentation.report.type
 
 enum class ReportOption(val displayName: String) {
     ADVERTISEMENT("영리 목적/ 홍보성 후기"),

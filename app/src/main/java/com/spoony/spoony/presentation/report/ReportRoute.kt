@@ -40,6 +40,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.report.component.ReportRadioButton
+import com.spoony.spoony.presentation.report.type.ReportOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 

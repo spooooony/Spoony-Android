@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.report
 
+import com.spoony.spoony.presentation.report.type.ReportOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
