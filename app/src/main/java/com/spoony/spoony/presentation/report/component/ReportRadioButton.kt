@@ -24,7 +24,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.report.ReportOption
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ReportRadioButton(
@@ -65,7 +65,7 @@ fun ReportRadioButton(
 @Preview(showBackground = true)
 @Composable
 private fun ReportRadioButtonPreview() {
-    val options = immutableListOf(*ReportOption.entries.toTypedArray())
+    val options = ReportOption.entries.toImmutableList()
     var selectedOption by remember { mutableStateOf(ReportOption.ADVERTISEMENT) }
 
     SpoonyAndroidTheme {

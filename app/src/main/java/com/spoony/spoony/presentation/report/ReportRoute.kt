@@ -41,7 +41,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.report.component.ReportRadioButton
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ReportRoute(
@@ -178,7 +178,7 @@ private fun ReportScreenPreview() {
 
     SpoonyAndroidTheme {
         ReportScreen(
-            reportOptions = immutableListOf(*ReportOption.entries.toTypedArray()),
+            reportOptions = ReportOption.entries.toImmutableList(),
             selectedReportOption = selectedReportOption,
             reportContext = reportContext,
             onOptionReportSelected = {
