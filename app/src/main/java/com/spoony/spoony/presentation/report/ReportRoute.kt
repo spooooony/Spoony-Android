@@ -52,20 +52,20 @@ fun ReportRoute(
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
     ReportScreen(
-        options = state.options,
-        selectedOption = state.selectedOption,
+        reportOptions = state.reportOptions,
+        selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext
     )
 }
 
 @Composable
 private fun ReportScreen(
-    options: ImmutableList<String>,
-    selectedOption: String,
+    reportOptions: ImmutableList<ReportOption>,
+    selectedReportOption: ReportOption,
     reportContext: String
 ) {
     val focusManager = LocalFocusManager.current
-    var selectedOption by remember { mutableStateOf(selectedOption) }
+    var selectedReportOption by remember { mutableStateOf(selectedReportOption) }
     var reportContext by remember { mutableStateOf(reportContext) }
     Column(
         modifier = Modifier
@@ -96,9 +96,9 @@ private fun ReportScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
             ReportRadioButton(
-                selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
-                options = options
+                selectedOption = selectedReportOption,
+                onOptionSelected = { selectedReportOption = it },
+                options = reportOptions
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -157,8 +157,8 @@ private fun ReportScreen(
 private fun ReportScreenPreview() {
     SpoonyAndroidTheme {
         ReportScreen(
-            options = immutableListOf("영리 목적/ 홍보성 후기", "욕설/ 인신 공격", "불법정보", "개인 정보 노출", "도배", "기타"),
-            selectedOption = "영리 목적/ 홍보성 후기",
+            reportOptions = immutableListOf(*ReportOption.entries.toTypedArray()),
+            selectedReportOption = ReportOption.COMMERCIAL,
             reportContext = ""
         )
     }
