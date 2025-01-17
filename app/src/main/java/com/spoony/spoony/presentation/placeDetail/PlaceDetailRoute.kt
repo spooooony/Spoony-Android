@@ -42,7 +42,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.domain.entity.IconTagEntity
+import com.spoony.spoony.domain.entity.IconTagItem
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
@@ -63,6 +63,7 @@ fun PlaceDetailRoute(
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
+            val temp = state.iconTag as UiState.Success<IconTagItem>
             PlaceDetailScreen(
                 navigateToMap = {},
                 menuItems = state.menuItems,
@@ -73,11 +74,11 @@ fun PlaceDetailRoute(
                 profileLocation = state.profileLocation,
                 dropdownMenuList = state.dropdownMenuList,
                 imageList = state.imageList,
-                tag = IconTagEntity(
-                    name = (state.iconTag as UiState.Success<IconTagEntity>).data.name,
-                    backgroundColorHex = (state.iconTag as UiState.Success<IconTagEntity>).data.backgroundColorHex,
-                    textColorHex = (state.iconTag as UiState.Success<IconTagEntity>).data.textColorHex,
-                    iconUrl = (state.iconTag as UiState.Success<IconTagEntity>).data.iconUrl
+                tag = IconTagItem(
+                    name = temp.data.name,
+                    backgroundColorHex = temp.data.backgroundColorHex,
+                    textColorHex = temp.data.textColorHex,
+                    iconUrl = temp.data.iconUrl
                 ),
                 dateString = state.dateString,
                 locationAddress = state.locationAddress,
@@ -100,7 +101,7 @@ private fun PlaceDetailScreen(
     profileLocation: String,
     dropdownMenuList: ImmutableList<String>,
     imageList: ImmutableList<String>,
-    tag: IconTagEntity,
+    tag: IconTagItem,
     dateString: String,
     locationAddress: String,
     locationName: String,
@@ -305,7 +306,7 @@ private fun PlaceDetailScreenPreview() {
                 "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473668872_631155566092547_2449423066645547426_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=111&_nc_ohc=R493Nwe8XM4Q7kNvgGceBQv&_nc_gid=43b0cc3eec544f7b82ac6ce4d0931342&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU0NDY0OTE1NzAwNzA2MzU2Mg%3D%3D.3-ccb7-5&oh=00_AYDU1LNSGLa4GKAZQRlX5ABzJQ4qf5h62z257zioGFlesA&oe=678DABD6&_nc_sid=7a9f4b",
                 "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473560284_568265156121387_7921460915182213394_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=gKoX2mv1x0QQ7kNvgHd6AjB&_nc_gid=af16ea24a7d04cc9a0d1e86a87ffccac&edm=APoiHPcBAAAA&ccb=7-5&ig_cache_key=MzU0NDU3MjM1MzUwNDM2MDA5Ng%3D%3D.3-ccb7-5&oh=00_AYDc2sbybqTbqQJaVw9HkW-Zt4aaVElCM-ecAUheJdCyGQ&oe=678DAE1A&_nc_sid=22de04"
             ),
-            tag = IconTagEntity(
+            tag = IconTagItem(
                 name = "주류",
                 backgroundColorHex = "EEE3FD",
                 textColorHex = "AD75F9",
