@@ -17,8 +17,8 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 @Composable
 fun MapSearchRecentItem(
     searchText: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
