@@ -2,7 +2,6 @@ package com.spoony.spoony.presentation.placeDetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -112,90 +111,100 @@ private fun PlaceDetailScreen(
     var isMyMap by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsPadding()
             .statusBarsPadding()
     ) {
-        Column {
-            TagTopAppBar(
-                count = mySpoonCount,
-                showBackButton = true,
-                onBackButtonClick = navigateToMap
-            )
-            Column(
+        TagTopAppBar(
+            count = mySpoonCount,
+            showBackButton = true,
+            onBackButtonClick = navigateToMap
+        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(scrollState)
+        ) {
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
+                    .fillMaxWidth()
+                    .padding(
+                        vertical = 8.dp,
+                        horizontal = 20.dp
+                    ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            vertical = 8.dp,
-                            horizontal = 20.dp
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    UserProfileInfo(
-                        imageUrl = profileUrl,
-                        name = profileName,
-                        location = profileLocation,
-                        modifier = Modifier.weight(1f)
-                    )
-                    IconDropdownMenu(
-                        menuItems = dropdownMenuList,
-                        onMenuItemClick = { selectedItem ->
-                            // selectedItem
-                        }
-                    )
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-                PlaceDetailImageLazyRow(
-                    imageList = imageList,
-                    isBlurred = !isSpoonEat
+                UserProfileInfo(
+                    imageUrl = profileUrl,
+                    name = profileName,
+                    location = profileLocation,
+                    modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.height(32.dp))
-                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    IconTag(
-                        text = tag.name,
-                        backgroundColorHex = tag.backgroundColorHex,
-                        textColorHex = tag.textColorHex,
-                        iconUrl = tag.iconUrl
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = textTitle,
-                        style = SpoonyAndroidTheme.typography.title1,
-                        color = SpoonyAndroidTheme.colors.black
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = dateString,
-                        style = SpoonyAndroidTheme.typography.caption1m,
-                        color = SpoonyAndroidTheme.colors.gray400
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = textContent,
-                        style = SpoonyAndroidTheme.typography.body2m,
-                        color = SpoonyAndroidTheme.colors.gray900
-                    )
-                    Spacer(modifier = Modifier.height(32.dp))
-                    StoreInfo(
-                        isBlurred = !isSpoonEat,
-                        menuItems = menuItems,
-                        locationSubTitle = locationName,
-                        location = locationAddress
-                    )
-                }
-                Spacer(modifier = Modifier.height(103.dp))
+
+                IconDropdownMenu(
+                    menuItems = dropdownMenuList,
+                    onMenuItemClick = { selectedItem ->
+                        // selectedItem
+                    }
+                )
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            PlaceDetailImageLazyRow(
+                imageList = imageList,
+                isBlurred = !isSpoonEat
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                IconTag(
+                    text = tag.name,
+                    backgroundColorHex = tag.backgroundColorHex,
+                    textColorHex = tag.textColorHex,
+                    iconUrl = tag.iconUrl
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = textTitle,
+                    style = SpoonyAndroidTheme.typography.title1,
+                    color = SpoonyAndroidTheme.colors.black
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = dateString,
+                    style = SpoonyAndroidTheme.typography.caption1m,
+                    color = SpoonyAndroidTheme.colors.gray400
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = textContent,
+                    style = SpoonyAndroidTheme.typography.body2m,
+                    color = SpoonyAndroidTheme.colors.gray900
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                StoreInfo(
+                    isBlurred = !isSpoonEat,
+                    menuItems = menuItems,
+                    locationSubTitle = locationName,
+                    location = locationAddress
+                )
+            }
+            Spacer(modifier = Modifier.height(27.dp))
         }
         PlaceDetailBottomBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter),
+            modifier = Modifier,
             count = locationPinCount,
             isSpoonEat = isSpoonEat,
             isMyMap = isMyMap,
@@ -240,7 +249,9 @@ fun PlaceDetailBottomBar(
                 size = ButtonSize.Medium,
                 modifier = Modifier.weight(1f)
             )
+
             Spacer(modifier = Modifier.width(15.dp))
+
             Column(
                 modifier = Modifier
                     .width(56.dp)
@@ -255,7 +266,9 @@ fun PlaceDetailBottomBar(
                     contentDescription = null,
                     tint = Color.Unspecified
                 )
+
                 Spacer(modifier = Modifier.width(4.dp))
+
                 Text(
                     text = count.toString(),
                     style = SpoonyAndroidTheme.typography.caption1m,
