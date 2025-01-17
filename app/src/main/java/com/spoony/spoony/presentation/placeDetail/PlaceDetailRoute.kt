@@ -110,6 +110,7 @@ private fun PlaceDetailScreen(
 ) {
     var isSpoonEat by remember { mutableStateOf(false) }
     var isMyMap by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
@@ -126,7 +127,7 @@ private fun PlaceDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 64.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
         ) {
             Row(
                 modifier = Modifier
