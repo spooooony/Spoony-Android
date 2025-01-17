@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun MapPlaceDetailCard(
@@ -35,7 +37,7 @@ fun MapPlaceDetailCard(
     placeSpoon: String,
     review: String,
     addMapCount: Int,
-    imageUrlList: List<String>,
+    imageUrlList: ImmutableList<String>,
     categoryIconUrl: String,
     categoryName: String,
     textColor: String,
@@ -63,12 +65,12 @@ fun MapPlaceDetailCard(
                 .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
                 .background(SpoonyAndroidTheme.colors.white)
         ) {
-            imageUrlList.forEachIndexed { index, s ->
+            imageUrlList.forEachIndexed { index, url ->
                 key(index) {
                     UrlImage(
-                        imageUrl = s,
+                        imageUrl = url,
                         modifier = Modifier
-                            .size(103.dp)
+                            .height(103.dp)
                             .weight(1f)
                     )
                 }
