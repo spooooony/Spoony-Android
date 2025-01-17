@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -37,14 +38,18 @@ fun MapSearchResultItem(
             Text(
                 text = placeName,
                 style = SpoonyAndroidTheme.typography.body1b,
-                color = SpoonyAndroidTheme.colors.gray700
+                color = SpoonyAndroidTheme.colors.gray700,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = address,
                 style = SpoonyAndroidTheme.typography.body2m,
                 color = SpoonyAndroidTheme.colors.gray500,
                 modifier = Modifier
-                    .padding(top = 4.dp)
+                    .padding(top = 4.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
