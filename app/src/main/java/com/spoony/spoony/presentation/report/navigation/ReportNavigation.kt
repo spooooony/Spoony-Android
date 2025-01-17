@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.spoony.spoony.core.navigation.MainTabRoute
+import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.report.ReportRoute
 import kotlinx.serialization.Serializable
 
@@ -21,4 +21,4 @@ fun NavGraphBuilder.reportNavGraph() {
 }
 
 @Serializable
-data object Report : MainTabRoute
+data object Report : Route
