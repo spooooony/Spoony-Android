@@ -30,6 +30,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
@@ -37,39 +40,67 @@ import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.map.navigaion.navigateToMap
+import com.spoony.spoony.domain.entity.IconTagEntity
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.immutableListOf
-import timber.log.Timber.Forest.tag
-
-data class IconTag(
-    val name: String,
-    val backgroundColorHex: String,
-    val textColorHex: String,
-    val iconUrl: String
-)
 
 @Composable
-fun PlaceDetailRoute() {
+fun PlaceDetailRoute(
+    viewModel: PlaceDetailViewModel = hiltViewModel()
+) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
+
+    when (state.iconTag) {
+        is UiState.Empty -> {}
+        is UiState.Loading -> {}
+        is UiState.Failure -> {}
+        is UiState.Success -> {
+            PlaceDetailScreen(
+                navigateToMap = {},
+                menuItems = state.menuItems,
+                textTitle = state.textTitle,
+                textContent = state.textContent,
+                profileUrl = state.profileUrl,
+                profileName = state.profileName,
+                profileLocation = state.profileLocation,
+                dropdownMenuList = state.dropdownMenuList,
+                imageList = state.imageList,
+                tag = IconTagEntity(
+                    name = (state.iconTag as UiState.Success<IconTagEntity>).data.name,
+                    backgroundColorHex = (state.iconTag as UiState.Success<IconTagEntity>).data.backgroundColorHex,
+                    textColorHex = (state.iconTag as UiState.Success<IconTagEntity>).data.textColorHex,
+                    iconUrl = (state.iconTag as UiState.Success<IconTagEntity>).data.iconUrl
+                ),
+                dateString = state.dateString,
+                locationAddress = state.locationAddress,
+                locationName = state.locationName,
+                locationPinCount = state.locationPinCount,
+                mySpoonCount = state.mySpoonCount
+            )
+        }
+    }
 }
 
 @Composable
 private fun PlaceDetailScreen(
     navigateToMap: () -> Unit,
     menuItems: ImmutableList<String>,
-    textTile: String,
+    textTitle: String,
     textContent: String,
     profileUrl: String,
     profileName: String,
     profileLocation: String,
     dropdownMenuList: ImmutableList<String>,
     imageList: ImmutableList<String>,
-    tag: IconTag,
+    tag: IconTagEntity,
     dateString: String,
     locationAddress: String,
     locationName: String,
@@ -133,7 +164,7 @@ private fun PlaceDetailScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = textTile,
+                text = textTitle,
                 style = SpoonyAndroidTheme.typography.title1,
                 color = SpoonyAndroidTheme.colors.black,
                 modifier = Modifier.padding(horizontal = 20.dp)
@@ -261,7 +292,7 @@ private fun PlaceDetailScreenPreview() {
                 "크렘브륄레",
                 "사케"
             ),
-            textTile = "인생 이자카야. 고등어 초밥 안주가 그냥 미쳤어요.",
+            textTitle = "인생 이자카야. 고등어 초밥 안주가 그냥 미쳤어요.",
             textContent = "이자카야인데 친구랑 가서 안주만 5개 넘게 시킴.. 명성이 자자한 고등어봉 초밥은 꼭 시키세요! 입에 넣자마자 사르르 녹아 없어짐. 그리고 밤 후식 진짜 맛도리니까 밤 디저트 좋아하는 사람이면 꼭 먹어보기!",
             profileUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
             profileName = "안세홍",
@@ -274,7 +305,7 @@ private fun PlaceDetailScreenPreview() {
                 "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473668872_631155566092547_2449423066645547426_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=111&_nc_ohc=R493Nwe8XM4Q7kNvgGceBQv&_nc_gid=43b0cc3eec544f7b82ac6ce4d0931342&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU0NDY0OTE1NzAwNzA2MzU2Mg%3D%3D.3-ccb7-5&oh=00_AYDU1LNSGLa4GKAZQRlX5ABzJQ4qf5h62z257zioGFlesA&oe=678DABD6&_nc_sid=7a9f4b",
                 "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473560284_568265156121387_7921460915182213394_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=gKoX2mv1x0QQ7kNvgHd6AjB&_nc_gid=af16ea24a7d04cc9a0d1e86a87ffccac&edm=APoiHPcBAAAA&ccb=7-5&ig_cache_key=MzU0NDU3MjM1MzUwNDM2MDA5Ng%3D%3D.3-ccb7-5&oh=00_AYDc2sbybqTbqQJaVw9HkW-Zt4aaVElCM-ecAUheJdCyGQ&oe=678DAE1A&_nc_sid=22de04"
             ),
-            tag = IconTag(
+            tag = IconTagEntity(
                 name = "주류",
                 backgroundColorHex = "EEE3FD",
                 textColorHex = "AD75F9",
