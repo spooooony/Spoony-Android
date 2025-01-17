@@ -118,82 +118,83 @@ private fun PlaceDetailScreen(
             .navigationBarsPadding()
             .statusBarsPadding()
     ) {
-        TagTopAppBar(
-            count = mySpoonCount,
-            showBackButton = true,
-            onBackButtonClick = navigateToMap
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 64.dp)
-                .verticalScroll(scrollState)
-        ) {
-            Row(
+        Column {
+            TagTopAppBar(
+                count = mySpoonCount,
+                showBackButton = true,
+                onBackButtonClick = navigateToMap
+            )
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        vertical = 8.dp,
-                        horizontal = 20.dp
-                    ),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
             ) {
-                UserProfileInfo(
-                    imageUrl = profileUrl,
-                    name = profileName,
-                    location = profileLocation,
-                    modifier = Modifier.weight(1f)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            vertical = 8.dp,
+                            horizontal = 20.dp
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    UserProfileInfo(
+                        imageUrl = profileUrl,
+                        name = profileName,
+                        location = profileLocation,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconDropdownMenu(
+                        menuItems = dropdownMenuList,
+                        onMenuItemClick = { selectedItem ->
+                            // selectedItem
+                        }
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                PlaceDetailImageLazyRow(
+                    imageList = imageList,
+                    isBlurred = !isSpoonEat
                 )
-                IconDropdownMenu(
-                    menuItems = dropdownMenuList,
-                    onMenuItemClick = { selectedItem ->
-                        // selectedItem
-                    }
+                Spacer(modifier = Modifier.height(32.dp))
+                IconTag(
+                    text = tag.name,
+                    backgroundColorHex = tag.backgroundColorHex,
+                    textColorHex = tag.textColorHex,
+                    iconUrl = tag.iconUrl,
+                    modifier = Modifier.padding(horizontal = 20.dp)
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = textTitle,
+                    style = SpoonyAndroidTheme.typography.title1,
+                    color = SpoonyAndroidTheme.colors.black,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = dateString,
+                    style = SpoonyAndroidTheme.typography.caption1m,
+                    color = SpoonyAndroidTheme.colors.gray400,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = textContent,
+                    style = SpoonyAndroidTheme.typography.body2m,
+                    color = SpoonyAndroidTheme.colors.gray900,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                StoreInfo(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    isBlurred = !isSpoonEat,
+                    menuItems = menuItems,
+                    locationSubTitle = locationName,
+                    location = locationAddress
+                )
+                Spacer(modifier = Modifier.height(103.dp))
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            PlaceDetailImageLazyRow(
-                imageList = imageList,
-                isBlurred = !isSpoonEat
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            IconTag(
-                text = tag.name,
-                backgroundColorHex = tag.backgroundColorHex,
-                textColorHex = tag.textColorHex,
-                iconUrl = tag.iconUrl,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = textTitle,
-                style = SpoonyAndroidTheme.typography.title1,
-                color = SpoonyAndroidTheme.colors.black,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = dateString,
-                style = SpoonyAndroidTheme.typography.caption1m,
-                color = SpoonyAndroidTheme.colors.gray400,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = textContent,
-                style = SpoonyAndroidTheme.typography.body2m,
-                color = SpoonyAndroidTheme.colors.gray900,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            StoreInfo(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                isBlurred = !isSpoonEat,
-                menuItems = menuItems,
-                locationSubTitle = locationName,
-                location = locationAddress
-            )
-            Spacer(modifier = Modifier.height(103.dp))
         }
         PlaceDetailBottomBar(
             modifier = Modifier
