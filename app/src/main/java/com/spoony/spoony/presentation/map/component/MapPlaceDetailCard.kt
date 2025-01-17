@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
@@ -46,17 +47,7 @@ fun MapPlaceDetailCard(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .drawWithCache {
-                val path = Path()
-                path.moveTo(size.width / 2f, 0f)
-                path.lineTo(size.width / 2f + 8.dp.toPx(), 14.dp.toPx())
-                path.lineTo(size.width / 2f - 8.dp.toPx(), 14.dp.toPx())
-                path.close()
-                onDrawBehind {
-                    drawPath(path, Color.White)
-                }
-            }
+        modifier = modifier.drawTriangle()
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(Dp.Hairline),
@@ -149,6 +140,20 @@ fun MapPlaceDetailCard(
                         .padding(top = 6.dp)
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun Modifier.drawTriangle(): Modifier = composed {
+    this.drawWithCache {
+        val path = Path()
+        path.moveTo(size.width / 2f, 0f)
+        path.lineTo(size.width / 2f + 8.dp.toPx(), 14.dp.toPx())
+        path.lineTo(size.width / 2f - 8.dp.toPx(), 14.dp.toPx())
+        path.close()
+        onDrawBehind {
+            drawPath(path, Color.White)
         }
     }
 }
