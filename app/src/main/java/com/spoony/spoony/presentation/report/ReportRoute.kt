@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -86,7 +85,6 @@ private fun ReportScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = SpoonyAndroidTheme.colors.white)
-                .imePadding()
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
