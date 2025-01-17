@@ -5,6 +5,6 @@ import kotlinx.collections.immutable.immutableListOf
 
 data class ReportState(
     val reportOptions: ImmutableList<ReportOption> = immutableListOf(*ReportOption.entries.toTypedArray()),
-    var selectedReportOption: ReportOption = ReportOption.COMMERCIAL,
+    var selectedReportOption: ReportOption = ReportOption.ADVERTISEMENT,
     val reportContext: String = ""
 )

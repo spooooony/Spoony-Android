@@ -172,7 +172,7 @@ private fun ReportScreen(
 @Preview
 @Composable
 private fun ReportScreenPreview() {
-    var selectedReportOption by remember { mutableStateOf(ReportOption.COMMERCIAL) }
+    var selectedReportOption by remember { mutableStateOf(ReportOption.ADVERTISEMENT) }
 
     var reportContext by remember { mutableStateOf("") }
 

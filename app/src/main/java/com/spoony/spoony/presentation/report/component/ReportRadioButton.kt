@@ -66,7 +66,7 @@ fun ReportRadioButton(
 @Composable
 private fun ReportRadioButtonPreview() {
     val options = immutableListOf(*ReportOption.entries.toTypedArray())
-    var selectedOption by remember { mutableStateOf(ReportOption.COMMERCIAL) }
+    var selectedOption by remember { mutableStateOf(ReportOption.ADVERTISEMENT) }
 
     SpoonyAndroidTheme {
         ReportRadioButton(
