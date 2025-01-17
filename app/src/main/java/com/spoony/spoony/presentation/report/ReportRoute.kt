@@ -22,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
@@ -130,7 +129,7 @@ private fun ReportScreen(
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_error_24),
                     contentDescription = null,
-                    tint = Color.Unspecified
+                    tint = SpoonyAndroidTheme.colors.gray300
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
