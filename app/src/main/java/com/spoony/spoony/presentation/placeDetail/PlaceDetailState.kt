@@ -1,12 +1,12 @@
 package com.spoony.spoony.presentation.placeDetail
 
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.entity.IconTagItem
+import com.spoony.spoony.domain.entity.IconTagEntity
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.immutableListOf
 
 data class PlaceDetailState(
-    var iconTag: UiState<IconTagItem> = UiState.Loading,
+    var iconTag: UiState<IconTagEntity> = UiState.Loading,
     var textTitle: String = "",
     var textContent: String = "",
     var profileUrl: String = "",
