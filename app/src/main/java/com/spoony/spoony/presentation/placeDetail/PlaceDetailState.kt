@@ -12,7 +12,6 @@ data class PlaceDetailState(
     var profileUrl: String = "",
     var profileName: String = "",
     var profileLocation: String = "",
-    var dropdownMenuList: ImmutableList<String> = immutableListOf("신고하기"),
     var imageList: ImmutableList<String> = immutableListOf(),
     var dateString: String = "",
     var locationAddress: String = "",

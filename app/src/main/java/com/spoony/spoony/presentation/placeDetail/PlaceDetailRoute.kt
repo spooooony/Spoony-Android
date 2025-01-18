@@ -71,7 +71,6 @@ fun PlaceDetailRoute(
                 profileUrl = state.profileUrl,
                 profileName = state.profileName,
                 profileLocation = state.profileLocation,
-                dropdownMenuList = state.dropdownMenuList,
                 imageList = state.imageList,
                 tag = IconTagEntity(
                     name = temp.data.name,
@@ -98,7 +97,6 @@ private fun PlaceDetailScreen(
     profileUrl: String,
     profileName: String,
     profileLocation: String,
-    dropdownMenuList: ImmutableList<String>,
     imageList: ImmutableList<String>,
     tag: IconTagEntity,
     dateString: String,
@@ -109,6 +107,7 @@ private fun PlaceDetailScreen(
 ) {
     var isSpoonEat by remember { mutableStateOf(false) }
     var isMyMap by remember { mutableStateOf(false) }
+    val dropdownMenuList: ImmutableList<String> = immutableListOf("신고하기")
     val scrollState = rememberScrollState()
 
     Column(
@@ -310,7 +309,6 @@ private fun PlaceDetailScreenPreview() {
             profileUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
             profileName = "안세홍",
             profileLocation = "성북구 수저",
-            dropdownMenuList = immutableListOf("신고하기"),
             imageList = immutableListOf(
                 "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473779988_950264370546560_5341501240589886868_n.jpg?stp=dst-jpg_e35_tt7&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_ohc=pHHeQnTQ2MMQ7kNvgFAMpBC&_nc_gid=ade93f1afc274f04a82c92d9b55d5753&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzU0NjA2ODI2MjUyMDI2ODQxNA%3D%3D.3-ccb7-5&oh=00_AYCoKFozJIoZG9Izmc5UtfR5Gg__iKqdIG_lBiKdHBHHoQ&oe=678DA05C&_nc_sid=10d13b",
                 "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473777300_2608644809333752_6829001915967720892_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=104&_nc_ohc=jGWaaI-t3NgQ7kNvgG_G7jW&_nc_gid=ade93f1afc274f04a82c92d9b55d5753&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzU0NjA2ODI2MjkzMTE3ODc4Ng%3D%3D.3-ccb7-5&oh=00_AYA2Yk3eVifWtHRTdKnlzzrSExKSY53mP1SoTgVhRS9WZA&oe=678DA27E&_nc_sid=10d13b",
