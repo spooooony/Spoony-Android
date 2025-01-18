@@ -23,7 +23,7 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 fun ExploreTopAppBar(
     count: Int,
     onClick: () -> Unit,
-    place: String = "마포구",
+    place: String = "마포구"
 ) {
     TagTopAppBar(
         count = count
