@@ -51,7 +51,7 @@ fun ReportRadioButton(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = option.displayName,
+                        text = option.text,
                         modifier = Modifier.noRippleClickable { onOptionSelected(option) },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
