@@ -56,7 +56,7 @@ fun ReportRoute(
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext,
-        onOptionReportSelected = { viewModel.updateSelectedReportOption(it) },
+        onReportOptionSelected = { viewModel.updateSelectedReportOption(it) },
         onContextChanged = { viewModel.updateReportContext(it) }
     )
 }
@@ -66,7 +66,7 @@ private fun ReportScreen(
     reportOptions: ImmutableList<ReportOption>,
     selectedReportOption: ReportOption,
     reportContext: String,
-    onOptionReportSelected: (ReportOption) -> Unit,
+    onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -106,7 +106,7 @@ private fun ReportScreen(
 
             ReportRadioButton(
                 selectedOption = selectedReportOption,
-                onOptionSelected = onOptionReportSelected,
+                onOptionSelected = onReportOptionSelected,
                 options = reportOptions
             )
 
@@ -182,7 +182,7 @@ private fun ReportScreenPreview() {
             reportOptions = ReportOption.entries.toImmutableList(),
             selectedReportOption = selectedReportOption,
             reportContext = reportContext,
-            onOptionReportSelected = {
+            onReportOptionSelected = {
                 selectedReportOption = it
             },
             onContextChanged = {
