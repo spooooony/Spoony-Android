@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.register.componet
+package com.spoony.spoony.presentation.register.component
 
 import android.net.Uri
 import android.os.Build
@@ -166,7 +166,9 @@ fun PhotoPicker(
                         modifier = Modifier
                             .size(20.dp)
                             .noRippleClickable {
-                                onPhotosSelected(selectedPhotosList.removeAt(index))
+                                onPhotosSelected(
+                                    selectedPhotosList.removeAt(index)
+                                )
                             }
                             .align(Alignment.TopEnd)
                             .padding(top = 4.dp, end = 4.dp)
