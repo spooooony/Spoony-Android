@@ -33,7 +33,7 @@ import kotlinx.collections.immutable.immutableListOf
 
 @Composable
 fun StoreInfo(
-    menuItems: ImmutableList<String>,
+    menuList: ImmutableList<String>,
     locationSubTitle: String,
     location: String,
     isBlurred: Boolean,
@@ -68,7 +68,7 @@ fun StoreInfo(
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                menuItems.forEach { menuItem ->
+                menuList.forEach { menuItem ->
                     key(menuItem) {
                         PlaceDetailIconText(
                             icon = ImageVector.vectorResource(R.drawable.ic_spoon_24),
@@ -145,7 +145,7 @@ private fun HorizontalDashedLine(
 @Preview(showBackground = true)
 @Composable
 private fun StoreInfoPreview() {
-    val menuItems = immutableListOf(
+    val menuList = immutableListOf(
         "고등어봉초밥",
         "크렘브륄레",
         "사케"
@@ -159,7 +159,7 @@ private fun StoreInfoPreview() {
                 modifier = Modifier
                     .padding(horizontal = 20.dp),
                 isBlurred = true,
-                menuItems = menuItems,
+                menuList = menuList,
                 locationSubTitle = "어키",
                 location = "서울 마포구 연희로11가길 39"
             )
@@ -167,7 +167,7 @@ private fun StoreInfoPreview() {
                 modifier = Modifier
                     .padding(horizontal = 20.dp),
                 isBlurred = false,
-                menuItems = menuItems,
+                menuList = menuList,
                 locationSubTitle = "어키",
                 location = "서울 마포구 연희로11가길 39"
             )
