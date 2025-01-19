@@ -23,6 +23,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -43,6 +44,7 @@ fun SpoonyBasicTextField(
     trailingIcon: @Composable () -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     BasicTextField(
         value = value,
@@ -66,7 +68,16 @@ fun SpoonyBasicTextField(
             },
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
+        keyboardActions = KeyboardActions(
+            onDone = {
+                focusManager.clearFocus()
+                keyboardActions.onDone?.invoke(this)
+            },
+            onNext = {
+                focusManager.clearFocus()
+                keyboardActions.onNext?.invoke(this)
+            }
+        ),
         textStyle = SpoonyAndroidTheme.typography.body2m.copy(
             color = SpoonyAndroidTheme.colors.gray900
         ),

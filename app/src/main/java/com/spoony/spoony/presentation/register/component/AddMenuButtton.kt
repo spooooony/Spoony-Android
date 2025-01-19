@@ -29,7 +29,7 @@ fun AddMenuButton(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .border(1.dp, SpoonyAndroidTheme.colors.gray100)
+            .border(1.dp, SpoonyAndroidTheme.colors.gray100, RoundedCornerShape(8.dp))
             .background(SpoonyAndroidTheme.colors.gray0)
             .padding(vertical = 10.dp)
             .noRippleClickable(onClick = onClick)
