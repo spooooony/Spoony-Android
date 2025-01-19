@@ -47,6 +47,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import java.util.UUID
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
@@ -60,7 +61,7 @@ data class SelectedPhoto(
 
 @Composable
 fun PhotoPicker(
-    selectedPhotosList: ImmutableList<SelectedPhoto>,
+    selectedPhotosList: PersistentList<SelectedPhoto>,
     isErrorVisible: Boolean,
     onPhotosSelected: (ImmutableList<SelectedPhoto>) -> Unit
 ) {
@@ -165,9 +166,7 @@ fun PhotoPicker(
                         modifier = Modifier
                             .size(20.dp)
                             .noRippleClickable {
-                                val newList = selectedPhotosList.toMutableList()
-                                newList.removeAt(index)
-                                onPhotosSelected(newList.toPersistentList())
+                                onPhotosSelected(selectedPhotosList.removeAt(index))
                             }
                             .align(Alignment.TopEnd)
                             .padding(top = 4.dp, end = 4.dp)
@@ -205,7 +204,7 @@ fun PhotoPicker(
 @Preview
 @Composable
 private fun PhotoPickerTestScreen() {
-    var selectedPhotosList by remember { mutableStateOf<ImmutableList<SelectedPhoto>>(persistentListOf()) }
+    var selectedPhotosList by remember { mutableStateOf<PersistentList<SelectedPhoto>>(persistentListOf()) }
     var isPhotoEverUploaded by remember { mutableStateOf(false) }
     var isPhotoRequiredError by remember { mutableStateOf(false) }
 
