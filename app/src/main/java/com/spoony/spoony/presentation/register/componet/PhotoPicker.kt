@@ -5,6 +5,11 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,10 +45,10 @@ import coil.compose.AsyncImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import java.util.UUID
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import java.util.UUID
 
 const val MAX_PHOTO_COUNT = 5
 const val MIN_PHOTO_COUNT = 2
@@ -171,7 +176,11 @@ fun PhotoPicker(
             }
         }
 
-        if (isErrorVisible) {
+        AnimatedVisibility(
+            visible = isErrorVisible,
+            enter = slideInVertically { -it } + fadeIn(),
+            exit = slideOutVertically { it } + fadeOut(),
+        ) {
             Row(
                 modifier = Modifier.padding(top = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
