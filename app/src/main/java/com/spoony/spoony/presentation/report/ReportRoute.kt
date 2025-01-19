@@ -56,8 +56,9 @@ fun ReportRoute(
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext,
-        onReportOptionSelected = { viewModel.updateSelectedReportOption(it) },
-        onContextChanged = { viewModel.updateReportContext(it) }
+        onReportOptionSelected = viewModel::updateSelectedReportOption,
+        onContextChanged = viewModel::updateReportContext,
+        onBackButtonClick = {}
     )
 }
 
@@ -67,7 +68,8 @@ private fun ReportScreen(
     selectedReportOption: ReportOption,
     reportContext: String,
     onReportOptionSelected: (ReportOption) -> Unit,
-    onContextChanged: (String) -> Unit
+    onContextChanged: (String) -> Unit,
+    onBackButtonClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -79,7 +81,7 @@ private fun ReportScreen(
     ) {
         TitleTopAppBar(
             title = "신고하기",
-            onBackButtonClick = {}
+            onBackButtonClick = onBackButtonClick
         )
 
         HorizontalDivider(
@@ -187,7 +189,8 @@ private fun ReportScreenPreview() {
             },
             onContextChanged = {
                 reportContext = it
-            }
+            },
+            onBackButtonClick = {}
         )
     }
 }
