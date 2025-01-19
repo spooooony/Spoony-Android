@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,7 +47,7 @@ import kotlinx.collections.immutable.toPersistentList
 const val MAX_PHOTO_COUNT = 5
 
 @Composable
-fun PhotoPickerSingle(
+fun PhotoPicker(
     selectedPhotosList: ImmutableList<Uri>,
     isErrorVisible: Boolean,
     onPhotosSelected: (List<Uri>) -> Unit
@@ -132,7 +131,10 @@ fun PhotoPickerSingle(
                 }
             }
 
-            itemsIndexed(selectedPhotosList) { index, uri ->
+            itemsIndexed(
+                selectedPhotosList,
+                key = { _, item -> item }
+            ) { index, uri ->
                 Box(
                     modifier = Modifier.size(80.dp)
                 ) {
@@ -169,7 +171,7 @@ fun PhotoPickerSingle(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_error_24),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_error_24),
                     contentDescription = null,
                     tint = SpoonyAndroidTheme.colors.error400,
                     modifier = Modifier.size(16.dp)
@@ -186,7 +188,7 @@ fun PhotoPickerSingle(
 
 @Preview
 @Composable
-fun TestScreen() {
+private fun PhotoPickerTestScreen() {
     var selectedPhotosList by remember { mutableStateOf<ImmutableList<Uri>>(persistentListOf()) }
     var isPhotoEverUploaded by remember { mutableStateOf(false) }
     var isPhotoRequiredError by remember { mutableStateOf(false) }
@@ -206,7 +208,7 @@ fun TestScreen() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        PhotoPickerSingle(
+        PhotoPicker(
             selectedPhotosList = selectedPhotosList,
             isErrorVisible = isPhotoRequiredError,
             onPhotosSelected = { uris ->
