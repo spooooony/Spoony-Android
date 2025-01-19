@@ -43,7 +43,7 @@ fun SearchResultItem(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .border(1.dp, SpoonyAndroidTheme.colors.gray100)
+            .border(1.dp, SpoonyAndroidTheme.colors.gray100, RoundedCornerShape(8.dp))
             .background(Color.White)
             .padding(horizontal = 12.dp)
             .noRippleClickable(onClick = onResultClick)
