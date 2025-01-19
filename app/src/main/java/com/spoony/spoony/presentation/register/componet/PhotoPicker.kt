@@ -45,10 +45,10 @@ import coil.compose.AsyncImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import java.util.UUID
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import java.util.UUID
 
 const val MAX_PHOTO_COUNT = 5
 const val MIN_PHOTO_COUNT = 2
@@ -179,7 +179,7 @@ fun PhotoPicker(
         AnimatedVisibility(
             visible = isErrorVisible,
             enter = slideInVertically { -it } + fadeIn(),
-            exit = slideOutVertically { it } + fadeOut(),
+            exit = slideOutVertically { it } + fadeOut()
         ) {
             Row(
                 modifier = Modifier.padding(top = 8.dp),
