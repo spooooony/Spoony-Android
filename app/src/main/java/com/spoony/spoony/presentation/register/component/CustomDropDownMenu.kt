@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.register.componet
+package com.spoony.spoony.presentation.register.component
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState

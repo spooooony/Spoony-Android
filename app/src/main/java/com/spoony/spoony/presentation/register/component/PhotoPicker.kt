@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.register.componet
+package com.spoony.spoony.presentation.register.component
 
 import android.net.Uri
 import android.os.Build
