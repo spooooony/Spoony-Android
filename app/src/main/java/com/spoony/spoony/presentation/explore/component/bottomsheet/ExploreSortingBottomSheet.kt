@@ -21,13 +21,14 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.presentation.explore.SortingOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreSortingBottomSheet(
     onDismiss: () -> Unit,
-    onClick: (String) -> Unit,
-    currentSortingOption: String = "latest"
+    onClick: (SortingOption) -> Unit,
+    currentSortingOption: SortingOption = SortingOption.LATEST
 ) {
     val sheetState = rememberModalBottomSheetState(
         confirmValueChange = { false }
@@ -47,67 +48,38 @@ fun ExploreSortingBottomSheet(
                     end = 20.dp
                 )
         ) {
-            Text(
-                text = "최신순",
-                style = SpoonyAndroidTheme.typography.body2b,
-                color = if (currentSortingOption == "latest") {
-                    SpoonyAndroidTheme.colors.gray900
-                } else {
-                    SpoonyAndroidTheme.colors.gray400
-                },
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .noRippleClickable {
-                        onClick("latest")
-                        onDismiss()
-                    }
-                    .background(
-                        if (currentSortingOption == "latest") {
-                            SpoonyAndroidTheme.colors.gray0
-                        } else {
-                            SpoonyAndroidTheme.colors.white
+            SortingOption.entries.forEach { sortingOption ->
+                Text(
+                    text = sortingOption.stringValue,
+                    style = SpoonyAndroidTheme.typography.body2b,
+                    color = if (currentSortingOption == sortingOption) {
+                        SpoonyAndroidTheme.colors.gray900
+                    } else {
+                        SpoonyAndroidTheme.colors.gray400
+                    },
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .noRippleClickable {
+                            onClick(sortingOption)
+                            onDismiss()
                         }
-                    )
-                    .padding(vertical = 18.dp)
-            )
+                        .background(
+                            if (currentSortingOption == sortingOption) {
+                                SpoonyAndroidTheme.colors.gray0
+                            } else {
+                                SpoonyAndroidTheme.colors.white
+                            }
+                        )
+                        .padding(vertical = 18.dp)
+                )
 
-            Spacer(
-                modifier = Modifier
-                    .height(12.dp)
-            )
-
-            Text(
-                text = "인기순",
-                style = SpoonyAndroidTheme.typography.body2b,
-                color = if (currentSortingOption == "popularity") {
-                    SpoonyAndroidTheme.colors.gray900
-                } else {
-                    SpoonyAndroidTheme.colors.gray400
-                },
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .noRippleClickable {
-                        onClick("popularity")
-                        onDismiss()
-                    }
-                    .background(
-                        if (currentSortingOption == "popularity") {
-                            SpoonyAndroidTheme.colors.gray0
-                        } else {
-                            SpoonyAndroidTheme.colors.white
-                        }
-                    )
-                    .padding(vertical = 18.dp)
-            )
-
-            Spacer(
-                modifier = Modifier
-                    .height(12.dp)
-            )
+                Spacer(
+                    modifier = Modifier
+                        .height(12.dp)
+                )
+            }
 
             SpoonyButton(
                 text = "취소",
