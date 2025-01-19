@@ -45,7 +45,7 @@ fun SearchResultItem(
             .fillMaxWidth()
             .border(1.dp, SpoonyAndroidTheme.colors.gray100)
             .background(Color.White)
-            .noRippleClickable { onResultClick }
+            .noRippleClickable(onClick = onResultClick)
             .padding(horizontal = 12.dp)
     ) {
         Row(
@@ -56,17 +56,23 @@ fun SearchResultItem(
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_pin_24),
                 contentDescription = null,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
+                tint = SpoonyAndroidTheme.colors.gray900
             )
+
             Spacer(modifier = Modifier.width(4.dp))
+
             Column {
                 Text(
                     text = placeName,
                     style = SpoonyAndroidTheme.typography.body2b,
                     color = SpoonyAndroidTheme.colors.black,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+
                 Spacer(modifier = Modifier.height(2.dp))
+
                 Text(
                     text = placeRoadAddress,
                     style = SpoonyAndroidTheme.typography.caption1m,
@@ -76,11 +82,12 @@ fun SearchResultItem(
                 )
             }
         }
+
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_delete_filled_24),
             contentDescription = null,
             tint = SpoonyAndroidTheme.colors.gray400,
-            modifier = Modifier.noRippleClickable { onDeleteClick }
+            modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
         )
     }
 }
@@ -89,7 +96,9 @@ fun SearchResultItem(
 @Composable
 private fun SearchResultPreview() {
     SpoonyAndroidTheme {
-        Box(modifier = Modifier.width(340.dp).padding(vertical = 20.dp)) {
+        Box(modifier = Modifier
+            .width(340.dp)
+            .padding(vertical = 20.dp)) {
             SearchResultItem(
                 placeName = "테스트점",
                 placeRoadAddress = "우리집 어쩌구",
