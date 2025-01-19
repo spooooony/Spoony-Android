@@ -166,9 +166,7 @@ fun PhotoPicker(
                         modifier = Modifier
                             .size(20.dp)
                             .noRippleClickable {
-                                onPhotosSelected(
-                                    selectedPhotosList.removeAt(index)
-                                )
+                                onPhotosSelected(selectedPhotosList.removeAt(index))
                             }
                             .align(Alignment.TopEnd)
                             .padding(top = 4.dp, end = 4.dp)
