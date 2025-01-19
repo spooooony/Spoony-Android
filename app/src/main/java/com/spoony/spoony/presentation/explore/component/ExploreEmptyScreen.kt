@@ -38,7 +38,7 @@ fun ExploreEmptyScreen(
                 .padding(horizontal = 50.dp)
                 .aspectRatio(1f),
             composition = lottieComposition,
-            iterations = LottieConstants.IterateForever,
+            iterations = LottieConstants.IterateForever
         )
 
         Text(

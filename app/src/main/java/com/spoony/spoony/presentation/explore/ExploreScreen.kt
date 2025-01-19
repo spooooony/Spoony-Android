@@ -3,11 +3,10 @@ package com.spoony.spoony.presentation.explore
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
+import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
 
 @Composable
 fun ExploreScreen() {
@@ -16,9 +15,9 @@ fun ExploreScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Explore Screen",
-            fontSize = 50.sp
+        ExploreSortingBottomSheet(
+            onDismiss = {},
+            onClick = {}
         )
     }
 }
