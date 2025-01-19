@@ -28,8 +28,10 @@ import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
 
-val LOCATION_LIST = listOf(
+val LOCATION_LIST = persistentListOf(
     "서울",
     "경기",
     "부산",
@@ -41,7 +43,7 @@ val LOCATION_LIST = listOf(
     "세종"
 )
 
-val CITY_LIST = listOf(
+val CITY_LIST = persistentListOf(
     "종로구",
     "중구",
     "용산구",
