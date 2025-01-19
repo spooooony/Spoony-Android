@@ -96,9 +96,11 @@ fun SearchResultItem(
 @Composable
 private fun SearchResultPreview() {
     SpoonyAndroidTheme {
-        Box(modifier = Modifier
-            .width(340.dp)
-            .padding(vertical = 20.dp)) {
+        Box(
+            modifier = Modifier
+                .width(340.dp)
+                .padding(vertical = 20.dp)
+        ) {
             SearchResultItem(
                 placeName = "테스트점",
                 placeRoadAddress = "우리집 어쩌구",
