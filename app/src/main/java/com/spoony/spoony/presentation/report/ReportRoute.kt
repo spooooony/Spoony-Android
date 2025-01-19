@@ -58,7 +58,8 @@ fun ReportRoute(
         reportContext = state.reportContext,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
-        onBackButtonClick = {}
+        onBackButtonClick = {},
+        onReportClick = {}
     )
 }
 
@@ -69,7 +70,8 @@ private fun ReportScreen(
     reportContext: String,
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    onReportClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -161,7 +163,7 @@ private fun ReportScreen(
 
             SpoonyButton(
                 text = "신고하기",
-                onClick = {},
+                onClick = onReportClick,
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
                 modifier = Modifier.fillMaxWidth()
@@ -190,7 +192,8 @@ private fun ReportScreenPreview() {
             onContextChanged = {
                 reportContext = it
             },
-            onBackButtonClick = {}
+            onBackButtonClick = {},
+            onReportClick = {}
         )
     }
 }
