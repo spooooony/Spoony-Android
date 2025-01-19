@@ -141,8 +141,7 @@ fun PhotoPickerSingle(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(8.dp))
-                            .border(1.dp, SpoonyAndroidTheme.colors.gray500, RoundedCornerShape(8.dp)),
+                            .clip(RoundedCornerShape(8.dp)),
                         contentScale = ContentScale.Crop
                     )
                     Icon(
