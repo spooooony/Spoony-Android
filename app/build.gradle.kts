@@ -32,6 +32,9 @@ android {
             "BASE_URL",
             properties.getProperty("dev.base.url")
         )
+
+        manifestPlaceholders["naverClientId"] = properties.getProperty("naverClientId")
+        buildConfigField("String", "NAVER_CLIENT_ID", "String.valueOf(\"${properties["naver.client.id"]}\")")
     }
 
     buildTypes {
@@ -44,8 +47,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
@@ -57,6 +60,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.play.services.maps)
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
