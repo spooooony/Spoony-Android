@@ -14,27 +14,11 @@ class PlaceDetailViewModel @Inject constructor() : ViewModel() {
     val state: StateFlow<PlaceDetailState>
         get() = _state
 
-    fun updateScoop(isScoop: Boolean) {
-        _state.value = _state.value.copy(
-            postEntity = when (_state.value.postEntity) {
-                is UiState.Success -> {
-                    val currentPost = (_state.value.postEntity as UiState.Success<PostEntity>).data
-                    UiState.Success(currentPost.copy(isScoop = !isScoop))
-                }
-                else -> _state.value.postEntity
-            }
-        )
+    fun useSpoon() {
+
     }
 
-    fun updateZzim(isZzim: Boolean) {
-        _state.value = _state.value.copy(
-            postEntity = when (_state.value.postEntity) {
-                is UiState.Success -> {
-                    val currentPost = (_state.value.postEntity as UiState.Success<PostEntity>).data
-                    UiState.Success(currentPost.copy(isZzim = !isZzim))
-                }
-                else -> _state.value.postEntity
-            }
-        )
+    fun updateAddMap(isAddMap: Boolean) {
+
     }
 }

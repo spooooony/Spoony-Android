@@ -82,23 +82,19 @@ fun PlaceDetailRoute(
                     userName = userProfile.userName,
                     userRegion = userProfile.userRegion,
                     photoUrlList = data.photoUrlList,
-                    categoryColorResponse = IconTagEntity(
-                        name = data.categoryColorResponse.name,
-                        backgroundColorHex = data.categoryColorResponse.backgroundColorHex,
-                        textColorHex = data.categoryColorResponse.textColorHex,
-                        iconUrl = data.categoryColorResponse.iconUrl
-                    ),
+                    category = data.category,
                     date = data.date,
                     placeAddress = data.placeAddress,
                     placeName = data.placeName,
                     spoonAmount = spoonAmount,
-                    zzinCount = data.zzinCount,
-                    isScoop = data.isScoop,
-                    isZzim = data.isZzim,
-                    updateScoop = viewModel::updateScoop,
-                    updateZzim = viewModel::updateZzim,
+                    addMapCount = data.addMapCount,
+                    isScooped = data.isScooped,
+                    isAddMap = data.isAddMap,
+                    onScoopButtonClick = viewModel::useSpoon,
+                    onAddMapButtonClick = viewModel::updateAddMap,
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = {}
+                    onBackButtonClick = {},
+                    onReportButtonClick = {}
                 )
             }
         }
@@ -114,18 +110,19 @@ private fun PlaceDetailScreen(
     userName: String,
     userRegion: String,
     photoUrlList: ImmutableList<String>,
-    categoryColorResponse: IconTagEntity,
+    category: IconTagEntity,
     date: String,
     placeAddress: String,
     placeName: String,
     spoonAmount: Int,
-    zzinCount: Int,
-    isScoop: Boolean = false,
-    isZzim: Boolean,
-    updateScoop: (Boolean) -> Unit,
-    updateZzim: (Boolean) -> Unit,
+    addMapCount: Int,
+    isScooped: Boolean = false,
+    isAddMap: Boolean,
+    onScoopButtonClick: () -> Unit,
+    onAddMapButtonClick: (Boolean) -> Unit,
     onBackButtonClick: () -> Unit,
-    dropdownMenuList: ImmutableList<String>
+    dropdownMenuList: ImmutableList<String>,
+    onReportButtonClick: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -157,15 +154,13 @@ private fun PlaceDetailScreen(
                 UserProfileInfo(
                     imageUrl = userProfileUrl,
                     name = userName,
-                    location = userRegion,
+                    location = "$userRegion 수저",
                     modifier = Modifier.weight(1f)
                 )
 
                 IconDropdownMenu(
                     menuItems = dropdownMenuList,
-                    onMenuItemClick = { selectedItem ->
-                        // 신고하기 클릭시 이벤트
-                    }
+                    onMenuItemClick = onReportButtonClick
                 )
             }
 
@@ -173,17 +168,17 @@ private fun PlaceDetailScreen(
 
             PlaceDetailImageLazyRow(
                 imageList = photoUrlList,
-                isBlurred = !isScoop
+                isBlurred = !isScooped
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                 IconTag(
-                    text = categoryColorResponse.name,
-                    backgroundColorHex = categoryColorResponse.backgroundColorHex,
-                    textColorHex = categoryColorResponse.textColorHex,
-                    iconUrl = categoryColorResponse.iconUrl
+                    text = category.name,
+                    backgroundColorHex = category.backgroundColorHex,
+                    textColorHex = category.textColorHex,
+                    iconUrl = category.iconUrl
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -213,7 +208,7 @@ private fun PlaceDetailScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 StoreInfo(
-                    isBlurred = !isScoop,
+                    isBlurred = !isScooped,
                     menuList = menuList,
                     locationSubTitle = placeName,
                     location = placeAddress
@@ -223,27 +218,27 @@ private fun PlaceDetailScreen(
         }
         PlaceDetailBottomBar(
             modifier = Modifier,
-            count = zzinCount,
-            isScoop = isScoop,
-            isZzim = isZzim,
-            onSpoonEatClick = updateScoop,
+            addMapCount = addMapCount,
+            isScooped = isScooped,
+            isAddMap = isAddMap,
+            onScoopButtonClick = onScoopButtonClick,
             onSearchMapClick = {
                 // 네이버 길찾기 코드
             },
-            onMyMapSelectClick = updateZzim
+            onAddMapButtonClick = onAddMapButtonClick
         )
     }
 }
 
 @Composable
-fun PlaceDetailBottomBar(
-    count: Int,
-    onSpoonEatClick: (Boolean) -> Unit,
+private fun PlaceDetailBottomBar(
+    addMapCount: Int,
+    onScoopButtonClick: () -> Unit,
     onSearchMapClick: () -> Unit,
-    onMyMapSelectClick: (Boolean) -> Unit,
+    onAddMapButtonClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    isScoop: Boolean = false,
-    isZzim: Boolean = false
+    isScooped: Boolean = false,
+    isAddMap: Boolean = false
 ) {
     Row(
         modifier = modifier
@@ -255,7 +250,7 @@ fun PlaceDetailBottomBar(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isScoop) {
+        if (isScooped) {
             SpoonyButton(
                 text = "길찾기",
                 onClick = onSearchMapClick,
@@ -269,12 +264,12 @@ fun PlaceDetailBottomBar(
             Column(
                 modifier = Modifier
                     .width(56.dp)
-                    .noRippleClickable { onMyMapSelectClick(isZzim) },
+                    .noRippleClickable { onAddMapButtonClick(isAddMap) },
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    imageVector = if (!isZzim) ImageVector.vectorResource(id = R.drawable.ic_add_map_gray400_24) else ImageVector.vectorResource(id = R.drawable.ic_add_map_main400_24),
+                    imageVector = if (isAddMap) ImageVector.vectorResource(id = R.drawable.ic_add_map_main400_24) else ImageVector.vectorResource(id = R.drawable.ic_add_map_gray400_24),
                     modifier = Modifier
                         .size(32.dp),
                     contentDescription = null,
@@ -284,7 +279,7 @@ fun PlaceDetailBottomBar(
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = count.toString(),
+                    text = addMapCount.toString(),
                     style = SpoonyAndroidTheme.typography.caption1m,
                     color = SpoonyAndroidTheme.colors.gray800
                 )
@@ -294,7 +289,7 @@ fun PlaceDetailBottomBar(
                 text = "떠먹기",
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Medium,
-                onClick = { onSpoonEatClick(isScoop) },
+                onClick = { onScoopButtonClick() },
                 modifier = Modifier.weight(1f),
                 icon = {
                     Icon(

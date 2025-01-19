@@ -14,8 +14,8 @@ data class PostEntity(
     val placeAddress: String,
     val latitude: Double,
     val longitude: Double,
-    val zzinCount: Int,
-    val isZzim: Boolean,
-    val isScoop: Boolean,
-    val categoryColorResponse: IconTagEntity
+    val addMapCount: Int,
+    val isAddMap: Boolean,
+    val isScooped: Boolean,
+    val category: IconTagEntity
 )
