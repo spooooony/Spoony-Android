@@ -81,7 +81,7 @@ fun SpoonySearchTextField(
                 focusManager.clearFocus() // 키보드 내리기
                 onDoneAction() // 전달된 onDone 액션 실행
             }
-        ),
+        )
     )
 }
 

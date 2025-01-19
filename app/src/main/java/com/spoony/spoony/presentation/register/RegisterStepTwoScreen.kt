@@ -37,7 +37,7 @@ fun RegisterStepTwoScreen(
         Spacer(modifier = Modifier.height(100.dp))
 
         NextButton(
-            enabled = true,  // Will be controlled by validation
+            enabled = true, // Will be controlled by validation
             onClick = onComplete,
             modifier = Modifier.padding(vertical = 16.dp)
         )

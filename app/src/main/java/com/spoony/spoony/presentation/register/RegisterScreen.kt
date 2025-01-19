@@ -22,7 +22,6 @@ import com.spoony.spoony.presentation.register.component.TopLinearProgressBar
 import com.spoony.spoony.presentation.register.navigation.RegisterRoute
 import com.spoony.spoony.presentation.register.navigation.registerGraph
 
-
 @Composable
 fun RegisterScreen(
     paddingValues: PaddingValues,
@@ -50,8 +49,8 @@ fun RegisterScreen(
     ) {
         Column(
             modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 56.dp, bottom = 10.dp)
+                .fillMaxWidth()
+                .padding(top = 56.dp, bottom = 10.dp)
         ) {
             TopLinearProgressBar(
                 currentStep = currentProgress,
