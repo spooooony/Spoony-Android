@@ -22,14 +22,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.presentation.report.type.ReportOption
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ReportRadioButton(
-    selectedOption: String,
-    onOptionSelected: (String) -> Unit,
-    options: ImmutableList<String>,
+    selectedOption: ReportOption,
+    onOptionSelected: (ReportOption) -> Unit,
+    options: ImmutableList<ReportOption>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -50,7 +51,7 @@ fun ReportRadioButton(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = option,
+                        text = option.text,
                         modifier = Modifier.noRippleClickable { onOptionSelected(option) },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -64,8 +65,9 @@ fun ReportRadioButton(
 @Preview(showBackground = true)
 @Composable
 private fun ReportRadioButtonPreview() {
-    var selectedOption by remember { mutableStateOf("영리 목적/ 홍보성 후기") }
-    val options = immutableListOf("영리 목적/ 홍보성 후기", "욕설/ 인신 공격", "불법정보", "개인 정보 노출", "도배", "기타")
+    val options = ReportOption.entries.toImmutableList()
+    var selectedOption by remember { mutableStateOf(ReportOption.ADVERTISEMENT) }
+
     SpoonyAndroidTheme {
         ReportRadioButton(
             selectedOption = selectedOption,
