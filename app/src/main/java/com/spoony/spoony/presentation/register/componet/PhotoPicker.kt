@@ -40,39 +40,45 @@ import coil.compose.AsyncImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import java.util.UUID
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
 const val MAX_PHOTO_COUNT = 5
 
+data class SelectedPhoto(
+    val uri: Uri,
+    val id: String = UUID.randomUUID().toString()
+)
+
 @Composable
 fun PhotoPicker(
-    selectedPhotosList: ImmutableList<Uri>,
+    selectedPhotosList: ImmutableList<SelectedPhoto>,
     isErrorVisible: Boolean,
-    onPhotosSelected: (List<Uri>) -> Unit
+    onPhotosSelected: (List<SelectedPhoto>) -> Unit
 ) {
     val remainingPhotoCount = MAX_PHOTO_COUNT - selectedPhotosList.size
     val isPhotoAddable = remainingPhotoCount > 0
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickMultipleVisualMedia(MAX_PHOTO_COUNT)
+        ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxOf(remainingPhotoCount, 2))
     ) { uris ->
-        onPhotosSelected(selectedPhotosList + uris.take(remainingPhotoCount))
+        onPhotosSelected(selectedPhotosList + uris.map { SelectedPhoto(it) })
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         uri?.let {
-            onPhotosSelected(selectedPhotosList + listOf(it))
+            onPhotosSelected(selectedPhotosList + listOf(SelectedPhoto(it)))
         }
     }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetMultipleContents()
     ) { uris ->
-        val limitedUris = uris.take(remainingPhotoCount).toList()
+        val limitedUris = uris.take(remainingPhotoCount).map { SelectedPhoto(it) }
         onPhotosSelected(selectedPhotosList + limitedUris)
     }
 
@@ -133,13 +139,13 @@ fun PhotoPicker(
 
             itemsIndexed(
                 selectedPhotosList,
-                key = { _, item -> item }
-            ) { index, uri ->
+                key = { _, item -> item.id }
+            ) { index, photo ->
                 Box(
                     modifier = Modifier.size(80.dp)
                 ) {
                     AsyncImage(
-                        model = uri,
+                        model = photo.uri,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
@@ -189,7 +195,7 @@ fun PhotoPicker(
 @Preview
 @Composable
 private fun PhotoPickerTestScreen() {
-    var selectedPhotosList by remember { mutableStateOf<ImmutableList<Uri>>(persistentListOf()) }
+    var selectedPhotosList by remember { mutableStateOf<ImmutableList<SelectedPhoto>>(persistentListOf()) }
     var isPhotoEverUploaded by remember { mutableStateOf(false) }
     var isPhotoRequiredError by remember { mutableStateOf(false) }
 
@@ -211,10 +217,10 @@ private fun PhotoPickerTestScreen() {
         PhotoPicker(
             selectedPhotosList = selectedPhotosList,
             isErrorVisible = isPhotoRequiredError,
-            onPhotosSelected = { uris ->
-                selectedPhotosList = uris.toPersistentList()
+            onPhotosSelected = { photos ->
+                selectedPhotosList = photos.toPersistentList()
 
-                if (uris.isEmpty() && isPhotoEverUploaded) {
+                if (photos.isEmpty() && isPhotoEverUploaded) {
                     isPhotoRequiredError = true
                 } else {
                     isPhotoRequiredError = false
