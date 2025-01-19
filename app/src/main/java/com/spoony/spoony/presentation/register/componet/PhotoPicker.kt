@@ -46,6 +46,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
 const val MAX_PHOTO_COUNT = 5
+const val MIN_PHOTO_COUNT = 2
 
 data class SelectedPhoto(
     val uri: Uri,
@@ -62,12 +63,11 @@ fun PhotoPicker(
     val isPhotoAddable = remainingPhotoCount > 0
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxOf(remainingPhotoCount, 2))
+        ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxOf(remainingPhotoCount, MIN_PHOTO_COUNT))
     ) { uris ->
         onPhotosSelected((selectedPhotosList + uris.map { SelectedPhoto(it) }).toPersistentList())
     }
 
-    // singlePhotoPickerLauncher
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -76,7 +76,6 @@ fun PhotoPicker(
         }
     }
 
-    // galleryLauncher
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetMultipleContents()
     ) { uris ->
