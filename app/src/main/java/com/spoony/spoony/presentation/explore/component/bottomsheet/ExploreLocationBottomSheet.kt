@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +30,6 @@ import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
-import kotlinx.collections.immutable.immutableListOf
 import kotlinx.collections.immutable.persistentListOf
 
 val LOCATION_LIST = persistentListOf(
@@ -93,11 +94,11 @@ fun ExploreLocationBottomSheet(
                     modifier = Modifier
                         .weight(128 / 360f)
                 ) {
-                    repeat(LOCATION_LIST.size) { index ->
-                        with(LOCATION_LIST[index]) {
+                    LOCATION_LIST.forEach { location ->
+                        key(location) {
                             LocationItem(
-                                location = this,
-                                isSelected = this == "서울",
+                                location = location,
+                                isSelected = location == "서울",
                                 onClick = {}
                             )
                         }
@@ -109,16 +110,13 @@ fun ExploreLocationBottomSheet(
                         .weight(232 / 360f)
                 ) {
                     items(
-                        count = CITY_LIST.size,
-                        key = { index ->
-                            CITY_LIST[index]
-                        }
-                    ) { index ->
-                        with(CITY_LIST[index]) {
+                        items = CITY_LIST
+                    ) { city ->
+                        key(city) {
                             CityItem(
-                                city = this,
-                                isSelected = this == currentCity,
-                                onClick = { currentCity = this }
+                                city = city,
+                                isSelected = city == currentCity,
+                                onClick = { currentCity = city }
                             )
                         }
                     }
