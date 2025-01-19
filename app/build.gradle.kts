@@ -85,6 +85,9 @@ dependencies {
     implementation(libs.advanced.bottom.sheet)
 
     implementation(libs.kotlinx.immutable)
+
+    // Naver Map
+    implementation(libs.bundles.naverMap)
 }
 
 ktlint {
