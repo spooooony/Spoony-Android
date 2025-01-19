@@ -19,15 +19,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -42,6 +38,8 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.domain.entity.IconTagEntity
+import com.spoony.spoony.domain.entity.PostEntity
+import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
@@ -57,56 +55,77 @@ fun PlaceDetailRoute(
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
 
-    when (state.iconTag) {
-        is UiState.Empty -> {}
-        is UiState.Loading -> {}
-        is UiState.Failure -> {}
-        is UiState.Success -> {
-            val temp = state.iconTag as UiState.Success<IconTagEntity>
-            PlaceDetailScreen(
-                navigateToMap = {},
-                menuItems = state.menuItems,
-                textTitle = state.textTitle,
-                textContent = state.textContent,
-                profileUrl = state.profileUrl,
-                profileName = state.profileName,
-                profileLocation = state.profileLocation,
-                imageList = state.imageList,
-                tag = IconTagEntity(
-                    name = temp.data.name,
-                    backgroundColorHex = temp.data.backgroundColorHex,
-                    textColorHex = temp.data.textColorHex,
-                    iconUrl = temp.data.iconUrl
-                ),
-                dateString = state.dateString,
-                locationAddress = state.locationAddress,
-                locationName = state.locationName,
-                locationPinCount = state.locationPinCount,
-                mySpoonCount = state.mySpoonCount
-            )
+    val spoonAmount = when (state.spoonAmountEntity) {
+        is UiState.Success -> (state.spoonAmountEntity as UiState.Success<Int>).data
+        else -> 0
+    }
+
+    val userProfile = when (state.userEntity) {
+        is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
+        else -> UserEntity(
+            userProfileUrl = "",
+            userName = "",
+            userRegion = ""
+        )
+    }
+
+    with(state.postEntity as UiState.Success<PostEntity>) {
+        when (state.postEntity) {
+            is UiState.Empty -> {}
+            is UiState.Loading -> {}
+            is UiState.Failure -> {}
+            is UiState.Success -> {
+                PlaceDetailScreen(
+                    menuList = data.menuList,
+                    title = data.title,
+                    description = data.description,
+                    userProfileUrl = userProfile.userProfileUrl,
+                    userName = userProfile.userName,
+                    userRegion = userProfile.userRegion,
+                    photoUrlList = data.photoUrlList,
+                    categoryColorResponse = IconTagEntity(
+                        name = data.categoryColorResponse.name,
+                        backgroundColorHex = data.categoryColorResponse.backgroundColorHex,
+                        textColorHex = data.categoryColorResponse.textColorHex,
+                        iconUrl = data.categoryColorResponse.iconUrl
+                    ),
+                    date = data.date,
+                    placeAddress = data.placeAddress,
+                    placeName = data.placeName,
+                    spoonAmount = spoonAmount,
+                    zzinCount = data.zzinCount,
+                    isScoop = data.isScoop,
+                    isZzim = data.isZzim,
+                    updateScoop = viewModel::updateScoop,
+                    updateZzim = viewModel::updateZzim,
+                    onBackButtonClick = {}
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun PlaceDetailScreen(
-    navigateToMap: () -> Unit,
-    menuItems: ImmutableList<String>,
-    textTitle: String,
-    textContent: String,
-    profileUrl: String,
-    profileName: String,
-    profileLocation: String,
-    imageList: ImmutableList<String>,
-    tag: IconTagEntity,
-    dateString: String,
-    locationAddress: String,
-    locationName: String,
-    locationPinCount: Int,
-    mySpoonCount: Int
+    menuList: ImmutableList<String>,
+    title: String,
+    description: String,
+    userProfileUrl: String,
+    userName: String,
+    userRegion: String,
+    photoUrlList: ImmutableList<String>,
+    categoryColorResponse: IconTagEntity,
+    date: String,
+    placeAddress: String,
+    placeName: String,
+    spoonAmount: Int,
+    zzinCount: Int,
+    isScoop: Boolean = false,
+    isZzim: Boolean,
+    updateScoop: (Boolean) -> Unit,
+    updateZzim: (Boolean) -> Unit,
+    onBackButtonClick: () -> Unit
 ) {
-    var isSpoonEat by remember { mutableStateOf(false) }
-    var isMyMap by remember { mutableStateOf(false) }
     val dropdownMenuList: ImmutableList<String> = immutableListOf("신고하기")
     val scrollState = rememberScrollState()
 
@@ -117,9 +136,9 @@ private fun PlaceDetailScreen(
             .statusBarsPadding()
     ) {
         TagTopAppBar(
-            count = mySpoonCount,
+            count = spoonAmount,
             showBackButton = true,
-            onBackButtonClick = navigateToMap
+            onBackButtonClick = onBackButtonClick
         )
         Column(
             modifier = Modifier
@@ -136,16 +155,16 @@ private fun PlaceDetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 UserProfileInfo(
-                    imageUrl = profileUrl,
-                    name = profileName,
-                    location = profileLocation,
+                    imageUrl = userProfileUrl,
+                    name = userName,
+                    location = userRegion,
                     modifier = Modifier.weight(1f)
                 )
 
                 IconDropdownMenu(
                     menuItems = dropdownMenuList,
                     onMenuItemClick = { selectedItem ->
-                        // selectedItem
+                        // 신고하기 클릭시 이벤트
                     }
                 )
             }
@@ -153,24 +172,24 @@ private fun PlaceDetailScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             PlaceDetailImageLazyRow(
-                imageList = imageList,
-                isBlurred = !isSpoonEat
+                imageList = photoUrlList,
+                isBlurred = !isScoop
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                 IconTag(
-                    text = tag.name,
-                    backgroundColorHex = tag.backgroundColorHex,
-                    textColorHex = tag.textColorHex,
-                    iconUrl = tag.iconUrl
+                    text = categoryColorResponse.name,
+                    backgroundColorHex = categoryColorResponse.backgroundColorHex,
+                    textColorHex = categoryColorResponse.textColorHex,
+                    iconUrl = categoryColorResponse.iconUrl
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = textTitle,
+                    text = title,
                     style = SpoonyAndroidTheme.typography.title1,
                     color = SpoonyAndroidTheme.colors.black
                 )
@@ -178,7 +197,7 @@ private fun PlaceDetailScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = dateString,
+                    text = date,
                     style = SpoonyAndroidTheme.typography.caption1m,
                     color = SpoonyAndroidTheme.colors.gray400
                 )
@@ -186,7 +205,7 @@ private fun PlaceDetailScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = textContent,
+                    text = description,
                     style = SpoonyAndroidTheme.typography.body2m,
                     color = SpoonyAndroidTheme.colors.gray900
                 )
@@ -194,28 +213,24 @@ private fun PlaceDetailScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 StoreInfo(
-                    isBlurred = !isSpoonEat,
-                    menuItems = menuItems,
-                    locationSubTitle = locationName,
-                    location = locationAddress
+                    isBlurred = !isScoop,
+                    menuList = menuList,
+                    locationSubTitle = placeName,
+                    location = placeAddress
                 )
             }
             Spacer(modifier = Modifier.height(27.dp))
         }
         PlaceDetailBottomBar(
             modifier = Modifier,
-            count = locationPinCount,
-            isSpoonEat = isSpoonEat,
-            isMyMap = isMyMap,
-            onSpoonEatClick = {
-                isSpoonEat = !isSpoonEat
-            },
+            count = zzinCount,
+            isScoop = isScoop,
+            isZzim = isZzim,
+            onSpoonEatClick = updateScoop,
             onSearchMapClick = {
                 // 네이버 길찾기 코드
             },
-            onMyMapSelectClick = {
-                isMyMap = !isMyMap
-            }
+            onMyMapSelectClick = updateZzim
         )
     }
 }
@@ -223,12 +238,12 @@ private fun PlaceDetailScreen(
 @Composable
 fun PlaceDetailBottomBar(
     count: Int,
-    onSpoonEatClick: () -> Unit,
+    onSpoonEatClick: (Boolean) -> Unit,
     onSearchMapClick: () -> Unit,
-    onMyMapSelectClick: () -> Unit,
+    onMyMapSelectClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    isSpoonEat: Boolean = false,
-    isMyMap: Boolean = false
+    isScoop: Boolean = false,
+    isZzim: Boolean = false
 ) {
     Row(
         modifier = modifier
@@ -240,7 +255,7 @@ fun PlaceDetailBottomBar(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isSpoonEat) {
+        if (isScoop) {
             SpoonyButton(
                 text = "길찾기",
                 onClick = onSearchMapClick,
@@ -254,12 +269,12 @@ fun PlaceDetailBottomBar(
             Column(
                 modifier = Modifier
                     .width(56.dp)
-                    .noRippleClickable(onMyMapSelectClick),
+                    .noRippleClickable { onMyMapSelectClick(isZzim) },
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    imageVector = if (!isMyMap) ImageVector.vectorResource(id = R.drawable.ic_add_map_gray400_24) else ImageVector.vectorResource(id = R.drawable.ic_add_map_main400_24),
+                    imageVector = if (!isZzim) ImageVector.vectorResource(id = R.drawable.ic_add_map_gray400_24) else ImageVector.vectorResource(id = R.drawable.ic_add_map_main400_24),
                     modifier = Modifier
                         .size(32.dp),
                     contentDescription = null,
@@ -279,7 +294,7 @@ fun PlaceDetailBottomBar(
                 text = "떠먹기",
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Medium,
-                onClick = onSpoonEatClick,
+                onClick = { onSpoonEatClick(isScoop) },
                 modifier = Modifier.weight(1f),
                 icon = {
                     Icon(
@@ -291,43 +306,5 @@ fun PlaceDetailBottomBar(
                 }
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PlaceDetailScreenPreview() {
-    SpoonyAndroidTheme {
-        PlaceDetailScreen(
-            menuItems = immutableListOf(
-                "고등어봉초밥",
-                "크렘브륄레",
-                "사케"
-            ),
-            textTitle = "인생 이자카야. 고등어 초밥 안주가 그냥 미쳤어요.",
-            textContent = "이자카야인데 친구랑 가서 안주만 5개 넘게 시킴.. 명성이 자자한 고등어봉 초밥은 꼭 시키세요! 입에 넣자마자 사르르 녹아 없어짐. 그리고 밤 후식 진짜 맛도리니까 밤 디저트 좋아하는 사람이면 꼭 먹어보기!",
-            profileUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-            profileName = "안세홍",
-            profileLocation = "성북구 수저",
-            imageList = immutableListOf(
-                "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473779988_950264370546560_5341501240589886868_n.jpg?stp=dst-jpg_e35_tt7&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_ohc=pHHeQnTQ2MMQ7kNvgFAMpBC&_nc_gid=ade93f1afc274f04a82c92d9b55d5753&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzU0NjA2ODI2MjUyMDI2ODQxNA%3D%3D.3-ccb7-5&oh=00_AYCoKFozJIoZG9Izmc5UtfR5Gg__iKqdIG_lBiKdHBHHoQ&oe=678DA05C&_nc_sid=10d13b",
-                "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473777300_2608644809333752_6829001915967720892_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=104&_nc_ohc=jGWaaI-t3NgQ7kNvgG_G7jW&_nc_gid=ade93f1afc274f04a82c92d9b55d5753&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzU0NjA2ODI2MjkzMTE3ODc4Ng%3D%3D.3-ccb7-5&oh=00_AYA2Yk3eVifWtHRTdKnlzzrSExKSY53mP1SoTgVhRS9WZA&oe=678DA27E&_nc_sid=10d13b",
-                "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473699784_1020999916728583_5213195047254766315_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE0NDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=107&_nc_ohc=Jsa46D-cPKQQ7kNvgEb3Ibg&_nc_gid=43b0cc3eec544f7b82ac6ce4d0931342&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU0NDg1ODAzMzAwMjU2MzI2Nw%3D%3D.3-ccb7-5&oh=00_AYAUoYMY3WAk816Pv1ntEDKsuGiRyiIqIIEtN2n_rNDOzA&oe=678DAEA4&_nc_sid=7a9f4b",
-                "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473668872_631155566092547_2449423066645547426_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=111&_nc_ohc=R493Nwe8XM4Q7kNvgGceBQv&_nc_gid=43b0cc3eec544f7b82ac6ce4d0931342&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU0NDY0OTE1NzAwNzA2MzU2Mg%3D%3D.3-ccb7-5&oh=00_AYDU1LNSGLa4GKAZQRlX5ABzJQ4qf5h62z257zioGFlesA&oe=678DABD6&_nc_sid=7a9f4b",
-                "https://scontent-ssn1-1.cdninstagram.com/v/t51.29350-15/473560284_568265156121387_7921460915182213394_n.jpg?stp=dst-jpegr_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuaGRyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=gKoX2mv1x0QQ7kNvgHd6AjB&_nc_gid=af16ea24a7d04cc9a0d1e86a87ffccac&edm=APoiHPcBAAAA&ccb=7-5&ig_cache_key=MzU0NDU3MjM1MzUwNDM2MDA5Ng%3D%3D.3-ccb7-5&oh=00_AYDc2sbybqTbqQJaVw9HkW-Zt4aaVElCM-ecAUheJdCyGQ&oe=678DAE1A&_nc_sid=22de04"
-            ),
-            tag = IconTagEntity(
-                name = "주류",
-                backgroundColorHex = "EEE3FD",
-                textColorHex = "AD75F9",
-                iconUrl = "https://github.com/user-attachments/assets/b492c9c7-0796-4312-9b32-7ae474700bd0"
-            ),
-            dateString = "2025년 1월 2일",
-            locationAddress = "서울 마포구 연희로11가길 39",
-            locationName = "어키",
-            locationPinCount = 99,
-            mySpoonCount = 99,
-            navigateToMap = {}
-        )
     }
 }
