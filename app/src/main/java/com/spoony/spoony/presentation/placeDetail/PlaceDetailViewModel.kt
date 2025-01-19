@@ -1,8 +1,6 @@
 package com.spoony.spoony.presentation.placeDetail
 
 import androidx.lifecycle.ViewModel
-import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.entity.PostEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,10 +13,8 @@ class PlaceDetailViewModel @Inject constructor() : ViewModel() {
         get() = _state
 
     fun useSpoon() {
-
     }
 
     fun updateAddMap(isAddMap: Boolean) {
-
     }
 }
