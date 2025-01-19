@@ -45,7 +45,6 @@ import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazy
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.immutableListOf
 
 @Composable
 fun PlaceDetailRoute(
@@ -98,6 +97,7 @@ fun PlaceDetailRoute(
                     isZzim = data.isZzim,
                     updateScoop = viewModel::updateScoop,
                     updateZzim = viewModel::updateZzim,
+                    dropdownMenuList = state.dropDownMenuList,
                     onBackButtonClick = {}
                 )
             }
@@ -124,9 +124,9 @@ private fun PlaceDetailScreen(
     isZzim: Boolean,
     updateScoop: (Boolean) -> Unit,
     updateZzim: (Boolean) -> Unit,
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    dropdownMenuList: ImmutableList<String>
 ) {
-    val dropdownMenuList: ImmutableList<String> = immutableListOf("신고하기")
     val scrollState = rememberScrollState()
 
     Column(
