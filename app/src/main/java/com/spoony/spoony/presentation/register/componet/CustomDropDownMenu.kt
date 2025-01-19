@@ -127,7 +127,8 @@ fun DropdownMenuItem(
                     text = placeName,
                     style = SpoonyAndroidTheme.typography.body2b,
                     color = SpoonyAndroidTheme.colors.black,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
