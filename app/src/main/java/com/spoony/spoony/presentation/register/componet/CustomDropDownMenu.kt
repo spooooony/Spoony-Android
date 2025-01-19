@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.register.componet
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -43,6 +42,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.spoony.spoony.R
@@ -53,6 +54,7 @@ fun CustomDropDownMenu(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     isVisible: Boolean = false,
+    horizontalPadding: Dp = 20.dp,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val alpha by animateFloatAsState(
@@ -83,7 +85,7 @@ fun CustomDropDownMenu(
                             this.alpha = alpha
                             transformOrigin = TransformOrigin(0.5f, 0f)
                         }
-                        .padding(horizontal = 20.dp)
+                        .padding(horizontal = horizontalPadding)
                         .clip(RoundedCornerShape(8.dp))
                         .border(1.dp, SpoonyAndroidTheme.colors.gray100, RoundedCornerShape(8.dp)),
                     content = content
@@ -146,7 +148,6 @@ fun DropdownMenuItem(
     }
 }
 
-@SuppressLint("UseOfNonLambdaOffsetOverload")
 @Preview(showBackground = true)
 @Composable
 fun SearchScreenPreview() {
@@ -174,7 +175,7 @@ fun SearchScreenPreview() {
                 isVisible = isDropdownVisible,
                 onDismissRequest = { isDropdownVisible = false },
                 modifier = Modifier
-                    .offset(y = (textFieldSize + 4).dp)
+                    .offset { IntOffset(0, (textFieldSize + 4).dp.roundToPx()) }
                     .background(Color.White)
             ) {
                 val places = listOf(
