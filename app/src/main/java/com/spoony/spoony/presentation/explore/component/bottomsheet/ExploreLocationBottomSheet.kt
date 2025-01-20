@@ -66,8 +66,7 @@ fun ExploreLocationBottomSheet(
 ) {
     val density = LocalDensity.current
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-        confirmValueChange = { false }
+        skipPartiallyExpanded = true
     )
 
     var currentCity by remember { mutableStateOf(selectedCity) }
@@ -126,7 +125,10 @@ fun ExploreLocationBottomSheet(
                 text = "선택하기",
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
-                onClick = { onClick(currentCity) },
+                onClick = {
+                    onClick(currentCity)
+                    onDismiss()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
