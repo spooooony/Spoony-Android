@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.explore
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -60,43 +61,38 @@ fun ExploreRoute(
         else -> persistentListOf()
     }
 
-    when (state.value.feedList) {
-        is UiState.Loading -> {}
-        is UiState.Empty -> {}
-        is UiState.Failure -> {}
-        is UiState.Success -> {
-            with(state.value) {
-                ExploreScreen(
-                    paddingValues = paddingValues,
-                    spoonCount = spoonCount,
-                    selectedCity = selectedCity,
-                    selectedCategoryId = selectedCategoryId,
-                    selectedSortingOption = selectedSortingOption,
-                    categoryList = categoryList,
-                    feedList = if (feedList is UiState.Success) feedList.data else persistentListOf(),
-                    onLocationSortingButtonClick = viewModel::updateSelectedCity,
-                    onSortingButtonClick = viewModel::updateSelectedSortingOption,
-                    onFeedItemClick = {},
-                    updateSelectedCategory = viewModel::updateSelectedCategory
-                )
-            }
-        }
+    with(state.value) {
+        ExploreScreen(
+            paddingValues = paddingValues,
+            spoonCount = spoonCount,
+            selectedCity = selectedCity,
+            selectedCategoryId = selectedCategoryId,
+            selectedSortingOption = selectedSortingOption,
+            categoryList = categoryList,
+            feedList = feedList,
+            onLocationSortingButtonClick = viewModel::updateSelectedCity,
+            onSortingButtonClick = viewModel::updateSelectedSortingOption,
+            onFeedItemClick = {},
+            onRegisterButtonClick = {},
+            updateSelectedCategory = viewModel::updateSelectedCategory
+        )
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExploreScreen(
+private fun ExploreScreen(
     paddingValues: PaddingValues,
     spoonCount: Int,
     selectedCity: String,
     selectedCategoryId: Int,
     selectedSortingOption: SortingOption,
     categoryList: ImmutableList<CategoryEntity>,
-    feedList: ImmutableList<FeedModel>,
+    feedList: UiState<ImmutableList<FeedModel>>,
     onLocationSortingButtonClick: (String) -> Unit,
     onSortingButtonClick: (SortingOption) -> Unit,
     onFeedItemClick: (Int) -> Unit,
+    onRegisterButtonClick: () -> Unit,
     updateSelectedCategory: (Int) -> Unit
 ) {
     var isLocationBottomSheetVisible by remember { mutableStateOf(false) }
@@ -118,98 +114,126 @@ fun ExploreScreen(
         )
     }
 
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
+    Column(
+        modifier = Modifier
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
-        stickyHeader {
-            ExploreTopAppBar(
-                count = spoonCount,
-                onClick = {
-                    isLocationBottomSheetVisible = true
-                },
-                place = selectedCity
-            )
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                items(
-                    items = categoryList,
-                    key = { category ->
-                        category.categoryId
-                    }
-                ) { category ->
-                    IconChip(
-                        text = category.categoryName,
-                        tagColor = if (selectedCategoryId == category.categoryId) ChipColor.Black else ChipColor.White,
-                        iconUrl = category.iconUrl,
-                        onClick = { updateSelectedCategory(category.categoryId) }
-                    )
-                }
-            }
+        ExploreTopAppBar(
+            count = spoonCount,
+            onClick = {
+                isLocationBottomSheetVisible = true
+            },
+            place = selectedCity
+        )
 
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(SpoonyAndroidTheme.colors.white)
-                    .padding(vertical = 16.dp, horizontal = 20.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .noRippleClickable { isSortingBottomSheetVisible = true }
-                        .padding(4.dp)
-                ) {
-                    Text(
-                        text = selectedSortingOption.stringValue,
-                        style = SpoonyAndroidTheme.typography.caption1m,
-                        color = SpoonyAndroidTheme.colors.gray700,
-                        modifier = Modifier
-                            .padding(end = 2.dp)
-                    )
-
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_filter_24),
-                        contentDescription = null,
-                        tint = SpoonyAndroidTheme.colors.gray700,
-                        modifier = Modifier
-                            .size(16.dp)
-                    )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            items(
+                items = categoryList,
+                key = { category ->
+                    category.categoryId
                 }
-            }
-        }
-        if (feedList.isEmpty()) {
-            item {
-                ExploreEmptyScreen(
-                    onClick = {},
-                    modifier = Modifier
-                        .fillMaxSize()
+            ) { category ->
+                IconChip(
+                    text = category.categoryName,
+                    tagColor = if (selectedCategoryId == category.categoryId) ChipColor.Black else ChipColor.White,
+                    iconUrl = category.iconUrl,
+                    onClick = { updateSelectedCategory(category.categoryId) }
                 )
             }
-        } else {
-            items(
-                items = feedList,
-                key = { feed ->
-                    feed.feedId
-                }
-            ) { feed ->
-                ExploreItem(
-                    username = feed.username,
-                    placeSpoon = feed.userRegion,
-                    review = feed.title,
-                    addMapCount = feed.addMapCount,
-                    iconUrl = feed.categoryEntity.iconUrl,
-                    tagText = feed.categoryEntity.categoryName,
-                    textColorHex = feed.categoryEntity.textColor ?: "000000",
-                    backgroundColorHex = feed.categoryEntity.backgroundColor ?: "000000",
+        }
+
+        ExploreContent(
+            feedList = feedList,
+            selectedSortingOption = selectedSortingOption,
+            onSortingButtonClick = { isSortingBottomSheetVisible = it },
+            onFeedItemClick = onFeedItemClick,
+            onRegisterButtonClick = onRegisterButtonClick
+        )
+    }
+}
+
+@Composable
+private fun ExploreContent(
+    feedList: UiState<ImmutableList<FeedModel>>,
+    selectedSortingOption: SortingOption,
+    onSortingButtonClick: (Boolean) -> Unit,
+    onFeedItemClick: (Int) -> Unit,
+    onRegisterButtonClick: () -> Unit
+) {
+    when (feedList) {
+        is UiState.Empty -> {
+            ExploreEmptyScreen(
+                onClick = onRegisterButtonClick,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        }
+
+        is UiState.Success -> {
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.End,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .noRippleClickable { onFeedItemClick(feed.feedId) }
-                        .padding(horizontal = 20.dp)
-                )
+                        .background(SpoonyAndroidTheme.colors.white)
+                        .padding(vertical = 16.dp, horizontal = 20.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .noRippleClickable { onSortingButtonClick(true) }
+                            .padding(4.dp)
+                    ) {
+                        Text(
+                            text = selectedSortingOption.stringValue,
+                            style = SpoonyAndroidTheme.typography.caption1m,
+                            color = SpoonyAndroidTheme.colors.gray700,
+                            modifier = Modifier
+                                .padding(end = 2.dp)
+                        )
+
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_filter_24),
+                            contentDescription = null,
+                            tint = SpoonyAndroidTheme.colors.gray700,
+                            modifier = Modifier
+                                .size(16.dp)
+                        )
+                    }
+                }
+
+                LazyColumn(
+                    contentPadding = PaddingValues(bottom = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(
+                        items = feedList.data,
+                        key = { feed ->
+                            feed.feedId
+                        }
+                    ) { feed ->
+                        ExploreItem(
+                            username = feed.username,
+                            placeSpoon = feed.userRegion,
+                            review = feed.title,
+                            addMapCount = feed.addMapCount,
+                            iconUrl = feed.categoryEntity.iconUrl,
+                            tagText = feed.categoryEntity.categoryName,
+                            textColorHex = feed.categoryEntity.textColor ?: "000000",
+                            backgroundColorHex = feed.categoryEntity.backgroundColor ?: "000000",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .noRippleClickable { onFeedItemClick(feed.feedId) }
+                                .padding(horizontal = 20.dp)
+                        )
+                    }
+                }
             }
         }
+
+        else -> {}
     }
 }
