@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
@@ -26,8 +27,8 @@ fun MapListItem(
     imageUrl: String,
     categoryIconUrl: String,
     categoryName: String,
-    textColor: String,
-    backgroundColor: String,
+    textColor: Color,
+    backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
     val typography = SpoonyAndroidTheme.typography
@@ -54,8 +55,8 @@ fun MapListItem(
                 IconTag(
                     text = categoryName,
                     iconUrl = categoryIconUrl,
-                    backgroundColorHex = backgroundColor,
-                    textColorHex = textColor,
+                    backgroundColor = backgroundColor,
+                    textColor = textColor,
                     modifier = Modifier
                         .padding(start = 4.dp)
                 )

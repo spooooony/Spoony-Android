@@ -41,8 +41,8 @@ fun MapPlaceDetailCard(
     imageUrlList: ImmutableList<String>,
     categoryIconUrl: String,
     categoryName: String,
-    textColor: String,
-    backgroundColor: String,
+    textColor: Color,
+    backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -87,8 +87,8 @@ fun MapPlaceDetailCard(
                 )
                 IconTag(
                     text = categoryName,
-                    backgroundColorHex = backgroundColor,
-                    textColorHex = textColor,
+                    backgroundColor = backgroundColor,
+                    textColor = textColor,
                     iconUrl = categoryIconUrl,
                     modifier = Modifier
                         .padding(start = 6.dp)
