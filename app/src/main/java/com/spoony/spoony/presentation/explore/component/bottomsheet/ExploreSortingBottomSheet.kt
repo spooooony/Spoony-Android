@@ -21,7 +21,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.explore.SortingOption
+import com.spoony.spoony.presentation.explore.type.SortingOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

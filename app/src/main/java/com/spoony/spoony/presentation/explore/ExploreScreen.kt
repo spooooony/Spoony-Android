@@ -35,6 +35,8 @@ import com.spoony.spoony.presentation.explore.component.ExploreItem
 import com.spoony.spoony.presentation.explore.component.ExploreTopAppBar
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreLocationBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
+import com.spoony.spoony.presentation.explore.model.FeedModel
+import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

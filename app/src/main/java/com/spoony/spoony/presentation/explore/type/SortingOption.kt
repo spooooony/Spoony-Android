@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore
+package com.spoony.spoony.presentation.explore.type
 
 enum class SortingOption(
     val stringValue: String,

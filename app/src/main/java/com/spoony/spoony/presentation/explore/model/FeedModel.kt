@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore
+package com.spoony.spoony.presentation.explore.model
 
 import com.spoony.spoony.domain.entity.CategoryEntity
 
