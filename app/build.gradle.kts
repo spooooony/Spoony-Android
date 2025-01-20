@@ -34,7 +34,7 @@ android {
         )
 
         manifestPlaceholders["naverClientId"] = properties.getProperty("naverClientId")
-        buildConfigField("String", "NAVER_CLIENT_ID", "String.valueOf(\"${properties["naver.client.id"]}\")")
+        buildConfigField("String", "NAVER_CLIENT_ID", properties.getProperty("naver.client.id"))
     }
 
     buildTypes {
