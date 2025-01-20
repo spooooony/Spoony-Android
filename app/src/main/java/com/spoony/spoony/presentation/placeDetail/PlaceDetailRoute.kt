@@ -44,6 +44,7 @@ import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
+import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import kotlinx.collections.immutable.ImmutableList
@@ -94,8 +95,10 @@ fun PlaceDetailRoute(
                     addMapCount = data.addMapCount,
                     isScooped = data.isScooped,
                     isAddMap = data.isAddMap,
+                    scoopDialogVisibility = state.scoopDialogVisibility,
                     onScoopButtonClick = viewModel::useSpoon,
                     onAddMapButtonClick = viewModel::updateAddMap,
+                    updateScoopDialogVisibility = viewModel::updateScoopDialogVisibility,
                     dropdownMenuList = state.dropDownMenuList,
                     onBackButtonClick = {},
                     onReportButtonClick = {}
@@ -123,6 +126,8 @@ private fun PlaceDetailScreen(
     addMapCount: Int,
     isAddMap: Boolean,
     isScooped: Boolean,
+    updateScoopDialogVisibility: (Boolean) -> Unit,
+    scoopDialogVisibility: Boolean,
     onScoopButtonClick: () -> Unit,
     onAddMapButtonClick: (Boolean) -> Unit,
     onBackButtonClick: () -> Unit,
@@ -130,6 +135,17 @@ private fun PlaceDetailScreen(
     onReportButtonClick: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
+
+    if (scoopDialogVisibility) {
+        ScoopDialog(
+            onClickPositive = {
+                onScoopButtonClick()
+            },
+            onClickNegative = {
+                updateScoopDialogVisibility(false)
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -224,7 +240,9 @@ private fun PlaceDetailScreen(
             addMapCount = addMapCount,
             isScooped = isScooped,
             isAddMap = isAddMap,
-            onScoopButtonClick = onScoopButtonClick,
+            onScoopButtonClick = {
+                updateScoopDialogVisibility(true)
+            },
             onSearchMapClick = {
                 // 네이버 길찾기 코드
             },

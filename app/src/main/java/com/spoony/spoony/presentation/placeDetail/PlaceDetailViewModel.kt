@@ -17,4 +17,10 @@ class PlaceDetailViewModel @Inject constructor() : ViewModel() {
 
     fun updateAddMap(isAddMap: Boolean) {
     }
+
+    fun updateScoopDialogVisibility(scoopDialogVisibility: Boolean) {
+        _state.value = _state.value.copy(
+            scoopDialogVisibility = scoopDialogVisibility
+        )
+    }
 }
