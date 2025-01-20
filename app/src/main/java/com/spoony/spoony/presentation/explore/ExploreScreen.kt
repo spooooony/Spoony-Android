@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.explore
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -174,8 +175,8 @@ private fun ExploreContent(
 
         is UiState.Success -> {
             Column {
-                Row(
-                    horizontalArrangement = Arrangement.End,
+                Box(
+                    contentAlignment = Alignment.CenterEnd,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(SpoonyAndroidTheme.colors.white)
