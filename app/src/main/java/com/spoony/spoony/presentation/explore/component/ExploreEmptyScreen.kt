@@ -32,6 +32,7 @@ fun ExploreEmptyScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
+            .padding(top = 56.dp)
     ) {
         LottieAnimation(
             modifier = Modifier
