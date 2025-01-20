@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.theme.gray700
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
@@ -43,7 +42,7 @@ fun ExploreTopAppBar(
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right_24),
                 contentDescription = null,
-                tint = gray700,
+                tint = SpoonyAndroidTheme.colors.gray700,
                 modifier = Modifier
                     .size(26.dp)
                     .padding(start = 5.dp)
