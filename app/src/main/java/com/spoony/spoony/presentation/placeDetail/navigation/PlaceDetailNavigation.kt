@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.placeDetail.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -14,9 +15,13 @@ fun NavController.navigateToPlaceDetail(
     navigate(PlaceDetail, navOptions)
 }
 
-fun NavGraphBuilder.placeDetailNavGraph() {
+fun NavGraphBuilder.placeDetailNavGraph(
+    paddingValues: PaddingValues
+) {
     composable<PlaceDetail> {
-        PlaceDetailRoute()
+        PlaceDetailRoute(
+            paddingValues = paddingValues
+        )
     }
 }
 

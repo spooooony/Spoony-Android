@@ -51,7 +51,9 @@ fun MainScreen(
                 paddingValues = innerPadding
             )
 
-            placeDetailNavGraph()
+            placeDetailNavGraph(
+                paddingValues = innerPadding
+            )
 
             reportNavGraph()
         }
