@@ -7,7 +7,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.explore.ExploreRoute
-import com.spoony.spoony.presentation.explore.ExploreScreen
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToExplore(
