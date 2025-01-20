@@ -17,5 +17,5 @@ data class PostEntity(
     val addMapCount: Int,
     val isAddMap: Boolean,
     val isScooped: Boolean,
-    val category: IconTagEntity
+    val category: CategoryEntity
 )

@@ -35,8 +35,10 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.domain.entity.IconTagEntity
+import com.spoony.spoony.core.util.extension.toValidHexColor
+import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
@@ -68,12 +70,12 @@ fun PlaceDetailRoute(
         )
     }
 
-    with(state.postEntity as UiState.Success<PostEntity>) {
-        when (state.postEntity) {
-            is UiState.Empty -> {}
-            is UiState.Loading -> {}
-            is UiState.Failure -> {}
-            is UiState.Success -> {
+    when (state.postEntity) {
+        is UiState.Empty -> {}
+        is UiState.Loading -> {}
+        is UiState.Failure -> {}
+        is UiState.Success -> {
+            with(state.postEntity as UiState.Success<PostEntity>) {
                 PlaceDetailScreen(
                     paddingValues = paddingValues,
                     menuList = data.menuList,
@@ -112,7 +114,7 @@ private fun PlaceDetailScreen(
     userName: String,
     userRegion: String,
     photoUrlList: ImmutableList<String>,
-    category: IconTagEntity,
+    category: CategoryEntity,
     date: String,
     placeAddress: String,
     placeName: String,
@@ -176,9 +178,9 @@ private fun PlaceDetailScreen(
 
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                 IconTag(
-                    text = category.name,
-                    backgroundColorHex = category.backgroundColorHex,
-                    textColorHex = category.textColorHex,
+                    text = category.categoryName,
+                    backgroundColor = Color.hexToColor(category.backgroundColor.toValidHexColor()),
+                    textColor = Color.hexToColor(category.textColor.toValidHexColor()),
                     iconUrl = category.iconUrl
                 )
 
