@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import com.spoony.spoony.core.designsystem.component.chip.IconChip
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ChipColor
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
@@ -223,8 +225,8 @@ private fun ExploreContent(
                             addMapCount = feed.addMapCount,
                             iconUrl = feed.categoryEntity.iconUrl,
                             tagText = feed.categoryEntity.categoryName,
-                            textColorHex = feed.categoryEntity.textColor ?: "000000",
-                            backgroundColorHex = feed.categoryEntity.backgroundColor ?: "000000",
+                            textColor = Color.hexToColor(feed.categoryEntity.textColor ?: "000000"),
+                            backgroundColor = Color.hexToColor(feed.categoryEntity.backgroundColor ?: "000000"),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .noRippleClickable { onFeedItemClick(feed.feedId) }
