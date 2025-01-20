@@ -32,7 +32,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.type.ChipColor
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
@@ -141,8 +140,9 @@ private fun ExploreScreen(
             ) { category ->
                 IconChip(
                     text = category.categoryName,
-                    tagColor = if (selectedCategoryId == category.categoryId) ChipColor.Black else ChipColor.White,
-                    iconUrl = category.iconUrl,
+                    unSelectedIconUrl = category.unSelectedIconUrl ?: "",
+                    selectedIconUrl = category.iconUrl,
+                    isSelected = selectedCategoryId == category.categoryId,
                     onClick = { updateSelectedCategory(category.categoryId) }
                 )
             }
