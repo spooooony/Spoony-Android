@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.map.navigaion
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -14,9 +15,11 @@ fun NavController.navigateToMap(
     navigate(Map, navOptions)
 }
 
-fun NavGraphBuilder.mapNavGraph() {
+fun NavGraphBuilder.mapNavGraph(
+    paddingValues: PaddingValues
+) {
     composable<Map> {
-        MapRoute()
+        MapRoute(paddingValues = paddingValues)
     }
 }
 

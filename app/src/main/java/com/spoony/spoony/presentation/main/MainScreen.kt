@@ -39,7 +39,9 @@ fun MainScreen(
             navController = navigator.navController,
             startDestination = navigator.startDestination
         ) {
-            mapNavGraph()
+            mapNavGraph(
+                paddingValues = innerPadding
+            )
 
             exploreNavGraph(
                 paddingValues = innerPadding
