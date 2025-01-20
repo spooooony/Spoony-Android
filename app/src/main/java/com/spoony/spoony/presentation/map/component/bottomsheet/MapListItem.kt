@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.util.extension.hexToColor
 
 @Composable
 fun MapListItem(
@@ -28,8 +27,8 @@ fun MapListItem(
     imageUrl: String,
     categoryIconUrl: String,
     categoryName: String,
-    textColor: String,
-    backgroundColor: String,
+    textColor: Color,
+    backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
     val typography = SpoonyAndroidTheme.typography
@@ -56,8 +55,8 @@ fun MapListItem(
                 IconTag(
                     text = categoryName,
                     iconUrl = categoryIconUrl,
-                    backgroundColor = Color.hexToColor(backgroundColor),
-                    textColor = Color.hexToColor(textColor),
+                    backgroundColor = backgroundColor,
+                    textColor = textColor,
                     modifier = Modifier
                         .padding(start = 4.dp)
                 )
