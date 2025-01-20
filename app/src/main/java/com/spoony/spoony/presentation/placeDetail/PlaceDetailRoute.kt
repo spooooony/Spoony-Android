@@ -291,7 +291,7 @@ private fun PlaceDetailBottomBar(
                 text = "떠먹기",
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Medium,
-                onClick = { onScoopButtonClick() },
+                onClick = onScoopButtonClick,
                 modifier = Modifier.weight(1f),
                 icon = {
                     Icon(
