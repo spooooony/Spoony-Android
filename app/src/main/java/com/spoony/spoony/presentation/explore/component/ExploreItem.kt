@@ -31,8 +31,8 @@ fun ExploreItem(
     addMapCount: Int,
     iconUrl: String,
     tagText: String,
-    textColorHex: String,
-    backgroundColorHex: String,
+    textColor: Color,
+    backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -52,8 +52,8 @@ fun ExploreItem(
             IconTag(
                 text = tagText,
                 iconUrl = iconUrl,
-                textColorHex = textColorHex,
-                backgroundColorHex = backgroundColorHex
+                textColor = textColor,
+                backgroundColor = backgroundColor
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
