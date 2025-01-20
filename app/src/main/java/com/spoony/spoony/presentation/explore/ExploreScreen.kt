@@ -24,10 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ChipColor
+import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
@@ -42,18 +45,43 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ExploreRoute(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    viewModel: ExploreViewModel = hiltViewModel()
 ) {
-    ExploreScreen(
-        paddingValues = paddingValues,
-        spoonCount = 99,
-        selectedCity = "마포구",
-        selectedCategory = 0,
-        categoryList = persistentListOf(),
-        feedList = persistentListOf(),
-        onLocationSortingButtonClick = {},
-        updateSelectedCategory = {}
-    )
+    val state = viewModel.state.collectAsStateWithLifecycle()
+
+    val spoonCount = when (state.value.spoonCount) {
+        is UiState.Success -> (state.value.spoonCount as? UiState.Success<Int>)?.data ?: 0
+        else -> 0
+    }
+
+    val categoryList = when (state.value.categoryList) {
+        is UiState.Success -> (state.value.categoryList as? UiState.Success<ImmutableList<CategoryEntity>>)?.data ?: persistentListOf()
+        else -> persistentListOf()
+    }
+
+    when (state.value.feedList) {
+        is UiState.Loading -> {}
+        is UiState.Empty -> {}
+        is UiState.Failure -> {}
+        is UiState.Success -> {
+            with(state.value) {
+                ExploreScreen(
+                    paddingValues = paddingValues,
+                    spoonCount = spoonCount,
+                    selectedCity = selectedCity,
+                    selectedCategoryId = selectedCategoryId,
+                    selectedSortingOption = selectedSortingOption,
+                    categoryList = categoryList,
+                    feedList = if (feedList is UiState.Success) feedList.data else persistentListOf(),
+                    onLocationSortingButtonClick = viewModel::updateSelectedCity,
+                    onSortingButtonClick = viewModel::updateSelectedSortingOption,
+                    onFeedItemClick = {},
+                    updateSelectedCategory = viewModel::updateSelectedCategory
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -62,10 +90,13 @@ fun ExploreScreen(
     paddingValues: PaddingValues,
     spoonCount: Int,
     selectedCity: String,
-    selectedCategory: Int,
+    selectedCategoryId: Int,
+    selectedSortingOption: SortingOption,
     categoryList: ImmutableList<CategoryEntity>,
     feedList: ImmutableList<FeedModel>,
     onLocationSortingButtonClick: (String) -> Unit,
+    onSortingButtonClick: (SortingOption) -> Unit,
+    onFeedItemClick: (Int) -> Unit,
     updateSelectedCategory: (Int) -> Unit
 ) {
     var isLocationBottomSheetVisible by remember { mutableStateOf(false) }
@@ -82,8 +113,8 @@ fun ExploreScreen(
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = { },
-            currentSortingOption = SortingOption.LATEST
+            onClick = onSortingButtonClick,
+            currentSortingOption = selectedSortingOption
         )
     }
 
@@ -96,7 +127,8 @@ fun ExploreScreen(
                 count = spoonCount,
                 onClick = {
                     isLocationBottomSheetVisible = true
-                }
+                },
+                place = selectedCity
             )
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 20.dp),
@@ -110,7 +142,7 @@ fun ExploreScreen(
                 ) { category ->
                     IconChip(
                         text = category.categoryName,
-                        tagColor = if (selectedCategory == category.categoryId) ChipColor.Black else ChipColor.White,
+                        tagColor = if (selectedCategoryId == category.categoryId) ChipColor.Black else ChipColor.White,
                         iconUrl = category.iconUrl,
                         onClick = { updateSelectedCategory(category.categoryId) }
                     )
@@ -131,7 +163,7 @@ fun ExploreScreen(
                         .padding(4.dp)
                 ) {
                     Text(
-                        text = "최신순",
+                        text = selectedSortingOption.stringValue,
                         style = SpoonyAndroidTheme.typography.caption1m,
                         color = SpoonyAndroidTheme.colors.gray700,
                         modifier = Modifier
@@ -174,6 +206,7 @@ fun ExploreScreen(
                     backgroundColorHex = feed.categoryEntity.backgroundColor ?: "000000",
                     modifier = Modifier
                         .fillMaxWidth()
+                        .noRippleClickable { onFeedItemClick(feed.feedId) }
                         .padding(horizontal = 20.dp)
                 )
             }
