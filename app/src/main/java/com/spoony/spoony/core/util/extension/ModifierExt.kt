@@ -39,7 +39,7 @@ fun Modifier.addFocusCleaner(focusManager: FocusManager): Modifier {
 
 @Composable
 fun Modifier.spoonyGradient(
-    cornerRadius: Dp,
+    cornerRadius: Dp
 ) = composed {
     this.drawWithContent {
         val roundedCornerPath = Path().apply {
