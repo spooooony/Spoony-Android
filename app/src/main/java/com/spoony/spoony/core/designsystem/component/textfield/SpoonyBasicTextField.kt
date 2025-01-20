@@ -23,7 +23,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -37,14 +37,14 @@ fun SpoonyBasicTextField(
     onFocusChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    imeAction: ImeAction = ImeAction.Done,
+    onDoneAction: () -> Unit = {},
+    onSearchAction: () -> Unit = {},
     singleLine: Boolean = true,
     leadingIcon: @Composable () -> Unit = {},
     trailingIcon: @Composable () -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
 
     BasicTextField(
         value = value,
@@ -67,16 +67,12 @@ fun SpoonyBasicTextField(
                 onFocusChanged(focusState.isFocused)
             },
         singleLine = singleLine,
-        keyboardOptions = keyboardOptions,
+        keyboardOptions = KeyboardOptions(
+            imeAction = imeAction
+        ),
         keyboardActions = KeyboardActions(
-            onDone = {
-                focusManager.clearFocus()
-                keyboardActions.onDone?.invoke(this)
-            },
-            onNext = {
-                focusManager.clearFocus()
-                keyboardActions.onNext?.invoke(this)
-            }
+            onDone = { onDoneAction() },
+            onSearch = { onSearchAction() }
         ),
         textStyle = SpoonyAndroidTheme.typography.body2m.copy(
             color = SpoonyAndroidTheme.colors.gray900

@@ -29,8 +29,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
@@ -124,12 +126,13 @@ private fun CustomBasicTextField(
     modifier: Modifier = Modifier,
     maxLength: Int = 0,
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    imeAction: ImeAction = ImeAction.Done,
     singleLine: Boolean = false
 ) {
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
     val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         BasicTextField(
@@ -149,9 +152,12 @@ private fun CustomBasicTextField(
                     onFocusChanged(focusState.isFocused)
                 },
             singleLine = singleLine,
-            keyboardOptions = keyboardOptions,
+            keyboardOptions = KeyboardOptions(
+                imeAction = imeAction
+            ),
             keyboardActions = KeyboardActions(
                 onDone = {
+                    keyboardController?.hide()
                     focusManager.clearFocus()
                 }
             ),

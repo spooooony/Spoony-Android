@@ -15,6 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +38,8 @@ fun SpoonyLineTextField(
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
     var selectText: Boolean by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     val spoonyColors = SpoonyAndroidTheme.colors
     val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
 
@@ -64,6 +68,10 @@ fun SpoonyLineTextField(
                 if (newText.length <= maxLength) {
                     onValueChanged(newText)
                 }
+            },
+            onDoneAction = {
+                keyboardController?.hide()
+                focusManager.clearFocus()
             },
             borderColor = borderColor,
             modifier = modifier,
