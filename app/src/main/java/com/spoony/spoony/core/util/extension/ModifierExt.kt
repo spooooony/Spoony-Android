@@ -53,7 +53,8 @@ fun Modifier.spoonyGradient(
 
         clipPath(roundedCornerPath) {
             val gradientBrush = Brush.radialGradient(
-                0.48f to Color(0xff171719), 1f to Color(0xff878A93),
+                0.48f to Color(0xff171719),
+                1f to Color(0xff878A93),
                 center = Offset(size.width, -size.height),
                 radius = size.width * 2
             )
