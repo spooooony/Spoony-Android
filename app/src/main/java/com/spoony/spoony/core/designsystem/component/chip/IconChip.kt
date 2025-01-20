@@ -48,14 +48,10 @@ fun IconChip(
                 shape = RoundedCornerShape(12.dp)
             )
             .then(
-                if (isSelected) {
-                    if (isGradient) {
-                        Modifier.background(color = SpoonyAndroidTheme.colors.black)
-                    } else {
-                        Modifier.background(color = SpoonyAndroidTheme.colors.main400)
-                    }
-                } else {
-                    Modifier.background(color = SpoonyAndroidTheme.colors.gray0)
+                when {
+                    isSelected && isGradient -> Modifier.background(color = SpoonyAndroidTheme.colors.black)
+                    isSelected -> Modifier.background(color = SpoonyAndroidTheme.colors.main400)
+                    else -> Modifier.background(color = SpoonyAndroidTheme.colors.gray0)
                 }
             )
             .padding(
