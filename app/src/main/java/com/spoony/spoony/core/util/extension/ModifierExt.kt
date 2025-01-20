@@ -14,11 +14,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
+import com.spoony.spoony.core.designsystem.theme.black
+import com.spoony.spoony.core.designsystem.theme.gray500
 
 @Composable
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
@@ -53,8 +54,8 @@ fun Modifier.spoonyGradient(
 
         clipPath(roundedCornerPath) {
             val gradientBrush = Brush.radialGradient(
-                0.48f to Color(0xff171719),
-                1f to Color(0xff878A93),
+                0.48f to black,
+                1f to gray500,
                 center = Offset(size.width, -size.height),
                 radius = size.width * 2
             )
