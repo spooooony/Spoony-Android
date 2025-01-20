@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.hexToColor
 
 @Composable
 fun ExploreItem(
@@ -52,8 +53,8 @@ fun ExploreItem(
             IconTag(
                 text = tagText,
                 iconUrl = iconUrl,
-                textColorHex = textColorHex,
-                backgroundColorHex = backgroundColorHex
+                textColor = Color.hexToColor(textColorHex),
+                backgroundColor = Color.hexToColor(backgroundColorHex)
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(

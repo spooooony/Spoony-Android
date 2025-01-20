@@ -12,11 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.hexToColor
 
 @Composable
 fun MapListItem(
@@ -54,8 +56,8 @@ fun MapListItem(
                 IconTag(
                     text = categoryName,
                     iconUrl = categoryIconUrl,
-                    backgroundColorHex = backgroundColor,
-                    textColorHex = textColor,
+                    backgroundColor = Color.hexToColor(backgroundColor),
+                    textColor = Color.hexToColor(textColor),
                     modifier = Modifier
                         .padding(start = 4.dp)
                 )

@@ -29,6 +29,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.hexToColor
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -87,8 +88,8 @@ fun MapPlaceDetailCard(
                 )
                 IconTag(
                     text = categoryName,
-                    backgroundColorHex = backgroundColor,
-                    textColorHex = textColor,
+                    backgroundColor = Color.hexToColor(backgroundColor),
+                    textColor = Color.hexToColor(textColor),
                     iconUrl = categoryIconUrl,
                     modifier = Modifier
                         .padding(start = 6.dp)
