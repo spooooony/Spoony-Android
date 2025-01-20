@@ -33,7 +33,8 @@ fun NavGraphBuilder.registerGraph(
     composable<RegisterRoute.StepOne> {
         RegisterStepOneScreen(
             onNextClick = {
-                navController.navigate(RegisterRoute.StepTwo) // popUpTo 제거
+                navController.navigate(RegisterRoute.StepTwo) {
+                }
                 onUpdateProgress(2f)
             }
         )

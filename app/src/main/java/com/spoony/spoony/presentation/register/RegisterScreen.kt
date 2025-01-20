@@ -29,14 +29,13 @@ fun RegisterScreen(
 ) {
     val navController = rememberNavController()
     var currentProgress by remember { mutableFloatStateOf(0f) }
-
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
     LaunchedEffect(currentBackStackEntry) {
-        when (currentBackStackEntry?.destination?.route) {
-            RegisterRoute.StepOne::class.qualifiedName -> currentProgress = 1f
-            RegisterRoute.StepTwo::class.qualifiedName -> currentProgress = 2f
-            else -> currentProgress = 0f
+        currentProgress = when (currentBackStackEntry?.destination?.route) {
+            RegisterRoute.StepOne::class.qualifiedName -> 1f
+            RegisterRoute.StepTwo::class.qualifiedName -> 2f
+            else -> 0f
         }
     }
 

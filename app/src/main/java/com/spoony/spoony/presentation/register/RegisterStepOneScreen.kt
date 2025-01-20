@@ -1,8 +1,5 @@
 package com.spoony.spoony.presentation.register
 
-import android.util.Log
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,13 +31,13 @@ import com.spoony.spoony.core.designsystem.component.textfield.SpoonyIconButtonT
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonySearchTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ChipColor
+import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.register.component.AddMenuButton
 import com.spoony.spoony.presentation.register.component.CustomDropDownMenu
 import com.spoony.spoony.presentation.register.component.DropdownMenuItem
 import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.SearchResultItem
 
-// CategoryUiModel.kt
 data class CategoryUiModel(
     val categoryId: Int,
     val categoryName: String,
@@ -54,7 +51,6 @@ data class Place(
     val roadAddress: String
 )
 
-// RegisterStepOneScreen.kt
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RegisterStepOneScreen(
@@ -65,17 +61,20 @@ fun RegisterStepOneScreen(
     var isDropDownVisible by remember { mutableStateOf(false) }
     var selectedPlace: Place? by remember { mutableStateOf(null) }
     var menuList by remember { mutableStateOf(listOf("")) }
+    var selectedCategory by remember { mutableStateOf<CategoryUiModel?>(null) }
     val focusManager = LocalFocusManager.current
+
+    // 다음 버튼 활성화 조건
+    val isNextButtonEnabled = remember(selectedPlace, selectedCategory, menuList) {
+        selectedPlace != null &&
+            selectedCategory != null &&
+            menuList.any { it.isNotBlank() }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = {
-                    focusManager.clearFocus()
-                }
-            )
+            .addFocusCleaner(focusManager)
             .verticalScroll(rememberScrollState())
             .padding(top = 22.dp, bottom = 17.dp)
     ) {
@@ -104,6 +103,9 @@ fun RegisterStepOneScreen(
                     value = searchText,
                     onValueChanged = {
                         searchText = it
+                        if (it.isEmpty()) {
+                            isDropDownVisible = false
+                        }
                     },
                     placeholder = "어떤 장소를 한 입 줄까요?",
                     modifier = Modifier
@@ -114,12 +116,12 @@ fun RegisterStepOneScreen(
                             }
                         },
                     maxLength = 30,
-                    onDoneAction = {
-                        isDropDownVisible = true
+                    onSearchAction = {
+                        if (searchText.isNotEmpty()) {
+                            isDropDownVisible = true
+                        }
                     }
                 )
-
-                Log.d("ㅋㅋ", "RegisterStepOneScreen: $isDropDownVisible")
 
                 if (isDropDownVisible && searchText.isNotEmpty()) {
                     CustomDropDownMenu(
@@ -136,42 +138,7 @@ fun RegisterStepOneScreen(
                             onClick = {
                                 selectedPlace = Place("1", "테스트 홍대입구점", "테스트 도로명 주소")
                                 isDropDownVisible = false
-                            },
-                            showDivider = true
-                        )
-                        DropdownMenuItem(
-                            placeName = "테스트 홍대입구점",
-                            placeRoadAddress = "테스트 도로명 주소",
-                            onClick = {
-                                selectedPlace = Place("1", "테스트 홍대입구점", "테스트 도로명 주소")
-                                isDropDownVisible = false
-                            },
-                            showDivider = true
-                        )
-                        DropdownMenuItem(
-                            placeName = "테스트 홍대입구점",
-                            placeRoadAddress = "테스트 도로명 주소",
-                            onClick = {
-                                selectedPlace = Place("1", "테스트 홍대입구점", "테스트 도로명 주소")
-                                isDropDownVisible = false
-                            },
-                            showDivider = true
-                        )
-                        DropdownMenuItem(
-                            placeName = "테스트 홍대입구점",
-                            placeRoadAddress = "테스트 도로명 주소",
-                            onClick = {
-                                selectedPlace = Place("1", "테스트 홍대입구점", "테스트 도로명 주소")
-                                isDropDownVisible = false
-                            },
-                            showDivider = true
-                        )
-                        DropdownMenuItem(
-                            placeName = "테스트 홍대입구점",
-                            placeRoadAddress = "테스트 도로명 주소",
-                            onClick = {
-                                selectedPlace = Place("1", "테스트 홍대입구점", "테스트 도로명 주소")
-                                isDropDownVisible = false
+                                focusManager.clearFocus()
                             },
                             showDivider = true
                         )
@@ -209,10 +176,19 @@ fun RegisterStepOneScreen(
             categories.forEach { category ->
                 IconChip(
                     text = category.categoryName,
-                    tagColor = ChipColor.Main,
-                    iconUrl = category.iconUrlNotSelected,
-                    onClick = {},
-                    modifier = Modifier
+                    tagColor = if (selectedCategory?.categoryId == category.categoryId) ChipColor.Main else ChipColor.White,
+                    iconUrl = if (selectedCategory?.categoryId == category.categoryId) {
+                        category.iconUrlSelected
+                    } else {
+                        category.iconUrlNotSelected
+                    },
+                    onClick = {
+                        selectedCategory = if (selectedCategory?.categoryId == category.categoryId) {
+                            null
+                        } else {
+                            category
+                        }
+                    }
                 )
             }
         }
@@ -249,7 +225,7 @@ fun RegisterStepOneScreen(
                             listOf("")
                         }
                     },
-                    showDeleteIcon = true,
+                    showDeleteIcon = menuList.size > 1 || menu.isNotEmpty(),
                     maxLength = 30
                 )
             }
@@ -266,7 +242,7 @@ fun RegisterStepOneScreen(
         Spacer(modifier = Modifier.height(35.dp))
 
         NextButton(
-            enabled = true,
+            enabled = isNextButtonEnabled,
             onClick = onNextClick
         )
     }

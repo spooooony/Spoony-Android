@@ -12,7 +12,7 @@ fun MapSearchTopAppBar(
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onDoneAction: (() -> Unit)
+    onSearchAction: () -> Unit
 ) {
     SpoonyBasicTopAppBar(
         showBackButton = true,
@@ -24,7 +24,7 @@ fun MapSearchTopAppBar(
             placeholder = "마포구, 성수동, 강남역",
             modifier = Modifier
                 .padding(end = 20.dp),
-            onDoneAction = onDoneAction
+            onSearchAction = onSearchAction
         )
     }
 }
