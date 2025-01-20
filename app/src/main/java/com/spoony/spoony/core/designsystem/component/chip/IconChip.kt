@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.core.util.extension.spoonyGradient
 
 @Composable
 fun IconChip(
@@ -49,7 +50,7 @@ fun IconChip(
             )
             .then(
                 when {
-                    isSelected && isGradient -> Modifier.background(color = SpoonyAndroidTheme.colors.black)
+                    isSelected && isGradient -> Modifier.spoonyGradient(12.dp)
                     isSelected -> Modifier.background(color = SpoonyAndroidTheme.colors.main400)
                     else -> Modifier.background(color = SpoonyAndroidTheme.colors.gray0)
                 }

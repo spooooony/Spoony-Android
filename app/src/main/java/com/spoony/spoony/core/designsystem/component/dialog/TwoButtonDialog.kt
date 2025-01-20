@@ -35,6 +35,7 @@ fun TwoButtonDialog(
     positiveText: String,
     onClickPositive: () -> Unit,
     onDismiss: () -> Unit,
+    buttonStyle: ButtonStyle = ButtonStyle.Secondary,
     content: @Composable () -> Unit = {}
 ) {
     SpoonyBasicDialog(
@@ -65,7 +66,7 @@ fun TwoButtonDialog(
                     SpoonyButton(
                         text = positiveText,
                         onClick = onClickPositive,
-                        style = ButtonStyle.Secondary,
+                        style = buttonStyle,
                         size = ButtonSize.Xsmall,
                         modifier = Modifier.weight(1f)
                     )

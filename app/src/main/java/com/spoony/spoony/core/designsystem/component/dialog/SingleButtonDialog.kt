@@ -31,6 +31,7 @@ fun SingleButtonDialog(
     text: String,
     onDismiss: () -> Unit,
     onClick: () -> Unit,
+    buttonStyle: ButtonStyle = ButtonStyle.Secondary,
     content: @Composable () -> Unit = {}
 ) {
     SpoonyBasicDialog(
@@ -49,7 +50,7 @@ fun SingleButtonDialog(
                 SpoonyButton(
                     text = text,
                     size = ButtonSize.Large,
-                    style = ButtonStyle.Secondary,
+                    style = buttonStyle,
                     onClick = onClick,
                     modifier = Modifier.fillMaxWidth()
                 )
