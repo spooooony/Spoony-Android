@@ -217,7 +217,6 @@ private fun PlaceDetailScreen(
             Spacer(modifier = Modifier.height(27.dp))
         }
         PlaceDetailBottomBar(
-            modifier = Modifier,
             addMapCount = addMapCount,
             isScooped = isScooped,
             isAddMap = isAddMap,
