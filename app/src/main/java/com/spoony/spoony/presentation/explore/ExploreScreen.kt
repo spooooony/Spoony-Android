@@ -1,8 +1,11 @@
 package com.spoony.spoony.presentation.explore
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,6 +30,8 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ChipColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.domain.entity.CategoryEntity
+import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
+import com.spoony.spoony.presentation.explore.component.ExploreItem
 import com.spoony.spoony.presentation.explore.component.ExploreTopAppBar
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreLocationBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
@@ -38,21 +43,26 @@ fun ExploreRoute(
     paddingValues: PaddingValues
 ) {
     ExploreScreen(
+        paddingValues = paddingValues,
         spoonCount = 99,
         selectedCity = "마포구",
         selectedCategory = 0,
         categoryList = persistentListOf(),
+        feedList = persistentListOf(),
         onLocationSortingButtonClick = {},
         updateSelectedCategory = {}
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExploreScreen(
+    paddingValues: PaddingValues,
     spoonCount: Int,
     selectedCity: String,
     selectedCategory: Int,
     categoryList: ImmutableList<CategoryEntity>,
+    feedList: ImmutableList<FeedModel>,
     onLocationSortingButtonClick: (String) -> Unit,
     updateSelectedCategory: (Int) -> Unit
 ) {
@@ -75,8 +85,11 @@ fun ExploreScreen(
         )
     }
 
-    LazyColumn {
-        item {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
+    ) {
+        stickyHeader {
             ExploreTopAppBar(
                 count = spoonCount,
                 onClick = {
@@ -106,6 +119,7 @@ fun ExploreScreen(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(SpoonyAndroidTheme.colors.white)
                     .padding(vertical = 16.dp, horizontal = 20.dp)
             ) {
                 Row(
@@ -130,6 +144,36 @@ fun ExploreScreen(
                             .size(16.dp)
                     )
                 }
+            }
+        }
+        if (feedList.isEmpty()) {
+            item {
+                ExploreEmptyScreen(
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
+        } else {
+            items(
+                items = feedList,
+                key = { feed ->
+                    feed.feedId
+                }
+            ) { feed ->
+                ExploreItem(
+                    username = feed.username,
+                    placeSpoon = feed.userRegion,
+                    review = feed.title,
+                    addMapCount = feed.addMapCount,
+                    iconUrl = feed.categoryEntity.iconUrl,
+                    tagText = feed.categoryEntity.categoryName,
+                    textColorHex = feed.categoryEntity.textColor ?: "000000",
+                    backgroundColorHex = feed.categoryEntity.backgroundColor ?: "000000",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                )
             }
         }
     }
