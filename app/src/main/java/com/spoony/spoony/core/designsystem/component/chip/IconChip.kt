@@ -19,12 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
@@ -67,14 +65,9 @@ fun IconChip(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(if (isSelected) selectedIconUrl else unSelectedIconUrl)
-                .crossfade(true)
-                .build(),
-            modifier = Modifier.size(16.dp),
-            contentScale = ContentScale.Crop,
-            contentDescription = null
+        UrlImage(
+            imageUrl = if (isSelected) selectedIconUrl else unSelectedIconUrl,
+            modifier = Modifier.size(16.dp)
         )
 
         Spacer(modifier = Modifier.width(4.dp))
