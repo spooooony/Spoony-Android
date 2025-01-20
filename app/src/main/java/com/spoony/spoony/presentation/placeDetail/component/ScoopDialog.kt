@@ -1,7 +1,5 @@
 package com.spoony.spoony.presentation.placeDetail.component
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,16 +29,12 @@ fun ScoopDialog(
         onClickPositive = onClickPositive,
         onDismiss = onClickNegative,
         content = {
-            Box(
+            LottieAnimation(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .sizeIn(minHeight = 150.dp)
-            ) {
-                LottieAnimation(
-                    composition = lottieComposition,
-                    iterations = LottieConstants.IterateForever
-                )
-            }
+                    .sizeIn(minHeight = 150.dp),
+                composition = lottieComposition,
+                iterations = LottieConstants.IterateForever
+            )
         }
     )
 }
