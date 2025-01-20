@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.register.componet
+package com.spoony.spoony.presentation.register.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
