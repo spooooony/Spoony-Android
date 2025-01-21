@@ -31,4 +31,12 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="${naverClientId}" />
     </application>
+    <queries>
+        <package android:name="com.nhn.android.nmap" />
+
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
 </manifest>
