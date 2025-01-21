@@ -3,7 +3,6 @@ package com.spoony.spoony.presentation.register.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -33,7 +31,6 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 fun SearchResultItem(
     placeName: String,
     placeRoadAddress: String,
-    onResultClick: () -> Unit,
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -46,7 +43,6 @@ fun SearchResultItem(
             .border(1.dp, SpoonyAndroidTheme.colors.gray100, RoundedCornerShape(8.dp))
             .background(Color.White)
             .padding(horizontal = 12.dp)
-            .noRippleClickable(onClick = onResultClick)
     ) {
         Row(
             verticalAlignment = Alignment.Top,
@@ -89,24 +85,5 @@ fun SearchResultItem(
             tint = SpoonyAndroidTheme.colors.gray400,
             modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
         )
-    }
-}
-
-@Preview
-@Composable
-private fun SearchResultPreview() {
-    SpoonyAndroidTheme {
-        Box(
-            modifier = Modifier
-                .width(340.dp)
-                .padding(vertical = 20.dp)
-        ) {
-            SearchResultItem(
-                placeName = "테스트점",
-                placeRoadAddress = "우리집 어쩌구",
-                onResultClick = {},
-                onDeleteClick = {}
-            )
-        }
     }
 }
