@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.explore
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,6 +48,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun ExploreRoute(
     paddingValues: PaddingValues,
+    navigateToPlaceDetail: (Int, Int) -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
@@ -74,14 +74,13 @@ fun ExploreRoute(
             feedList = feedList,
             onLocationSortingButtonClick = viewModel::updateSelectedCity,
             onSortingButtonClick = viewModel::updateSelectedSortingOption,
-            onFeedItemClick = {},
+            onFeedItemClick = { navigateToPlaceDetail(it, 1) },
             onRegisterButtonClick = {},
             updateSelectedCategory = viewModel::updateSelectedCategory
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ExploreScreen(
     paddingValues: PaddingValues,
@@ -143,6 +142,7 @@ private fun ExploreScreen(
                     unSelectedIconUrl = category.unSelectedIconUrl ?: "",
                     selectedIconUrl = category.iconUrl,
                     isSelected = selectedCategoryId == category.categoryId,
+                    isGradient = true,
                     onClick = { updateSelectedCategory(category.categoryId) }
                 )
             }

@@ -45,7 +45,8 @@ fun MainScreen(
             mapNavGraph()
 
             exploreNavGraph(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navHostController = navigator.navController
             )
 
             registerNavGraph(
@@ -53,10 +54,16 @@ fun MainScreen(
             )
 
             placeDetailNavGraph(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navigateUp = navigator::navigateUp,
+                navigateToReport = navigator::navigateToReport
             )
 
-            reportNavGraph()
+            reportNavGraph(
+                paddingValues = innerPadding,
+                navigateUp = navigator::navigateUp,
+                navigateToExplore = navigator::navigateToExplore
+            )
 
             mapSearchNavGraph(
                 paddingValues = innerPadding
