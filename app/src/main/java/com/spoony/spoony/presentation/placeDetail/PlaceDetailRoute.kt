@@ -1,5 +1,10 @@
 package com.spoony.spoony.presentation.placeDetail
 
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,10 +26,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +55,7 @@ import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
+import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import kotlinx.collections.immutable.ImmutableList
@@ -101,6 +111,8 @@ fun PlaceDetailRoute(
                     addMapCount = data.addMapCount,
                     isScooped = data.isScooped,
                     isAddMap = data.isAddMap,
+                    latitude = data.latitude,
+                    longitude = data.longitude,
                     onScoopButtonClick = { viewModel.useSpoon(userId, postId) },
                     onAddMapButtonClick = { viewModel.addMyMap(userId, postId) },
                     onDeletePinMapButtonClick = { viewModel.deletePinMap(userId, postId) },
@@ -131,6 +143,8 @@ private fun PlaceDetailScreen(
     addMapCount: Int,
     isAddMap: Boolean,
     isScooped: Boolean,
+    latitude: Double,
+    longitude: Double,
     onScoopButtonClick: () -> Unit,
     onAddMapButtonClick: () -> Unit,
     onDeletePinMapButtonClick: () -> Unit,
@@ -139,6 +153,21 @@ private fun PlaceDetailScreen(
     onReportButtonClick: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
+    var scoopDialogVisibility by remember { mutableStateOf(false) }
+
+    if (scoopDialogVisibility) {
+        ScoopDialog(
+            onClickPositive = {
+                onScoopButtonClick()
+                scoopDialogVisibility = false
+            },
+            onClickNegative = {
+                scoopDialogVisibility = false
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -233,13 +262,52 @@ private fun PlaceDetailScreen(
             addMapCount = addMapCount,
             isScooped = isScooped,
             isAddMap = isAddMap,
-            onScoopButtonClick = onScoopButtonClick,
+            onScoopButtonClick = {
+                scoopDialogVisibility = true
+            },
             onSearchMapClick = {
-                // 네이버 길찾기 코드
+                searchPlaceNaverMap(
+                    latitude = latitude,
+                    longitude = longitude,
+                    placeName = placeName,
+                    context = context
+                )
             },
             onAddMapButtonClick = onAddMapButtonClick,
             onDeletePinMapButtonClick = onDeletePinMapButtonClick
         )
+    }
+}
+
+private fun searchPlaceNaverMap(
+    latitude: Double,
+    longitude: Double,
+    placeName: String,
+    context: Context
+) {
+    val url = "nmap://place?lat=$latitude&lng=$longitude&name=$placeName&appname=${context.packageName}"
+    val isInstalled = try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.packageManager.getPackageInfo(
+                "com.nhn.android.nmap",
+                PackageManager.PackageInfoFlags.of(0)
+            )
+        } else {
+            context.packageManager.getPackageInfo("com.nhn.android.nmap", 0)
+        }
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
+    if (isInstalled) {
+        Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            context.startActivity(this)
+        }
+    } else {
+        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nhn.android.nmap")).apply {
+            context.startActivity(this)
+        }
     }
 }
 
