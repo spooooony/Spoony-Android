@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.explore
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -81,7 +80,6 @@ fun ExploreRoute(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ExploreScreen(
     paddingValues: PaddingValues,

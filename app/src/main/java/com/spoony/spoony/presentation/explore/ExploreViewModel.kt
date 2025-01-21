@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.ExploreRepository
+import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -23,6 +24,12 @@ class ExploreViewModel @Inject constructor(
 
     init {
         getCategoryList()
+        getFeedList(
+            userId = 1,
+            categoryId = 2,
+            locationQuery = "강남",
+            sortBy = "latest"
+        )
     }
 
     private fun getCategoryList() {
@@ -40,6 +47,41 @@ class ExploreViewModel @Inject constructor(
                         _state.update {
                             it.copy(
                                 categoryList = UiState.Failure("카테고리 목록 조회 실패")
+                            )
+                        }
+                    }
+            }
+        }
+    }
+
+    fun getFeedList(
+        userId: Int,
+        categoryId: Int,
+        locationQuery: String,
+        sortBy: String
+    ) {
+        viewModelScope.launch {
+            runCatching {
+                exploreRepository.getFeedList(
+                    userId = userId,
+                    categoryId = categoryId,
+                    locationQuery = locationQuery,
+                    sortBy = sortBy
+                ).onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            feedList = UiState.Success(
+                                response.map { feed ->
+                                    feed.toModel()
+                                }.toImmutableList()
+                            )
+                        )
+                    }
+                }
+                    .onFailure {
+                        _state.update {
+                            it.copy(
+                                feedList = UiState.Failure("피드 목록 조회 실패")
                             )
                         }
                     }
