@@ -58,6 +58,7 @@ fun ReportRoute(
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext,
+        reportButtonEnabled = state.reportButtonEnabled,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
         onBackButtonClick = navigateUp,
@@ -71,6 +72,7 @@ private fun ReportScreen(
     reportOptions: ImmutableList<ReportOption>,
     selectedReportOption: ReportOption,
     reportContext: String,
+    reportButtonEnabled: Boolean,
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
     onBackButtonClick: () -> Unit,
@@ -166,6 +168,7 @@ private fun ReportScreen(
             SpoonyButton(
                 text = "신고하기",
                 onClick = onReportClick,
+                enabled = reportButtonEnabled,
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
                 modifier = Modifier.fillMaxWidth()
@@ -196,7 +199,8 @@ private fun ReportScreenPreview() {
             },
             onBackButtonClick = {},
             onReportClick = {},
-            paddingValues = PaddingValues()
+            paddingValues = PaddingValues(),
+            reportButtonEnabled = false
         )
     }
 }

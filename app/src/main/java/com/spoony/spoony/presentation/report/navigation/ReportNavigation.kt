@@ -22,7 +22,7 @@ fun NavGraphBuilder.reportNavGraph(
     composable<Report> {
         ReportRoute(
             navigateUp = navigateUp,
-            paddingValues = paddingValues,
+            paddingValues = paddingValues
         )
     }
 }
