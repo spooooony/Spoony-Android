@@ -2,13 +2,12 @@ package com.spoony.spoony.presentation.report
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +38,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
+import com.spoony.spoony.presentation.report.component.ReportCompleteDialog
 import com.spoony.spoony.presentation.report.component.ReportRadioButton
 import com.spoony.spoony.presentation.report.type.ReportOption
 import kotlinx.collections.immutable.ImmutableList
@@ -46,40 +46,56 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ReportRoute(
+    paddingValues: PaddingValues,
+    navigateUp: () -> Unit,
+    navigateToExplore: () -> Unit,
     viewModel: ReportViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
+    var reportSuccessDialogVisibility by remember { mutableStateOf(false) }
 
     ReportScreen(
+        paddingValues = paddingValues,
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext,
+        reportButtonEnabled = state.reportButtonEnabled,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
-        onBackButtonClick = {},
-        onReportClick = {}
+        onBackButtonClick = navigateUp,
+        onOpenDialogClick = { reportSuccessDialogVisibility = true }
     )
+
+    if (reportSuccessDialogVisibility) {
+        ReportCompleteDialog(
+            onClick = {
+                navigateToExplore()
+                reportSuccessDialogVisibility = false
+            }
+        )
+    }
 }
 
 @Composable
 private fun ReportScreen(
+    paddingValues: PaddingValues,
     reportOptions: ImmutableList<ReportOption>,
     selectedReportOption: ReportOption,
     reportContext: String,
+    reportButtonEnabled: Boolean,
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
     onBackButtonClick: () -> Unit,
-    onReportClick: () -> Unit
+    onOpenDialogClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
             .addFocusCleaner(focusManager)
-            .navigationBarsPadding()
-            .statusBarsPadding()
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TitleTopAppBar(
             title = "신고하기",
@@ -163,7 +179,8 @@ private fun ReportScreen(
 
             SpoonyButton(
                 text = "신고하기",
-                onClick = onReportClick,
+                onClick = onOpenDialogClick,
+                enabled = reportButtonEnabled,
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
                 modifier = Modifier.fillMaxWidth()
@@ -193,7 +210,9 @@ private fun ReportScreenPreview() {
                 reportContext = it
             },
             onBackButtonClick = {},
-            onReportClick = {}
+            paddingValues = PaddingValues(),
+            reportButtonEnabled = false,
+            onOpenDialogClick = {}
         )
     }
 }

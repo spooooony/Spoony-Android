@@ -57,6 +57,10 @@ class MainNavigator(
         navController.navigateToReport(navOptions)
     }
 
+    fun navigateToExplore(navOptions: NavOptions? = null) {
+        navController.navigateToExplore(navOptions)
+    }
+
     fun navigateUp() {
         navController.navigateUp()
     }
