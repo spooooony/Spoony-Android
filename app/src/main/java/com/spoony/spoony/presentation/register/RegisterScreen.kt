@@ -52,7 +52,6 @@ fun RegisterScreen(
         }
     }
 
-
     Column(
         modifier = modifier
             .fillMaxSize()
