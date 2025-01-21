@@ -80,10 +80,10 @@ fun MainScreen(
             ) {
                 mapNavGraph()
 
-            exploreNavGraph(
-                paddingValues = paddingValues,
-                navHostController = navigator.navController
-            )
+                exploreNavGraph(
+                    paddingValues = paddingValues,
+                    navHostController = navigator.navController
+                )
 
                 registerNavGraph(
                     paddingValues = paddingValues,
@@ -96,11 +96,11 @@ fun MainScreen(
                     navigateToReport = navigator::navigateToReport
                 )
 
-            reportNavGraph(
-                paddingValues = paddingValues,
-                navigateUp = navigator::navigateUp,
-                navigateToExplore = navigator::navigateToExplore
-            )
+                reportNavGraph(
+                    paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
+                    navigateToExplore = navigator::navigateToExplore
+                )
 
                 mapSearchNavGraph(
                     paddingValues = paddingValues
