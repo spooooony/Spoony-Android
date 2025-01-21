@@ -8,9 +8,11 @@ import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,11 +58,14 @@ import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazy
 import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
+import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
+    navigateToReport: () -> Unit,
+    navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -69,24 +74,27 @@ fun PlaceDetailRoute(
 
     val spoonAmount = when (state.spoonAmountEntity) {
         is UiState.Success -> (state.spoonAmountEntity as UiState.Success<Int>).data
-        else -> 0
+        else -> 99
     }
 
     val userProfile = when (state.userEntity) {
         is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
         else -> UserEntity(
-            userProfileUrl = "",
-            userName = "",
-            userRegion = ""
+            userId = -1,
+            userEmail = "test@email.com",
+            userProfileUrl = "https://avatars.githubusercontent.com/u/93641814?v=4",
+            userName = "안세홍",
+            userRegion = "성북구"
         )
     }
-
     when (state.postEntity) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
             with(state.postEntity as UiState.Success<PostEntity>) {
+                val postId = (state.postId as? UiState.Success)?.data ?: return
+                val userId = (state.userId as? UiState.Success)?.data ?: return
                 PlaceDetailScreen(
                     paddingValues = paddingValues,
                     menuList = data.menuList,
@@ -106,11 +114,12 @@ fun PlaceDetailRoute(
                     isAddMap = data.isAddMap,
                     latitude = data.latitude,
                     longitude = data.longitude,
-                    onScoopButtonClick = viewModel::useSpoon,
-                    onAddMapButtonClick = viewModel::updateAddMap,
+                    onScoopButtonClick = { viewModel.useSpoon(postId, userId) },
+                    onAddMapButtonClick = { viewModel.addMyMap(postId, userId) },
+                    onDeletePinMapButtonClick = { viewModel.deletePinMap(postId, userId) },
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = {},
-                    onReportButtonClick = {}
+                    onBackButtonClick = navigateUp,
+                    onReportButtonClick = navigateToReport
                 )
             }
         }
@@ -138,10 +147,11 @@ private fun PlaceDetailScreen(
     latitude: Double,
     longitude: Double,
     onScoopButtonClick: () -> Unit,
-    onAddMapButtonClick: (Boolean) -> Unit,
+    onAddMapButtonClick: () -> Unit,
+    onDeletePinMapButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     dropdownMenuList: ImmutableList<String>,
-    onReportButtonClick: (String) -> Unit
+    onReportButtonClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -163,7 +173,7 @@ private fun PlaceDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TagTopAppBar(
             count = spoonAmount,
@@ -193,7 +203,13 @@ private fun PlaceDetailScreen(
 
                 IconDropdownMenu(
                     menuItems = dropdownMenuList,
-                    onMenuItemClick = onReportButtonClick
+                    onMenuItemClick = { menu ->
+                        when (menu) {
+                            DropdownOption.REPORT.string -> {
+                                onReportButtonClick()
+                            }
+                        }
+                    }
                 )
             }
 
@@ -264,7 +280,8 @@ private fun PlaceDetailScreen(
                     context = context
                 )
             },
-            onAddMapButtonClick = onAddMapButtonClick
+            onAddMapButtonClick = onAddMapButtonClick,
+            onDeletePinMapButtonClick = onDeletePinMapButtonClick
         )
     }
 }
@@ -306,7 +323,8 @@ private fun PlaceDetailBottomBar(
     addMapCount: Int,
     onScoopButtonClick: () -> Unit,
     onSearchMapClick: () -> Unit,
-    onAddMapButtonClick: (Boolean) -> Unit,
+    onAddMapButtonClick: () -> Unit,
+    onDeletePinMapButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     isScooped: Boolean = false,
     isAddMap: Boolean = false
@@ -318,7 +336,8 @@ private fun PlaceDetailBottomBar(
             .padding(
                 horizontal = 20.dp,
                 vertical = 10.dp
-            ),
+            )
+            .height(IntrinsicSize.Max),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isScooped) {
@@ -334,8 +353,15 @@ private fun PlaceDetailBottomBar(
 
             Column(
                 modifier = Modifier
-                    .sizeIn(minWidth = 56.dp, minHeight = 56.dp)
-                    .noRippleClickable { onAddMapButtonClick(isAddMap) },
+                    .fillMaxHeight()
+                    .sizeIn(minWidth = 56.dp)
+                    .noRippleClickable(
+                        if (isAddMap) {
+                            onDeletePinMapButtonClick
+                        } else {
+                            onAddMapButtonClick
+                        }
+                    ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

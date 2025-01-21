@@ -7,5 +7,6 @@ import kotlinx.collections.immutable.toImmutableList
 data class ReportState(
     val reportOptions: ImmutableList<ReportOption> = ReportOption.entries.toImmutableList(),
     val selectedReportOption: ReportOption = ReportOption.ADVERTISEMENT,
-    val reportContext: String = ""
+    val reportContext: String = "",
+    val reportButtonEnabled: Boolean = false
 )
