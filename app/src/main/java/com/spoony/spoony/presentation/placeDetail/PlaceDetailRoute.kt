@@ -269,13 +269,13 @@ private fun searchPlaceNaverMap(
     } catch (e: PackageManager.NameNotFoundException) {
         false
     }
-    if (!isInstalled) {
-        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nhn.android.nmap")).apply {
+    if (isInstalled) {
+        Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
             context.startActivity(this)
         }
     } else {
-        Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-            addCategory(Intent.CATEGORY_BROWSABLE)
+        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nhn.android.nmap")).apply {
             context.startActivity(this)
         }
     }
