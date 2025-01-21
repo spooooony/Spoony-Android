@@ -34,23 +34,22 @@ class ExploreViewModel @Inject constructor(
 
     private fun getCategoryList() {
         viewModelScope.launch {
-            runCatching {
-                exploreRepository.getCategoryList()
-                    .onSuccess { response ->
-                        _state.update {
-                            it.copy(
-                                categoryList = UiState.Success(response.toImmutableList())
-                            )
-                        }
+            exploreRepository.getCategoryList()
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            categoryList = UiState.Success(response.toImmutableList())
+                        )
                     }
-                    .onFailure {
-                        _state.update {
-                            it.copy(
-                                categoryList = UiState.Failure("카테고리 목록 조회 실패")
-                            )
-                        }
+                }
+                .onFailure {
+                    _state.update {
+                        it.copy(
+                            categoryList = UiState.Failure("카테고리 목록 조회 실패")
+                        )
                     }
-            }
+                }
+
         }
     }
 
@@ -61,32 +60,31 @@ class ExploreViewModel @Inject constructor(
         sortBy: String
     ) {
         viewModelScope.launch {
-            runCatching {
-                exploreRepository.getFeedList(
-                    userId = userId,
-                    categoryId = categoryId,
-                    locationQuery = locationQuery,
-                    sortBy = sortBy
-                ).onSuccess { response ->
+            exploreRepository.getFeedList(
+                userId = userId,
+                categoryId = categoryId,
+                locationQuery = locationQuery,
+                sortBy = sortBy
+            ).onSuccess { response ->
+                _state.update {
+                    it.copy(
+                        feedList = UiState.Success(
+                            response.map { feed ->
+                                feed.toModel()
+                            }.toImmutableList()
+                        )
+                    )
+                }
+            }
+                .onFailure {
                     _state.update {
                         it.copy(
-                            feedList = UiState.Success(
-                                response.map { feed ->
-                                    feed.toModel()
-                                }.toImmutableList()
-                            )
+                            feedList = UiState.Failure("피드 목록 조회 실패")
                         )
                     }
                 }
-                    .onFailure {
-                        _state.update {
-                            it.copy(
-                                feedList = UiState.Failure("피드 목록 조회 실패")
-                            )
-                        }
-                    }
-            }
         }
+
     }
 
     fun updateSelectedSortingOption(sortingOption: SortingOption) {
