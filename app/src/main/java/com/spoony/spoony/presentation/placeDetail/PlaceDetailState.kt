@@ -10,6 +10,5 @@ data class PlaceDetailState(
     val postEntity: UiState<PostEntity> = UiState.Loading,
     val userEntity: UiState<UserEntity> = UiState.Loading,
     val spoonAmountEntity: UiState<Int> = UiState.Loading,
-    val scoopDialogVisibility: Boolean = false,
     val dropDownMenuList: ImmutableList<String> = persistentListOf("신고하기")
 )
