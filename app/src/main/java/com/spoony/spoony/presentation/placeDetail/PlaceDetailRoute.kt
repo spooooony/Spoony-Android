@@ -256,8 +256,6 @@ private fun searchPlaceNaverMap(
     context: Context
 ) {
     val url = "nmap://place?lat=$latitude&lng=$longitude&name=$placeName&appname=${context.packageName}"
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    intent.addCategory(Intent.CATEGORY_BROWSABLE)
     val isInstalled = try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.packageManager.getPackageInfo(
@@ -277,7 +275,10 @@ private fun searchPlaceNaverMap(
         }
         context.startActivity(marketIntent)
     } else {
-        context.startActivity(intent)
+        Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            context.startActivity(this)
+        }
     }
 }
 
