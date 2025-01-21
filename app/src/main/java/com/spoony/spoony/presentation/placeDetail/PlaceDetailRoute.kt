@@ -63,8 +63,6 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
-    postId: Int,
-    userId: Int,
     navigateToReport: () -> Unit,
     navigateToUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
@@ -88,13 +86,14 @@ fun PlaceDetailRoute(
             userRegion = "성북구"
         )
     }
-
     when (state.postEntity) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
             with(state.postEntity as UiState.Success<PostEntity>) {
+                val postId = (state.postId as? UiState.Success)?.data ?: return
+                val userId = (state.userId as? UiState.Success)?.data ?: return
                 PlaceDetailScreen(
                     paddingValues = paddingValues,
                     menuList = data.menuList,
@@ -114,9 +113,9 @@ fun PlaceDetailRoute(
                     isAddMap = data.isAddMap,
                     latitude = data.latitude,
                     longitude = data.longitude,
-                    onScoopButtonClick = { viewModel.useSpoon(userId, postId) },
-                    onAddMapButtonClick = { viewModel.addMyMap(userId, postId) },
-                    onDeletePinMapButtonClick = { viewModel.deletePinMap(userId, postId) },
+                    onScoopButtonClick = { viewModel.useSpoon(postId, userId) },
+                    onAddMapButtonClick = { viewModel.addMyMap(postId, userId) },
+                    onDeletePinMapButtonClick = { viewModel.deletePinMap(postId, userId) },
                     dropdownMenuList = state.dropDownMenuList,
                     onBackButtonClick = navigateToUp,
                     onReportButtonClick = navigateToReport

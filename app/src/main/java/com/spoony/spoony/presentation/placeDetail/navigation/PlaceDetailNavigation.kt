@@ -5,7 +5,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.placeDetail.PlaceDetailRoute
 import kotlinx.serialization.Serializable
@@ -24,10 +23,7 @@ fun NavGraphBuilder.placeDetailNavGraph(
     navigateToUp: () -> Unit
 ) {
     composable<PlaceDetail> {
-        val args = it.toRoute<PlaceDetail>()
         PlaceDetailRoute(
-            postId = args.postId,
-            userId = args.userId,
             paddingValues = paddingValues,
             navigateToReport = navigateToReport,
             navigateToUp = navigateToUp
