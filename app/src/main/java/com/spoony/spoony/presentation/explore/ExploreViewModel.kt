@@ -36,6 +36,13 @@ class ExploreViewModel @Inject constructor(
                             )
                         }
                     }
+                    .onFailure {
+                        _state.update {
+                            it.copy(
+                                categoryList = UiState.Failure("카테고리 목록 조회 실패")
+                            )
+                        }
+                    }
             }
         }
     }
