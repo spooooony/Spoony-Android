@@ -2,7 +2,6 @@ package com.spoony.spoony.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spoony.spoony.domain.entity.RegisterEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.Category
@@ -32,7 +31,11 @@ class RegisterViewModel @Inject constructor(
     private val _sideEffect = MutableSharedFlow<RegisterSideEffect>()
     val sideEffect: SharedFlow<RegisterSideEffect> = _sideEffect.asSharedFlow()
 
-    internal fun loadCategories() {
+    init {
+        loadCategories()
+    }
+
+    private fun loadCategories() {
         viewModelScope.launch {
             repository.getCategories()
                 .onSuccess { categories ->
@@ -84,7 +87,7 @@ class RegisterViewModel @Inject constructor(
             ).onSuccess { isDuplicate ->
                 if (isDuplicate) {
                     _state.update { it.copy(searchResults = persistentListOf()) }
-                    _sideEffect.emit(RegisterSideEffect.ShowDuplicateError("이미 등록된 장소입니다"))
+                    _sideEffect.emit(RegisterSideEffect.ShowSnackbar("이미 등록된 장소입니다"))
                 } else {
                     _state.update {
                         it.copy(
@@ -95,7 +98,7 @@ class RegisterViewModel @Inject constructor(
                     }
                 }
             }.onFailure {
-                _sideEffect.emit(RegisterSideEffect.ShowError("장소 선택 중 오류가 발생했습니다"))
+                _sideEffect.emit(RegisterSideEffect.ShowSnackbar("장소 선택 중 오류가 발생했습니다"))
             }
         }
     }
@@ -129,7 +132,7 @@ class RegisterViewModel @Inject constructor(
 
     fun addMenu() {
         _state.update { currentState ->
-            if (currentState.menuList.size >= RegisterEntity.MAX_MENU_COUNT) {
+            if (currentState.menuList.size >= MAX_MENU_COUNT) {
                 return@update currentState
             }
             currentState.copy(
@@ -140,7 +143,7 @@ class RegisterViewModel @Inject constructor(
 
     fun removeMenu(index: Int) {
         _state.update { currentState ->
-            if (currentState.menuList.size <= RegisterEntity.MIN_MENU_COUNT) {
+            if (currentState.menuList.size <= MIN_MENU_COUNT) {
                 currentState.copy(
                     menuList = persistentListOf("")
                 )
@@ -161,21 +164,21 @@ class RegisterViewModel @Inject constructor(
 
     fun updateOneLineReview(review: String) {
         _state.update {
-            it.copy(oneLineReview = review.take(RegisterEntity.MAX_ONE_LINE_REVIEW_LENGTH))
+            it.copy(oneLineReview = review.take(MAX_ONE_LINE_REVIEW_LENGTH))
         }
     }
 
     fun updateDetailReview(review: String) {
         _state.update {
-            it.copy(detailReview = review.take(RegisterEntity.MAX_DETAIL_REVIEW_LENGTH))
+            it.copy(detailReview = review.take(MAX_DETAIL_REVIEW_LENGTH))
         }
     }
 
     fun updatePhotos(photos: List<SelectedPhoto>) {
         _state.update {
             it.copy(
-                selectedPhotos = photos.take(RegisterEntity.MAX_PHOTO_COUNT).toImmutableList(),
-                isPhotoErrorVisible = photos.size < RegisterEntity.MIN_PHOTO_COUNT
+                selectedPhotos = photos.take(MAX_PHOTO_COUNT).toImmutableList(),
+                isPhotoErrorVisible = photos.size < MIN_PHOTO_COUNT
             )
         }
     }
@@ -187,9 +190,9 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun checkSecondStepValidation(): Boolean = with(_state.value) {
-        oneLineReview.trim().length in 1..RegisterEntity.MAX_ONE_LINE_REVIEW_LENGTH &&
-            detailReview.trim().length >= RegisterEntity.MIN_DETAIL_REVIEW_LENGTH &&
-            selectedPhotos.size >= RegisterEntity.MIN_PHOTO_COUNT
+        oneLineReview.trim().length in 1..MAX_ONE_LINE_REVIEW_LENGTH &&
+            detailReview.trim().length >= MIN_DETAIL_REVIEW_LENGTH &&
+            selectedPhotos.size >= MIN_PHOTO_COUNT
     }
 
     fun registerPost(onSuccess: () -> Unit) {
@@ -214,23 +217,34 @@ class RegisterViewModel @Inject constructor(
                 onSuccess()
             }.onFailure {
                 _state.update { it.copy(isLoading = false) }
-                _sideEffect.emit(RegisterSideEffect.ShowError("등록 중 오류가 발생했습니다"))
+                _sideEffect.emit(RegisterSideEffect.ShowSnackbar("등록 중 오류가 발생했습니다"))
             }
         }
     }
 
     fun resetState() {
         viewModelScope.launch {
-            _state.update {
-                RegisterState()
+            _state.update { currentState ->
+                RegisterState(
+                    categories = currentState.categories
+                )
             }
         }
+    }
+
+    companion object {
+        const val MIN_MENU_COUNT = 1
+        const val MAX_MENU_COUNT = 3
+        const val MIN_PHOTO_COUNT = 1
+        const val MAX_PHOTO_COUNT = 5
+        const val MIN_DETAIL_REVIEW_LENGTH = 50
+        const val MAX_DETAIL_REVIEW_LENGTH = 500
+        const val MAX_ONE_LINE_REVIEW_LENGTH = 30
     }
 }
 
 sealed class RegisterSideEffect {
-    data class ShowError(val message: String) : RegisterSideEffect()
-    data class ShowDuplicateError(val message: String) : RegisterSideEffect()
+    data class ShowSnackbar(val message: String) : RegisterSideEffect()
 }
 
 enum class RegisterSteps(val step: Float) {

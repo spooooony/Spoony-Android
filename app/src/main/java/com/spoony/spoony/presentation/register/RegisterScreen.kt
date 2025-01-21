@@ -35,17 +35,10 @@ fun RegisterScreen(
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(Unit) {
-        viewModel.loadCategories()
-    }
-
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
             when (effect) {
-                is RegisterSideEffect.ShowError -> {
-                    showSnackBar(effect.message)
-                }
-                is RegisterSideEffect.ShowDuplicateError -> {
+                is RegisterSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
             }
@@ -59,16 +52,13 @@ fun RegisterScreen(
             .padding(horizontal = 20.dp)
             .padding(paddingValues)
     ) {
-        Column(
+        TopLinearProgressBar(
+            currentStep = state.currentStep,
+            totalSteps = 3f,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 56.dp, bottom = 10.dp)
-        ) {
-            TopLinearProgressBar(
-                currentStep = state.currentStep,
-                totalSteps = 3f
-            )
-        }
+        )
 
         NavHost(
             navController = navController,
@@ -84,6 +74,7 @@ fun RegisterScreen(
             )
         }
 
-        if (state.isLoading) { }
+        if (state.isLoading) {
+        }
     }
 }

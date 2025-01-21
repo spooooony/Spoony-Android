@@ -8,7 +8,6 @@ import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.RegisterRepository
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -23,14 +22,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository
-}
 
-@Module
-@InstallIn(SingletonComponent::class)
-object RegisterModule {
-    @Provides
+    @Binds
     @Singleton
-    fun provideRegisterRepository(
-        registerRepositoryImpl: RegisterRepositoryImpl
-    ): RegisterRepository = registerRepositoryImpl
+    abstract fun provideRegisterRepository(registerRepositoryImpl: RegisterRepositoryImpl): RegisterRepository
 }

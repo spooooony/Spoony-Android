@@ -54,6 +54,7 @@ fun NavGraphBuilder.registerGraph(
 
     composable<RegisterRoute.StepTwo> {
         RegisterStepTwoScreen(
+            viewModel = viewModel,
             onStepTwoComplete = {
                 onUpdateProgress(RegisterSteps.FINISH)
             },

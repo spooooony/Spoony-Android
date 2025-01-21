@@ -28,14 +28,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyIconButtonTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonySearchTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
-import com.spoony.spoony.domain.entity.RegisterEntity
+import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_MENU_COUNT
 import com.spoony.spoony.presentation.register.component.AddMenuButton
 import com.spoony.spoony.presentation.register.component.CustomDropDownMenu
 import com.spoony.spoony.presentation.register.component.DropdownMenuItem
@@ -49,7 +48,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun RegisterStepOneScreen(
     onNextClick: () -> Unit,
     onInitialProgress: () -> Unit,
-    viewModel: RegisterViewModel = hiltViewModel(),
+    viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -113,7 +112,11 @@ fun RegisterStepOneScreen(
             onMenuAdd = viewModel::addMenu
         )
 
-        Spacer(modifier = Modifier.weight(1f).defaultMinSize(37.dp))
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .defaultMinSize(37.dp)
+        )
 
         NextButton(
             enabled = isNextButtonEnabled,
@@ -179,7 +182,6 @@ private fun PlaceSearchSection(
                 SearchResultItem(
                     placeName = place.placeName,
                     placeRoadAddress = place.placeRoadAddress,
-                    onResultClick = {},
                     onDeleteClick = onPlaceClear
                 )
             }
@@ -276,23 +278,23 @@ private fun MenuSection(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             menuList.forEachIndexed { index, menu ->
-                key("menu_$index") {
-                    SpoonyIconButtonTextField(
-                        value = menu,
-                        onValueChanged = { newValue ->
-                            onMenuUpdate(index, newValue)
-                        },
-                        placeholder = "메뉴 이름",
-                        onDeleteClick = { onMenuRemove(index) },
-                        showDeleteIcon = menu.isNotBlank(),
-                        maxLength = 30
-                    )
-                }
+                SpoonyIconButtonTextField(
+                    value = menu,
+                    onValueChanged = { newValue ->
+                        onMenuUpdate(index, newValue)
+                    },
+                    placeholder = "메뉴 이름",
+                    onDeleteClick = { onMenuRemove(index) },
+                    showDeleteIcon = menu.isNotBlank(),
+                    maxLength = 30
+                )
             }
+        }
 
-            if (menuList.size < RegisterEntity.MAX_MENU_COUNT) {
-                AddMenuButton(onClick = onMenuAdd)
-            }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (menuList.size < MAX_MENU_COUNT) {
+            AddMenuButton(onClick = onMenuAdd)
         }
     }
 }

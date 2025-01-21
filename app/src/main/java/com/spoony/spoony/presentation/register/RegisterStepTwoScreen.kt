@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dialog.SingleButtonDialog
@@ -33,7 +32,9 @@ import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextFi
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLineTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
-import com.spoony.spoony.domain.entity.RegisterEntity
+import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_DETAIL_REVIEW_LENGTH
+import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_ONE_LINE_REVIEW_LENGTH
+import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MIN_DETAIL_REVIEW_LENGTH
 import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.PhotoPicker
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
@@ -44,7 +45,7 @@ import kotlinx.collections.immutable.toPersistentList
 fun RegisterStepTwoScreen(
     onStepTwoComplete: () -> Unit,
     onRegisterComplete: () -> Unit,
-    viewModel: RegisterViewModel = hiltViewModel(),
+    viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -131,7 +132,7 @@ private fun ReviewSection(
             value = oneLineReview,
             onValueChanged = onOneLineReviewChange,
             placeholder = "장소명 언급은 피해주세요. 우리만의 비밀!",
-            maxLength = RegisterEntity.MAX_ONE_LINE_REVIEW_LENGTH,
+            maxLength = MAX_ONE_LINE_REVIEW_LENGTH,
             minLength = 1,
             minErrorText = "한 줄 소개는 필수예요",
             maxErrorText = "글자 수 30자 이하로 입력해 주세요"
@@ -172,8 +173,8 @@ private fun ReviewSection(
             value = detailReview,
             onValueChanged = onDetailReviewChange,
             placeholder = "장소명 언급은 피해주세요. 우리만의 비밀!",
-            maxLength = RegisterEntity.MAX_DETAIL_REVIEW_LENGTH,
-            minLength = RegisterEntity.MIN_DETAIL_REVIEW_LENGTH,
+            maxLength = MAX_DETAIL_REVIEW_LENGTH,
+            minLength = MIN_DETAIL_REVIEW_LENGTH,
             minErrorText = "자세한 후기는 필수예요",
             maxErrorText = "글자 수 500자 이하로 입력해 주세요"
         )
