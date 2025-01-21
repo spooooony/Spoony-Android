@@ -66,6 +66,7 @@ fun PlaceDetailRoute(
     postId: Int,
     userId: Int,
     navigateToReport: () -> Unit,
+    navigateToUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -117,8 +118,8 @@ fun PlaceDetailRoute(
                     onAddMapButtonClick = { viewModel.addMyMap(userId, postId) },
                     onDeletePinMapButtonClick = { viewModel.deletePinMap(userId, postId) },
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = { },
-                    onReportButtonClick = { navigateToReport() }
+                    onBackButtonClick = navigateToUp,
+                    onReportButtonClick = navigateToReport
                 )
             }
         }
@@ -150,7 +151,7 @@ private fun PlaceDetailScreen(
     onDeletePinMapButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     dropdownMenuList: ImmutableList<String>,
-    onReportButtonClick: (String) -> Unit
+    onReportButtonClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -202,7 +203,13 @@ private fun PlaceDetailScreen(
 
                 IconDropdownMenu(
                     menuItems = dropdownMenuList,
-                    onMenuItemClick = onReportButtonClick
+                    onMenuItemClick = { menu ->
+                        when(menu) {
+                            "신고하기" -> {
+                                onReportButtonClick()
+                            }
+                        }
+                    }
                 )
             }
 

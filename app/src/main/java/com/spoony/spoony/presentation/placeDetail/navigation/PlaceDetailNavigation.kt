@@ -20,7 +20,8 @@ fun NavController.navigateToPlaceDetail(
 
 fun NavGraphBuilder.placeDetailNavGraph(
     paddingValues: PaddingValues,
-    navigateToReport: () -> Unit
+    navigateToReport: () -> Unit,
+    navigateToUp: () -> Unit
 ) {
     composable<PlaceDetail> {
         val args = it.toRoute<PlaceDetail>()
@@ -28,7 +29,8 @@ fun NavGraphBuilder.placeDetailNavGraph(
             postId = args.postId,
             userId = args.userId,
             paddingValues = paddingValues,
-            navigateToReport = navigateToReport
+            navigateToReport = navigateToReport,
+            navigateToUp = navigateToUp
         )
     }
 }

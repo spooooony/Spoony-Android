@@ -55,7 +55,8 @@ fun MainScreen(
 
             placeDetailNavGraph(
                 paddingValues = innerPadding,
-                navigateToReport = { navigator.navController.navigateToReport() }
+                navigateToReport = { navigator.navController.navigateToReport() },
+                navigateToUp = { navigator.navController.navigateUp() }
             )
 
             reportNavGraph()
