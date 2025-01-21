@@ -19,6 +19,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -95,10 +98,8 @@ fun PlaceDetailRoute(
                     addMapCount = data.addMapCount,
                     isScooped = data.isScooped,
                     isAddMap = data.isAddMap,
-                    scoopDialogVisibility = state.scoopDialogVisibility,
                     onScoopButtonClick = viewModel::useSpoon,
                     onAddMapButtonClick = viewModel::updateAddMap,
-                    updateScoopDialogVisibility = viewModel::updateScoopDialogVisibility,
                     dropdownMenuList = state.dropDownMenuList,
                     onBackButtonClick = {},
                     onReportButtonClick = {}
@@ -126,8 +127,6 @@ private fun PlaceDetailScreen(
     addMapCount: Int,
     isAddMap: Boolean,
     isScooped: Boolean,
-    updateScoopDialogVisibility: (Boolean) -> Unit,
-    scoopDialogVisibility: Boolean,
     onScoopButtonClick: () -> Unit,
     onAddMapButtonClick: (Boolean) -> Unit,
     onBackButtonClick: () -> Unit,
@@ -136,11 +135,16 @@ private fun PlaceDetailScreen(
 ) {
     val scrollState = rememberScrollState()
 
+    var scoopDialogVisibility by remember { mutableStateOf(false) }
+
     if (scoopDialogVisibility) {
         ScoopDialog(
-            onClickPositive = onScoopButtonClick,
+            onClickPositive = {
+                onScoopButtonClick()
+                scoopDialogVisibility = false
+            },
             onClickNegative = {
-                updateScoopDialogVisibility(false)
+                scoopDialogVisibility = false
             }
         )
     }
@@ -239,7 +243,7 @@ private fun PlaceDetailScreen(
             isScooped = isScooped,
             isAddMap = isAddMap,
             onScoopButtonClick = {
-                updateScoopDialogVisibility(true)
+                scoopDialogVisibility = true
             },
             onSearchMapClick = {
                 // 네이버 길찾기 코드
