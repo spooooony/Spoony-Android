@@ -151,7 +151,7 @@ private fun PlaceDetailScreen(
     onDeletePinMapButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     dropdownMenuList: ImmutableList<String>,
-    onReportButtonClick: () -> Unit,
+    onReportButtonClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -204,7 +204,7 @@ private fun PlaceDetailScreen(
                 IconDropdownMenu(
                     menuItems = dropdownMenuList,
                     onMenuItemClick = { menu ->
-                        when(menu) {
+                        when (menu) {
                             "신고하기" -> {
                                 onReportButtonClick()
                             }
