@@ -37,7 +37,7 @@ fun MapSearchRoute(
         recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
         onSearchKeywordChanged = viewModel::updateSearchKeyword,
-        onSearchButtonClick = {},
+        onSearchButtonClick = viewModel::searchLocation,
         onDeleteButtonClick = {},
         onResultItemClick = {},
         onDeleteAllButtonClick = viewModel::initRecentSearch
@@ -50,7 +50,7 @@ private fun MapSearchScreen(
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
     onSearchKeywordChanged: (String) -> Unit,
-    onSearchButtonClick: (String) -> Unit,
+    onSearchButtonClick: () -> Unit,
     onDeleteButtonClick: () -> Unit,
     onResultItemClick: (Int) -> Unit,
     onDeleteAllButtonClick: () -> Unit
@@ -59,7 +59,7 @@ private fun MapSearchScreen(
         MapSearchTopAppBar(
             value = searchKeyword,
             onValueChanged = onSearchKeywordChanged,
-            onDoneAction = { onSearchButtonClick(searchKeyword) }
+            onDoneAction = onSearchButtonClick
         )
 
         when {
