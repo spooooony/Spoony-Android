@@ -3,12 +3,15 @@ package com.spoony.spoony.presentation.map.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,7 +25,6 @@ import com.spoony.spoony.presentation.map.search.component.MapSearchResultItem
 import com.spoony.spoony.presentation.map.search.component.MapSearchTopAppBar
 import com.spoony.spoony.presentation.map.search.model.LocationModel
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun MapSearchRoute(
@@ -32,12 +34,13 @@ fun MapSearchRoute(
 
     MapSearchScreen(
         searchKeyword = state.searchKeyword,
-        recentSearchList = persistentListOf(),
+        recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
         onSearchKeywordChanged = viewModel::updateSearchKeyword,
-        onSearchButtonClick = {},
+        onSearchButtonClick = viewModel::searchLocation,
         onDeleteButtonClick = {},
-        onResultItemClick = {}
+        onResultItemClick = {},
+        onDeleteAllButtonClick = viewModel::initRecentSearch
     )
 }
 
@@ -47,15 +50,16 @@ private fun MapSearchScreen(
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
     onSearchKeywordChanged: (String) -> Unit,
-    onSearchButtonClick: (String) -> Unit,
+    onSearchButtonClick: () -> Unit,
     onDeleteButtonClick: () -> Unit,
-    onResultItemClick: (Int) -> Unit
+    onResultItemClick: (Int) -> Unit,
+    onDeleteAllButtonClick: () -> Unit
 ) {
     Column {
         MapSearchTopAppBar(
             value = searchKeyword,
             onValueChanged = onSearchKeywordChanged,
-            onSearchAction = { onSearchButtonClick(searchKeyword) }
+            onSearchAction = onSearchButtonClick
         )
 
         when {
@@ -63,7 +67,37 @@ private fun MapSearchScreen(
                 if (recentSearchList.isEmpty()) {
                     MapSearchRecentEmptyScreen()
                 } else {
-                    LazyColumn {
+                    Row(
+                        modifier = Modifier
+                            .padding(
+                                top = 20.dp,
+                                bottom = 16.dp,
+                                start = 20.dp,
+                                end = 20.dp
+                            )
+                    ) {
+                        Text(
+                            text = "최근 검색",
+                            style = SpoonyAndroidTheme.typography.body2b,
+                            color = SpoonyAndroidTheme.colors.gray700,
+                            modifier = Modifier
+                                .weight(1f)
+                        )
+                        Text(
+                            text = "전체삭제",
+                            style = SpoonyAndroidTheme.typography.caption1m,
+                            color = SpoonyAndroidTheme.colors.gray500,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .noRippleClickable(onClick = onDeleteAllButtonClick)
+                                .padding(horizontal = 8.dp)
+                        )
+                    }
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp)
+                    ) {
                         items(
                             items = recentSearchList,
                             key = { it }

@@ -9,7 +9,7 @@ import kotlinx.collections.immutable.ImmutableList
 data class ExploreState(
     val spoonCount: UiState<Int> = UiState.Loading,
     val selectedCity: String = "마포구",
-    val selectedCategoryId: Int = 0,
+    val selectedCategoryId: Int = 1,
     val selectedSortingOption: SortingOption = SortingOption.LATEST,
     val categoryList: UiState<ImmutableList<CategoryEntity>> = UiState.Loading,
     val feedList: UiState<ImmutableList<FeedModel>> = UiState.Loading
