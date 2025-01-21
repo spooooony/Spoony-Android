@@ -19,6 +19,7 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
+import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapBottomSheetDragHandle
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapEmptyBottomSheetContent
@@ -48,7 +49,7 @@ fun MapRoute(
     MapScreen(
         paddingValues = paddingValues,
         cameraPositionState = cameraPositionState,
-        listOf("adsfadsf", "adsfadsf", "adsfadsf", "adsfadsf", "adsfadsf", "adsfadsf", "adsfadsf", "adsfadsf")
+        listOf("fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf")
     )
 }
 
@@ -62,6 +63,7 @@ fun MapScreen(
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
+            AdvancedSheetState.Hidden at height(0)
             AdvancedSheetState.Collapsed at height(20)
             AdvancedSheetState.PartiallyExpanded at height(50)
             AdvancedSheetState.Expanded at height(95)
@@ -100,8 +102,8 @@ fun MapScreen(
                             imageUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
                             categoryIconUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
                             categoryName = "주류",
-                            textColor = "000000",
-                            backgroundColor = "000000",
+                            textColor = SpoonyAndroidTheme.colors.white,
+                            backgroundColor = SpoonyAndroidTheme.colors.white
                         )
                     }
                     item {
