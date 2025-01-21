@@ -48,6 +48,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun ExploreRoute(
     paddingValues: PaddingValues,
+    navigateToPlaceDetail: () -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
@@ -73,7 +74,7 @@ fun ExploreRoute(
             feedList = feedList,
             onLocationSortingButtonClick = viewModel::updateSelectedCity,
             onSortingButtonClick = viewModel::updateSelectedSortingOption,
-            onFeedItemClick = {},
+            onFeedItemClick = navigateToPlaceDetail,
             onRegisterButtonClick = {},
             updateSelectedCategory = viewModel::updateSelectedCategory
         )
@@ -91,7 +92,7 @@ private fun ExploreScreen(
     feedList: UiState<ImmutableList<FeedModel>>,
     onLocationSortingButtonClick: (String) -> Unit,
     onSortingButtonClick: (SortingOption) -> Unit,
-    onFeedItemClick: (Int) -> Unit,
+    onFeedItemClick: () -> Unit,
     onRegisterButtonClick: () -> Unit,
     updateSelectedCategory: (Int) -> Unit
 ) {
@@ -151,7 +152,7 @@ private fun ExploreScreen(
             feedList = feedList,
             selectedSortingOption = selectedSortingOption,
             onSortingButtonClick = { isSortingBottomSheetVisible = it },
-            onFeedItemClick = onFeedItemClick,
+            onFeedItemClick = { onFeedItemClick() },
             onRegisterButtonClick = onRegisterButtonClick
         )
     }
