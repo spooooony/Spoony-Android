@@ -7,14 +7,13 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
 fun ReportCompleteDialog(
-    onClick: () -> Unit,
-    onDismiss: () -> Unit
+    onClick: () -> Unit
 ) {
     SingleButtonDialog(
         message = "신고가 접수되었어요",
         text = "확인",
         onClick = onClick,
-        onDismiss = onDismiss
+        onDismiss = {}
     )
 }
 
@@ -23,8 +22,7 @@ fun ReportCompleteDialog(
 private fun ScoopDialogPreview() {
     SpoonyAndroidTheme {
         ReportCompleteDialog(
-            onClick = {},
-            onDismiss = {}
+            onClick = {}
         )
     }
 }

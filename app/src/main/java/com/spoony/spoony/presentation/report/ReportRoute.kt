@@ -54,6 +54,7 @@ fun ReportRoute(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
+    var reportSuccessDialogVisibility by remember { mutableStateOf(false) }
 
     ReportScreen(
         paddingValues = paddingValues,
@@ -64,8 +65,17 @@ fun ReportRoute(
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
         onBackButtonClick = navigateUp,
-        onConfirmButton = navigateToExplore
+        onOpenDialogClick = { reportSuccessDialogVisibility = true }
     )
+
+    if (reportSuccessDialogVisibility) {
+        ReportCompleteDialog(
+            onClick = {
+                navigateToExplore()
+                reportSuccessDialogVisibility = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -78,20 +88,9 @@ private fun ReportScreen(
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
     onBackButtonClick: () -> Unit,
-    onConfirmButton: () -> Unit
+    onOpenDialogClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-
-    var reportSuccessDialogVisibility by remember { mutableStateOf(false) }
-
-    if (reportSuccessDialogVisibility) {
-        ReportCompleteDialog(
-            onClick = onConfirmButton,
-            onDismiss = {
-                reportSuccessDialogVisibility = false
-            }
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -180,9 +179,7 @@ private fun ReportScreen(
 
             SpoonyButton(
                 text = "신고하기",
-                onClick = {
-                    reportSuccessDialogVisibility = true
-                },
+                onClick = onOpenDialogClick,
                 enabled = reportButtonEnabled,
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
@@ -215,7 +212,7 @@ private fun ReportScreenPreview() {
             onBackButtonClick = {},
             paddingValues = PaddingValues(),
             reportButtonEnabled = false,
-            onConfirmButton = {}
+            onOpenDialogClick = {}
         )
     }
 }
