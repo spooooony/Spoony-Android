@@ -24,6 +24,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +53,7 @@ import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
+import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import kotlinx.collections.immutable.ImmutableList
@@ -141,6 +145,20 @@ private fun PlaceDetailScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+
+    var scoopDialogVisibility by remember { mutableStateOf(false) }
+
+    if (scoopDialogVisibility) {
+        ScoopDialog(
+            onClickPositive = {
+                onScoopButtonClick()
+                scoopDialogVisibility = false
+            },
+            onClickNegative = {
+                scoopDialogVisibility = false
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -235,7 +253,9 @@ private fun PlaceDetailScreen(
             addMapCount = addMapCount,
             isScooped = isScooped,
             isAddMap = isAddMap,
-            onScoopButtonClick = onScoopButtonClick,
+            onScoopButtonClick = {
+                scoopDialogVisibility = true
+            },
             onSearchMapClick = {
                 searchPlaceNaverMap(
                     latitude = latitude,
