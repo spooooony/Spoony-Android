@@ -38,6 +38,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
+import com.spoony.spoony.presentation.report.component.ReportCompleteDialog
 import com.spoony.spoony.presentation.report.component.ReportRadioButton
 import com.spoony.spoony.presentation.report.type.ReportOption
 import kotlinx.collections.immutable.ImmutableList
@@ -47,6 +48,7 @@ import kotlinx.collections.immutable.toImmutableList
 fun ReportRoute(
     paddingValues: PaddingValues,
     navigateUp: () -> Unit,
+    navigateToExplore: () -> Unit,
     viewModel: ReportViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -62,7 +64,7 @@ fun ReportRoute(
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
         onBackButtonClick = navigateUp,
-        onReportClick = {}
+        onConfirmButton = navigateToExplore
     )
 }
 
@@ -76,9 +78,20 @@ private fun ReportScreen(
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
     onBackButtonClick: () -> Unit,
-    onReportClick: () -> Unit
+    onConfirmButton: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+
+    var reportSuccessDialogVisibility by remember { mutableStateOf(false) }
+
+    if (reportSuccessDialogVisibility) {
+        ReportCompleteDialog(
+            onClick = onConfirmButton,
+            onDismiss = {
+                reportSuccessDialogVisibility = false
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -167,7 +180,9 @@ private fun ReportScreen(
 
             SpoonyButton(
                 text = "신고하기",
-                onClick = onReportClick,
+                onClick = {
+                    reportSuccessDialogVisibility = true
+                },
                 enabled = reportButtonEnabled,
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
@@ -198,9 +213,9 @@ private fun ReportScreenPreview() {
                 reportContext = it
             },
             onBackButtonClick = {},
-            onReportClick = {},
             paddingValues = PaddingValues(),
-            reportButtonEnabled = false
+            reportButtonEnabled = false,
+            onConfirmButton = {}
         )
     }
 }
