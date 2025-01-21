@@ -53,7 +53,9 @@ fun MainScreen(
             )
 
             placeDetailNavGraph(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navigateUp = navigator::navigateUp,
+                navigateToReport = navigator::navigateToReport
             )
 
             reportNavGraph(
