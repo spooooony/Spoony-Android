@@ -56,7 +56,6 @@ fun PlaceDetailRoute(
     paddingValues: PaddingValues,
     postId: Int,
     userId: Int,
-    navigateToMap: () -> Unit,
     navigateToReport: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -111,7 +110,7 @@ fun PlaceDetailRoute(
                     onAddMapButtonClick = { viewModel.addMyMap(userId, postId) },
                     onDeletePinMapButtonClick = { viewModel.deletePinMap(userId, postId) },
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = navigateToMap,
+                    onBackButtonClick = {  },
                     onReportButtonClick = { navigateToReport() }
                 )
             }
