@@ -20,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,10 +61,6 @@ fun PlaceDetailRoute(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
-
-    LaunchedEffect(key1 = true) {
-        viewModel.getPost(postId)
-    }
 
     val spoonAmount = when (state.spoonAmountEntity) {
         is UiState.Success -> (state.spoonAmountEntity as UiState.Success<Int>).data

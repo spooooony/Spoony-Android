@@ -11,9 +11,9 @@ import com.spoony.spoony.presentation.placeDetail.PlaceDetailRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToPlaceDetail(
-    navOptions: NavOptions? = null,
     postId: Int,
-    userId: Int
+    userId: Int,
+    navOptions: NavOptions? = null
 ) {
     navigate(PlaceDetail(postId, userId), navOptions)
 }
