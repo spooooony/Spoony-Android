@@ -143,6 +143,7 @@ private fun ExploreScreen(
                     unSelectedIconUrl = category.unSelectedIconUrl ?: "",
                     selectedIconUrl = category.iconUrl,
                     isSelected = selectedCategoryId == category.categoryId,
+                    isGradient = true,
                     onClick = { updateSelectedCategory(category.categoryId) }
                 )
             }
