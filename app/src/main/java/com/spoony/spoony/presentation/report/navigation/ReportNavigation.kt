@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.report.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -14,9 +15,15 @@ fun NavController.navigateToReport(
     navigate(Report, navOptions)
 }
 
-fun NavGraphBuilder.reportNavGraph() {
+fun NavGraphBuilder.reportNavGraph(
+    navigateUp: () -> Unit,
+    paddingValues: PaddingValues
+) {
     composable<Report> {
-        ReportRoute()
+        ReportRoute(
+            navigateUp = navigateUp,
+            paddingValues = paddingValues,
+        )
     }
 }
 

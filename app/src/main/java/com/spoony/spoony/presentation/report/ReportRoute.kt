@@ -2,13 +2,12 @@ package com.spoony.spoony.presentation.report
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,6 +45,8 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ReportRoute(
+    paddingValues: PaddingValues,
+    navigateUp: () -> Unit,
     viewModel: ReportViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -53,18 +54,20 @@ fun ReportRoute(
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
 
     ReportScreen(
+        paddingValues = paddingValues,
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
-        onBackButtonClick = {},
+        onBackButtonClick = navigateUp,
         onReportClick = {}
     )
 }
 
 @Composable
 private fun ReportScreen(
+    paddingValues: PaddingValues,
     reportOptions: ImmutableList<ReportOption>,
     selectedReportOption: ReportOption,
     reportContext: String,
@@ -78,8 +81,7 @@ private fun ReportScreen(
     Column(
         modifier = Modifier
             .addFocusCleaner(focusManager)
-            .navigationBarsPadding()
-            .statusBarsPadding()
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TitleTopAppBar(
             title = "신고하기",
@@ -193,7 +195,8 @@ private fun ReportScreenPreview() {
                 reportContext = it
             },
             onBackButtonClick = {},
-            onReportClick = {}
+            onReportClick = {},
+            paddingValues = PaddingValues()
         )
     }
 }

@@ -51,6 +51,10 @@ class MainNavigator(
         currentDestination?.hasRoute(it::class) == true
     }
 
+    fun navigateUp() {
+        navController.navigateUp()
+    }
+
     inline fun isCurrentDestination(destination: NavDestination): Boolean {
         return navController.currentDestination == destination
     }
