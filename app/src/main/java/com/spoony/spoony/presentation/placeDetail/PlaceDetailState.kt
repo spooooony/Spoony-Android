@@ -7,9 +7,10 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 data class PlaceDetailState(
+    val postId: UiState<Int> = UiState.Loading,
+    val userId: UiState<Int> = UiState.Loading,
     val postEntity: UiState<PostEntity> = UiState.Loading,
     val userEntity: UiState<UserEntity> = UiState.Loading,
     val spoonAmountEntity: UiState<Int> = UiState.Loading,
-    val scoopDialogVisibility: Boolean = false,
     val dropDownMenuList: ImmutableList<String> = persistentListOf("신고하기")
 )

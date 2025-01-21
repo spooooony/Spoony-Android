@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
 import com.spoony.spoony.presentation.map.navigaion.mapNavGraph
+import com.spoony.spoony.presentation.map.search.navigation.mapSearchNavGraph
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
@@ -53,10 +54,16 @@ fun MainScreen(
             )
 
             placeDetailNavGraph(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navigateUp = navigator::navigateUp,
+                navigateToReport = navigator::navigateToReport
             )
 
             reportNavGraph()
+
+            mapSearchNavGraph(
+                paddingValues = innerPadding
+            )
         }
     }
 }

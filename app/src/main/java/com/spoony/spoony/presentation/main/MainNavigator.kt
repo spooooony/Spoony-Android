@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
@@ -12,6 +13,7 @@ import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
+import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
 class MainNavigator(
     val navController: NavHostController
@@ -49,6 +51,14 @@ class MainNavigator(
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true
+    }
+
+    fun navigateToReport(navOptions: NavOptions? = null) {
+        navController.navigateToReport(navOptions)
+    }
+
+    fun navigateUp() {
+        navController.navigateUp()
     }
 
     inline fun isCurrentDestination(destination: NavDestination): Boolean {

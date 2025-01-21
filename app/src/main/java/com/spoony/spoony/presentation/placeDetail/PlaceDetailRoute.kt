@@ -1,11 +1,18 @@
 package com.spoony.spoony.presentation.placeDetail
 
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,10 +26,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,13 +55,17 @@ import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
+import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
+import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
+    navigateToReport: () -> Unit,
+    navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -59,24 +74,27 @@ fun PlaceDetailRoute(
 
     val spoonAmount = when (state.spoonAmountEntity) {
         is UiState.Success -> (state.spoonAmountEntity as UiState.Success<Int>).data
-        else -> 0
+        else -> 99
     }
 
     val userProfile = when (state.userEntity) {
         is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
         else -> UserEntity(
-            userProfileUrl = "",
-            userName = "",
-            userRegion = ""
+            userId = -1,
+            userEmail = "test@email.com",
+            userProfileUrl = "https://avatars.githubusercontent.com/u/93641814?v=4",
+            userName = "안세홍",
+            userRegion = "성북구"
         )
     }
-
     when (state.postEntity) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
             with(state.postEntity as UiState.Success<PostEntity>) {
+                val postId = (state.postId as? UiState.Success)?.data ?: return
+                val userId = (state.userId as? UiState.Success)?.data ?: return
                 PlaceDetailScreen(
                     paddingValues = paddingValues,
                     menuList = data.menuList,
@@ -94,11 +112,14 @@ fun PlaceDetailRoute(
                     addMapCount = data.addMapCount,
                     isScooped = data.isScooped,
                     isAddMap = data.isAddMap,
-                    onScoopButtonClick = viewModel::useSpoon,
-                    onAddMapButtonClick = viewModel::updateAddMap,
+                    latitude = data.latitude,
+                    longitude = data.longitude,
+                    onScoopButtonClick = { viewModel.useSpoon(postId, userId) },
+                    onAddMapButtonClick = { viewModel.addMyMap(postId, userId) },
+                    onDeletePinMapButtonClick = { viewModel.deletePinMap(postId, userId) },
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = {},
-                    onReportButtonClick = {}
+                    onBackButtonClick = navigateUp,
+                    onReportButtonClick = navigateToReport
                 )
             }
         }
@@ -123,18 +144,36 @@ private fun PlaceDetailScreen(
     addMapCount: Int,
     isAddMap: Boolean,
     isScooped: Boolean,
+    latitude: Double,
+    longitude: Double,
     onScoopButtonClick: () -> Unit,
-    onAddMapButtonClick: (Boolean) -> Unit,
+    onAddMapButtonClick: () -> Unit,
+    onDeletePinMapButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     dropdownMenuList: ImmutableList<String>,
-    onReportButtonClick: (String) -> Unit
+    onReportButtonClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
+    var scoopDialogVisibility by remember { mutableStateOf(false) }
+
+    if (scoopDialogVisibility) {
+        ScoopDialog(
+            onClickPositive = {
+                onScoopButtonClick()
+                scoopDialogVisibility = false
+            },
+            onClickNegative = {
+                scoopDialogVisibility = false
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TagTopAppBar(
             count = spoonAmount,
@@ -164,7 +203,13 @@ private fun PlaceDetailScreen(
 
                 IconDropdownMenu(
                     menuItems = dropdownMenuList,
-                    onMenuItemClick = onReportButtonClick
+                    onMenuItemClick = { menu ->
+                        when (menu) {
+                            DropdownOption.REPORT.string -> {
+                                onReportButtonClick()
+                            }
+                        }
+                    }
                 )
             }
 
@@ -224,12 +269,52 @@ private fun PlaceDetailScreen(
             addMapCount = addMapCount,
             isScooped = isScooped,
             isAddMap = isAddMap,
-            onScoopButtonClick = onScoopButtonClick,
-            onSearchMapClick = {
-                // 네이버 길찾기 코드
+            onScoopButtonClick = {
+                scoopDialogVisibility = true
             },
-            onAddMapButtonClick = onAddMapButtonClick
+            onSearchMapClick = {
+                searchPlaceNaverMap(
+                    latitude = latitude,
+                    longitude = longitude,
+                    placeName = placeName,
+                    context = context
+                )
+            },
+            onAddMapButtonClick = onAddMapButtonClick,
+            onDeletePinMapButtonClick = onDeletePinMapButtonClick
         )
+    }
+}
+
+private fun searchPlaceNaverMap(
+    latitude: Double,
+    longitude: Double,
+    placeName: String,
+    context: Context
+) {
+    val url = "nmap://place?lat=$latitude&lng=$longitude&name=$placeName&appname=${context.packageName}"
+    val isInstalled = try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.packageManager.getPackageInfo(
+                "com.nhn.android.nmap",
+                PackageManager.PackageInfoFlags.of(0)
+            )
+        } else {
+            context.packageManager.getPackageInfo("com.nhn.android.nmap", 0)
+        }
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
+    if (isInstalled) {
+        Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            context.startActivity(this)
+        }
+    } else {
+        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nhn.android.nmap")).apply {
+            context.startActivity(this)
+        }
     }
 }
 
@@ -238,7 +323,8 @@ private fun PlaceDetailBottomBar(
     addMapCount: Int,
     onScoopButtonClick: () -> Unit,
     onSearchMapClick: () -> Unit,
-    onAddMapButtonClick: (Boolean) -> Unit,
+    onAddMapButtonClick: () -> Unit,
+    onDeletePinMapButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     isScooped: Boolean = false,
     isAddMap: Boolean = false
@@ -250,7 +336,8 @@ private fun PlaceDetailBottomBar(
             .padding(
                 horizontal = 20.dp,
                 vertical = 10.dp
-            ),
+            )
+            .height(IntrinsicSize.Max),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isScooped) {
@@ -266,8 +353,15 @@ private fun PlaceDetailBottomBar(
 
             Column(
                 modifier = Modifier
-                    .sizeIn(minWidth = 56.dp, minHeight = 56.dp)
-                    .noRippleClickable { onAddMapButtonClick(isAddMap) },
+                    .fillMaxHeight()
+                    .sizeIn(minWidth = 56.dp)
+                    .noRippleClickable(
+                        if (isAddMap) {
+                            onDeletePinMapButtonClick
+                        } else {
+                            onAddMapButtonClick
+                        }
+                    ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
