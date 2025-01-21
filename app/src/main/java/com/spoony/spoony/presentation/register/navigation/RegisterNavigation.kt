@@ -10,6 +10,8 @@ import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.register.RegisterScreen
 import com.spoony.spoony.presentation.register.RegisterStepOneScreen
 import com.spoony.spoony.presentation.register.RegisterStepTwoScreen
+import com.spoony.spoony.presentation.register.RegisterSteps
+import com.spoony.spoony.presentation.register.RegisterViewModel
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRegister(
@@ -19,31 +21,46 @@ fun NavController.navigateToRegister(
 }
 
 fun NavGraphBuilder.registerNavGraph(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigateToExplore: () -> Unit
 ) {
     composable<Register> {
-        RegisterScreen(paddingValues = paddingValues)
+        RegisterScreen(
+            paddingValues = paddingValues,
+            navigateToExplore = navigateToExplore
+        )
     }
 }
 
 fun NavGraphBuilder.registerGraph(
     navController: NavHostController,
-    onUpdateProgress: (Float) -> Unit
+    navigateToExplore: () -> Unit,
+    onUpdateProgress: (RegisterSteps) -> Unit,
+    viewModel: RegisterViewModel,
+    onResetRegisterState: () -> Unit
 ) {
     composable<RegisterRoute.StepOne> {
         RegisterStepOneScreen(
+            viewModel = viewModel,
             onNextClick = {
-                navController.navigate(RegisterRoute.StepTwo) {
-                }
-                onUpdateProgress(2f)
+                navController.navigate(RegisterRoute.StepTwo)
+                onUpdateProgress(RegisterSteps.FIRST)
+            },
+            onInitialProgress = {
+                onUpdateProgress(RegisterSteps.INIT)
             }
         )
     }
 
     composable<RegisterRoute.StepTwo> {
         RegisterStepTwoScreen(
-            onComplete = {
-                onUpdateProgress(3f)
+            onStepTwoComplete = {
+                onUpdateProgress(RegisterSteps.FINISH)
+            },
+            onRegisterComplete = {
+                onResetRegisterState()
+                navController.popBackStack(RegisterRoute.StepOne, true)
+                navigateToExplore()
             }
         )
     }

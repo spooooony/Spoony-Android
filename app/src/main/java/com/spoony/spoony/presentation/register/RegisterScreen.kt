@@ -9,15 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
+import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.register.component.TopLinearProgressBar
 import com.spoony.spoony.presentation.register.navigation.RegisterRoute
 import com.spoony.spoony.presentation.register.navigation.registerGraph
@@ -25,24 +26,37 @@ import com.spoony.spoony.presentation.register.navigation.registerGraph
 @Composable
 fun RegisterScreen(
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToExplore: () -> Unit,
+    viewModel: RegisterViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
-    var currentProgress by remember { mutableFloatStateOf(0f) }
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val showSnackBar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(currentBackStackEntry) {
-        currentProgress = when (currentBackStackEntry?.destination?.route) {
-            RegisterRoute.StepOne::class.qualifiedName -> 1f
-            RegisterRoute.StepTwo::class.qualifiedName -> 2f
-            else -> 0f
+    LaunchedEffect(Unit) {
+        viewModel.loadCategories()
+    }
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is RegisterSideEffect.ShowError -> {
+                    showSnackBar(effect.message)
+                }
+                is RegisterSideEffect.ShowDuplicateError -> {
+                    showSnackBar(effect.message)
+                }
+            }
         }
     }
+
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(SpoonyAndroidTheme.colors.white)
             .padding(horizontal = 20.dp)
             .padding(paddingValues)
     ) {
@@ -52,9 +66,8 @@ fun RegisterScreen(
                 .padding(top = 56.dp, bottom = 10.dp)
         ) {
             TopLinearProgressBar(
-                currentStep = currentProgress,
-                totalSteps = 3f,
-                modifier = Modifier
+                currentStep = state.currentStep,
+                totalSteps = 3f
             )
         }
 
@@ -65,10 +78,13 @@ fun RegisterScreen(
         ) {
             registerGraph(
                 navController = navController,
-                onUpdateProgress = { progress ->
-                    currentProgress = progress
-                }
+                navigateToExplore = navigateToExplore,
+                onUpdateProgress = viewModel::updateStep,
+                onResetRegisterState = viewModel::resetState,
+                viewModel = viewModel
             )
         }
+
+        if (state.isLoading) { }
     }
 }

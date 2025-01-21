@@ -55,7 +55,7 @@ private fun MapSearchScreen(
         MapSearchTopAppBar(
             value = searchKeyword,
             onValueChanged = onSearchKeywordChanged,
-            onDoneAction = { onSearchButtonClick(searchKeyword) }
+            onSearchAction = { onSearchButtonClick(searchKeyword) }
         )
 
         when {
