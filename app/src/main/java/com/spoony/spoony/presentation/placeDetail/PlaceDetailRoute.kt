@@ -270,10 +270,9 @@ private fun searchPlaceNaverMap(
         false
     }
     if (!isInstalled) {
-        val marketIntent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse("market://details?id=com.nhn.android.nmap")
+        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nhn.android.nmap")).apply {
+            context.startActivity(this)
         }
-        context.startActivity(marketIntent)
     } else {
         Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
             addCategory(Intent.CATEGORY_BROWSABLE)
