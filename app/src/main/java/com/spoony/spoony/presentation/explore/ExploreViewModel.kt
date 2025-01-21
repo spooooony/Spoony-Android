@@ -49,7 +49,6 @@ class ExploreViewModel @Inject constructor(
                         )
                     }
                 }
-
         }
     }
 
@@ -84,7 +83,6 @@ class ExploreViewModel @Inject constructor(
                     }
                 }
         }
-
     }
 
     fun updateSelectedSortingOption(sortingOption: SortingOption) {
