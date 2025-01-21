@@ -10,20 +10,26 @@ import com.spoony.spoony.presentation.placeDetail.PlaceDetailRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToPlaceDetail(
+    postId: Int,
+    userId: Int,
     navOptions: NavOptions? = null
 ) {
-    navigate(PlaceDetail, navOptions)
+    navigate(PlaceDetail(postId, userId), navOptions)
 }
 
 fun NavGraphBuilder.placeDetailNavGraph(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigateToReport: () -> Unit,
+    navigateUp: () -> Unit
 ) {
     composable<PlaceDetail> {
         PlaceDetailRoute(
-            paddingValues = paddingValues
+            paddingValues = paddingValues,
+            navigateToReport = navigateToReport,
+            navigateUp = navigateUp
         )
     }
 }
 
 @Serializable
-data object PlaceDetail : Route
+data class PlaceDetail(val postId: Int, val userId: Int) : Route
