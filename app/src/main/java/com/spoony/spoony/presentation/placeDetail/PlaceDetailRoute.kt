@@ -110,7 +110,7 @@ fun PlaceDetailRoute(
                     onAddMapButtonClick = { viewModel.addMyMap(userId, postId) },
                     onDeletePinMapButtonClick = { viewModel.deletePinMap(userId, postId) },
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = {  },
+                    onBackButtonClick = { },
                     onReportButtonClick = { navigateToReport() }
                 )
             }
