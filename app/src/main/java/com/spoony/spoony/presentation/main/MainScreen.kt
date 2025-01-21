@@ -45,7 +45,8 @@ fun MainScreen(
             mapNavGraph()
 
             exploreNavGraph(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navHostController = navigator.navController
             )
 
             registerNavGraph(
