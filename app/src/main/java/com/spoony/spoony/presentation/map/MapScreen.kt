@@ -1,15 +1,27 @@
 package com.spoony.spoony.presentation.map
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naver.maps.geometry.LatLng
@@ -63,7 +75,6 @@ fun MapScreen(
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
-            AdvancedSheetState.Hidden at height(0)
             AdvancedSheetState.Collapsed at height(20)
             AdvancedSheetState.PartiallyExpanded at height(50)
             AdvancedSheetState.Expanded at height(95)
@@ -72,54 +83,97 @@ fun MapScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
-    SpoonyAdvancedBottomSheet(
-        sheetState = scaffoldState,
-        dragHandle = {
-            if (placeList.isNotEmpty()) {
-                MapBottomSheetDragHandle(
-                    "효비",
-                    5,
-                )
-            }
-        },
-        sheetContent = {
-            if (placeList.isEmpty()) {
-                MapEmptyBottomSheetContent(
-                    onClick = {},
-                    modifier = Modifier
-                        .padding(bottom = paddingValues.calculateBottomPadding())
-                )
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(bottom = paddingValues.calculateBottomPadding())
-                ) {
-                    items(placeList.size) { index ->
-                        MapListItem(
-                            placeName = placeList[index],
-                            address = placeList[index],
-                            review = placeList[index],
-                            imageUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
-                            categoryIconUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
-                            categoryName = "주류",
-                            textColor = SpoonyAndroidTheme.colors.white,
-                            backgroundColor = SpoonyAndroidTheme.colors.white
-                        )
-                    }
-                    item {
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                        )
-                    }
+    var isSelected by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        NaverMap(
+            cameraPositionState = cameraPositionState,
+            onMapClick = { _, _ ->
+                if (isSelected) {
+                    isSelected = false
                 }
             }
-
-        },
-        sheetSwipeEnabled = placeList.isNotEmpty()
-    ) {
-        NaverMap(
-            cameraPositionState = cameraPositionState
         )
+
+        // TODO: 임의로 넣어둔 PaddingValue입니다!! 확인 후 수정부탁드려요 :)
+        AnimatedVisibility(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(paddingValues)
+                .padding(20.dp),
+            visible = isSelected,
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOut(targetOffset = { IntOffset(0, it.height) })
+        ) {
+            MapListItem(
+                placeName = "키키 성공",
+                address = "서울특별시 크크",
+                review = "존맛탱",
+                imageUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
+                categoryIconUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
+                categoryName = "주류",
+                textColor = SpoonyAndroidTheme.colors.white,
+                backgroundColor = SpoonyAndroidTheme.colors.white,
+                onClick = {},
+                modifier = Modifier
+                    .background(SpoonyAndroidTheme.colors.white)
+            )
+        }
+
+        AnimatedVisibility(
+            visible = !isSelected,
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOut(targetOffset = { IntOffset(0, it.height) })
+        ) {
+            SpoonyAdvancedBottomSheet(
+                sheetState = scaffoldState,
+                dragHandle = {
+                    if (placeList.isNotEmpty()) {
+                        MapBottomSheetDragHandle(
+                            "효비",
+                            5,
+                        )
+                    }
+                },
+                sheetContent = {
+                    if (placeList.isEmpty()) {
+                        MapEmptyBottomSheetContent(
+                            onClick = {},
+                            modifier = Modifier
+                                .padding(bottom = paddingValues.calculateBottomPadding())
+                        )
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(bottom = paddingValues.calculateBottomPadding())
+                        ) {
+                            items(placeList.size) { index ->
+                                MapListItem(
+                                    placeName = placeList[index],
+                                    address = placeList[index],
+                                    review = placeList[index],
+                                    imageUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
+                                    categoryIconUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
+                                    categoryName = "주류",
+                                    textColor = SpoonyAndroidTheme.colors.white,
+                                    backgroundColor = SpoonyAndroidTheme.colors.white,
+                                    onClick = {
+                                        isSelected = true
+                                    }
+                                )
+                            }
+                            item {
+                                Spacer(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                )
+                            }
+                        }
+                    }
+
+                },
+                sheetSwipeEnabled = placeList.isNotEmpty()
+            ) {}
+        }
     }
 }
