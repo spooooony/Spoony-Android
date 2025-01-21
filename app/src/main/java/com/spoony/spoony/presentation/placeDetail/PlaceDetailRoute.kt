@@ -3,9 +3,11 @@ package com.spoony.spoony.presentation.placeDetail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,23 +54,33 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
+    postId: Int,
+    userId: Int,
+    navigateToMap: () -> Unit,
+    navigateToReport: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
 
+    LaunchedEffect(key1 = true) {
+        viewModel.getPost(postId)
+    }
+
     val spoonAmount = when (state.spoonAmountEntity) {
         is UiState.Success -> (state.spoonAmountEntity as UiState.Success<Int>).data
-        else -> 0
+        else -> 99
     }
 
     val userProfile = when (state.userEntity) {
         is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
         else -> UserEntity(
-            userProfileUrl = "",
-            userName = "",
-            userRegion = ""
+            userId = -1,
+            userEmail = "test@email.com",
+            userProfileUrl = "https://avatars.githubusercontent.com/u/93641814?v=4",
+            userName = "안세홍",
+            userRegion = "성북구"
         )
     }
 
@@ -94,11 +107,12 @@ fun PlaceDetailRoute(
                     addMapCount = data.addMapCount,
                     isScooped = data.isScooped,
                     isAddMap = data.isAddMap,
-                    onScoopButtonClick = viewModel::useSpoon,
-                    onAddMapButtonClick = viewModel::updateAddMap,
+                    onScoopButtonClick = { viewModel.useSpoon(userId, postId) },
+                    onAddMapButtonClick = { viewModel.addMyMap(userId, postId) },
+                    onDeletePinMapButtonClick = { viewModel.deletePinMap(userId, postId) },
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = {},
-                    onReportButtonClick = {}
+                    onBackButtonClick = navigateToMap,
+                    onReportButtonClick = { navigateToReport() }
                 )
             }
         }
@@ -124,7 +138,8 @@ private fun PlaceDetailScreen(
     isAddMap: Boolean,
     isScooped: Boolean,
     onScoopButtonClick: () -> Unit,
-    onAddMapButtonClick: (Boolean) -> Unit,
+    onAddMapButtonClick: () -> Unit,
+    onDeletePinMapButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     dropdownMenuList: ImmutableList<String>,
     onReportButtonClick: (String) -> Unit
@@ -134,7 +149,7 @@ private fun PlaceDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TagTopAppBar(
             count = spoonAmount,
@@ -228,7 +243,8 @@ private fun PlaceDetailScreen(
             onSearchMapClick = {
                 // 네이버 길찾기 코드
             },
-            onAddMapButtonClick = onAddMapButtonClick
+            onAddMapButtonClick = onAddMapButtonClick,
+            onDeletePinMapButtonClick = onDeletePinMapButtonClick
         )
     }
 }
@@ -238,7 +254,8 @@ private fun PlaceDetailBottomBar(
     addMapCount: Int,
     onScoopButtonClick: () -> Unit,
     onSearchMapClick: () -> Unit,
-    onAddMapButtonClick: (Boolean) -> Unit,
+    onAddMapButtonClick: () -> Unit,
+    onDeletePinMapButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     isScooped: Boolean = false,
     isAddMap: Boolean = false
@@ -250,7 +267,8 @@ private fun PlaceDetailBottomBar(
             .padding(
                 horizontal = 20.dp,
                 vertical = 10.dp
-            ),
+            )
+            .height(IntrinsicSize.Max),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isScooped) {
@@ -266,8 +284,15 @@ private fun PlaceDetailBottomBar(
 
             Column(
                 modifier = Modifier
-                    .sizeIn(minWidth = 56.dp, minHeight = 56.dp)
-                    .noRippleClickable { onAddMapButtonClick(isAddMap) },
+                    .fillMaxHeight()
+                    .sizeIn(minWidth = 56.dp)
+                    .noRippleClickable(
+                        if (isAddMap) {
+                            onDeletePinMapButtonClick
+                        } else {
+                            onAddMapButtonClick
+                        }
+                    ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

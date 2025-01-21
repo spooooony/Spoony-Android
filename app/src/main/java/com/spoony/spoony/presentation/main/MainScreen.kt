@@ -52,7 +52,8 @@ fun MainScreen(
             )
 
             placeDetailNavGraph(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navController = navigator.navController
             )
 
             reportNavGraph()
