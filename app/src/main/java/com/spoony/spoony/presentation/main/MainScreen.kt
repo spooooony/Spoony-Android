@@ -89,9 +89,11 @@ fun MainScreen(
                     navigateToExplore = navigator::navigateRegisterToExplore
                 )
 
-                placeDetailNavGraph(
-                    paddingValues = paddingValues
-                )
+            placeDetailNavGraph(
+                paddingValues = paddingValues,
+                navigateUp = navigator::navigateUp,
+                navigateToReport = navigator::navigateToReport
+            )
 
                 reportNavGraph()
 
