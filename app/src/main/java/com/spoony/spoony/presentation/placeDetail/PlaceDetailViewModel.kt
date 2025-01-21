@@ -18,7 +18,7 @@ class PlaceDetailViewModel @Inject constructor(
     private val postRepository: PostRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
+    private var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
     val state: StateFlow<PlaceDetailState>
         get() = _state
 
@@ -49,15 +49,14 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.postScoopPost(userId = userId, postId = postId)
                 .onSuccess { response ->
-                    val currentPostEntity = (_state.value.postEntity as? UiState.Success)?.data
-                    if (currentPostEntity != null) {
-                        _state.value = _state.value.copy(
-                            postEntity = UiState.Success(
-                                currentPostEntity.copy(
-                                    isScooped = true
+                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
+                        with(currentPostEntity) {
+                            _state.value = _state.value.copy(
+                                postEntity = UiState.Success(
+                                    copy(isScooped = true)
                                 )
                             )
-                        )
+                        }
                     }
                 }
                 .onFailure {
@@ -70,16 +69,17 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.postAddMap(userId = userId, postId = postId)
                 .onSuccess { response ->
-                    val currentPostEntity = (_state.value.postEntity as? UiState.Success)?.data
-                    if (currentPostEntity != null) {
-                        _state.value = _state.value.copy(
-                            postEntity = UiState.Success(
-                                currentPostEntity.copy(
-                                    isAddMap = true,
-                                    addMapCount = currentPostEntity.addMapCount + 1
+                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
+                        with(currentPostEntity) {
+                            _state.value = _state.value.copy(
+                                postEntity = UiState.Success(
+                                    copy(
+                                        isAddMap = true,
+                                        addMapCount = currentPostEntity.addMapCount + 1
+                                    )
                                 )
                             )
-                        )
+                        }
                     }
                 }
                 .onFailure {
@@ -92,16 +92,17 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.deletePinMap(userId = userId, postId = postId)
                 .onSuccess { response ->
-                    val currentPostEntity = (_state.value.postEntity as? UiState.Success)?.data
-                    if (currentPostEntity != null) {
-                        _state.value = _state.value.copy(
-                            postEntity = UiState.Success(
-                                currentPostEntity.copy(
-                                    isAddMap = false,
-                                    addMapCount = currentPostEntity.addMapCount - 1
+                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
+                        with(currentPostEntity) {
+                            _state.value = _state.value.copy(
+                                postEntity = UiState.Success(
+                                    copy(
+                                        isAddMap = false,
+                                        addMapCount = currentPostEntity.addMapCount - 1
+                                    )
                                 )
                             )
-                        )
+                        }
                     }
                 }
                 .onFailure {

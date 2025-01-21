@@ -20,13 +20,13 @@ fun NavController.navigateToPlaceDetail(
 fun NavGraphBuilder.placeDetailNavGraph(
     paddingValues: PaddingValues,
     navigateToReport: () -> Unit,
-    navigateToUp: () -> Unit
+    navigateUp: () -> Unit
 ) {
     composable<PlaceDetail> {
         PlaceDetailRoute(
             paddingValues = paddingValues,
             navigateToReport = navigateToReport,
-            navigateToUp = navigateToUp
+            navigateUp = navigateUp
         )
     }
 }

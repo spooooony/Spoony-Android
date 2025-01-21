@@ -17,7 +17,6 @@ import com.spoony.spoony.presentation.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.map.search.navigation.mapSearchNavGraph
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
-import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
 import kotlinx.collections.immutable.toPersistentList
 
@@ -55,8 +54,8 @@ fun MainScreen(
 
             placeDetailNavGraph(
                 paddingValues = innerPadding,
-                navigateToReport = { navigator.navController.navigateToReport() },
-                navigateToUp = { navigator.navController.navigateUp() }
+                navigateUp = navigator::navigateUp,
+                navigateToReport = navigator::navigateToReport
             )
 
             reportNavGraph()

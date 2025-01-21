@@ -58,13 +58,14 @@ import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazy
 import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
+import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
     navigateToReport: () -> Unit,
-    navigateToUp: () -> Unit,
+    navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -117,7 +118,7 @@ fun PlaceDetailRoute(
                     onAddMapButtonClick = { viewModel.addMyMap(postId, userId) },
                     onDeletePinMapButtonClick = { viewModel.deletePinMap(postId, userId) },
                     dropdownMenuList = state.dropDownMenuList,
-                    onBackButtonClick = navigateToUp,
+                    onBackButtonClick = navigateUp,
                     onReportButtonClick = navigateToReport
                 )
             }
@@ -204,7 +205,7 @@ private fun PlaceDetailScreen(
                     menuItems = dropdownMenuList,
                     onMenuItemClick = { menu ->
                         when (menu) {
-                            "신고하기" -> {
+                            DropdownOption.REPORT.string -> {
                                 onReportButtonClick()
                             }
                         }
