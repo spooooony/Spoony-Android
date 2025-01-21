@@ -138,9 +138,7 @@ private fun PlaceDetailScreen(
 
     if (scoopDialogVisibility) {
         ScoopDialog(
-            onClickPositive = {
-                onScoopButtonClick()
-            },
+            onClickPositive = onScoopButtonClick,
             onClickNegative = {
                 updateScoopDialogVisibility(false)
             }
