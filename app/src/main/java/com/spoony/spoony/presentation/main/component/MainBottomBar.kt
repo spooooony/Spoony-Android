@@ -116,7 +116,7 @@ private fun RowScope.MainBottomBarItem(
             color = if (selected) {
                 SpoonyAndroidTheme.colors.main400
             } else {
-                SpoonyAndroidTheme.colors.gray200
+                SpoonyAndroidTheme.colors.gray400
             }
         )
     }
