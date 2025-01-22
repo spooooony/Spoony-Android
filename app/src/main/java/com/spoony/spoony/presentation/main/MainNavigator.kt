@@ -48,6 +48,10 @@ class MainNavigator(
         }
     }
 
+    fun navigateRegisterToExplore(navOptions: NavOptions? = null) {
+        navController.navigateToExplore(navOptions)
+    }
+
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true

@@ -21,13 +21,14 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 @Composable
 fun NextButton(
     enabled: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     SpoonyButton(
         text = "다음",
         size = ButtonSize.Xlarge,
         style = ButtonStyle.Primary,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         enabled = enabled,
         onClick = onClick
     )

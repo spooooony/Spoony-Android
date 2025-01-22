@@ -4,13 +4,19 @@ import android.app.Activity
 import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
+import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
 import com.spoony.spoony.presentation.map.navigaion.mapNavGraph
@@ -19,55 +25,87 @@ import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+const val SHOW_SNACKBAR_TIMEMILLIS = 2500L
 
 @Composable
 fun MainScreen(
     navigator: MainNavigator = rememberMainNavigator()
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    SpoonyBackHandler(context = context)
-
-    Scaffold(
-        bottomBar = {
-            MainBottomBar(
-                visible = navigator.shouldShowBottomBar(),
-                tabs = MainTab.entries.toPersistentList(),
-                currentTab = navigator.currentTab,
-                onTabSelected = navigator::navigate
-            )
+    val onShowSnackBar: (String) -> Unit = { message ->
+        coroutineScope.launch {
+            snackBarHostState.currentSnackbarData?.dismiss()
+            val job = launch {
+                snackBarHostState.showSnackbar(message)
+            }
+            delay(SHOW_SNACKBAR_TIMEMILLIS)
+            job.cancel()
         }
-    ) { innerPadding ->
-        NavHost(
-            navController = navigator.navController,
-            startDestination = navigator.startDestination
-        ) {
-            mapNavGraph()
+    }
 
-            exploreNavGraph(
-                paddingValues = innerPadding,
-                navHostController = navigator.navController
-            )
+    SpoonyBackHandler(
+        context = context,
+        onShowSnackbar = {
+            onShowSnackBar("한번 더 누르면 앱이 종료돼요!")
+        }
+    )
 
-            registerNavGraph(
-                paddingValues = innerPadding
-            )
+    CompositionLocalProvider(
+        LocalSnackBarTrigger provides onShowSnackBar
+    ) {
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = snackBarHostState) { snackbarData ->
+                    TextSnackbar(text = snackbarData.visuals.message)
+                }
+            },
+            bottomBar = {
+                MainBottomBar(
+                    visible = navigator.shouldShowBottomBar(),
+                    tabs = MainTab.entries.toPersistentList(),
+                    currentTab = navigator.currentTab,
+                    onTabSelected = navigator::navigate
+                )
+            }
+        ) { paddingValues ->
+            NavHost(
+                navController = navigator.navController,
+                startDestination = navigator.startDestination
+            ) {
+                mapNavGraph()
 
-            placeDetailNavGraph(
-                paddingValues = innerPadding,
-                navigateUp = navigator::navigateUp,
-                navigateToReport = navigator::navigateToReport
-            )
+                exploreNavGraph(
+                    paddingValues = paddingValues,
+                    navHostController = navigator.navController
+                )
 
-            reportNavGraph(
-                paddingValues = innerPadding,
-                navigateUp = navigator::navigateUp,
-                navigateToExplore = navigator::navigateToExplore
-            )
+                registerNavGraph(
+                    paddingValues = paddingValues,
+                    navigateToExplore = navigator::navigateRegisterToExplore
+                )
 
-            mapSearchNavGraph(
-                paddingValues = innerPadding
-            )
+                placeDetailNavGraph(
+                    paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
+                    navigateToReport = navigator::navigateToReport
+                )
+
+                reportNavGraph(
+                    paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
+                    navigateToExplore = navigator::navigateToExplore
+                )
+
+                mapSearchNavGraph(
+                    paddingValues = paddingValues
+                )
+            }
         }
     }
 }
