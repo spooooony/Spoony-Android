@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -33,18 +32,21 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
+import com.spoony.spoony.presentation.map.component.MapPlaceDetailCard
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapBottomSheetDragHandle
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapListItem
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
+import kotlinx.collections.immutable.persistentListOf
 
 private const val DEFAULT_ZOOM = 14.0
 
 @Composable
 fun MapRoute(
     paddingValues: PaddingValues,
-    viewModel: MapViewModel = hiltViewModel()
+    viewModel: MapViewModel = hiltViewModel(),
+    navigateToMapSearch: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -61,7 +63,8 @@ fun MapRoute(
     MapScreen(
         paddingValues = paddingValues,
         cameraPositionState = cameraPositionState,
-        listOf("fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf")
+        listOf("fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf"),
+        onPlaceCardClick = navigateToMapSearch
     )
 }
 
@@ -70,7 +73,8 @@ fun MapRoute(
 fun MapScreen(
     paddingValues: PaddingValues,
     cameraPositionState: CameraPositionState,
-    placeList: List<String>
+    placeList: List<String>,
+    onPlaceCardClick: () -> Unit
 ) {
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
@@ -95,28 +99,31 @@ fun MapScreen(
             }
         )
 
-        // TODO: 임의로 넣어둔 PaddingValue입니다!! 확인 후 수정부탁드려요 :)
         AnimatedVisibility(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(paddingValues)
-                .padding(20.dp),
+                .padding(bottom = paddingValues.calculateBottomPadding())
+                .padding(vertical = 5.dp, horizontal = 26.dp),
             visible = isSelected,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOut(targetOffset = { IntOffset(0, it.height) })
         ) {
-            MapListItem(
-                placeName = "키키 성공",
-                address = "서울특별시 크크",
-                review = "존맛탱",
-                imageUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
+            MapPlaceDetailCard(
+                placeName = "파오리",
+                review = "리뷰에옹",
+                imageUrlList = persistentListOf(
+                    "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
+                    "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
+                    "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png"
+                ),
                 categoryIconUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
                 categoryName = "주류",
                 textColor = SpoonyAndroidTheme.colors.white,
                 backgroundColor = SpoonyAndroidTheme.colors.white,
-                onClick = {},
-                modifier = Modifier
-                    .background(SpoonyAndroidTheme.colors.white)
+                onClick = onPlaceCardClick,
+                username = "효비",
+                placeSpoon = "성동구",
+                addMapCount = 21
             )
         }
 
@@ -131,7 +138,7 @@ fun MapScreen(
                     if (placeList.isNotEmpty()) {
                         MapBottomSheetDragHandle(
                             "효비",
-                            5,
+                            5
                         )
                     }
                 },
@@ -170,7 +177,6 @@ fun MapScreen(
                             }
                         }
                     }
-
                 },
                 sheetSwipeEnabled = placeList.isNotEmpty()
             ) {}
