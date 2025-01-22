@@ -29,6 +29,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.noRippleClickable
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -43,11 +44,14 @@ fun MapPlaceDetailCard(
     categoryName: String,
     textColor: Color,
     backgroundColor: Color,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.drawTriangle()
+        modifier = modifier
+            .drawTriangle()
+            .noRippleClickable(onClick = onClick)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(Dp.Hairline),

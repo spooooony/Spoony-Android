@@ -82,9 +82,12 @@ fun MapListItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .border(BorderStroke(1.dp, color.gray0))
+                    .border(
+                        border = BorderStroke(1.dp, color.gray0),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .fillMaxWidth()
                     .padding(vertical = 12.dp, horizontal = 10.dp)
-
             )
         }
 

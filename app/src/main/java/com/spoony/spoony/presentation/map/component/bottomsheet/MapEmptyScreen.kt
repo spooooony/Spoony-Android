@@ -20,7 +20,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 @Composable
 fun MapEmptyBottomSheetContent(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
