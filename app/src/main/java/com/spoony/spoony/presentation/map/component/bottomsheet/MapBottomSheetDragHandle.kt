@@ -28,7 +28,7 @@ fun MapBottomSheetDragHandle(
                 .padding(vertical = 6.dp)
         ) {
             Text(
-                text = name + "님의 찐맛집",
+                text = "${name}님의 찐맛집",
                 style = SpoonyAndroidTheme.typography.body2b,
                 color = SpoonyAndroidTheme.colors.gray900
             )
