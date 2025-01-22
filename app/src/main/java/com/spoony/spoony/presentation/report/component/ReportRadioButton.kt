@@ -53,6 +53,8 @@ fun ReportRadioButton(
                     Text(
                         text = option.text,
                         modifier = Modifier.noRippleClickable { onOptionSelected(option) },
+                        style = SpoonyAndroidTheme.typography.body1m,
+                        color = SpoonyAndroidTheme.colors.gray900,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
