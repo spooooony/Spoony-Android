@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
@@ -265,7 +267,14 @@ private fun PlaceDetailScreen(
             }
             Spacer(modifier = Modifier.height(27.dp))
         }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .safeContentPadding()
+    ) {
         PlaceDetailBottomBar(
+            modifier = Modifier.align(Alignment.BottomCenter),
             addMapCount = addMapCount,
             isScooped = isScooped,
             isAddMap = isAddMap,
@@ -284,6 +293,7 @@ private fun PlaceDetailScreen(
             onDeletePinMapButtonClick = onDeletePinMapButtonClick
         )
     }
+
 }
 
 private fun searchPlaceNaverMap(
@@ -378,7 +388,7 @@ private fun PlaceDetailBottomBar(
                 Text(
                     text = addMapCount.toString(),
                     style = SpoonyAndroidTheme.typography.caption1m,
-                    color = SpoonyAndroidTheme.colors.gray800
+                    color = if(isAddMap) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray800
                 )
             }
         } else {
