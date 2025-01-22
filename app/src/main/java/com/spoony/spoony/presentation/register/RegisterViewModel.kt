@@ -41,8 +41,11 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getCategories()
                 .onSuccess { categoryEntities ->
-                    val categories = categoryEntities.map { it.toPresentation() }
-                    _state.update { it.copy(categories = categories.toImmutableList()) }
+                    _state.update { state ->
+                        state.copy(
+                            categories = categoryEntities.map { it.toPresentation() }.toImmutableList()
+                        )
+                    }
                 }
         }
     }
