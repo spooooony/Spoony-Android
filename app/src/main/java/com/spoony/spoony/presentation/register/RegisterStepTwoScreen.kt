@@ -26,11 +26,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dialog.SingleButtonDialog
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLineTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_DETAIL_REVIEW_LENGTH
 import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_ONE_LINE_REVIEW_LENGTH
@@ -51,6 +56,7 @@ fun RegisterStepTwoScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
     var isDialogVisible by remember { mutableStateOf(false) }
+    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_register_get))
 
     val isNextButtonEnabled = remember(
         state.oneLineReview,
@@ -90,7 +96,11 @@ fun RegisterStepTwoScreen(
             onPhotosSelected = viewModel::updatePhotos
         )
 
-        Spacer(modifier = Modifier.weight(1f).defaultMinSize(24.dp))
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .defaultMinSize(24.dp)
+        )
 
         NextButton(
             enabled = isNextButtonEnabled,
@@ -107,6 +117,7 @@ fun RegisterStepTwoScreen(
         SingleButtonDialog(
             message = "수저 1개를 획득했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
             text = "좋아요!",
+            buttonStyle = ButtonStyle.Primary,
             onDismiss = {
                 onRegisterComplete()
                 isDialogVisible = false
@@ -115,7 +126,13 @@ fun RegisterStepTwoScreen(
                 onRegisterComplete()
                 isDialogVisible = false
             }
-        )
+        ) {
+            LottieAnimation(
+                modifier = Modifier,
+                composition = lottieComposition,
+                iterations = LottieConstants.IterateForever
+            )
+        }
     }
 }
 
