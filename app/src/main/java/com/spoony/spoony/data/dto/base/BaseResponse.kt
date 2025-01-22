@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BaseResponseDTO<T>(
+data class BaseResponse<T>(
     @SerialName("success")
     val success: Boolean,
     @SerialName("error")
