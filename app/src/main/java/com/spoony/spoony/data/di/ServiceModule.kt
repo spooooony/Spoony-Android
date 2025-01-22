@@ -1,6 +1,7 @@
 package com.spoony.spoony.data.di
 
 import com.spoony.spoony.data.service.DummyService
+import com.spoony.spoony.data.service.PlaceService
 import com.spoony.spoony.data.service.PostService
 import dagger.Module
 import dagger.Provides
@@ -21,4 +22,9 @@ object ServiceModule {
     @Singleton
     fun providePostService(retrofit: Retrofit): PostService =
         retrofit.create(PostService::class.java)
+
+    @Provides
+    @Singleton
+    fun providePlaceService(retrofit: Retrofit): PlaceService =
+        retrofit.create(PlaceService::class.java)
 }

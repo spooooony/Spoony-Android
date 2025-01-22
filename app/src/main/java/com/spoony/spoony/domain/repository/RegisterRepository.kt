@@ -1,20 +1,17 @@
 package com.spoony.spoony.domain.repository
 
 import android.net.Uri
-import com.spoony.spoony.presentation.register.model.Category
-import com.spoony.spoony.presentation.register.model.Place
+import com.spoony.spoony.domain.entity.CategoryEntity
+import com.spoony.spoony.domain.entity.PlaceEntity
 
 interface RegisterRepository {
-    suspend fun getCategories(): Result<List<Category>>
-
-    suspend fun searchPlace(query: String, display: Int = 5): Result<List<Place>>
-
+    suspend fun getCategories(): Result<List<CategoryEntity>>
+    suspend fun searchPlace(query: String, display: Int = 5): Result<List<PlaceEntity>>
     suspend fun checkDuplicatePlace(
         userId: Long,
         latitude: Double,
         longitude: Double
     ): Result<Boolean>
-
     suspend fun registerPost(
         userId: Long,
         title: String,
