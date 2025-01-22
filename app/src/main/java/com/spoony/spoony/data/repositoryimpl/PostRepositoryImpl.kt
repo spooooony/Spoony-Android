@@ -1,7 +1,7 @@
 package com.spoony.spoony.data.repositoryimpl
 
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
-import com.spoony.spoony.data.dto.base.BaseResponseDTO
+import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.repository.PostRepository
@@ -46,7 +46,7 @@ class PostRepositoryImpl @Inject constructor(
             )
         )
 
-    override suspend fun postScoopPost(postId: Int, userId: Int): Result<BaseResponseDTO<Boolean>> =
+    override suspend fun postScoopPost(postId: Int, userId: Int): Result<BaseResponse<Boolean>> =
         runCatching {
             postRemoteDataSource.postScoopPost(postId = postId, userId = userId)
         }
