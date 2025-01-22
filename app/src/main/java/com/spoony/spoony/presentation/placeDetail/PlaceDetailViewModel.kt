@@ -9,8 +9,11 @@ import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -21,6 +24,9 @@ class PlaceDetailViewModel @Inject constructor(
     private var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
     val state: StateFlow<PlaceDetailState>
         get() = _state
+
+    private val _sideEffect = MutableSharedFlow<PlaceDetailSideEffect>()
+    val sideEffect: SharedFlow<PlaceDetailSideEffect> = _sideEffect.asSharedFlow()
 
     init {
         val postArgs = savedStateHandle.toRoute<PlaceDetail>()
@@ -69,6 +75,7 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.postAddMap(userId = userId, postId = postId)
                 .onSuccess { response ->
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
                     (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
                         with(currentPostEntity) {
                             _state.value = _state.value.copy(
@@ -92,6 +99,7 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.deletePinMap(userId = userId, postId = postId)
                 .onSuccess { response ->
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
                     (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
                         with(currentPostEntity) {
                             _state.value = _state.value.copy(
@@ -110,4 +118,8 @@ class PlaceDetailViewModel @Inject constructor(
                 }
         }
     }
+}
+
+sealed class PlaceDetailSideEffect {
+    data class ShowSnackbar(val message: String) : PlaceDetailSideEffect()
 }
