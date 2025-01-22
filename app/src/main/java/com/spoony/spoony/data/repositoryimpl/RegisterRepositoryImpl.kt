@@ -68,7 +68,7 @@ class RegisterRepositoryImpl @Inject constructor(
         latitude: Double,
         longitude: Double
     ): Result<Boolean> = runCatching {
-        placeDataSource.checkDuplicatePlace(userId, latitude, longitude).data!!.duplicate
+        placeDataSource.checkDuplicatePlace(userId, latitude, longitude).data!!.idDuplicated
     }
 
     override suspend fun registerPost(
