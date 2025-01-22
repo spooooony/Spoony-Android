@@ -221,10 +221,7 @@ private fun PlaceDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding()
-            )
+            .padding(paddingValues)
             .verticalScroll(scrollState)
     ) {
         Row(
