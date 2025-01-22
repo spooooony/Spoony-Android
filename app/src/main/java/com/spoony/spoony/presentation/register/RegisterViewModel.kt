@@ -38,10 +38,16 @@ class RegisterViewModel @Inject constructor(
     private fun loadCategories() {
         viewModelScope.launch {
             repository.getCategories()
-                .onSuccess { categories ->
+                .onSuccess { categoryEntities ->
+                    val categories = categoryEntities.map { entity ->
+                        Category(
+                            categoryId = entity.categoryId,
+                            categoryName = entity.categoryName,
+                            iconUrlSelected = entity.iconUrl,
+                            iconUrlNotSelected = entity.unSelectedIconUrl ?: entity.iconUrl
+                        )
+                    }
                     _state.update { it.copy(categories = categories.toImmutableList()) }
-                }
-                .onFailure {
                 }
         }
     }
@@ -51,25 +57,21 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun searchPlace(query: String) {
-        if (query.isBlank()) {
-            _state.update { it.copy(searchResults = persistentListOf()) }
-            return
-        }
-
         viewModelScope.launch {
-            _state.update { it.copy(isSearching = true) }
-
             repository.searchPlace(query)
-                .onSuccess { places ->
-                    _state.update {
-                        it.copy(
-                            searchResults = places.toImmutableList(),
-                            isSearching = false
+                .onSuccess { placeEntities ->
+                    val places = placeEntities.map { entity ->
+                        Place(
+                            placeName = entity.placeName,
+                            placeAddress = entity.placeAddress,
+                            placeRoadAddress = entity.placeRoadAddress,
+                            latitude = entity.latitude,
+                            longitude = entity.longitude
                         )
                     }
-                }
-                .onFailure {
-                    _state.update { it.copy(isSearching = false) }
+                    _state.update {
+                        it.copy(searchResults = places.toImmutableList())
+                    }
                 }
         }
     }
