@@ -95,10 +95,10 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun deletePinMap(userId: Int, postId: Int) {
+    fun deletePinMap(postId: Int, userId: Int) {
         viewModelScope.launch {
-            postRepository.deletePinMap(userId = userId, postId = postId)
-                .onSuccess { response ->
+            postRepository.deletePinMap(postId = postId, userId = userId)
+                .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
                     _state.update {
                         it.copy(
