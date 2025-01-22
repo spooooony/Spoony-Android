@@ -5,8 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -16,12 +21,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,11 +98,20 @@ private fun ReportScreen(
     onOpenDialogClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val scrollState = rememberScrollState()
+    val imeInsets = WindowInsets.ime // 키보드 상태를 관찰
+    val imeHeight = imeInsets.getBottom(LocalDensity.current)
+
+    LaunchedEffect(imeHeight) {
+        if (imeHeight > 0) {
+            scrollState.scrollTo(scrollState.maxValue)
+        }
+    }
 
     Column(
         modifier = Modifier
             .addFocusCleaner(focusManager)
-            .padding(bottom = paddingValues.calculateBottomPadding())
+            .navigationBarsPadding()
     ) {
         TitleTopAppBar(
             title = "신고하기",
@@ -109,10 +125,11 @@ private fun ReportScreen(
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(color = SpoonyAndroidTheme.colors.white)
                 .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
+                .imePadding()
         ) {
             Spacer(modifier = Modifier.height(31.dp))
 
@@ -176,6 +193,8 @@ private fun ReportScreen(
             }
 
             Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
 
             SpoonyButton(
                 text = "신고하기",
