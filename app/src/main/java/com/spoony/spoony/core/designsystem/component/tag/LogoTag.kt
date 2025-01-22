@@ -1,6 +1,5 @@
 package com.spoony.spoony.core.designsystem.component.tag
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,8 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -29,6 +26,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.SpoonyTypography
 import com.spoony.spoony.core.designsystem.type.TagSize
+import com.spoony.spoony.core.util.extension.spoonyGradient
 
 @Composable
 fun LogoTag(
@@ -48,17 +46,7 @@ fun LogoTag(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        SpoonyAndroidTheme.colors.gray800,
-                        SpoonyAndroidTheme.colors.gray900,
-                        SpoonyAndroidTheme.colors.black
-                    ),
-                    start = Offset(0f, Float.POSITIVE_INFINITY),
-                    end = Offset(Float.POSITIVE_INFINITY, 0f)
-                )
-            )
+            .spoonyGradient(20.dp)
             .padding(paddingValues),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = verticalAlignment
@@ -81,6 +69,7 @@ private fun getLogoTagPaddingAndSpacing(tagSize: TagSize): Pair<Dp, PaddingValue
     return when (tagSize) {
         TagSize.Large ->
             6.dp to PaddingValues(start = 12.dp, end = 4.dp, top = 5.dp, bottom = 4.dp)
+
         TagSize.Small ->
             5.dp to PaddingValues(start = 8.dp, end = 2.dp, top = 4.dp, bottom = 4.dp)
     }
@@ -90,6 +79,7 @@ private fun getLogoTagStyleAndAlignment(tagSize: TagSize, spoonTypography: Spoon
     return when (tagSize) {
         TagSize.Large ->
             spoonTypography.body1sb to Alignment.Top
+
         TagSize.Small ->
             spoonTypography.body2sb to Alignment.CenterVertically
     }

@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.map.component.bottomsheet
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,7 @@ fun MapListItem(
     categoryName: String,
     textColor: Color,
     backgroundColor: Color,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val typography = SpoonyAndroidTheme.typography
@@ -37,6 +39,7 @@ fun MapListItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(vertical = 10.dp, horizontal = 20.dp)
     ) {
         Column(
@@ -79,9 +82,12 @@ fun MapListItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .border(BorderStroke(1.dp, color.gray0))
+                    .border(
+                        border = BorderStroke(1.dp, color.gray0),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .fillMaxWidth()
                     .padding(vertical = 12.dp, horizontal = 10.dp)
-
             )
         }
 
