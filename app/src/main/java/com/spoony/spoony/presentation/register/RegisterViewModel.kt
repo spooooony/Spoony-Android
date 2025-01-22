@@ -37,7 +37,7 @@ class RegisterViewModel @Inject constructor(
 
     private fun loadCategories() {
         viewModelScope.launch {
-            repository.getCategories()
+            repository.getFoodCategories()
                 .onSuccess { categoryEntities ->
                     val categories = categoryEntities.map { entity ->
                         Category(
