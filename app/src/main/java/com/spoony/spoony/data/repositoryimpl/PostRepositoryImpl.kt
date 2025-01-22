@@ -2,9 +2,6 @@ package com.spoony.spoony.data.repositoryimpl
 
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
-import com.spoony.spoony.data.datasource.PostRemoteDataSource
-import com.spoony.spoony.data.dto.base.BaseResponse
-import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.repository.PostRepository
 import javax.inject.Inject
@@ -17,9 +14,9 @@ class PostRepositoryImpl @Inject constructor(
             postRemoteDataSource.getPostData(postId, userId).data!!.toDomain()
         }
 
-    override suspend fun postScoopPost(postId: Int, userId: Int): Result<BaseResponse<Boolean>> =
+    override suspend fun postScoopPost(postId: Int, userId: Int): Result<Boolean> =
         runCatching {
-            postRemoteDataSource.postScoopPost(postId = postId, userId = userId)
+            postRemoteDataSource.postScoopPost(postId = postId, userId = userId).success
         }
 
     override suspend fun postAddMap(postId: Int, userId: Int): Result<Boolean> =

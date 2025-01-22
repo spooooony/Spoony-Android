@@ -10,8 +10,11 @@ import javax.inject.Inject
 class PostRemoteDataSourceImpl @Inject constructor(
     private val postService: PostService
 ) : PostRemoteDataSource {
-    override suspend fun postScoopPost(postId: Int, userId: Int): BaseResponse<Boolean> = postService.postScoopPost(
-        PostScoopRequestDto(postId = postId, userId = userId)
-    )
-    override suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto> = postService.getPost(userId = userId, postId = postId)
+    override suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto> =
+        postService.getPost(userId = userId, postId = postId)
+
+    override suspend fun postScoopPost(postId: Int, userId: Int): BaseResponse<Boolean> =
+        postService.postScoopPost(
+            PostScoopRequestDto(postId = postId, userId = userId)
+        )
 }

@@ -61,23 +61,16 @@ class PlaceDetailViewModel @Inject constructor(
     fun useSpoon(postId: Int, userId: Int) {
         viewModelScope.launch {
             postRepository.postScoopPost(postId = postId, userId = userId)
-                .onSuccess { response ->
-                    when (response.success) {
-                        true -> {
-                            (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
-                                with(currentPostEntity) {
-                                    _state.update {
-                                        it.copy(
-                                            postEntity = UiState.Success(
-                                                copy(isScooped = true)
-                                            )
-                                        )
-                                    }
-                                }
+                .onSuccess {
+                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
+                        with(currentPostEntity) {
+                            _state.update {
+                                it.copy(
+                                    postEntity = UiState.Success(
+                                        copy(isScooped = true)
+                                    )
+                                )
                             }
-                        }
-                        false -> {
-                            // 통신에 성공했지만 떠먹기에 실패했을 경우
                         }
                     }
                 }
