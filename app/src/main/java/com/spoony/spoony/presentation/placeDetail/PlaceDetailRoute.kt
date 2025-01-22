@@ -55,7 +55,7 @@ import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -172,13 +172,13 @@ fun PlaceDetailRoute(
                     content = { paddingValues ->
                         PlaceDetailScreen(
                             paddingValues = paddingValues,
-                            menuList = data.menuList.toPersistentList(),
+                            menuList = data.menuList.toImmutableList(),
                             title = data.title,
                             description = data.description,
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
-                            photoUrlList = data.photoUrlList.toPersistentList(),
+                            photoUrlList = data.photoUrlList.toImmutableList(),
                             category = data.category,
                             date = data.date,
                             placeAddress = data.placeAddress,
