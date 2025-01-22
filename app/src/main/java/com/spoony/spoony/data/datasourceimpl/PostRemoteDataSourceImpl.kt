@@ -2,8 +2,8 @@ package com.spoony.spoony.data.datasourceimpl
 
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.dto.base.BaseResponse
-import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.request.PostAddMapRequestDto
+import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import com.spoony.spoony.data.service.PostService
 import javax.inject.Inject

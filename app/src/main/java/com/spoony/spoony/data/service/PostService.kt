@@ -1,8 +1,8 @@
 package com.spoony.spoony.data.service
 
 import com.spoony.spoony.data.dto.base.BaseResponse
-import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.request.PostAddMapRequestDto
+import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import retrofit2.http.Body
 import retrofit2.http.GET
