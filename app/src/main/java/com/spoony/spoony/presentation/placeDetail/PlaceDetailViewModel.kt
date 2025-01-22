@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.PostRepository
+import com.spoony.spoony.presentation.placeDetail.model.toModel
 import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class PlaceDetailViewModel @Inject constructor(
@@ -38,20 +40,25 @@ class PlaceDetailViewModel @Inject constructor(
         getPost(postArgs.postId, postArgs.userId)
     }
 
-    fun getPost(postId: Int, userId: Int) {
+    private fun getPost(postId: Int, userId: Int) {
         viewModelScope.launch {
             postRepository.getPost(postId = postId, userId = userId)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
-                            postEntity = UiState.Success(response)
+                            postModel = UiState.Success(
+                                response.toModel()
+                            ),
+                            isScooped = response.isScooped,
+                            isAddMap = response.isAddMap,
+                            addMapCount = response.addMapCount
                         )
                     }
                 }
                 .onFailure {
                     _state.update {
                         it.copy(
-                            postEntity = UiState.Failure("게시물 조회 실패")
+                            postModel = UiState.Failure("게시물 조회 실패")
                         )
                     }
                 }
@@ -62,31 +69,13 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.postScoopPost(postId = postId, userId = userId)
                 .onSuccess {
-                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
-                        with(currentPostEntity) {
-                            _state.update {
-                                it.copy(
-                                    postEntity = UiState.Success(
-                                        copy(isScooped = true)
-                                    )
-                                )
-                            }
-                        }
+                    _state.update {
+                        it.copy(
+                            isScooped = true
+                        )
                     }
                 }
-                .onFailure {
-                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
-                        with(currentPostEntity) {
-                            _state.update {
-                                it.copy(
-                                    postEntity = UiState.Success(
-                                        copy(isScooped = false)
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
+                .onFailure(Timber::e)
         }
     }
 
@@ -95,24 +84,14 @@ class PlaceDetailViewModel @Inject constructor(
             postRepository.postAddMap(userId = userId, postId = postId)
                 .onSuccess { response ->
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
-                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
-                        with(currentPostEntity) {
-                            _state.update {
-                                it.copy(
-                                    postEntity = UiState.Success(
-                                        copy(
-                                            isAddMap = true,
-                                            addMapCount = currentPostEntity.addMapCount + 1
-                                        )
-                                    )
-                                )
-                            }
-                        }
+                    _state.update {
+                        it.copy(
+                            isAddMap = true,
+                            addMapCount = it.addMapCount + 1
+                        )
                     }
                 }
-                .onFailure {
-                    // 실패 했을 경우
-                }
+                .onFailure(Timber::e)
         }
     }
 
@@ -121,24 +100,14 @@ class PlaceDetailViewModel @Inject constructor(
             postRepository.deletePinMap(userId = userId, postId = postId)
                 .onSuccess { response ->
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
-                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
-                        with(currentPostEntity) {
-                            _state.update {
-                                it.copy(
-                                    postEntity = UiState.Success(
-                                        copy(
-                                            isAddMap = false,
-                                            addMapCount = currentPostEntity.addMapCount - 1
-                                        )
-                                    )
-                                )
-                            }
-                        }
+                    _state.update {
+                        it.copy(
+                            isAddMap = false,
+                            addMapCount = it.addMapCount - 1
+                        )
                     }
                 }
-                .onFailure {
-                    // 실패 했을 경우
-                }
+                .onFailure(Timber::e)
         }
     }
 }

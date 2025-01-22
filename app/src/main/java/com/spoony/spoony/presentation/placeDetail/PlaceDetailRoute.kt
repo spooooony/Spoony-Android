@@ -44,7 +44,6 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.CategoryEntity
-import com.spoony.spoony.domain.entity.PostEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.main.SHOW_SNACKBAR_TIMEMILLIS
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
@@ -53,6 +52,7 @@ import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazy
 import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
+import com.spoony.spoony.presentation.placeDetail.model.PostModel
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -128,12 +128,12 @@ fun PlaceDetailRoute(
         )
     }
 
-    when (state.postEntity) {
+    when (state.postModel) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
-            with(state.postEntity as UiState.Success<PostEntity>) {
+            with(state.postModel as UiState.Success<PostModel>) {
                 Scaffold(
                     snackbarHost = {
                         SnackbarHost(hostState = snackBarHostState) { snackbarData ->
@@ -151,9 +151,9 @@ fun PlaceDetailRoute(
                         PlaceDetailBottomBar(
                             modifier = Modifier
                                 .navigationBarsPadding(),
-                            addMapCount = data.addMapCount,
-                            isScooped = data.isScooped,
-                            isAddMap = data.isAddMap,
+                            addMapCount = state.addMapCount,
+                            isScooped = state.isScooped,
+                            isAddMap = state.isAddMap,
                             onScoopButtonClick = {
                                 scoopDialogVisibility = true
                             },
@@ -183,7 +183,7 @@ fun PlaceDetailRoute(
                             date = data.date,
                             placeAddress = data.placeAddress,
                             placeName = data.placeName,
-                            isScooped = data.isScooped,
+                            isScooped = state.isScooped,
                             dropdownMenuList = state.dropDownMenuList,
                             onReportButtonClick = navigateToReport
                         )
