@@ -80,10 +80,10 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun addMyMap(userId: Int, postId: Int) {
+    fun addMyMap(postId: Int, userId: Int) {
         viewModelScope.launch {
-            postRepository.postAddMap(userId = userId, postId = postId)
-                .onSuccess { response ->
+            postRepository.postAddMap(postId = postId, userId = userId)
+                .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
                     (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
                         with(currentPostEntity) {
@@ -101,7 +101,19 @@ class PlaceDetailViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    // 실패 했을 경우
+                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
+                        with(currentPostEntity) {
+                            _state.update {
+                                it.copy(
+                                    postEntity = UiState.Success(
+                                        copy(
+                                            isAddMap = false
+                                        )
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
         }
     }

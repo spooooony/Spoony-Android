@@ -5,4 +5,5 @@ import com.spoony.spoony.data.dto.response.GetPostResponseDto
 
 interface PostRemoteDataSource {
     suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto>
+    suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean>
 }
