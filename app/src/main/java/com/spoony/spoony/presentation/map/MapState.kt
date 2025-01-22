@@ -1,9 +1,9 @@
 package com.spoony.spoony.presentation.map
 
-import com.spoony.spoony.presentation.map.model.PlaceModel
+import com.spoony.spoony.presentation.map.model.LocationModel
 
 data class MapState(
-    val placeModel: PlaceModel = PlaceModel(
+    val locationModel: LocationModel = LocationModel(
         latitude = 37.554524,
         longitude = 126.926447
     )

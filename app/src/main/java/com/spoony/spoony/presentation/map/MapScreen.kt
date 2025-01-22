@@ -53,8 +53,8 @@ fun MapRoute(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition(
             LatLng(
-                state.placeModel.latitude,
-                state.placeModel.longitude
+                state.locationModel.latitude,
+                state.locationModel.longitude
             ),
             DEFAULT_ZOOM
         )
