@@ -21,7 +21,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +53,6 @@ import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazy
 import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
-import com.spoony.spoony.presentation.placeDetail.event.PlaceDetailLocalSnackBarTrigger
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.delay
@@ -135,65 +133,61 @@ fun PlaceDetailRoute(
         is UiState.Failure -> {}
         is UiState.Success -> {
             with(state.postEntity as UiState.Success<PostEntity>) {
-                CompositionLocalProvider(
-                    PlaceDetailLocalSnackBarTrigger provides onShowSnackBar
-                ) {
-                    Scaffold(
-                        snackbarHost = {
-                            SnackbarHost(hostState = snackBarHostState) { snackbarData ->
-                                TextSnackbar(text = snackbarData.visuals.message)
-                            }
-                        },
-                        topBar = {
-                            TagTopAppBar(
-                                count = spoonAmount,
-                                showBackButton = true,
-                                onBackButtonClick = navigateUp
-                            )
-                        },
-                        bottomBar = {
-                            PlaceDetailBottomBar(
-                                modifier = Modifier
-                                    .navigationBarsPadding(),
-                                addMapCount = data.addMapCount,
-                                isScooped = data.isScooped,
-                                isAddMap = data.isAddMap,
-                                onScoopButtonClick = {
-                                    scoopDialogVisibility = true
-                                },
-                                onSearchMapClick = {
-                                    searchPlaceNaverMap(
-                                        latitude = data.latitude,
-                                        longitude = data.longitude,
-                                        placeName = data.placeName,
-                                        context = context
-                                    )
-                                },
-                                onAddMapButtonClick = { viewModel.addMyMap(postId, userId) },
-                                onDeletePinMapButtonClick = { viewModel.deletePinMap(postId, userId) }
-                            )
-                        },
-                        content = { paddingValues ->
-                            PlaceDetailScreen(
-                                paddingValues = paddingValues,
-                                menuList = data.menuList,
-                                title = data.title,
-                                description = data.description,
-                                userProfileUrl = userProfile.userProfileUrl,
-                                userName = userProfile.userName,
-                                userRegion = userProfile.userRegion,
-                                photoUrlList = data.photoUrlList,
-                                category = data.category,
-                                date = data.date,
-                                placeAddress = data.placeAddress,
-                                placeName = data.placeName,
-                                isScooped = data.isScooped,
-                                dropdownMenuList = state.dropDownMenuList,
-                                onReportButtonClick = navigateToReport
-                            )
+                Scaffold(
+                    snackbarHost = {
+                        SnackbarHost(hostState = snackBarHostState) { snackbarData ->
+                            TextSnackbar(text = snackbarData.visuals.message)
                         }
-                    )
-                }
+                    },
+                    topBar = {
+                        TagTopAppBar(
+                            count = spoonAmount,
+                            showBackButton = true,
+                            onBackButtonClick = navigateUp
+                        )
+                    },
+                    bottomBar = {
+                        PlaceDetailBottomBar(
+                            modifier = Modifier
+                                .navigationBarsPadding(),
+                            addMapCount = data.addMapCount,
+                            isScooped = data.isScooped,
+                            isAddMap = data.isAddMap,
+                            onScoopButtonClick = {
+                                scoopDialogVisibility = true
+                            },
+                            onSearchMapClick = {
+                                searchPlaceNaverMap(
+                                    latitude = data.latitude,
+                                    longitude = data.longitude,
+                                    placeName = data.placeName,
+                                    context = context
+                                )
+                            },
+                            onAddMapButtonClick = { viewModel.addMyMap(postId, userId) },
+                            onDeletePinMapButtonClick = { viewModel.deletePinMap(postId, userId) }
+                        )
+                    },
+                    content = { paddingValues ->
+                        PlaceDetailScreen(
+                            paddingValues = paddingValues,
+                            menuList = data.menuList,
+                            title = data.title,
+                            description = data.description,
+                            userProfileUrl = userProfile.userProfileUrl,
+                            userName = userProfile.userName,
+                            userRegion = userProfile.userRegion,
+                            photoUrlList = data.photoUrlList,
+                            category = data.category,
+                            date = data.date,
+                            placeAddress = data.placeAddress,
+                            placeName = data.placeName,
+                            isScooped = data.isScooped,
+                            dropdownMenuList = state.dropDownMenuList,
+                            onReportButtonClick = navigateToReport
+                        )
+                    }
+                )
             }
         }
     }
