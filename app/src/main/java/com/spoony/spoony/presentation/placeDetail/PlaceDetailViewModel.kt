@@ -35,19 +35,25 @@ class PlaceDetailViewModel @Inject constructor(
             postId = UiState.Success(data = postArgs.postId),
             userId = UiState.Success(data = postArgs.userId)
         )
-        getPost(postArgs.postId)
+        getPost(postArgs.postId, postArgs.userId)
     }
 
-    fun getPost(postId: Int) {
+    fun getPost(postId: Int, userId: Int) {
         viewModelScope.launch {
-            postRepository.getPost(postId = postId)
+            postRepository.getPost(postId = postId, userId = userId)
                 .onSuccess { response ->
-                    _state.value = _state.value.copy(
-                        postEntity = UiState.Success(response)
-                    )
+                    _state.update {
+                        it.copy(
+                            postEntity = UiState.Success(response)
+                        )
+                    }
                 }
                 .onFailure {
-                    // 실패 했을 경우
+                    _state.update {
+                        it.copy(
+                            postEntity = UiState.Failure("게시물 조회 실패")
+                        )
+                    }
                 }
         }
     }
@@ -88,14 +94,16 @@ class PlaceDetailViewModel @Inject constructor(
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
                     (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
                         with(currentPostEntity) {
-                            _state.value = _state.value.copy(
-                                postEntity = UiState.Success(
-                                    copy(
-                                        isAddMap = true,
-                                        addMapCount = currentPostEntity.addMapCount + 1
+                            _state.update {
+                                it.copy(
+                                    postEntity = UiState.Success(
+                                        copy(
+                                            isAddMap = true,
+                                            addMapCount = currentPostEntity.addMapCount + 1
+                                        )
                                     )
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -112,14 +120,16 @@ class PlaceDetailViewModel @Inject constructor(
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
                     (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
                         with(currentPostEntity) {
-                            _state.value = _state.value.copy(
-                                postEntity = UiState.Success(
-                                    copy(
-                                        isAddMap = false,
-                                        addMapCount = currentPostEntity.addMapCount - 1
+                            _state.update {
+                                it.copy(
+                                    postEntity = UiState.Success(
+                                        copy(
+                                            isAddMap = false,
+                                            addMapCount = currentPostEntity.addMapCount - 1
+                                        )
                                     )
                                 )
-                            )
+                            }
                         }
                     }
                 }
