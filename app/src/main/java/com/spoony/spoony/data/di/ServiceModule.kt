@@ -2,6 +2,7 @@ package com.spoony.spoony.data.di
 
 import com.spoony.spoony.data.service.DummyService
 import com.spoony.spoony.data.service.PlaceService
+import com.spoony.spoony.data.service.PostService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
