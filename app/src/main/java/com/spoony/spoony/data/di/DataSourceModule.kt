@@ -1,7 +1,9 @@
 package com.spoony.spoony.data.di
 
 import com.spoony.spoony.data.datasource.DummyRemoteDataSource
+import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.datasourceimpl.DummyRemoteDataSourceImpl
+import com.spoony.spoony.data.datasourceimpl.PostRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,4 +16,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindDummyDataSource(dummyRemoteDataSourceImpl: DummyRemoteDataSourceImpl): DummyRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindPostDataSource(postRemoteDataSourceImpl: PostRemoteDataSourceImpl): PostRemoteDataSource
 }
