@@ -39,7 +39,7 @@ class RegisterViewModel @Inject constructor(
 
     private fun loadCategories() {
         viewModelScope.launch {
-            repository.getCategories()
+            repository.getFoodCategories()
                 .onSuccess { categoryEntities ->
                     _state.update { state ->
                         state.copy(

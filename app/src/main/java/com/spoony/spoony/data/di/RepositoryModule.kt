@@ -1,10 +1,12 @@
 package com.spoony.spoony.data.di
 
+import com.spoony.spoony.data.repositoryimpl.CategoryRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.DummyRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.ExploreRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.MapRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.PostRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.RegisterRepositoryImpl
+import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.DummyRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.domain.repository.MapRepository
@@ -38,4 +40,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindRegisterRepository(registerRepositoryImpl: RegisterRepositoryImpl): RegisterRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(categoryRepositoryImpl: CategoryRepositoryImpl): CategoryRepository
 }

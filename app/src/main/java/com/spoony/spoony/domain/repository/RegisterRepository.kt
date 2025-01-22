@@ -5,7 +5,7 @@ import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 
 interface RegisterRepository {
-    suspend fun getCategories(): Result<List<CategoryEntity>>
+    suspend fun getFoodCategories(): Result<List<CategoryEntity>>
     suspend fun searchPlace(query: String, display: Int = 5): Result<List<PlaceEntity>>
     suspend fun checkDuplicatePlace(
         userId: Long,
