@@ -2,13 +2,14 @@ package com.spoony.spoony.presentation.placeDetail.model
 
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 data class PostModel(
-    val photoUrlList: List<String>,
+    val photoUrlList: ImmutableList<String>,
     val title: String,
     val date: String,
-    val menuList: List<String>,
+    val menuList: ImmutableList<String>,
     val description: String,
     val placeName: String,
     val placeAddress: String,
