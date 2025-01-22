@@ -2,6 +2,8 @@ package com.spoony.spoony.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spoony.spoony.domain.entity.CategoryEntity
+import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.Category
@@ -39,15 +41,11 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getCategories()
                 .onSuccess { categoryEntities ->
-                    val categories = categoryEntities.map { entity ->
-                        Category(
-                            categoryId = entity.categoryId,
-                            categoryName = entity.categoryName,
-                            iconUrlSelected = entity.iconUrl,
-                            iconUrlNotSelected = entity.unSelectedIconUrl ?: entity.iconUrl
+                    _state.update { state ->
+                        state.copy(
+                            categories = categoryEntities.map { it.toPresentation() }.toImmutableList()
                         )
                     }
-                    _state.update { it.copy(categories = categories.toImmutableList()) }
                 }
         }
     }
@@ -60,17 +58,12 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             repository.searchPlace(query)
                 .onSuccess { placeEntities ->
-                    val places = placeEntities.map { entity ->
-                        Place(
-                            placeName = entity.placeName,
-                            placeAddress = entity.placeAddress,
-                            placeRoadAddress = entity.placeRoadAddress,
-                            latitude = entity.latitude,
-                            longitude = entity.longitude
-                        )
-                    }
                     _state.update {
-                        it.copy(searchResults = places.toImmutableList())
+                        it.copy(
+                            searchResults = placeEntities.map { entity ->
+                                entity.toPresentation()
+                            }.toImmutableList()
+                        )
                     }
                 }
         }
@@ -83,7 +76,7 @@ class RegisterViewModel @Inject constructor(
     fun selectPlace(place: Place) {
         viewModelScope.launch {
             repository.checkDuplicatePlace(
-                userId = 1L, // TODO: 실제 사용자 ID로 변경
+                userId = 1L,
                 latitude = place.latitude,
                 longitude = place.longitude
             ).onSuccess { isDuplicate ->
@@ -244,6 +237,23 @@ class RegisterViewModel @Inject constructor(
         const val MAX_ONE_LINE_REVIEW_LENGTH = 30
     }
 }
+
+fun CategoryEntity.toPresentation(): Category =
+    Category(
+        categoryId = categoryId,
+        categoryName = categoryName,
+        iconUrlSelected = iconUrl,
+        iconUrlNotSelected = unSelectedIconUrl ?: iconUrl
+    )
+
+fun PlaceEntity.toPresentation(): Place =
+    Place(
+        placeName = placeName,
+        placeAddress = placeAddress,
+        placeRoadAddress = placeRoadAddress,
+        latitude = latitude,
+        longitude = longitude
+    )
 
 sealed class RegisterSideEffect {
     data class ShowSnackbar(val message: String) : RegisterSideEffect()
