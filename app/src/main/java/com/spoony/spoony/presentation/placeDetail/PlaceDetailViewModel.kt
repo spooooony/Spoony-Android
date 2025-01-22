@@ -49,18 +49,25 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.postScoopPost(userId = userId, postId = postId)
                 .onSuccess { response ->
-                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
-                        with(currentPostEntity) {
-                            _state.value = _state.value.copy(
-                                postEntity = UiState.Success(
-                                    copy(isScooped = true)
-                                )
-                            )
+                    when (response.success) {
+                        true -> {
+                            (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
+                                with(currentPostEntity) {
+                                    _state.value = _state.value.copy(
+                                        postEntity = UiState.Success(
+                                            copy(isScooped = true)
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        false -> {
+                            // 통신에 성공했지만 떠먹기에 실패했을 경우
                         }
                     }
                 }
                 .onFailure {
-                    // 실패 했을 경우
+                    // 통신에 실패 했을 경우
                 }
         }
     }
