@@ -26,7 +26,8 @@ class PlaceDetailViewModel @Inject constructor(
         get() = _state
 
     private val _sideEffect = MutableSharedFlow<PlaceDetailSideEffect>()
-    val sideEffect: SharedFlow<PlaceDetailSideEffect> = _sideEffect.asSharedFlow()
+    val sideEffect: SharedFlow<PlaceDetailSideEffect>
+        get() = _sideEffect
 
     init {
         val postArgs = savedStateHandle.toRoute<PlaceDetail>()
