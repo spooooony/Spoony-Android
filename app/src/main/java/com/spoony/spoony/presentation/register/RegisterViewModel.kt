@@ -83,7 +83,7 @@ class RegisterViewModel @Inject constructor(
     fun selectPlace(place: Place) {
         viewModelScope.launch {
             repository.checkDuplicatePlace(
-                userId = 1L, // TODO: 실제 사용자 ID로 변경
+                userId = 1L,
                 latitude = place.latitude,
                 longitude = place.longitude
             ).onSuccess { isDuplicate ->
