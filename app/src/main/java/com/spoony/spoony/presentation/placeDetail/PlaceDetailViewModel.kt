@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -40,7 +41,11 @@ class PlaceDetailViewModel @Inject constructor(
                     )
                 }
                 .onFailure {
-                    // 실패 했을 경우
+                    _state.update {
+                        it.copy(
+                            postEntity = UiState.Failure("게시물 조회 실패")
+                        )
+                    }
                 }
         }
     }

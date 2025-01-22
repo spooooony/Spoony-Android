@@ -1,8 +1,8 @@
 package com.spoony.spoony.data.datasource
 
-import com.spoony.spoony.data.dto.base.BaseResponse
-import com.spoony.spoony.data.dto.response.GetPostResponse
+import com.spoony.spoony.data.dto.base.BaseResponseDTO
+import com.spoony.spoony.data.dto.response.GetPostResponseDTO
 
 interface PostRemoteDataSource {
-    suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponse>
+    suspend fun getPostData(postId: Int, userId: Int): BaseResponseDTO<GetPostResponseDTO>
 }

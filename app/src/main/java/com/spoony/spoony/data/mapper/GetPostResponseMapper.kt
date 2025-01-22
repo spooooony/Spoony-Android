@@ -1,11 +1,11 @@
 package com.spoony.spoony.data.mapper
 
-import com.spoony.spoony.data.dto.response.GetPostResponse
+import com.spoony.spoony.data.dto.response.GetPostResponseDTO
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
 import kotlinx.collections.immutable.toImmutableList
 
-fun GetPostResponse.toPostEntity() =
+fun GetPostResponseDTO.toPostEntity() =
     PostEntity(
         postId = this.postId,
         userId = this.userId,
@@ -24,12 +24,11 @@ fun GetPostResponse.toPostEntity() =
         category = this.categoryColorResponse.toCategoryEntity()
     )
 
-fun GetPostResponse.CategoryColorResponse.toCategoryEntity(): CategoryEntity {
-    return CategoryEntity(
+fun GetPostResponseDTO.CategoryColorResponse.toCategoryEntity() =
+    CategoryEntity(
         categoryId = this.categoryId,
         categoryName = this.categoryName,
         iconUrl = this.iconUrl,
         textColor = this.iconTextColor,
         backgroundColor = this.iconBackgroundColor
     )
-}

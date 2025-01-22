@@ -1,7 +1,7 @@
 package com.spoony.spoony.data.service
 
-import com.spoony.spoony.data.dto.base.BaseResponse
-import com.spoony.spoony.data.dto.response.GetPostResponse
+import com.spoony.spoony.data.dto.base.BaseResponseDTO
+import com.spoony.spoony.data.dto.response.GetPostResponseDTO
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -16,5 +16,5 @@ interface PostService {
     suspend fun getPost(
         @Path("userId") userId: Int,
         @Path("postId") postId: Int
-    ): BaseResponse<GetPostResponse>
+    ): BaseResponseDTO<GetPostResponseDTO>
 }

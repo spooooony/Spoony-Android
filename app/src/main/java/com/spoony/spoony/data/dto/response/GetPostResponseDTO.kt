@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetPostResponse(
+data class GetPostResponseDTO(
     @SerialName("postId")
     val postId: Int,
     @SerialName("userId")
