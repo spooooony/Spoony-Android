@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,12 +34,16 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
+import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.map.component.MapPlaceDetailCard
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapBottomSheetDragHandle
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapListItem
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 private const val DEFAULT_ZOOM = 14.0
@@ -60,12 +66,18 @@ fun MapRoute(
         )
     }
 
-    MapScreen(
-        paddingValues = paddingValues,
-        cameraPositionState = cameraPositionState,
-        listOf("fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf", "fadaf"),
-        onPlaceCardClick = navigateToMapSearch
-    )
+    when (state.addedPlaceList) {
+        is UiState.Success -> {
+            MapScreen(
+                paddingValues = paddingValues,
+                cameraPositionState = cameraPositionState,
+                placeList = (state.addedPlaceList as UiState.Success<ImmutableList<AddedPlaceEntity>>).data,
+                onPlaceCardClick = navigateToMapSearch
+            )
+        }
+
+        else -> {}
+    }
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -73,7 +85,7 @@ fun MapRoute(
 fun MapScreen(
     paddingValues: PaddingValues,
     cameraPositionState: CameraPositionState,
-    placeList: List<String>,
+    placeList: ImmutableList<AddedPlaceEntity>,
     onPlaceCardClick: () -> Unit
 ) {
     val sheetState = rememberBottomSheetState(
@@ -152,22 +164,28 @@ fun MapScreen(
                     } else {
                         LazyColumn(
                             modifier = Modifier
+                                .fillMaxSize()
                                 .padding(bottom = paddingValues.calculateBottomPadding())
                         ) {
-                            items(placeList.size) { index ->
-                                MapListItem(
-                                    placeName = placeList[index],
-                                    address = placeList[index],
-                                    review = placeList[index],
-                                    imageUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
-                                    categoryIconUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
-                                    categoryName = "주류",
-                                    textColor = SpoonyAndroidTheme.colors.white,
-                                    backgroundColor = SpoonyAndroidTheme.colors.white,
-                                    onClick = {
-                                        isSelected = true
-                                    }
-                                )
+                            items(
+                                items = placeList,
+                                key = { it.placeId }
+                            ) { addedPlace ->
+                                with(addedPlace) {
+                                    MapListItem(
+                                        placeName = placeName,
+                                        address = placeAddress,
+                                        review = postTitle,
+                                        imageUrl = photoUrl,
+                                        categoryIconUrl = categoryInfo.iconUrl,
+                                        categoryName = categoryInfo.categoryName,
+                                        textColor = Color.hexToColor(categoryInfo.textColor ?: "000000"),
+                                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor ?: "000000"),
+                                        onClick = {
+                                            isSelected = true
+                                        }
+                                    )
+                                }
                             }
                             item {
                                 Spacer(
