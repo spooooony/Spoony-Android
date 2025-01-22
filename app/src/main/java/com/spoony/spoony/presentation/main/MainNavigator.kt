@@ -12,6 +12,8 @@ import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
+import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
+import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
@@ -48,10 +50,6 @@ class MainNavigator(
         }
     }
 
-    fun navigateRegisterToExplore(navOptions: NavOptions? = null) {
-        navController.navigateToExplore(navOptions)
-    }
-
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true
@@ -63,6 +61,18 @@ class MainNavigator(
 
     fun navigateToExplore(navOptions: NavOptions? = null) {
         navController.navigateToExplore(navOptions)
+    }
+
+    fun navigateToMapSearch(navOptions: NavOptions? = null) {
+        navController.navigateToMapSearch(navOptions)
+    }
+
+    fun navigateToPlaceDetail(
+        postId: Int,
+        userId: Int,
+        navOptions: NavOptions? = null
+    ) {
+        navController.navigateToPlaceDetail(postId = postId, userId = userId)
     }
 
     fun navigateUp() {

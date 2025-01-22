@@ -3,6 +3,8 @@ package com.spoony.spoony.presentation.main
 import android.app.Activity
 import android.content.Context
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -75,10 +77,32 @@ fun MainScreen(
             }
         ) { paddingValues ->
             NavHost(
+                enterTransition = {
+                    EnterTransition.None
+                },
+                exitTransition = {
+                    ExitTransition.None
+                },
+                popEnterTransition = {
+                    EnterTransition.None
+                },
+                popExitTransition = {
+                    ExitTransition.None
+                },
                 navController = navigator.navController,
                 startDestination = navigator.startDestination
             ) {
-                mapNavGraph()
+                mapNavGraph(
+                    paddingValues = paddingValues,
+                    navigateToPlaceDetail = {
+                        navigator.navigateToPlaceDetail(
+                            userId = 1,
+                            postId = it
+                        )
+                    },
+                    navigateToMapSearch = navigator::navigateToMapSearch,
+                    navigateUp = navigator::navigateUp
+                )
 
                 exploreNavGraph(
                     paddingValues = paddingValues,
@@ -87,7 +111,7 @@ fun MainScreen(
 
                 registerNavGraph(
                     paddingValues = paddingValues,
-                    navigateToExplore = navigator::navigateRegisterToExplore
+                    navigateToExplore = navigator::navigateToExplore
                 )
 
                 placeDetailNavGraph(
