@@ -1,0 +1,52 @@
+package com.spoony.spoony.data.dto.response
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class GetPostResponse(
+    @SerialName("postId")
+    val postId: Int,
+    @SerialName("userId")
+    val userId: Int,
+    @SerialName("photoUrlList")
+    val photoUrlList: List<String>,
+    @SerialName("title")
+    val title: String,
+    @SerialName("date")
+    val date: String,
+    @SerialName("menuList")
+    val menuList: List<String>,
+    @SerialName("description")
+    val description: String,
+    @SerialName("placeName")
+    val placeName: String,
+    @SerialName("placeAddress")
+    val placeAddress: String,
+    @SerialName("latitude")
+    val latitude: Double,
+    @SerialName("longitude")
+    val longitude: Double,
+    @SerialName("zzinCount")
+    val zzinCount: Int,
+    @SerialName("isZzim")
+    val isZzim: Boolean,
+    @SerialName("isScoop")
+    val isScoop: Boolean,
+    @SerialName("categoryColorResponse")
+    val categoryColorResponse: CategoryColorResponse
+) {
+    @Serializable
+    data class CategoryColorResponse(
+        @SerialName("categoryId")
+        val categoryId: Int,
+        @SerialName("categoryName")
+        val categoryName: String,
+        @SerialName("iconUrl")
+        val iconUrl: String,
+        @SerialName("iconTextColor")
+        val iconTextColor: String,
+        @SerialName("iconBackgroundColor")
+        val iconBackgroundColor: String
+    )
+}

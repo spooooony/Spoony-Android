@@ -28,12 +28,12 @@ class PlaceDetailViewModel @Inject constructor(
             postId = UiState.Success(data = postArgs.postId),
             userId = UiState.Success(data = postArgs.userId)
         )
-        getPost(postArgs.postId)
+        getPost(postArgs.postId, postArgs.userId)
     }
 
-    fun getPost(postId: Int) {
+    fun getPost(postId: Int, userId: Int) {
         viewModelScope.launch {
-            postRepository.getPost(postId = postId)
+            postRepository.getPost(postId = postId, userId = userId)
                 .onSuccess { response ->
                     _state.value = _state.value.copy(
                         postEntity = UiState.Success(response)
