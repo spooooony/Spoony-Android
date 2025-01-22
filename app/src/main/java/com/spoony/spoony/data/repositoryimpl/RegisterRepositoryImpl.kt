@@ -3,65 +3,64 @@ package com.spoony.spoony.data.repositoryimpl
 import android.net.Uri
 import com.spoony.spoony.data.datasource.PlaceDataSource
 import com.spoony.spoony.data.mapper.toDomain
-import com.spoony.spoony.data.mapper.toPresentation
+import com.spoony.spoony.domain.entity.CategoryEntity
+import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
-import com.spoony.spoony.presentation.register.model.Category
-import com.spoony.spoony.presentation.register.model.Place
 import javax.inject.Inject
 
 class RegisterRepositoryImpl @Inject constructor(
     private val placeDataSource: PlaceDataSource
 ) : RegisterRepository {
-    override suspend fun getCategories(): Result<List<Category>> = Result.success(
+    override suspend fun getCategories(): Result<List<CategoryEntity>> = Result.success(
         listOf(
-            Category(
+            CategoryEntity(
                 categoryId = 2,
                 categoryName = "한식",
-                iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
-                iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
+                iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
+                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
             ),
-            Category(
+            CategoryEntity(
                 categoryId = 3,
                 categoryName = "일식",
-                iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
-                iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
+                iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
+                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
             ),
-            Category(
+            CategoryEntity(
                 categoryId = 4,
                 categoryName = "중식",
-                iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
-                iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
+                iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
+                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
             ),
-            Category(
+            CategoryEntity(
                 categoryId = 5,
                 categoryName = "양식",
-                iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
-                iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
+                iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
+                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
             ),
-            Category(
+            CategoryEntity(
                 categoryId = 6,
                 categoryName = "퓨전/세계요리",
-                iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
-                iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
+                iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
+                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
             ),
-            Category(
+            CategoryEntity(
                 categoryId = 7,
                 categoryName = "카페",
-                iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
-                iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
+                iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
+                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
             ),
-            Category(
+            CategoryEntity(
                 categoryId = 8,
                 categoryName = "주류",
-                iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
-                iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
+                iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_white.png",
+                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/korean_black.png"
             )
         )
     )
 
-    override suspend fun searchPlace(query: String, display: Int): Result<List<Place>> = runCatching {
+    override suspend fun searchPlace(query: String, display: Int): Result<List<PlaceEntity>> = runCatching {
         placeDataSource.getPlaces(query, display).data!!.placeList
-            .map { it.toDomain().toPresentation() }
+            .map { it.toDomain() }
     }
 
     override suspend fun checkDuplicatePlace(
