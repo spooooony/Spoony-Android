@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -51,19 +52,21 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun useSpoon(userId: Int, postId: Int) {
+    fun useSpoon(postId: Int, userId: Int) {
         viewModelScope.launch {
-            postRepository.postScoopPost(userId = userId, postId = postId)
+            postRepository.postScoopPost(postId = postId, userId = userId)
                 .onSuccess { response ->
                     when (response.success) {
                         true -> {
                             (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
                                 with(currentPostEntity) {
-                                    _state.value = _state.value.copy(
-                                        postEntity = UiState.Success(
-                                            copy(isScooped = true)
+                                    _state.update {
+                                        it.copy(
+                                            postEntity = UiState.Success(
+                                                copy(isScooped = true)
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
                         }

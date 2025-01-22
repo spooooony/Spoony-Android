@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PostScoopRequestDTO(
+data class PostScoopRequestDto(
     @SerialName("postId")
     val postId: Int,
     @SerialName("userId")
