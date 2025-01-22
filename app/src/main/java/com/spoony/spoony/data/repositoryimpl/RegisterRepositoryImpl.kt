@@ -2,8 +2,8 @@ package com.spoony.spoony.data.repositoryimpl
 
 import android.net.Uri
 import com.spoony.spoony.data.datasource.PlaceDataSource
-import com.spoony.spoony.data.mapper.toPlace
-import com.spoony.spoony.data.mapper.toPlaceEntity
+import com.spoony.spoony.data.mapper.toDomain
+import com.spoony.spoony.data.mapper.toPresentation
 import com.spoony.spoony.domain.repository.RegisterRepository
 import com.spoony.spoony.presentation.register.model.Category
 import com.spoony.spoony.presentation.register.model.Place
@@ -60,13 +60,8 @@ class RegisterRepositoryImpl @Inject constructor(
     )
 
     override suspend fun searchPlace(query: String, display: Int): Result<List<Place>> = runCatching {
-        val response = placeDataSource.searchPlace(query, display)
-        if (!response.success || response.data == null) {
-            throw IllegalStateException(response.error?.message ?: "에러 발생")
-        }
-        response.data.placeList.map { placeDto ->
-            placeDto.toPlaceEntity().toPlace()
-        }
+        placeDataSource.getPlaces(query, display).data!!.placeList
+            .map { it.toDomain().toPresentation() }
     }
 
     override suspend fun checkDuplicatePlace(

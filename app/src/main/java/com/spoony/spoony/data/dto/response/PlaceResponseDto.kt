@@ -4,13 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SearchPlaceData(
+data class SearchPlaceResponseDto(
     @SerialName("placeList")
-    val placeList: List<PlaceDto>
+    val placeList: List<PlaceResponseDto>
 )
 
 @Serializable
-data class PlaceDto(
+data class PlaceResponseDto(
     @SerialName("placeName")
     val placeName: String,
     @SerialName("placeAddress")
