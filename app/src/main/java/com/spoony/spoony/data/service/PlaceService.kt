@@ -1,6 +1,6 @@
 package com.spoony.spoony.data.service
 
-import com.spoony.spoony.data.dto.response.BaseResponse
+import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.response.SearchPlaceResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
