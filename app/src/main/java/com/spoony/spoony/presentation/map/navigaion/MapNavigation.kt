@@ -17,12 +17,16 @@ fun NavController.navigateToMap(
 
 fun NavGraphBuilder.mapNavGraph(
     paddingValues: PaddingValues,
-    navigateToMapSearch: () -> Unit
+    navigateToPlaceDetail: (Int) -> Unit,
+    navigateToMapSearch: () -> Unit,
+    navigateUp: () -> Unit
 ) {
     composable<Map> {
         MapRoute(
             paddingValues = paddingValues,
-            navigateToMapSearch = navigateToMapSearch
+            navigateToPlaceDetail = navigateToPlaceDetail,
+            navigateToMapSearch = navigateToMapSearch,
+            navigateUp = navigateUp
         )
     }
 }
