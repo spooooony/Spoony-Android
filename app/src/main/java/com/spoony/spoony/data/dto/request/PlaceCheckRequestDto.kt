@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PlaceCheckRequestDTO(
+data class PlaceCheckRequestDto(
     @SerialName("userId")
     val userId: Long,
     @SerialName("latitude")

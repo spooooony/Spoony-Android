@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PlaceCheckResponseDTO(
+data class PlaceCheckResponseDto(
     @SerialName("duplicate")
     val duplicate: Boolean
 )
