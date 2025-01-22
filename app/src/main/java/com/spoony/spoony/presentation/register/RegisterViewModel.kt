@@ -243,7 +243,7 @@ fun CategoryEntity.toPresentation(): Category =
         categoryId = categoryId,
         categoryName = categoryName,
         iconUrlSelected = iconUrl,
-        iconUrlNotSelected = unSelectedIconUrl ?: iconUrl
+        iconUrlNotSelected = unSelectedIconUrl ?: ""
     )
 
 fun PlaceEntity.toPresentation(): Place =
