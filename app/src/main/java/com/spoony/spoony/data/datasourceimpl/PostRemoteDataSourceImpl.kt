@@ -13,15 +13,14 @@ class PostRemoteDataSourceImpl @Inject constructor(
 ) : PostRemoteDataSource {
     override suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto> =
         postService.getPost(userId = userId, postId = postId)
-    override suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean> =
-        postService.postAddMapPost(
-            PostAddMapRequestDto(postId = postId, userId = userId)
-        )
-    override suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto> =
-        postService.getPost(userId = userId, postId = postId)
 
     override suspend fun postScoopPost(postId: Int, userId: Int): BaseResponse<Boolean> =
         postService.postScoopPost(
             PostScoopRequestDto(postId = postId, userId = userId)
+        )
+
+    override suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean> =
+        postService.postAddMapPost(
+            PostAddMapRequestDto(postId = postId, userId = userId)
         )
 }
