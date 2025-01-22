@@ -5,7 +5,7 @@ import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
 import kotlinx.collections.immutable.toImmutableList
 
-fun GetPostResponseDTO.toPostEntity() =
+fun GetPostResponseDTO.toDomain() =
     PostEntity(
         postId = this.postId,
         userId = this.userId,
@@ -21,10 +21,10 @@ fun GetPostResponseDTO.toPostEntity() =
         addMapCount = this.zzinCount,
         isAddMap = this.isZzim,
         isScooped = this.isScoop,
-        category = this.categoryColorResponse.toCategoryEntity()
+        category = this.categoryColorResponse.toDomain()
     )
 
-fun GetPostResponseDTO.CategoryColorResponse.toCategoryEntity() =
+fun GetPostResponseDTO.CategoryColorResponse.toDomain() =
     CategoryEntity(
         categoryId = this.categoryId,
         categoryName = this.categoryName,
