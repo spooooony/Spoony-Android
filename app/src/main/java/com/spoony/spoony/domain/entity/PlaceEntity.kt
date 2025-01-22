@@ -7,7 +7,3 @@ data class PlaceEntity(
     val latitude: Double,
     val longitude: Double
 )
-
-data class PlaceSearchResultEntity(
-    val placeList: List<PlaceEntity>
-)
