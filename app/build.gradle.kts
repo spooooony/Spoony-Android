@@ -32,6 +32,9 @@ android {
             "BASE_URL",
             properties.getProperty("dev.base.url")
         )
+
+        manifestPlaceholders["naverClientId"] = properties.getProperty("naverClientId")
+        buildConfigField("String", "NAVER_CLIENT_ID", properties.getProperty("naver.client.id"))
     }
 
     buildTypes {
@@ -57,6 +60,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.play.services.maps)
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -85,6 +89,9 @@ dependencies {
     implementation(libs.advanced.bottom.sheet)
 
     implementation(libs.kotlinx.immutable)
+
+    // Naver Map
+    implementation(libs.bundles.naverMap)
 }
 
 ktlint {

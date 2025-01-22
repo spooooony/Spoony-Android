@@ -54,6 +54,7 @@ playServicesLocation = "21.0.1"
 ## Kotlin Symbol Processing
 ksp = "2.0.0-1.0.24"
 appcompat = "1.7.0"
+playServicesMaps = "19.0.0"
 
 [libraries]
 # Test
@@ -115,6 +116,7 @@ naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.r
 naver-map-location = { module = "io.github.fornewid:naver-map-location", version.ref = "naverMapLocation" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
