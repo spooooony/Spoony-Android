@@ -75,7 +75,17 @@ class PlaceDetailViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    // 통신에 실패 했을 경우
+                    (_state.value.postEntity as? UiState.Success)?.data?.let { currentPostEntity ->
+                        with(currentPostEntity) {
+                            _state.update {
+                                it.copy(
+                                    postEntity = UiState.Success(
+                                        copy(isScooped = false)
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
         }
     }
