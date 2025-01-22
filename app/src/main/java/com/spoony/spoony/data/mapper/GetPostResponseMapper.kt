@@ -3,16 +3,15 @@ package com.spoony.spoony.data.mapper
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
-import kotlinx.collections.immutable.toImmutableList
 
 fun GetPostResponseDto.toDomain() =
     PostEntity(
         postId = this.postId,
         userId = this.userId,
-        photoUrlList = this.photoUrlList.toImmutableList(),
+        photoUrlList = this.photoUrlList,
         title = this.title,
         date = this.date,
-        menuList = this.menuList.toImmutableList(),
+        menuList = this.menuList,
         description = this.description,
         placeName = this.placeName,
         placeAddress = this.placeAddress,
