@@ -77,7 +77,7 @@ fun PlaceDetailBottomBar(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    imageVector = if (isAddMap) ImageVector.vectorResource(id = R.drawable.ic_add_map_main400_24) else ImageVector.vectorResource(id = R.drawable.ic_add_map_gray400_24),
+                    imageVector = ImageVector.vectorResource(id = if (isAddMap) R.drawable.ic_add_map_main400_24 else R.drawable.ic_add_map_gray400_24),
                     modifier = Modifier
                         .size(32.dp),
                     contentDescription = null,
