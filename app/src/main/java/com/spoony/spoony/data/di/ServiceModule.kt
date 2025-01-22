@@ -19,6 +19,11 @@ object ServiceModule {
 
     @Provides
     @Singleton
+    fun providePostService(retrofit: Retrofit): PostService =
+        retrofit.create(PostService::class.java)
+
+    @Provides
+    @Singleton
     fun providePlaceService(retrofit: Retrofit): PlaceService =
         retrofit.create(PlaceService::class.java)
 }
