@@ -68,9 +68,9 @@ class MainNavigator(
     }
 
     fun navigateToPlaceDetail(
-        navOptions: NavOptions? = null,
         postId: Int,
-        userId: Int
+        userId: Int,
+        navOptions: NavOptions? = null
     ) {
         navController.navigateToPlaceDetail(postId = postId, userId = userId)
     }
