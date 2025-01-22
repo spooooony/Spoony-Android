@@ -2,7 +2,7 @@ package com.spoony.spoony.presentation.placeDetail.model
 
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
-import okhttp3.internal.toImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 data class PostModel(
     val photoUrlList: List<String>,
