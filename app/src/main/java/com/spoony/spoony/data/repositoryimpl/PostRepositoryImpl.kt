@@ -11,7 +11,7 @@ class PostRepositoryImpl @Inject constructor(
 ) : PostRepository {
     override suspend fun getPost(postId: Int, userId: Int): Result<PostEntity> =
         runCatching {
-            postRemoteDataSource.getPostData(postId, userId).data?.toDomain() ?: throw Exception()
+            postRemoteDataSource.getPostData(postId, userId).data!!.toDomain()
         }
 
     override suspend fun postScoopPost(postId: Int, userId: Int): Result<Boolean> =
