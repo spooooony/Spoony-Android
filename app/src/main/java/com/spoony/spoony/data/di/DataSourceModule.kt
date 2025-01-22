@@ -1,8 +1,10 @@
 package com.spoony.spoony.data.di
 
 import com.spoony.spoony.data.datasource.DummyRemoteDataSource
+import com.spoony.spoony.data.datasource.PlaceDataSource
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.datasourceimpl.DummyRemoteDataSourceImpl
+import com.spoony.spoony.data.datasourceimpl.PlaceDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.PostRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
@@ -20,4 +22,10 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindPostDataSource(postRemoteDataSourceImpl: PostRemoteDataSourceImpl): PostRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindPlaceDataSource(
+        placeDataSourceImpl: PlaceDataSourceImpl
+    ): PlaceDataSource
 }

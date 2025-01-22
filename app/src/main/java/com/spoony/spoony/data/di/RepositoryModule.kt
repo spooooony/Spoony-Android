@@ -37,5 +37,5 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun provideRegisterRepository(registerRepositoryImpl: RegisterRepositoryImpl): RegisterRepository
+    abstract fun bindRegisterRepository(registerRepositoryImpl: RegisterRepositoryImpl): RegisterRepository
 }

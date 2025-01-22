@@ -15,9 +15,9 @@ class PostRepositoryImpl @Inject constructor(
         }
 
     override suspend fun postScoopPost(postId: Int, userId: Int): Result<Boolean> =
-        Result.success(
-            true
-        )
+        runCatching {
+            postRemoteDataSource.postScoopPost(postId = postId, userId = userId).success
+        }
 
     override suspend fun postAddMap(postId: Int, userId: Int): Result<Boolean> =
         runCatching {
