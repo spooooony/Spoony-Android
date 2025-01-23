@@ -56,6 +56,7 @@ import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import com.spoony.spoony.presentation.placeDetail.model.PostModel
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -135,6 +136,10 @@ fun PlaceDetailRoute(
         is UiState.Failure -> {}
         is UiState.Success -> {
             with(state.postModel as UiState.Success<PostModel>) {
+                val dropDownMenuList = when (data.isMine) {
+                    true -> persistentListOf()
+                    false -> persistentListOf(DropdownOption.REPORT)
+                }
                 Scaffold(
                     snackbarHost = {
                         SnackbarHost(hostState = snackBarHostState) { snackbarData ->
@@ -185,7 +190,7 @@ fun PlaceDetailRoute(
                             placeAddress = data.placeAddress,
                             placeName = data.placeName,
                             isScooped = state.isScooped,
-                            dropdownMenuList = state.dropDownMenuList,
+                            dropdownMenuList = dropDownMenuList,
                             onReportButtonClick = { navigateToReport(postId, userId) }
                         )
                     }
@@ -210,7 +215,7 @@ private fun PlaceDetailScreen(
     placeAddress: String,
     placeName: String,
     isScooped: Boolean,
-    dropdownMenuList: ImmutableList<String>,
+    dropdownMenuList: ImmutableList<DropdownOption>,
     onReportButtonClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -240,7 +245,7 @@ private fun PlaceDetailScreen(
                 menuItems = dropdownMenuList,
                 onMenuItemClick = { menu ->
                     when (menu) {
-                        DropdownOption.REPORT.string -> {
+                        DropdownOption.REPORT.name -> {
                             onReportButtonClick()
                         }
                     }

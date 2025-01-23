@@ -15,5 +15,5 @@ data class PlaceDetailState(
     val postModel: UiState<PostModel> = UiState.Loading,
     val userEntity: UiState<UserEntity> = UiState.Loading,
     val spoonAmountEntity: UiState<Int> = UiState.Loading,
-    val dropDownMenuList: ImmutableList<String> = persistentListOf("신고하기")
+    val dropDownMenuList: ImmutableList<String> = persistentListOf()
 )
