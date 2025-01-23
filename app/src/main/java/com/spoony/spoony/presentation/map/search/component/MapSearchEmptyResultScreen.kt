@@ -24,7 +24,7 @@ fun MapSearchEmptyResultScreen() {
             .padding(horizontal = 20.dp, vertical = 72.dp)
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
+            painter = painterResource(R.drawable.img_map_search_location_empty),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()

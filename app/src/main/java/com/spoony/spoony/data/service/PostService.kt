@@ -4,6 +4,7 @@ import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.request.AddMapRequestDto
 import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
+import com.spoony.spoony.data.dto.response.ZzimLocationResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -20,6 +21,12 @@ interface PostService {
         @Path("userId") userId: Int,
         @Path("postId") postId: Int
     ): BaseResponse<GetPostResponseDto>
+
+    @GET("/api/v1/post/zzim/location/{userId}/{locationId}")
+    suspend fun getZzimByLocation(
+        @Path("userId") userId: Int,
+        @Path("locationId") locationId: Int
+    ): BaseResponse<ZzimLocationResponseDto>
 
     @POST("/api/v1/post/zzim")
     suspend fun postAddMapPost(
