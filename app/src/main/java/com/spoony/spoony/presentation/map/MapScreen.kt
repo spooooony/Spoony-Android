@@ -99,6 +99,7 @@ fun MapRoute(
                 cameraPositionState = cameraPositionState,
                 userName = userName,
                 placeCount = state.placeCount,
+                spoonCount = state.spoonCount,
                 placeList = (state.addedPlaceList as UiState.Success<ImmutableList<AddedPlaceEntity>>).data,
                 locationInfo = state.locationModel,
                 onPlaceCardClick = navigateToPlaceDetail,
@@ -118,6 +119,7 @@ fun MapScreen(
     cameraPositionState: CameraPositionState,
     userName: String,
     placeCount: Int,
+    spoonCount: Int,
     locationInfo: LocationModel,
     placeList: ImmutableList<AddedPlaceEntity>,
     onPlaceCardClick: (Int) -> Unit,
@@ -155,7 +157,7 @@ fun MapScreen(
                     .padding(vertical = 6.dp, horizontal = 20.dp)
             ) {
                 LogoTag(
-                    count = 10,
+                    count = spoonCount,
                     tagSize = TagSize.Large,
                     modifier = Modifier
                         .padding(end = 11.dp)

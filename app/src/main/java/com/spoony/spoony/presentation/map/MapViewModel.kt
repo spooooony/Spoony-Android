@@ -28,6 +28,7 @@ class MapViewModel @Inject constructor(
 
     init {
         getUserInfo()
+        getSpoonCount()
         getAddedPlaceList()
     }
 
@@ -65,6 +66,19 @@ class MapViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             userName = UiState.Success(response.userName)
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun getSpoonCount() {
+        viewModelScope.launch {
+            authRepository.getSpoonCount(USER_ID)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            spoonCount = response
                         )
                     }
                 }

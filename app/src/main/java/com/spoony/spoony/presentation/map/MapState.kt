@@ -12,5 +12,6 @@ data class MapState(
         longitude = 126.926447
     ),
     val addedPlaceList: UiState<ImmutableList<AddedPlaceEntity>> = UiState.Loading,
-    val placeCount: Int = 0
+    val placeCount: Int = 0,
+    val spoonCount: Int = 0
 )
