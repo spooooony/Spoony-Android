@@ -29,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -161,8 +160,10 @@ fun MapScreen(
                 Row(
                     modifier = Modifier
                         .noRippleClickable(onClick = navigateToMapSearch)
-                        .background(SpoonyAndroidTheme.colors.white)
-                        .clip(RoundedCornerShape(10.dp))
+                        .background(
+                            color = SpoonyAndroidTheme.colors.white,
+                            RoundedCornerShape(10.dp)
+                        )
                         .border(
                             BorderStroke(1.dp, SpoonyAndroidTheme.colors.gray100),
                             RoundedCornerShape(10.dp)
