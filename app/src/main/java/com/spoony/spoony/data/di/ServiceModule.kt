@@ -5,6 +5,7 @@ import com.spoony.spoony.data.service.CategoryService
 import com.spoony.spoony.data.service.DummyService
 import com.spoony.spoony.data.service.PlaceService
 import com.spoony.spoony.data.service.PostService
+import com.spoony.spoony.data.service.ReportService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,4 +40,9 @@ object ServiceModule {
     @Singleton
     fun provideAuthService(retrofit: Retrofit): AuthService =
         retrofit.create(AuthService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideReportService(retrofit: Retrofit): ReportService =
+        retrofit.create(ReportService::class.java)
 }

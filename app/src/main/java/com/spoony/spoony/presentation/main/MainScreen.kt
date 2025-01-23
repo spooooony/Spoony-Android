@@ -118,7 +118,12 @@ fun MainScreen(
                 placeDetailNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToReport = navigator::navigateToReport
+                    navigateToReport = { postId, userId ->
+                        navigator.navigateToReport(
+                            postId = postId,
+                            userId = userId
+                        )
+                    }
                 )
 
                 reportNavGraph(
