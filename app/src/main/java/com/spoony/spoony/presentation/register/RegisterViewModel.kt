@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
@@ -58,6 +59,9 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             repository.searchPlace(query)
                 .onSuccess { placeEntities ->
+                    if (placeEntities.isEmpty()) {
+                        _sideEffect.emit(RegisterSideEffect.ShowSnackbar("검색 결과가 없어요"))
+                    }
                     _state.update {
                         it.copy(
                             searchResults = placeEntities.map { entity ->
@@ -76,7 +80,7 @@ class RegisterViewModel @Inject constructor(
     fun selectPlace(place: Place) {
         viewModelScope.launch {
             repository.checkDuplicatePlace(
-                userId = 1L,
+                userId = USER_ID,
                 latitude = place.latitude,
                 longitude = place.longitude
             ).onSuccess { isDuplicate ->
@@ -195,7 +199,7 @@ class RegisterViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
 
             repository.registerPost(
-                userId = 1L, // TODO: 실제 사용자 ID로 변경
+                userId = USER_ID,
                 title = state.value.oneLineReview,
                 description = state.value.detailReview,
                 placeName = state.value.selectedPlace.placeName,

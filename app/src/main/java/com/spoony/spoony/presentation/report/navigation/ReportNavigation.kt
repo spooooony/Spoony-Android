@@ -11,10 +11,9 @@ import kotlinx.serialization.Serializable
 
 fun NavController.navigateToReport(
     postId: Int,
-    userId: Int,
     navOptions: NavOptions? = null
 ) {
-    navigate(Report(postId, userId), navOptions)
+    navigate(Report(postId), navOptions)
 }
 
 fun NavGraphBuilder.reportNavGraph(
@@ -32,4 +31,4 @@ fun NavGraphBuilder.reportNavGraph(
 }
 
 @Serializable
-data class Report(val postId: Int, val userId: Int) : Route
+data class Report(val postId: Int) : Route

@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,6 +20,7 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 @Composable
 fun CloseTopAppBar(
     title: String,
+    backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     onCloseButtonClick: () -> Unit
 ) {
     SpoonyBasicTopAppBar(
@@ -34,7 +36,8 @@ fun CloseTopAppBar(
                     tint = SpoonyAndroidTheme.colors.gray400
                 )
             }
-        }
+        },
+        backgroundColor = backgroundColor
     ) {
         Text(
             text = title,
