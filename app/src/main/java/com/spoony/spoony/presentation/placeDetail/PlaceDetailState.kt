@@ -8,7 +8,6 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class PlaceDetailState(
     val postId: UiState<Int> = UiState.Loading,
-    val userId: UiState<Int> = UiState.Loading,
     val isScooped: Boolean = false,
     val isAddMap: Boolean = false,
     val addMapCount: Int = 0,

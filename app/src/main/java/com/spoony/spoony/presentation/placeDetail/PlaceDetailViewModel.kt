@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.presentation.placeDetail.model.toModel
@@ -36,17 +37,16 @@ class PlaceDetailViewModel @Inject constructor(
     init {
         val postArgs = savedStateHandle.toRoute<PlaceDetail>()
         _state.value = _state.value.copy(
-            postId = UiState.Success(data = postArgs.postId),
-            userId = UiState.Success(data = postArgs.userId)
+            postId = UiState.Success(data = postArgs.postId)
         )
-        getPost(postArgs.postId, postArgs.userId)
-        getUserInfo(postArgs.userId)
-        getUserSpoonCount(postArgs.userId)
+        getPost(postArgs.postId)
+        getUserInfo()
+        getUserSpoonCount()
     }
 
-    private fun getUserInfo(userId: Int) {
+    private fun getUserInfo() {
         viewModelScope.launch {
-            authRepository.getUserInfo(userId = userId)
+            authRepository.getUserInfo(userId = USER_ID)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -64,9 +64,9 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getPost(postId: Int, userId: Int) {
+    private fun getPost(postId: Int) {
         viewModelScope.launch {
-            postRepository.getPost(postId = postId, userId = userId)
+            postRepository.getPost(postId = postId, userId = USER_ID)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -89,9 +89,9 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getUserSpoonCount(userId: Int) {
+    private fun getUserSpoonCount() {
         viewModelScope.launch {
-            authRepository.getSpoonCount(userId = userId)
+            authRepository.getSpoonCount(userId = USER_ID)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -111,9 +111,9 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun useSpoon(postId: Int, userId: Int) {
+    fun useSpoon(postId: Int) {
         viewModelScope.launch {
-            postRepository.postScoopPost(postId = postId, userId = userId)
+            postRepository.postScoopPost(postId = postId, userId = USER_ID)
                 .onSuccess {
                     _state.update {
                         it.copy(
@@ -125,9 +125,9 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun addMyMap(postId: Int, userId: Int) {
+    fun addMyMap(postId: Int) {
         viewModelScope.launch {
-            postRepository.postAddMap(postId = postId, userId = userId)
+            postRepository.postAddMap(postId = postId, userId = USER_ID)
                 .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
                     _state.update {
@@ -141,9 +141,9 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun deletePinMap(postId: Int, userId: Int) {
+    fun deletePinMap(postId: Int) {
         viewModelScope.launch {
-            postRepository.deletePinMap(postId = postId, userId = userId)
+            postRepository.deletePinMap(postId = postId, userId = USER_ID)
                 .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
                     _state.update {

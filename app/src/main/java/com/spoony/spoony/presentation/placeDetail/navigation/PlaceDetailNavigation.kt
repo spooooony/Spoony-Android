@@ -11,15 +11,14 @@ import kotlinx.serialization.Serializable
 
 fun NavController.navigateToPlaceDetail(
     postId: Int,
-    userId: Int,
     navOptions: NavOptions? = null
 ) {
-    navigate(PlaceDetail(postId, userId), navOptions)
+    navigate(PlaceDetail(postId), navOptions)
 }
 
 fun NavGraphBuilder.placeDetailNavGraph(
     paddingValues: PaddingValues,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (postId: Int) -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<PlaceDetail> {
@@ -32,4 +31,4 @@ fun NavGraphBuilder.placeDetailNavGraph(
 }
 
 @Serializable
-data class PlaceDetail(val postId: Int, val userId: Int) : Route
+data class PlaceDetail(val postId: Int) : Route
