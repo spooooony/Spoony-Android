@@ -87,11 +87,6 @@ fun PlaceDetailRoute(
         }
     }
 
-    val spoonAmount = when (state.spoonAmountEntity) {
-        is UiState.Success -> (state.spoonAmountEntity as UiState.Success<Int>).data
-        else -> 99
-    }
-
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
             when (effect) {
@@ -100,6 +95,11 @@ fun PlaceDetailRoute(
                 }
             }
         }
+    }
+
+    val spoonAmount = when (state.spoonCount) {
+        is UiState.Success -> (state.spoonCount as UiState.Success<Int>).data
+        else -> 0
     }
 
     val postId = (state.postId as? UiState.Success)?.data ?: return
@@ -111,10 +111,10 @@ fun PlaceDetailRoute(
         is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
         else -> UserEntity(
             userId = -1,
-            userEmail = "test@email.com",
-            userProfileUrl = "https://avatars.githubusercontent.com/u/93641814?v=4",
-            userName = "안세홍",
-            userRegion = "성북구"
+            userEmail = "",
+            userProfileUrl = "",
+            userName = "",
+            userRegion = ""
         )
     }
 
