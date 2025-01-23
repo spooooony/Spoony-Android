@@ -63,6 +63,10 @@ class MainNavigator(
         navController.navigateToExplore(navOptions)
     }
 
+    fun navigateToRegister(navOptions: NavOptions? = null) {
+        navController.navigateToRegister(navOptions)
+    }
+
     fun navigateToMapSearch(navOptions: NavOptions? = null) {
         navController.navigateToMapSearch(navOptions)
     }
