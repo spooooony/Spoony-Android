@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
@@ -30,6 +31,22 @@ class MapViewModel @Inject constructor(
         getUserInfo()
         getSpoonCount()
         getAddedPlaceList()
+    }
+
+    fun getPlaceInfo(placeId: Int) {
+        viewModelScope.launch {
+            postRepository.getAddedMapPost(USER_ID, placeId)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            placeCardInfo = UiState.Success(
+                                response.toImmutableList()
+                            )
+                        )
+                    }
+                }
+                .onFailure(Timber::e)
+        }
     }
 
     private fun getAddedPlaceList() {

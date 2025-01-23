@@ -32,6 +32,9 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun getAddedMapPost(userId: Int, placeId: Int): Result<List<AddedMapPostEntity>> =
         runCatching {
-            postRemoteDataSource.getAddedMapPost(userId, placeId).data?.zzimFocusResponseList!!.map { it.toDomain() }
+            postRemoteDataSource.getAddedMapPost(
+                userId = userId,
+                postId = placeId
+            ).data?.zzimFocusResponseList!!.map { it.toDomain() }
         }
 }
