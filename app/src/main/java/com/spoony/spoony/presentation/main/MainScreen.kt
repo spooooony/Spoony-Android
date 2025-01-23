@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
+import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
 import com.spoony.spoony.presentation.map.navigaion.mapNavGraph
@@ -96,7 +97,7 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = {
                         navigator.navigateToPlaceDetail(
-                            userId = 1,
+                            userId = USER_ID,
                             postId = it
                         )
                     },
@@ -118,7 +119,12 @@ fun MainScreen(
                 placeDetailNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToReport = navigator::navigateToReport
+                    navigateToReport = { postId, userId ->
+                        navigator.navigateToReport(
+                            postId = postId,
+                            userId = userId
+                        )
+                    }
                 )
 
                 reportNavGraph(

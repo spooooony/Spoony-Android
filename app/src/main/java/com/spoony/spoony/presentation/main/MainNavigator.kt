@@ -55,8 +55,12 @@ class MainNavigator(
         currentDestination?.hasRoute(it::class) == true
     }
 
-    fun navigateToReport(navOptions: NavOptions? = null) {
-        navController.navigateToReport(navOptions)
+    fun navigateToReport(
+        postId: Int,
+        userId: Int,
+        navOptions: NavOptions? = null
+    ) {
+        navController.navigateToReport(postId = postId, userId = userId)
     }
 
     fun navigateToExplore(navOptions: NavOptions? = null) {

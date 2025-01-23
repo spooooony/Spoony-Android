@@ -20,12 +20,12 @@ class PostRepositoryImpl @Inject constructor(
         }
 
     override suspend fun postAddMap(postId: Int, userId: Int): Result<Boolean> =
-        Result.success(
-            true
-        )
+        runCatching {
+            postRemoteDataSource.postAddMapData(postId, userId).success
+        }
 
     override suspend fun deletePinMap(postId: Int, userId: Int): Result<Boolean> =
-        Result.success(
-            true
-        )
+        runCatching {
+            postRemoteDataSource.deletePinMap(postId = postId, userId = userId).success
+        }
 }
