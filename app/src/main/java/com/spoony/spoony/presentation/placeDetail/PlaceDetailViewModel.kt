@@ -79,10 +79,10 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun addMyMap(userId: Int, postId: Int) {
+    fun addMyMap(postId: Int, userId: Int) {
         viewModelScope.launch {
-            postRepository.postAddMap(userId = userId, postId = postId)
-                .onSuccess { response ->
+            postRepository.postAddMap(postId = postId, userId = userId)
+                .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
                     _state.update {
                         it.copy(
