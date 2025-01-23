@@ -4,6 +4,7 @@ import com.spoony.spoony.data.datasource.AuthRemoteDataSource
 import com.spoony.spoony.data.datasource.CategoryDataSource
 import com.spoony.spoony.data.datasource.DummyRemoteDataSource
 import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
+import com.spoony.spoony.data.datasource.MapRemoteDataSource
 import com.spoony.spoony.data.datasource.PlaceDataSource
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.datasource.ReportDataSource
@@ -11,6 +12,7 @@ import com.spoony.spoony.data.datasourceimpl.AuthRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.CategoryDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.DummyRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.ExploreRemoteDataSourceImpl
+import com.spoony.spoony.data.datasourceimpl.MapRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.PlaceDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.PostRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.ReportDataSourceImpl
@@ -58,4 +60,10 @@ abstract class DataSourceModule {
     abstract fun bindExploreDataSource(
         exploreRemoteDataSourceImpl: ExploreRemoteDataSourceImpl
     ): ExploreRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindMapDataSource(
+        mapRemoteDataSourceImpl: MapRemoteDataSourceImpl
+    ): MapRemoteDataSource
 }

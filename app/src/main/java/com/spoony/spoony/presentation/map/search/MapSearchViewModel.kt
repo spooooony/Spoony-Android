@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.map.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
@@ -64,6 +65,7 @@ class MapSearchViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
+                    Log.d("TAG", "searchLocation: $it")
                     _state.update {
                         it.copy(
                             locationModelList = UiState.Failure("지역 목록 검색 실패")

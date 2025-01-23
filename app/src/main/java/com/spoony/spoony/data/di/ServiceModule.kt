@@ -4,6 +4,7 @@ import com.spoony.spoony.data.service.AuthService
 import com.spoony.spoony.data.service.CategoryService
 import com.spoony.spoony.data.service.DummyService
 import com.spoony.spoony.data.service.ExploreService
+import com.spoony.spoony.data.service.MapService
 import com.spoony.spoony.data.service.PlaceService
 import com.spoony.spoony.data.service.PostService
 import com.spoony.spoony.data.service.ReportService
@@ -51,4 +52,9 @@ object ServiceModule {
     @Singleton
     fun provideExploreService(retrofit: Retrofit): ExploreService =
         retrofit.create(ExploreService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMapService(retrofit: Retrofit): MapService =
+        retrofit.create(MapService::class.java)
 }
