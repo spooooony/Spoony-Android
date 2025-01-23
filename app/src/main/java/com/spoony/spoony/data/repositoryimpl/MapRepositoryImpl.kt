@@ -1,12 +1,16 @@
 package com.spoony.spoony.data.repositoryimpl
 
+import com.spoony.spoony.data.mapper.toDomain
+import com.spoony.spoony.data.service.PostService
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.LocationEntity
 import com.spoony.spoony.domain.repository.MapRepository
 import javax.inject.Inject
 
-class MapRepositoryImpl @Inject constructor() : MapRepository {
+class MapRepositoryImpl @Inject constructor(
+    private val postService: PostService
+) : MapRepository {
     override suspend fun searchLocation(query: String): Result<List<LocationEntity>> = Result.success(
         listOf(
             LocationEntity(
@@ -47,4 +51,10 @@ class MapRepositoryImpl @Inject constructor() : MapRepository {
             )
         )
     )
+
+    override suspend fun getAddedPlaceListByLocation(userId: Int, locationId: Int): Result<List<AddedPlaceEntity>> =
+        runCatching {
+            postService.getZzimByLocation(userId, locationId)
+                .data!!.zzimCardResponses.map { it.toDomain() }
+        }
 }
