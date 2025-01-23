@@ -206,7 +206,7 @@ private fun PlaceDetailScreen(
     userRegion: String,
     photoUrlList: ImmutableList<String>,
     category: CategoryEntity,
-    date: String,
+    date: String?,
     placeAddress: String,
     placeName: String,
     isScooped: Boolean,
@@ -276,7 +276,7 @@ private fun PlaceDetailScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = date,
+                text = date ?: "",
                 style = SpoonyAndroidTheme.typography.caption1m,
                 color = SpoonyAndroidTheme.colors.gray400
             )
