@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (postId: Int) -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -102,7 +102,6 @@ fun PlaceDetailRoute(
     }
 
     val postId = (state.postId as? UiState.Success)?.data ?: return
-    val userId = (state.userId as? UiState.Success)?.data ?: return
 
     val context = LocalContext.current
 
@@ -120,7 +119,7 @@ fun PlaceDetailRoute(
     if (scoopDialogVisibility) {
         ScoopDialog(
             onClickPositive = {
-                viewModel.useSpoon(postId, userId)
+                viewModel.useSpoon(postId)
                 scoopDialogVisibility = false
             },
             onClickNegative = {
@@ -166,8 +165,8 @@ fun PlaceDetailRoute(
                                     context = context
                                 )
                             },
-                            onAddMapButtonClick = { viewModel.addMyMap(postId, userId) },
-                            onDeletePinMapButtonClick = { viewModel.deletePinMap(postId, userId) }
+                            onAddMapButtonClick = { viewModel.addMyMap(postId) },
+                            onDeletePinMapButtonClick = { viewModel.deletePinMap(postId) }
                         )
                     },
                     content = { paddingValues ->
@@ -186,7 +185,7 @@ fun PlaceDetailRoute(
                             placeName = data.placeName,
                             isScooped = state.isScooped,
                             dropdownMenuList = state.dropDownMenuList,
-                            onReportButtonClick = { navigateToReport(postId, userId) }
+                            onReportButtonClick = { navigateToReport(postId) }
                         )
                     }
                 )
