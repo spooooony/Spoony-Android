@@ -57,10 +57,9 @@ class MainNavigator(
 
     fun navigateToReport(
         postId: Int,
-        userId: Int,
         navOptions: NavOptions? = null
     ) {
-        navController.navigateToReport(postId = postId, userId = userId)
+        navController.navigateToReport(postId = postId)
     }
 
     fun navigateToExplore(navOptions: NavOptions? = null) {
@@ -77,10 +76,9 @@ class MainNavigator(
 
     fun navigateToPlaceDetail(
         postId: Int,
-        userId: Int,
         navOptions: NavOptions? = null
     ) {
-        navController.navigateToPlaceDetail(postId = postId, userId = userId)
+        navController.navigateToPlaceDetail(postId = postId)
     }
 
     fun navigateUp() {

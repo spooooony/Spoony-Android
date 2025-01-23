@@ -50,7 +50,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun ExploreRoute(
     paddingValues: PaddingValues,
-    navigateToPlaceDetail: (Int, Int) -> Unit,
+    navigateToPlaceDetail: (Int) -> Unit,
     navigateToRegister: () -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
@@ -81,7 +81,7 @@ fun ExploreRoute(
             feedList = feedList,
             onLocationSortingButtonClick = viewModel::updateSelectedCity,
             onSortingButtonClick = viewModel::updateSelectedSortingOption,
-            onFeedItemClick = { navigateToPlaceDetail(it, 30) },
+            onFeedItemClick = navigateToPlaceDetail,
             onRegisterButtonClick = navigateToRegister,
             updateSelectedCategory = viewModel::updateSelectedCategory
         )

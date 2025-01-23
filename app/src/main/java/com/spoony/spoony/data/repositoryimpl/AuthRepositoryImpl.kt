@@ -13,4 +13,9 @@ class AuthRepositoryImpl @Inject constructor(
         runCatching {
             authRemoteDataSource.getUserInfo(userId).data!!.toDomain()
         }
+
+    override suspend fun getSpoonCount(userId: Int): Result<Int> =
+        runCatching {
+            authRemoteDataSource.getSpoonCount(userId = userId).data!!.spoonAmount
+        }
 }

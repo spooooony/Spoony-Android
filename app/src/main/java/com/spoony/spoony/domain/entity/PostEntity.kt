@@ -13,6 +13,7 @@ data class PostEntity(
     val latitude: Double,
     val longitude: Double,
     val addMapCount: Int,
+    val isMine: Boolean,
     val isAddMap: Boolean,
     val isScooped: Boolean,
     val category: CategoryEntity
