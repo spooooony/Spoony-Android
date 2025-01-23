@@ -12,7 +12,6 @@ import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -32,7 +31,7 @@ class RegisterRepositoryImpl @Inject constructor(
     }
 
     override suspend fun checkDuplicatePlace(
-        userId: Long,
+        userId: Int,
         latitude: Double,
         longitude: Double
     ): Result<Boolean> = runCatching {
@@ -40,7 +39,7 @@ class RegisterRepositoryImpl @Inject constructor(
     }
 
     override suspend fun registerPost(
-        userId: Long,
+        userId: Int,
         title: String,
         description: String,
         placeName: String,
