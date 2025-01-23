@@ -19,6 +19,12 @@ class PostRemoteDataSourceImpl @Inject constructor(
             PostScoopRequestDto(postId = postId, userId = userId)
         )
 
+    override suspend fun deletePinMap(postId: Int, userId: Int): BaseResponse<Boolean> =
+        postService.deletePinMap(
+            postId = postId,
+            userId = userId
+        )
+
     override suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean> =
         postService.postAddMapPost(
             AddMapRequestDto(postId = postId, userId = userId)

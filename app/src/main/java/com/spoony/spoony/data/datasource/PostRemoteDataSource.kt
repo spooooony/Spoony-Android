@@ -7,4 +7,5 @@ interface PostRemoteDataSource {
     suspend fun postScoopPost(postId: Int, userId: Int): BaseResponse<Boolean>
     suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto>
     suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean>
+    suspend fun deletePinMap(postId: Int, userId: Int): BaseResponse<Boolean>
 }
