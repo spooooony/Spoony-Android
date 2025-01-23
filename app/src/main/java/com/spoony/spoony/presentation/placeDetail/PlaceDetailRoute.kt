@@ -236,7 +236,7 @@ private fun PlaceDetailScreen(
             UserProfileInfo(
                 imageUrl = userProfileUrl,
                 name = userName,
-                location = "$userRegion 수저",
+                location = "서울시 $userRegion 수저",
                 modifier = Modifier.weight(1f)
             )
 
