@@ -74,6 +74,14 @@ fun MapRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val userName = when (state.userName) {
+        is UiState.Success -> {
+            (state.userName as UiState.Success<String>).data
+        }
+
+        else -> ""
+    }
+
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition(
             LatLng(
@@ -89,6 +97,7 @@ fun MapRoute(
             MapScreen(
                 paddingValues = paddingValues,
                 cameraPositionState = cameraPositionState,
+                userName = userName,
                 placeList = (state.addedPlaceList as UiState.Success<ImmutableList<AddedPlaceEntity>>).data,
                 locationInfo = state.locationModel,
                 onPlaceCardClick = navigateToPlaceDetail,
@@ -106,6 +115,7 @@ fun MapRoute(
 fun MapScreen(
     paddingValues: PaddingValues,
     cameraPositionState: CameraPositionState,
+    userName: String,
     locationInfo: LocationModel,
     placeList: ImmutableList<AddedPlaceEntity>,
     onPlaceCardClick: (Int) -> Unit,
@@ -220,7 +230,7 @@ fun MapScreen(
                 dragHandle = {
                     if (placeList.isNotEmpty()) {
                         MapBottomSheetDragHandle(
-                            "효비",
+                            name = userName,
                             5
                         )
                     }

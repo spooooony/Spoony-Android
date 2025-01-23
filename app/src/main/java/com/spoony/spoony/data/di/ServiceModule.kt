@@ -1,5 +1,6 @@
 package com.spoony.spoony.data.di
 
+import com.spoony.spoony.data.service.AuthService
 import com.spoony.spoony.data.service.CategoryService
 import com.spoony.spoony.data.service.DummyService
 import com.spoony.spoony.data.service.PlaceService
@@ -34,6 +35,11 @@ object ServiceModule {
     @Singleton
     fun provideCategoryService(retrofit: Retrofit): CategoryService =
         retrofit.create(CategoryService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAuthService(retrofit: Retrofit): AuthService =
+        retrofit.create(AuthService::class.java)
 
     @Provides
     @Singleton
