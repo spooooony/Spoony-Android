@@ -4,10 +4,14 @@ import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.request.AddMapRequestDto
 import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface PostService {
@@ -32,4 +36,11 @@ interface PostService {
         @Path("userId") userId: Int,
         @Path("postId") postId: Int
     ): BaseResponse<Boolean>
+
+    @Multipart
+    @POST("/api/v1/post")
+    suspend fun registerPost(
+        @Part("data") data: RequestBody,
+        @Part photos: List<MultipartBody.Part>
+    ): BaseResponse<Unit>
 }

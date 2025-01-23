@@ -52,7 +52,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
 const val MAX_PHOTO_COUNT = 5
-const val MIN_PHOTO_COUNT = 1
+const val MIN_PHOTO_COUNT = 2
 
 data class SelectedPhoto(
     val uri: Uri,

@@ -18,7 +18,7 @@ class PlaceDataSourceImpl @Inject constructor(
         placeService.getPlaces(query, display)
 
     override suspend fun checkDuplicatePlace(
-        userId: Long,
+        userId: Int,
         latitude: Double,
         longitude: Double
     ): BaseResponse<PlaceCheckResponseDto> =
