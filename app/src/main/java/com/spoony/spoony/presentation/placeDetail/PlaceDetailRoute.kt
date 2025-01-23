@@ -41,6 +41,7 @@ import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.formatToYearMonthDay
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.CategoryEntity
@@ -180,7 +181,7 @@ fun PlaceDetailRoute(
                             userRegion = userProfile.userRegion,
                             photoUrlList = data.photoUrlList.toImmutableList(),
                             category = data.category,
-                            date = data.date,
+                            date = data.date.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,
                             placeName = data.placeName,
                             isScooped = state.isScooped,
@@ -205,7 +206,7 @@ private fun PlaceDetailScreen(
     userRegion: String,
     photoUrlList: ImmutableList<String>,
     category: CategoryEntity,
-    date: String,
+    date: String?,
     placeAddress: String,
     placeName: String,
     isScooped: Boolean,
@@ -275,7 +276,7 @@ private fun PlaceDetailScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = date,
+                text = date ?: "",
                 style = SpoonyAndroidTheme.typography.caption1m,
                 color = SpoonyAndroidTheme.colors.gray400
             )
