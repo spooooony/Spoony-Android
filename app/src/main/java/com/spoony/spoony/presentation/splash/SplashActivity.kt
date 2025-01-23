@@ -69,7 +69,7 @@ class SplashActivity : ComponentActivity() {
                         )
                         Image(
                             imageVector = ImageVector.vectorResource(R.drawable.img_spoony_logo_86),
-                            contentDescription = null,
+                            contentDescription = null
                         )
                     }
 
