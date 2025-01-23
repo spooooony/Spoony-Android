@@ -14,6 +14,6 @@ data class PlaceDetailState(
     val addMapCount: Int = 0,
     val postModel: UiState<PostModel> = UiState.Loading,
     val userEntity: UiState<UserEntity> = UiState.Loading,
-    val spoonAmountEntity: UiState<Int> = UiState.Loading,
+    val spoonCount: UiState<Int> = UiState.Loading,
     val dropDownMenuList: ImmutableList<String> = persistentListOf("신고하기")
 )
