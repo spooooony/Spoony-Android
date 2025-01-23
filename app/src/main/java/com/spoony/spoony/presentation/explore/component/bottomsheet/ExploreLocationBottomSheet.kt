@@ -45,16 +45,31 @@ val LOCATION_LIST = persistentListOf(
 )
 
 val CITY_LIST = persistentListOf(
+    "강남구",
+    "강동구",
+    "강북구",
+    "강서구",
+    "관악구",
+    "광진구",
+    "구로구",
+    "금천구",
+    "노원구",
+    "도봉구",
+    "동대문구",
+    "동작구",
+    "마포구",
+    "서대문구",
+    "서초구",
+    "성동구",
+    "성북구",
+    "송파구",
+    "양천구",
+    "영등포구",
+    "용산구",
+    "은평구",
     "종로구",
     "중구",
-    "용산구",
-    "성동구",
-    "광진구",
-    "동대문구",
-    "중랑구",
-    "성북구",
-    "강북구",
-    "마포구"
+    "중랑구"
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +113,7 @@ fun ExploreLocationBottomSheet(
                             LocationItem(
                                 location = location,
                                 isSelected = location == "서울",
-                                onClick = {}
+                                onClick = { currentCity = location }
                             )
                         }
                     }

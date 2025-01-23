@@ -6,8 +6,10 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +22,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 fun SpoonyBasicTopAppBar(
     modifier: Modifier = Modifier,
     showBackButton: Boolean = false,
+    backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     onBackButtonClick: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit = {}
@@ -42,7 +45,10 @@ fun SpoonyBasicTopAppBar(
                 }
             }
         },
-        actions = actions
+        actions = actions,
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = backgroundColor
+        )
     )
 }
 

@@ -1,11 +1,15 @@
 package com.spoony.spoony.data.repositoryimpl
 
+import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
+import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.FeedEntity
 import com.spoony.spoony.domain.repository.ExploreRepository
 import javax.inject.Inject
 
-class ExploreRepositoryImpl @Inject constructor() : ExploreRepository {
+class ExploreRepositoryImpl @Inject constructor(
+    private val exploreRemoteDataSource: ExploreRemoteDataSource
+) : ExploreRepository {
     override suspend fun getCategoryList(): Result<List<CategoryEntity>> = Result.success(
         listOf(
             CategoryEntity(
@@ -70,83 +74,14 @@ class ExploreRepositoryImpl @Inject constructor() : ExploreRepository {
         categoryId: Int,
         locationQuery: String,
         sortBy: String
-    ): Result<List<FeedEntity>> = Result.success(
-        listOf(
-            FeedEntity(
-                userId = 3,
-                userName = "두더지",
-                userRegion = "용산구",
-                postId = 3,
-                title = "스타벅스 삼성역섬유센터R점 리뷰",
-                categoryInfo = CategoryEntity(
-                    categoryId = 2,
-                    categoryName = "카페",
-                    iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/cafe_color.png",
-                    textColor = "FFE4E5",
-                    backgroundColor = "FF7E84"
-                ),
-                zzimCount = 1
-            ),
-            FeedEntity(
-                userId = 3,
-                userName = "두더지",
-                userRegion = "용산구",
-                postId = 4,
-                title = "스타벅스 삼성역섬유센터R점 리뷰",
-                categoryInfo = CategoryEntity(
-                    categoryId = 2,
-                    categoryName = "카페",
-                    iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/cafe_color.png",
-                    textColor = "FFE4E5",
-                    backgroundColor = "FF7E84"
-                ),
-                zzimCount = 1
-            ),
-            FeedEntity(
-                userId = 3,
-                userName = "두더지",
-                userRegion = "용산구",
-                postId = 5,
-                title = "스타벅스 삼성역섬유센터R점 리뷰",
-                categoryInfo = CategoryEntity(
-                    categoryId = 2,
-                    categoryName = "카페",
-                    iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/cafe_color.png",
-                    textColor = "FFE4E5",
-                    backgroundColor = "FF7E84"
-                ),
-                zzimCount = 1
-            ),
-            FeedEntity(
-                userId = 3,
-                userName = "두더지",
-                userRegion = "용산구",
-                postId = 6,
-                title = "스타벅스 삼성역섬유센터R점 리뷰",
-                categoryInfo = CategoryEntity(
-                    categoryId = 2,
-                    categoryName = "카페",
-                    iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/cafe_color.png",
-                    textColor = "FFE4E5",
-                    backgroundColor = "FF7E84"
-                ),
-                zzimCount = 1
-            ),
-            FeedEntity(
-                userId = 3,
-                userName = "두더지",
-                userRegion = "용산구",
-                postId = 7,
-                title = "스타벅스 삼성역섬유센터R점 리뷰",
-                categoryInfo = CategoryEntity(
-                    categoryId = 2,
-                    categoryName = "카페",
-                    iconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/cafe_color.png",
-                    textColor = "FFE4E5",
-                    backgroundColor = "FF7E84"
-                ),
-                zzimCount = 1
-            )
-        )
-    )
+    ): Result<List<FeedEntity>> = runCatching {
+        exploreRemoteDataSource.getFeedList(
+            userId = userId,
+            categoryId = categoryId,
+            query = locationQuery,
+            sortBy = sortBy
+        ).data!!.feedsResponseList.map {
+            it.toDomain()
+        }
+    }
 }
