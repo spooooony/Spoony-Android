@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.tag.LogoTag
@@ -16,6 +17,7 @@ fun TagTopAppBar(
     count: Int,
     tagSize: TagSize = TagSize.Small,
     showBackButton: Boolean = false,
+    backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     onBackButtonClick: () -> Unit = {},
     content: @Composable () -> Unit = {}
 ) {
@@ -29,7 +31,8 @@ fun TagTopAppBar(
                 modifier = Modifier.padding(end = 20.dp)
             )
         },
-        content = content
+        content = content,
+        backgroundColor = backgroundColor
     )
 }
 
