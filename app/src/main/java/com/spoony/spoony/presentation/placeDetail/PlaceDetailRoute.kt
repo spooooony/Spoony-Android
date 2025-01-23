@@ -109,10 +109,10 @@ fun PlaceDetailRoute(
         is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
         else -> UserEntity(
             userId = -1,
-            userEmail = "test@email.com",
-            userProfileUrl = "https://avatars.githubusercontent.com/u/93641814?v=4",
-            userName = "안세홍",
-            userRegion = "성북구"
+            userEmail = "",
+            userProfileUrl = "",
+            userName = "",
+            userRegion = ""
         )
     }
 
