@@ -62,9 +62,10 @@ fun RegisterStepTwoScreen(
     val isNextButtonEnabled = remember(
         state.oneLineReview,
         state.detailReview,
-        state.selectedPhotos
+        state.selectedPhotos,
+        state.isLoading
     ) {
-        viewModel.checkSecondStepValidation()
+        viewModel.checkSecondStepValidation() && !state.isLoading
     }
 
     Column(

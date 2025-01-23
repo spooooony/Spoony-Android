@@ -59,6 +59,9 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             repository.searchPlace(query)
                 .onSuccess { placeEntities ->
+                    if (placeEntities.isEmpty()) {
+                        _sideEffect.emit(RegisterSideEffect.ShowSnackbar("검색 결과가 없어요"))
+                    }
                     _state.update {
                         it.copy(
                             searchResults = placeEntities.map { entity ->
