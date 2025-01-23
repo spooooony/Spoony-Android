@@ -1,5 +1,6 @@
 package com.spoony.spoony.data.mapper
 
+import com.spoony.spoony.data.dto.response.CategoryColorResponse
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PostEntity
@@ -24,7 +25,7 @@ fun GetPostResponseDto.toDomain() =
         category = this.categoryColorResponse.toDomain()
     )
 
-fun GetPostResponseDto.CategoryColorResponse.toDomain() =
+fun CategoryColorResponse.toDomain() =
     CategoryEntity(
         categoryId = this.categoryId,
         categoryName = this.categoryName,

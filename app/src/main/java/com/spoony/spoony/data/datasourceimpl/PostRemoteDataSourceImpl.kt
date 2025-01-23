@@ -4,6 +4,7 @@ import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.request.AddMapRequestDto
 import com.spoony.spoony.data.dto.request.PostScoopRequestDto
+import com.spoony.spoony.data.dto.response.AddedMapPostListDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import com.spoony.spoony.data.service.PostService
 import javax.inject.Inject
@@ -21,6 +22,12 @@ class PostRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun deletePinMap(postId: Int, userId: Int): BaseResponse<Boolean> =
         postService.deletePinMap(
+            postId = postId,
+            userId = userId
+        )
+
+    override suspend fun getAddedMapPost(postId: Int, userId: Int): BaseResponse<AddedMapPostListDto> =
+        postService.getAddedMapPost(
             postId = postId,
             userId = userId
         )

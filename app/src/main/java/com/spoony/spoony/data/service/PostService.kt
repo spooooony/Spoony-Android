@@ -3,6 +3,7 @@ package com.spoony.spoony.data.service
 import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.request.AddMapRequestDto
 import com.spoony.spoony.data.dto.request.PostScoopRequestDto
+import com.spoony.spoony.data.dto.response.AddedMapPostListDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -32,4 +33,10 @@ interface PostService {
         @Path("userId") userId: Int,
         @Path("postId") postId: Int
     ): BaseResponse<Boolean>
+
+    @GET("/api/v1/post/zzim/{userId}/{postId}")
+    suspend fun getAddedMapPost(
+        @Path("userId") userId: Int,
+        @Path("postId") postId: Int
+    ): BaseResponse<AddedMapPostListDto>
 }
