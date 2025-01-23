@@ -52,15 +52,7 @@ class RegisterRepositoryImpl @Inject constructor(
         menuList: List<String>,
         photos: List<Uri>
     ): Result<Unit> = runCatching {
-        val resizedImages = photos.map { uri ->
-            val resizedFile = ImageUtil.resizeImage(context, uri)
-            ImageUtil.createMultipartBody(resizedFile)
-        }
-
-        val temp = photos.map { uri ->
-            ContentUriRequestBody(context, uri).toFormData("image")
-        }
-
+        // 1. Request DTO를 RequestBody로 변환
         val requestDto = RegisterPostRequestDto(
             userId = userId,
             title = title,
@@ -74,11 +66,17 @@ class RegisterRepositoryImpl @Inject constructor(
             menuList = menuList
         )
 
-        val contentRequestBody = Json.encodeToString(requestDto).toRequestBody("application/json".toMediaType())
+        val jsonString = Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
+        val requestBody = jsonString.toRequestBody("application/json".toMediaType())
+
+        // 2. ContentUriRequestBody를 사용하여 이미지 변환
+        val photoParts = photos.map { uri ->
+            ContentUriRequestBody(context, uri).toFormData("photos")
+        }
 
         postService.registerPost(
-            data = contentRequestBody,
-            photos = temp
-        ).data!!
+            data = requestBody,
+            photos = photoParts
+        ).data
     }
 }
