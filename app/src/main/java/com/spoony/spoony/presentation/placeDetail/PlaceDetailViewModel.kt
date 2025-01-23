@@ -41,6 +41,7 @@ class PlaceDetailViewModel @Inject constructor(
         )
         getPost(postArgs.postId, postArgs.userId)
         getUserInfo(postArgs.userId)
+        getUserSpoonCount(postArgs.userId)
     }
 
     private fun getUserInfo(userId: Int) {
@@ -82,6 +83,28 @@ class PlaceDetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             postModel = UiState.Failure("게시물 조회 실패")
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun getUserSpoonCount(userId: Int) {
+        viewModelScope.launch {
+            authRepository.getSpoonCount(userId = userId)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            spoonCount = UiState.Success(
+                                response
+                            )
+                        )
+                    }
+                }
+                .onFailure {
+                    _state.update {
+                        it.copy(
+                            spoonCount = UiState.Failure("유저 스푼 개수 조회 실패")
                         )
                     }
                 }
