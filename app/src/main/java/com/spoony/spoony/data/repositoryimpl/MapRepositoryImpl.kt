@@ -27,7 +27,7 @@ class MapRepositoryImpl @Inject constructor(
 
     override suspend fun getAddedPlaceListByLocation(userId: Int, locationId: Int): Result<List<AddedPlaceEntity>> =
         runCatching {
-            postService.getZzimByLocation(userId, locationId)
+            postRemoteDataSource.getZzimByLocation(userId, locationId)
                 .data!!.zzimCardResponses.map { it.toDomain() }
         }
 }
