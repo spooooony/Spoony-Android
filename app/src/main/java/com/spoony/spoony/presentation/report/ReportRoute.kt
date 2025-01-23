@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
@@ -44,6 +46,7 @@ import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.report.component.ReportCompleteDialog
 import com.spoony.spoony.presentation.report.component.ReportRadioButton
@@ -63,6 +66,23 @@ fun ReportRoute(
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
     var reportSuccessDialogVisibility by remember { mutableStateOf(false) }
 
+    val postId = (state.postId as? UiState.Success)?.data ?: return
+    val userId = (state.userId as? UiState.Success)?.data ?: return
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is ReportSideEffect.ShowDialog -> {
+                    // 키보드 존재한다면 닫기
+                    keyboardController?.hide()
+                    reportSuccessDialogVisibility = true
+                }
+            }
+        }
+    }
+
     ReportScreen(
         paddingValues = paddingValues,
         reportOptions = state.reportOptions,
@@ -71,15 +91,15 @@ fun ReportRoute(
         reportButtonEnabled = state.reportButtonEnabled,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
-        onBackButtonClick = navigateUp,
-        onOpenDialogClick = { reportSuccessDialogVisibility = true }
+        onReportClick = { viewModel.reportPost(postId, userId, state.selectedReportOption.code, state.reportContext) },
+        onBackButtonClick = navigateUp
     )
 
     if (reportSuccessDialogVisibility) {
         ReportCompleteDialog(
             onClick = {
-                navigateToExplore()
                 reportSuccessDialogVisibility = false
+                navigateToExplore()
             }
         )
     }
@@ -94,12 +114,12 @@ private fun ReportScreen(
     reportButtonEnabled: Boolean,
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
-    onBackButtonClick: () -> Unit,
-    onOpenDialogClick: () -> Unit
+    onReportClick: () -> Unit,
+    onBackButtonClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    val imeInsets = WindowInsets.ime // 키보드 상태를 관찰
+    val imeInsets = WindowInsets.ime
     val imeHeight = imeInsets.getBottom(LocalDensity.current)
 
     LaunchedEffect(imeHeight) {
@@ -198,7 +218,7 @@ private fun ReportScreen(
 
             SpoonyButton(
                 text = "신고하기",
-                onClick = onOpenDialogClick,
+                onClick = onReportClick,
                 enabled = reportButtonEnabled,
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
@@ -231,7 +251,7 @@ private fun ReportScreenPreview() {
             onBackButtonClick = {},
             paddingValues = PaddingValues(),
             reportButtonEnabled = false,
-            onOpenDialogClick = {}
+            onReportClick = {}
         )
     }
 }

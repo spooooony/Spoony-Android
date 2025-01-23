@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
-    navigateToReport: () -> Unit,
+    navigateToReport: (postId: Int, userId: Int) -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -186,7 +186,7 @@ fun PlaceDetailRoute(
                             placeName = data.placeName,
                             isScooped = state.isScooped,
                             dropdownMenuList = state.dropDownMenuList,
-                            onReportButtonClick = navigateToReport
+                            onReportButtonClick = { navigateToReport(postId, userId) }
                         )
                     }
                 )
