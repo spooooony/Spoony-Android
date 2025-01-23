@@ -154,7 +154,10 @@ fun MapScreen(
     var isSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         NaverMap(
             cameraPositionState = cameraPositionState,
             onMapClick = { _, _ ->
@@ -271,7 +274,7 @@ fun MapScreen(
                         MapPlaceDetailCard(
                             placeName = placeName,
                             review = postTitle,
-                            imageUrlList = photoUrlList.toImmutableList(),
+                            imageUrlList = photoUrlList.take(3).toImmutableList(),
                             categoryIconUrl = categoryEntity.iconUrl,
                             categoryName = categoryEntity.categoryName,
                             textColor = Color.hexToColor(categoryEntity.textColor.toValidHexColor()),
@@ -310,6 +313,7 @@ fun MapScreen(
                         )
                     } else {
                         LazyColumn(
+                            contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = paddingValues.calculateBottomPadding())
