@@ -6,53 +6,11 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okio.BufferedSink
-
-object ImageUtil {
-    private const val MAX_FILE_SIZE = 2 * 1024 * 1024
-    private const val INITIAL_QUALITY = 100
-
-    fun resizeImage(context: Context, uri: Uri): File {
-        val bitmap = getBitmapFromUri(context, uri)
-        return saveBitmapToFile(context, bitmap)
-    }
-
-    private fun getBitmapFromUri(context: Context, uri: Uri): Bitmap {
-        return MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-    }
-
-    private fun saveBitmapToFile(context: Context, bitmap: Bitmap): File {
-        val file = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
-        var quality = INITIAL_QUALITY
-        var fileSize: Long
-
-        do {
-            val bos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos)
-            val out = FileOutputStream(file)
-            out.write(bos.toByteArray())
-            out.close()
-
-            fileSize = file.length()
-            quality -= 5
-        } while (fileSize > MAX_FILE_SIZE && quality > 5)
-
-        return file
-    }
-
-    fun createMultipartBody(file: File): MultipartBody.Part {
-        val requestFile = file.asRequestBody("image/*".toMediaType())
-        return MultipartBody.Part.createFormData("images", file.name, requestFile)
-    }
-}
 
 class ContentUriRequestBody(
     context: Context,
