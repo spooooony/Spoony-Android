@@ -1,17 +1,27 @@
 package com.spoony.spoony.data.repositoryimpl
 
+import android.content.Context
 import android.net.Uri
 import com.spoony.spoony.data.datasource.CategoryDataSource
 import com.spoony.spoony.data.datasource.PlaceDataSource
+import com.spoony.spoony.data.dto.request.RegisterPostRequestDto
 import com.spoony.spoony.data.mapper.toDomain
+import com.spoony.spoony.data.service.PostService
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class RegisterRepositoryImpl @Inject constructor(
     private val placeDataSource: PlaceDataSource,
-    private val categoryDataSource: CategoryDataSource
+    private val categoryDataSource: CategoryDataSource,
+    private val postService: PostService,
+    @ApplicationContext private val context: Context
 ) : RegisterRepository {
     override suspend fun getFoodCategories(): Result<List<CategoryEntity>> = runCatching {
         categoryDataSource.getFoodCategories().data!!.categoryMonoList.map { it.toDomain() }
@@ -42,6 +52,33 @@ class RegisterRepositoryImpl @Inject constructor(
         menuList: List<String>,
         photos: List<Uri>
     ): Result<Unit> = runCatching {
-        // TODO: Multipart API 호출 구현
+        val resizedImages = photos.map { uri ->
+            val resizedFile = ImageUtil.resizeImage(context, uri)
+            ImageUtil.createMultipartBody(resizedFile)
+        }
+
+        val temp = photos.map { uri ->
+            ContentUriRequestBody(context, uri).toFormData("image")
+        }
+
+        val requestDto = RegisterPostRequestDto(
+            userId = userId,
+            title = title,
+            description = description,
+            placeName = placeName,
+            placeAddress = placeAddress,
+            placeRoadAddress = placeRoadAddress,
+            latitude = latitude,
+            longitude = longitude,
+            categoryId = categoryId,
+            menuList = menuList
+        )
+
+        val contentRequestBody = Json.encodeToString(requestDto).toRequestBody("application/json".toMediaType())
+
+        postService.registerPost(
+            data = contentRequestBody,
+            photos = temp
+        ).data!!
     }
 }

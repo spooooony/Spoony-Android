@@ -7,7 +7,7 @@ import com.spoony.spoony.domain.repository.PostRepository
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
-    val postRemoteDataSource: PostRemoteDataSource
+    private val postRemoteDataSource: PostRemoteDataSource
 ) : PostRepository {
     override suspend fun getPost(postId: Int, userId: Int): Result<PostEntity> =
         runCatching {
