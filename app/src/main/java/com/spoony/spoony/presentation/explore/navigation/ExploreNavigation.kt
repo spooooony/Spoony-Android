@@ -17,7 +17,7 @@ fun NavController.navigateToExplore(
 
 fun NavGraphBuilder.exploreNavGraph(
     paddingValues: PaddingValues,
-    navigateToPlaceDetail: (Int, Int) -> Unit,
+    navigateToPlaceDetail: (Int) -> Unit,
     navigateToRegister: () -> Unit
 ) {
     composable<Explore> {
