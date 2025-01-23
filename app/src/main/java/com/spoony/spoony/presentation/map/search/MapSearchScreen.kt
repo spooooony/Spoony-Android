@@ -28,6 +28,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun MapSearchRoute(
+    navigateUp: () -> Unit,
     viewModel: MapSearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -40,6 +41,7 @@ fun MapSearchRoute(
         onSearchButtonClick = viewModel::searchLocation,
         onDeleteButtonClick = {},
         onResultItemClick = {},
+        onBackButtonClick = navigateUp,
         onDeleteAllButtonClick = viewModel::initRecentSearch
     )
 }
@@ -50,6 +52,7 @@ private fun MapSearchScreen(
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
     onSearchKeywordChanged: (String) -> Unit,
+    onBackButtonClick: () -> Unit,
     onSearchButtonClick: () -> Unit,
     onDeleteButtonClick: () -> Unit,
     onResultItemClick: (Int) -> Unit,
@@ -59,7 +62,8 @@ private fun MapSearchScreen(
         MapSearchTopAppBar(
             value = searchKeyword,
             onValueChanged = onSearchKeywordChanged,
-            onSearchAction = onSearchButtonClick
+            onSearchAction = onSearchButtonClick,
+            onBackButtonClick = onBackButtonClick
         )
 
         when {
