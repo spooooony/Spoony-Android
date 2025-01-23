@@ -67,7 +67,6 @@ fun ReportRoute(
     var reportSuccessDialogVisibility by remember { mutableStateOf(false) }
 
     val postId = (state.postId as? UiState.Success)?.data ?: return
-    val userId = (state.userId as? UiState.Success)?.data ?: return
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -91,7 +90,7 @@ fun ReportRoute(
         reportButtonEnabled = state.reportButtonEnabled,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
-        onReportClick = { viewModel.reportPost(postId, userId, state.selectedReportOption.code, state.reportContext) },
+        onReportClick = { viewModel.reportPost(postId, state.selectedReportOption.code, state.reportContext) },
         onBackButtonClick = navigateUp
     )
 

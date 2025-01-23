@@ -8,12 +8,11 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class PlaceDetailState(
     val postId: UiState<Int> = UiState.Loading,
-    val userId: UiState<Int> = UiState.Loading,
     val isScooped: Boolean = false,
     val isAddMap: Boolean = false,
     val addMapCount: Int = 0,
     val postModel: UiState<PostModel> = UiState.Loading,
     val userEntity: UiState<UserEntity> = UiState.Loading,
-    val spoonAmountEntity: UiState<Int> = UiState.Loading,
-    val dropDownMenuList: ImmutableList<String> = persistentListOf("신고하기")
+    val spoonCount: UiState<Int> = UiState.Loading,
+    val dropDownMenuList: ImmutableList<String> = persistentListOf()
 )

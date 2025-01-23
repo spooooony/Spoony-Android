@@ -29,17 +29,17 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun IconDropdownMenu(
-    menuItems: ImmutableList<String>,
+    menuItems: ImmutableList<DropdownOption>,
     onMenuItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-
     Column(modifier = modifier.wrapContentSize(Alignment.TopEnd)) {
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_menu_24),
@@ -47,7 +47,9 @@ fun IconDropdownMenu(
             tint = SpoonyAndroidTheme.colors.gray500,
             modifier = Modifier
                 .noRippleClickable {
-                    expanded = !expanded
+                    if (menuItems.isNotEmpty()) {
+                        expanded = !expanded
+                    }
                 }
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -74,14 +76,14 @@ fun IconDropdownMenu(
                                 modifier = Modifier
                                     .widthIn(min = 91.dp)
                                     .noRippleClickable {
-                                        onMenuItemClick(menuItem)
+                                        onMenuItemClick(menuItem.name)
                                         expanded = false
                                     }
                                     .padding(6.dp),
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 Text(
-                                    text = menuItem,
+                                    text = menuItem.string,
                                     style = SpoonyAndroidTheme.typography.caption1b,
                                     color = SpoonyAndroidTheme.colors.gray900
                                 )
@@ -97,21 +99,7 @@ fun IconDropdownMenu(
 @Preview
 @Composable
 private fun IconDropdownMenuOnePreview() {
-    val menuItems = immutableListOf("신고하기")
-    SpoonyAndroidTheme {
-        IconDropdownMenu(
-            menuItems = menuItems,
-            onMenuItemClick = { selectedItem ->
-                // selectedItem
-            }
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun IconDropdownMenuTwoPreview() {
-    val menuItems = immutableListOf("신고하기", "수정하기")
+    val menuItems = persistentListOf(DropdownOption.REPORT)
     SpoonyAndroidTheme {
         IconDropdownMenu(
             menuItems = menuItems,
