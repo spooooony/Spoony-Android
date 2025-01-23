@@ -41,7 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.Marker
@@ -183,6 +185,11 @@ fun MapScreen(
                             selectedMarkerId = if (selectedMarkerId == place.placeId) -1 else place.placeId
                             onPlaceItemClick(place.placeId)
                             isSelected = selectedMarkerId == place.placeId
+                            cameraPositionState.move(
+                                CameraUpdate.scrollTo(
+                                    LatLng(place.latitude, place.longitude)
+                                ).animate(CameraAnimation.Easing)
+                            )
                             true
                         }
                     )
@@ -323,6 +330,11 @@ fun MapScreen(
                                         backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
                                         onClick = {
                                             onPlaceItemClick(placeId)
+                                            cameraPositionState.move(
+                                                CameraUpdate.scrollTo(
+                                                    LatLng(addedPlace.latitude, addedPlace.longitude)
+                                                ).animate(CameraAnimation.Easing)
+                                            )
                                             isSelected = true
                                         }
                                     )
