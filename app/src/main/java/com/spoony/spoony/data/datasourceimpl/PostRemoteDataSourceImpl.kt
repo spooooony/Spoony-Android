@@ -7,6 +7,7 @@ import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.response.AddedMapListResponseDto
 import com.spoony.spoony.data.dto.response.AddedMapPostListDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
+import com.spoony.spoony.data.dto.response.ZzimLocationResponseDto
 import com.spoony.spoony.data.service.PostService
 import javax.inject.Inject
 
@@ -40,4 +41,7 @@ class PostRemoteDataSourceImpl @Inject constructor(
         postService.postAddMapPost(
             AddMapRequestDto(postId = postId, userId = userId)
         )
+
+    override suspend fun getZzimByLocation(userId: Int, locationId: Int): BaseResponse<ZzimLocationResponseDto> =
+        postService.getZzimByLocation(userId, locationId)
 }

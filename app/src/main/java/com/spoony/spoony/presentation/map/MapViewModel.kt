@@ -31,7 +31,7 @@ class MapViewModel @Inject constructor(
         getAddedPlaceList()
     }
 
-    fun getAddedPlaceList() {
+    private fun getAddedPlaceList() {
         viewModelScope.launch {
             mapRepository.getAddedPlaceList(USER_ID)
                 .onSuccess { response ->
