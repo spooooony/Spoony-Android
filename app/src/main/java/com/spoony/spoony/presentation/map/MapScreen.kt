@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,8 +43,11 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.overlay.OverlayImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.tag.LogoTag
@@ -145,16 +149,42 @@ fun MapScreen(
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
     var isSelected by remember { mutableStateOf(false) }
+    var selectedMarkerId by remember { mutableStateOf(-1) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         NaverMap(
             cameraPositionState = cameraPositionState,
             onMapClick = { _, _ ->
                 if (isSelected) {
+                    selectedMarkerId = -1
                     isSelected = false
                 }
             }
-        )
+        ) {
+            placeList.forEach { place ->
+                key(place.placeId) {
+                    Marker(
+                        state = MarkerState(LatLng(place.latitude, place.longitude)),
+                        captionText = place.placeName,
+                        captionColor = SpoonyAndroidTheme.colors.black,
+                        captionHaloColor = SpoonyAndroidTheme.colors.white,
+                        captionRequestedWidth = 10.dp,
+                        iconTintColor = Color.Unspecified,
+                        icon = OverlayImage.fromResource(
+                            if (selectedMarkerId == place.placeId) {
+                                R.drawable.ic_selected_marker
+                            } else R.drawable.ic_unselected_marker
+                        ),
+                        onClick = {
+                            selectedMarkerId = if (selectedMarkerId == place.placeId) -1 else place.placeId
+                            onPlaceItemClick(place.placeId)
+                            isSelected = selectedMarkerId == place.placeId
+                            true
+                        }
+                    )
+                }
+            }
+        }
 
         if (locationInfo.placeId == null) {
             Row(
