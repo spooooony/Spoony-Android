@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.map.component.bottomsheet
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,12 +19,14 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 
 @Composable
 fun MapEmptyBottomSheetContent(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = 24.dp)
+            .fillMaxWidth()
     ) {
         Image(
             painter = painterResource(R.drawable.ic_launcher_foreground),
