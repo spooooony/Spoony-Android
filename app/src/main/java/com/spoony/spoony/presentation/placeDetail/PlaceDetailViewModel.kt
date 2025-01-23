@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.core.util.USER_ID
+import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.presentation.placeDetail.model.toModel
 import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
