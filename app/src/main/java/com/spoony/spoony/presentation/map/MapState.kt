@@ -6,6 +6,7 @@ import com.spoony.spoony.presentation.map.model.LocationModel
 import kotlinx.collections.immutable.ImmutableList
 
 data class MapState(
+    val userName: UiState<String> = UiState.Loading,
     val locationModel: LocationModel = LocationModel(
         latitude = 37.554524,
         longitude = 126.926447
