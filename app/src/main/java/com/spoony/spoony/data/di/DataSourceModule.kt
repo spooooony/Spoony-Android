@@ -2,10 +2,12 @@ package com.spoony.spoony.data.di
 
 import com.spoony.spoony.data.datasource.CategoryDataSource
 import com.spoony.spoony.data.datasource.DummyRemoteDataSource
+import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
 import com.spoony.spoony.data.datasource.PlaceDataSource
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.datasourceimpl.CategoryDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.DummyRemoteDataSourceImpl
+import com.spoony.spoony.data.datasourceimpl.ExploreRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.PlaceDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.PostRemoteDataSourceImpl
 import dagger.Binds
@@ -36,4 +38,10 @@ abstract class DataSourceModule {
     abstract fun bindCategoryDataSource(
         categoryDataSourceImpl: CategoryDataSourceImpl
     ): CategoryDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindExploreDataSource(
+        exploreRemoteDataSourceImpl: ExploreRemoteDataSourceImpl
+    ): ExploreRemoteDataSource
 }

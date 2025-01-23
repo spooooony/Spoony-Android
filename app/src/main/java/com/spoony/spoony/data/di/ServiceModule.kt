@@ -2,6 +2,7 @@ package com.spoony.spoony.data.di
 
 import com.spoony.spoony.data.service.CategoryService
 import com.spoony.spoony.data.service.DummyService
+import com.spoony.spoony.data.service.ExploreService
 import com.spoony.spoony.data.service.PlaceService
 import com.spoony.spoony.data.service.PostService
 import dagger.Module
@@ -33,4 +34,9 @@ object ServiceModule {
     @Singleton
     fun provideCategoryService(retrofit: Retrofit): CategoryService =
         retrofit.create(CategoryService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideExploreService(retrofit: Retrofit): ExploreService =
+        retrofit.create(ExploreService::class.java)
 }

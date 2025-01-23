@@ -24,12 +24,7 @@ class ExploreViewModel @Inject constructor(
 
     init {
         getCategoryList()
-        getFeedList(
-            userId = 1,
-            categoryId = 2,
-            locationQuery = "강남",
-            sortBy = "latest"
-        )
+        getFeedList()
     }
 
     private fun getCategoryList() {
@@ -52,29 +47,30 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun getFeedList(
-        userId: Int,
-        categoryId: Int,
-        locationQuery: String,
-        sortBy: String
-    ) {
+    fun getFeedList() {
         viewModelScope.launch {
             exploreRepository.getFeedList(
-                userId = userId,
-                categoryId = categoryId,
-                locationQuery = locationQuery,
-                sortBy = sortBy
-            ).onSuccess { response ->
-                _state.update {
-                    it.copy(
-                        feedList = UiState.Success(
-                            response.map { feed ->
-                                feed.toModel()
-                            }.toImmutableList()
+                userId = 30,
+                categoryId = _state.value.selectedCategoryId,
+                locationQuery = _state.value.selectedCity,
+                sortBy = _state.value.selectedSortingOption.stringCode
+            )
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            feedList =
+                            if (response.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(
+                                    response.map { feed ->
+                                        feed.toModel()
+                                    }.toImmutableList()
+                                )
+                            }
                         )
-                    )
+                    }
                 }
-            }
                 .onFailure {
                     _state.update {
                         it.copy(

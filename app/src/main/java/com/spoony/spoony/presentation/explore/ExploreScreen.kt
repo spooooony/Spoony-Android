@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreItem
@@ -51,19 +53,23 @@ fun ExploreRoute(
     navigateToPlaceDetail: (Int, Int) -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val spoonCount = when (state.value.spoonCount) {
-        is UiState.Success -> (state.value.spoonCount as? UiState.Success<Int>)?.data ?: 0
+    val spoonCount = when (state.spoonCount) {
+        is UiState.Success -> (state.spoonCount as? UiState.Success<Int>)?.data ?: 0
         else -> 0
     }
 
-    val categoryList = when (state.value.categoryList) {
-        is UiState.Success -> (state.value.categoryList as? UiState.Success<ImmutableList<CategoryEntity>>)?.data ?: persistentListOf()
+    val categoryList = when (state.categoryList) {
+        is UiState.Success -> (state.categoryList as? UiState.Success<ImmutableList<CategoryEntity>>)?.data ?: persistentListOf()
         else -> persistentListOf()
     }
 
-    with(state.value) {
+    LaunchedEffect(state.selectedCategoryId, state.selectedCity, state.selectedSortingOption) {
+        viewModel.getFeedList()
+    }
+
+    with(state) {
         ExploreScreen(
             paddingValues = paddingValues,
             spoonCount = spoonCount,
@@ -74,7 +80,7 @@ fun ExploreRoute(
             feedList = feedList,
             onLocationSortingButtonClick = viewModel::updateSelectedCity,
             onSortingButtonClick = viewModel::updateSelectedSortingOption,
-            onFeedItemClick = { navigateToPlaceDetail(it, 1) },
+            onFeedItemClick = { navigateToPlaceDetail(it, 30) },
             onRegisterButtonClick = {},
             updateSelectedCategory = viewModel::updateSelectedCategory
         )
@@ -225,8 +231,8 @@ private fun ExploreContent(
                             addMapCount = feed.addMapCount,
                             iconUrl = feed.categoryEntity.iconUrl,
                             tagText = feed.categoryEntity.categoryName,
-                            textColor = Color.hexToColor(feed.categoryEntity.textColor ?: "000000"),
-                            backgroundColor = Color.hexToColor(feed.categoryEntity.backgroundColor ?: "000000"),
+                            textColor = Color.hexToColor(feed.categoryEntity.textColor.toValidHexColor()),
+                            backgroundColor = Color.hexToColor(feed.categoryEntity.backgroundColor.toValidHexColor()),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .noRippleClickable { onFeedItemClick(feed.feedId) }
