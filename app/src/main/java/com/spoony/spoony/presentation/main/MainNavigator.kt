@@ -67,8 +67,8 @@ class MainNavigator(
         navOptions: NavOptions? = navOptions {
             popUpTo(Explore) {
                 inclusive = false
-                this@navOptions.restoreState = true
             }
+            restoreState = true
             launchSingleTop = true
         }
     ) {
