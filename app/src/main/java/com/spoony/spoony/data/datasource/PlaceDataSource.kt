@@ -8,7 +8,7 @@ interface PlaceDataSource {
     suspend fun getPlaces(query: String, display: Int): BaseResponse<SearchPlaceResponseDto>
 
     suspend fun checkDuplicatePlace(
-        userId: Long,
+        userId: Int,
         latitude: Double,
         longitude: Double
     ): BaseResponse<PlaceCheckResponseDto>
