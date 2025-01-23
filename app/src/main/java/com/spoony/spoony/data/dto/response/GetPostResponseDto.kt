@@ -29,6 +29,8 @@ data class GetPostResponseDto(
     val longitude: Double,
     @SerialName("zzimCount")
     val zzimCount: Int,
+    @SerialName("isMine")
+    val isMine: Boolean,
     @SerialName("isZzim")
     val isZzim: Boolean,
     @SerialName("isScoop")
