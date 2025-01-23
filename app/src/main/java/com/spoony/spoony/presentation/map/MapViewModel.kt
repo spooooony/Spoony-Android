@@ -6,6 +6,7 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.MapRepository
+import com.spoony.spoony.domain.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
+    private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
@@ -35,9 +37,14 @@ class MapViewModel @Inject constructor(
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
-                            addedPlaceList = UiState.Success(
-                                response.toImmutableList()
-                            )
+                            placeCount = response.count,
+                            addedPlaceList = if (response.count == 0) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(
+                                    response.placeList.toImmutableList()
+                                )
+                            }
                         )
                     }
                 }

@@ -3,6 +3,7 @@ package com.spoony.spoony.data.service
 import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.request.AddMapRequestDto
 import com.spoony.spoony.data.dto.request.PostScoopRequestDto
+import com.spoony.spoony.data.dto.response.AddedMapListResponseDto
 import com.spoony.spoony.data.dto.response.AddedMapPostListDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import okhttp3.MultipartBody
@@ -37,6 +38,11 @@ interface PostService {
         @Path("userId") userId: Int,
         @Path("postId") postId: Int
     ): BaseResponse<Boolean>
+
+    @GET("/api/v1/post/zzim/{userId}")
+    suspend fun getAddedMap(
+        @Path("userId") userId: Int
+    ): BaseResponse<AddedMapListResponseDto>
 
     @GET("/api/v1/post/zzim/{userId}/{postId}")
     suspend fun getAddedMapPost(

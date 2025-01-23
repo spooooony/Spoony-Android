@@ -52,6 +52,7 @@ import com.spoony.spoony.core.designsystem.type.TagSize
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.map.component.MapPlaceDetailCard
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapBottomSheetDragHandle
@@ -97,6 +98,7 @@ fun MapRoute(
                 paddingValues = paddingValues,
                 cameraPositionState = cameraPositionState,
                 userName = userName,
+                placeCount = state.placeCount,
                 placeList = (state.addedPlaceList as UiState.Success<ImmutableList<AddedPlaceEntity>>).data,
                 locationInfo = state.locationModel,
                 onPlaceCardClick = navigateToPlaceDetail,
@@ -115,6 +117,7 @@ fun MapScreen(
     paddingValues: PaddingValues,
     cameraPositionState: CameraPositionState,
     userName: String,
+    placeCount: Int,
     locationInfo: LocationModel,
     placeList: ImmutableList<AddedPlaceEntity>,
     onPlaceCardClick: (Int) -> Unit,
@@ -232,7 +235,7 @@ fun MapScreen(
                     if (placeList.isNotEmpty()) {
                         MapBottomSheetDragHandle(
                             name = userName,
-                            5
+                            resultCount = placeCount
                         )
                     }
                 },
@@ -261,8 +264,8 @@ fun MapScreen(
                                         imageUrl = photoUrl,
                                         categoryIconUrl = categoryInfo.iconUrl,
                                         categoryName = categoryInfo.categoryName,
-                                        textColor = Color.hexToColor(categoryInfo.textColor ?: "000000"),
-                                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor ?: "000000"),
+                                        textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
+                                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
                                         onClick = {
                                             isSelected = true
                                         }
