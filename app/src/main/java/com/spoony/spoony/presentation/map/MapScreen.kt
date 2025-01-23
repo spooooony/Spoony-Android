@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -149,7 +150,7 @@ fun MapScreen(
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
     var isSelected by remember { mutableStateOf(false) }
-    var selectedMarkerId by remember { mutableStateOf(-1) }
+    var selectedMarkerId by remember { mutableIntStateOf(-1) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         NaverMap(
@@ -169,6 +170,7 @@ fun MapScreen(
                         captionColor = SpoonyAndroidTheme.colors.black,
                         captionHaloColor = SpoonyAndroidTheme.colors.white,
                         captionRequestedWidth = 10.dp,
+                        captionOffset = (-15).dp,
                         iconTintColor = Color.Unspecified,
                         icon = OverlayImage.fromResource(
                             if (selectedMarkerId == place.placeId) {
