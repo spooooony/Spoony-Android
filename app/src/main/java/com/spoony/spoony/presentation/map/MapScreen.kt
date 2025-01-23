@@ -161,8 +161,10 @@ fun MapScreen(
                 Row(
                     modifier = Modifier
                         .noRippleClickable(onClick = navigateToMapSearch)
-                        .background(SpoonyAndroidTheme.colors.white)
-                        .clip(RoundedCornerShape(10.dp))
+                        .background(
+                            color = SpoonyAndroidTheme.colors.white,
+                            RoundedCornerShape(10.dp)
+                        )
                         .border(
                             BorderStroke(1.dp, SpoonyAndroidTheme.colors.gray100),
                             RoundedCornerShape(10.dp)
