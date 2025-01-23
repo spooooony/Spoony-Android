@@ -4,4 +4,5 @@ import com.spoony.spoony.domain.entity.UserEntity
 
 interface AuthRepository {
     suspend fun getUserInfo(userId: Int): Result<UserEntity>
+    suspend fun getSpoonCount(userId: Int): Result<Int>
 }
