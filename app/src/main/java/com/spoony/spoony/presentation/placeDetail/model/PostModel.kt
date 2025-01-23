@@ -15,6 +15,7 @@ data class PostModel(
     val placeAddress: String,
     val latitude: Double,
     val longitude: Double,
+    val isMine: Boolean,
     val category: CategoryEntity
 )
 
@@ -28,5 +29,6 @@ fun PostEntity.toModel(): PostModel = PostModel(
     placeAddress = this.placeAddress,
     latitude = this.latitude,
     longitude = this.longitude,
+    isMine = this.isMine,
     category = this.category
 )

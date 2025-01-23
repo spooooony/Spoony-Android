@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.presentation.placeDetail.model.toModel
@@ -22,6 +23,7 @@ import timber.log.Timber
 @HiltViewModel
 class PlaceDetailViewModel @Inject constructor(
     private val postRepository: PostRepository,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
@@ -38,6 +40,29 @@ class PlaceDetailViewModel @Inject constructor(
             postId = UiState.Success(data = postArgs.postId)
         )
         getPost(postArgs.postId)
+        getPost(postArgs.postId, postArgs.userId)
+        getUserInfo(postArgs.userId)
+        getUserSpoonCount(postArgs.userId)
+    }
+
+    private fun getUserInfo(userId: Int) {
+        viewModelScope.launch {
+            authRepository.getUserInfo(userId = userId)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            userEntity = UiState.Success(response)
+                        )
+                    }
+                }
+                .onFailure {
+                    _state.update {
+                        it.copy(
+                            userEntity = UiState.Failure("사용자 정보 조회 실패")
+                        )
+                    }
+                }
+        }
     }
 
     private fun getPost(postId: Int) {
@@ -59,6 +84,28 @@ class PlaceDetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             postModel = UiState.Failure("게시물 조회 실패")
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun getUserSpoonCount(userId: Int) {
+        viewModelScope.launch {
+            authRepository.getSpoonCount(userId = userId)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            spoonCount = UiState.Success(
+                                response
+                            )
+                        )
+                    }
+                }
+                .onFailure {
+                    _state.update {
+                        it.copy(
+                            spoonCount = UiState.Failure("유저 스푼 개수 조회 실패")
                         )
                     }
                 }
