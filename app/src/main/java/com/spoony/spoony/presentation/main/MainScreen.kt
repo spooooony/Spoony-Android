@@ -105,7 +105,8 @@ fun MainScreen(
 
                 exploreNavGraph(
                     paddingValues = paddingValues,
-                    navHostController = navigator.navController
+                    navigateToPlaceDetail = navigator::navigateToPlaceDetail,
+                    navigateToRegister = navigator::navigateToRegister
                 )
 
                 registerNavGraph(
