@@ -175,7 +175,9 @@ fun MapScreen(
                         icon = OverlayImage.fromResource(
                             if (selectedMarkerId == place.placeId) {
                                 R.drawable.ic_selected_marker
-                            } else R.drawable.ic_unselected_marker
+                            } else {
+                                R.drawable.ic_unselected_marker
+                            }
                         ),
                         onClick = {
                             selectedMarkerId = if (selectedMarkerId == place.placeId) -1 else place.placeId
