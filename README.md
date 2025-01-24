@@ -26,40 +26,94 @@
 ## CONTRIBUTORS
 |                                  👑박효빈<br/>([@Hyobeen-Park](https://github.com/Hyobeen-Park))                                    |                                      한민재<br/>([@angryPodo](https://github.com/angryPodo))                                       |                                  안세홍<br/>([@Roel4990](https://github.com/Roel4990))                                   |                                    박동민<br/>([@chattymin](https://github.com/chattymin))                                     |
 |:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|
-| <img width="200px" src="https://avatars.githubusercontent.com/u/98209004?v=4"/> | <img width="200px" src="https://avatars.githubusercontent.com/u/160750136?v=4"/> | <img width="200px" src="https://avatars.githubusercontent.com/u/93641814?v=4"/>     | <img width="200px" src="https://avatars.githubusercontent.com/u/52882799?v=4"/>  |
+| <img width="270px" src="https://github.com/user-attachments/assets/70668210-70cf-4cff-8c50-d8b95356ce30"/> | <img width="270px" src="https://github.com/user-attachments/assets/a373e957-978b-4f59-91b5-1a4b6f9352ad"/> | <img width="270px" src= "https://github.com/user-attachments/assets/245c76fb-2700-426d-a421-bf1f164168b2"/>     | <img width="270px" src="https://github.com/user-attachments/assets/d925f177-1c37-4426-971f-4cebbfb1e4f4"/>  |
 |                                                      `메인 지도`<br/>`탐색하기`<br/>                                                      |                                                         `장소 등록하기`<br/>                                                    |                                          `장소 상세 페이지`<br/>`신고하기`<br/>                                       |                             `멘토`<br/>
 
 
 <br>
 
+## 📸 SCREENSHOTS
+
+|       뷰       |                                                              1                                                              |                                                              2                                                              |                                                              3                                                              |
+|:-------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|
+| 메인 지도 <br> 탐색하기  | <img src="/api/placeholder/400/800" alt="메인지도1"/> | <img src="/api/placeholder/400/800" alt="메인지도2"/> | <img src="/api/placeholder/400/800" alt="메인지도3"/> |
+| 장소 등록하기 | <img src="/api/placeholder/400/800" alt="장소등록1"/> | <img src="/api/placeholder/400/800" alt="장소등록2"/> | <img src="/api/placeholder/400/800" alt="장소등록3"/> |
+| 장소 상세페이지 <br> 신고하기 | <img src="/api/placeholder/400/800" alt="상세페이지1"/> | <img src="/api/placeholder/400/800" alt="상세페이지2"/> | <img src="/api/placeholder/400/800" alt="상세페이지3"/> |
+
+
+
 ## PACKAGE CONVENTION
 
 ```
 
-📁 core
- ┣ 📁 designsystem
- ┣ 📁 util
- ┣ 📁 state
- ┗ 📁navigation
-
-📁 data
- ┣ 📁 dto
- ┃ ┣ 📁 response
- ┃ ┣ 📁 request
- ┣ 📁 datasource
- ┣ 📁 datasourceImpl
- ┣ 📁 di
- ┣ 📁 local
- ┣ 📁 mapper
- ┣ 📁 repositoryImpl
- ┗ 📁 service
-
-📁 domain
- ┣ 📁 entity
- ┗ 📁 repository
-
-📁 presentation
- ┗ 📁 기능 별 패키징
+📦spoony
+ ┣ 📂core
+ ┃ ┣ 📂database
+ ┃ ┃ ┣ 📂di
+ ┃ ┃ ┣ 📂entity
+ ┃ ┣ 📂designsystem
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┣ 📂bottomsheet
+ ┃ ┃ ┃ ┣ 📂button
+ ┃ ┃ ┃ ┣ 📂chip
+ ┃ ┃ ┃ ┣ 📂dialog
+ ┃ ┃ ┃ ┣ 📂image
+ ┃ ┃ ┃ ┣ 📂snackbar
+ ┃ ┃ ┃ ┣ 📂tag
+ ┃ ┃ ┃ ┣ 📂textfield
+ ┃ ┃ ┃ ┗ 📂topappbar
+ ┃ ┃ ┣ 📂event
+ ┃ ┃ ┣ 📂theme
+ ┃ ┃ ┗ 📂type
+ ┃ ┣ 📂navigation
+ ┃ ┣ 📂state
+ ┃ ┗ 📂util
+ ┃ ┃ ┗ 📂extension
+ ┣ 📂data
+ ┃ ┣ 📂datasource
+ ┃ ┣ 📂datasourceimpl
+ ┃ ┣ 📂di
+ ┃ ┣ 📂dto
+ ┃ ┃ ┣ 📂base
+ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┗ 📂response
+ ┃ ┣ 📂mapper
+ ┃ ┣ 📂repositoryimpl
+ ┃ ┗ 📂service
+ ┣ 📂domain
+ ┃ ┣ 📂entity
+ ┃ ┗ 📂repository
+ ┗ 📂presentation
+ ┃ ┣ 📂explore
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┗ 📂bottomsheet
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┗ 📂type
+ ┃ ┣ 📂main
+ ┃ ┃ ┗ 📂component
+ ┃ ┣ 📂map
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┗ 📂bottomsheet
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┣ 📂navigaion
+ ┃ ┃ ┗ 📂search
+ ┃ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┗ 📂navigation
+ ┃ ┣ 📂placeDetail
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┗ 📂type
+ ┃ ┣ 📂register
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┗ 📂navigation
+ ┃ ┣ 📂report
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┗ 📂type
+ ┃ ┗ 📂splash
 
 ```
 
@@ -69,6 +123,7 @@
 | Title | Content                               |
 | ------------ |---------------------------------------|
 | Architecture | Clean Architecture, MVVM |
+| Module | SingleModule|
 | UI Framework  | Jetpack Compose                       |
 | Dependency Injection | Hilt                                  |
 | Network | Retrofit2, OkHttp                     |
@@ -77,7 +132,289 @@
 | Other Tools | Discode, Notion, Figma, Slack                |\
 </br>
 
-## Convention
-[안드푼스들의 깃 컨벤션](https://creative-suede-cad.notion.site/Git-Convention-4038dc7126e34df6aa042b400284b188?pvs=4)
-<br/>
-[안드푼스들의 코딩 컨벤션](https://creative-suede-cad.notion.site/Android-Coding-Convention-71015e22d6a44f28b07aa756c81b2cf3?pvs=4)
+> 🛠 **Tech Stack 소개** <br><br>
+
+1️⃣ **Architecture: Clean Architecture, MVVM**<br>
+비즈니스 로직과 UI를 명확히 분리하고, 각 계층 간 의존성을 최소화했습니다. 코드의 재사용성을 높이고 유지보수가 용이하며, 특히 테스트 용이성이 크게 향상됩니다.<br><br>
+
+2️⃣ **Dependency Injection: Hilt**<br>
+구글이 공식 지원하는 Hilt로 보일러플레이트 코드를 최소화하면서도 강력한 DI 기능을 제공합니다. Android 컴포넌트들과의 완벽한 통합으로 테스트 가능한 코드베이스를 구축했습니다.<br><br>
+
+3️⃣ **Network: Retrofit2, OkHttp**<br>
+Retrofit2의 선언적 API 정의와 OkHttp의 강력한 인터셉터 기능으로 안정적이고 효율적인 네트워크 계층을 구현했습니다.<br><br>
+
+4️⃣ **Other Tools**<br>
+- GitHub: 코드 리뷰<br>
+- Notion: 체계적인 프로젝트 문서화<br>
+- Figma: UI/UX 디자인 협업<br>
+- Slack: 빠른 팀 소통 및 개발 알림 통합<br>
+
+## Foldering
+```
+📦spoony
+ ┣ 📂core
+ ┃ ┣ 📂database
+ ┃ ┃ ┣ 📂di
+ ┃ ┃ ┃ ┗ 📜DatabaseModule.kt
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┃ ┗ 📜SearchEntity.kt
+ ┃ ┃ ┣ 📜SearchDao.kt
+ ┃ ┃ ┗ 📜SearchDatabase.kt
+ ┃ ┣ 📂designsystem
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┣ 📂bottomsheet
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyAdvancedBottomSheet.kt
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyBasicBottomSheet.kt
+ ┃ ┃ ┃ ┃ ┗ 📜SpoonyBasicDragHandle.kt
+ ┃ ┃ ┃ ┣ 📂button
+ ┃ ┃ ┃ ┃ ┗ 📜SpoonyButton.kt
+ ┃ ┃ ┃ ┣ 📂chip
+ ┃ ┃ ┃ ┃ ┗ 📜IconChip.kt
+ ┃ ┃ ┃ ┣ 📂dialog
+ ┃ ┃ ┃ ┃ ┣ 📜SingleButtonDialog.kt
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyBasicDialog.kt
+ ┃ ┃ ┃ ┃ ┗ 📜TwoButtonDialog.kt
+ ┃ ┃ ┃ ┣ 📂image
+ ┃ ┃ ┃ ┃ ┗ 📜SpoonyImage.kt
+ ┃ ┃ ┃ ┣ 📂snackbar
+ ┃ ┃ ┃ ┃ ┣ 📜BasicSnackbar.kt
+ ┃ ┃ ┃ ┃ ┗ 📜TextSnackbar.kt
+ ┃ ┃ ┃ ┣ 📂tag
+ ┃ ┃ ┃ ┃ ┣ 📜IconTag.kt
+ ┃ ┃ ┃ ┃ ┗ 📜LogoTag.kt
+ ┃ ┃ ┃ ┣ 📂textfield
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyBasicTextField.kt
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyIconButtonTextField.kt
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyLargeTextField.kt
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyLineTextField.kt
+ ┃ ┃ ┃ ┃ ┗ 📜SpoonySearchTextField.kt
+ ┃ ┃ ┃ ┗ 📂topappbar
+ ┃ ┃ ┃ ┃ ┣ 📜CloseTopAppBar.kt
+ ┃ ┃ ┃ ┃ ┣ 📜SpoonyBasicTopAppBar.kt
+ ┃ ┃ ┃ ┃ ┣ 📜TagTopAppBar.kt
+ ┃ ┃ ┃ ┃ ┗ 📜TitleTopAppBar.kt
+ ┃ ┃ ┣ 📂event
+ ┃ ┃ ┃ ┗ 📜SnackbarTrigger.kt
+ ┃ ┃ ┣ 📂theme
+ ┃ ┃ ┃ ┣ 📜Color.kt
+ ┃ ┃ ┃ ┣ 📜Theme.kt
+ ┃ ┃ ┃ ┗ 📜Type.kt
+ ┃ ┃ ┗ 📂type
+ ┃ ┃ ┃ ┣ 📜AdvancedSheetState.kt
+ ┃ ┃ ┃ ┣ 📜ButtonStyles.kt
+ ┃ ┃ ┃ ┣ 📜ChipColor.kt
+ ┃ ┃ ┃ ┗ 📜TagSize.kt
+ ┃ ┣ 📂navigation
+ ┃ ┃ ┣ 📜MainTabRoute.kt
+ ┃ ┃ ┗ 📜Route.kt
+ ┃ ┣ 📂state
+ ┃ ┃ ┗ 📜UiState.kt
+ ┃ ┗ 📂util
+ ┃ ┃ ┣ 📂extension
+ ┃ ┃ ┃ ┣ 📜ColorExt.kt
+ ┃ ┃ ┃ ┣ 📜ModifierExt.kt
+ ┃ ┃ ┃ ┗ 📜StringExt.kt
+ ┃ ┃ ┗ 📜UserId.kt
+ ┣ 📂data
+ ┃ ┣ 📂datasource
+ ┃ ┃ ┣ 📜AuthRemoteDataSource.kt
+ ┃ ┃ ┣ 📜CategoryDataSource.kt
+ ┃ ┃ ┣ 📜ExploreRemoteDataSource.kt
+ ┃ ┃ ┣ 📜MapRemoteDataSource.kt
+ ┃ ┃ ┣ 📜PlaceDataSource.kt
+ ┃ ┃ ┣ 📜PostRemoteDataSource.kt
+ ┃ ┃ ┗ 📜ReportDataSource.kt
+ ┃ ┣ 📂datasourceimpl
+ ┃ ┃ ┣ 📜AuthRemoteDataSourceImpl.kt
+ ┃ ┃ ┣ 📜CategoryDataSourceImpl.kt
+ ┃ ┃ ┣ 📜ExploreRemoteDataSourceImpl.kt
+ ┃ ┃ ┣ 📜MapRemoteDataSourceImpl.kt
+ ┃ ┃ ┣ 📜PlaceDataSourceImpl.kt
+ ┃ ┃ ┣ 📜PostRemoteDataSourceImpl.kt
+ ┃ ┃ ┗ 📜ReportDataSourceImpl.kt
+ ┃ ┣ 📂di
+ ┃ ┃ ┣ 📜DataSourceModule.kt
+ ┃ ┃ ┣ 📜RepositoryModule.kt
+ ┃ ┃ ┣ 📜RetrofitModule.kt
+ ┃ ┃ ┗ 📜ServiceModule.kt
+ ┃ ┣ 📂dto
+ ┃ ┃ ┣ 📂base
+ ┃ ┃ ┃ ┗ 📜BaseResponse.kt
+ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┃ ┣ 📜AddMapRequestDto.kt
+ ┃ ┃ ┃ ┣ 📜PlaceCheckRequestDto.kt
+ ┃ ┃ ┃ ┣ 📜PostScoopRequestDto.kt
+ ┃ ┃ ┃ ┣ 📜RegisterPostRequestDto.kt
+ ┃ ┃ ┃ ┗ 📜ReportPostRequestDto.kt
+ ┃ ┃ ┗ 📂response
+ ┃ ┃ ┃ ┣ 📜AddedMapListResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜AddedMapPostListDto.kt
+ ┃ ┃ ┃ ┣ 📜CategoryResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜FeedsResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜GetPostResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜LocationListResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜PlaceCheckResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜PlaceResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜UserInfoResponseDto.kt
+ ┃ ┃ ┃ ┣ 📜UserSpoonCountResponseDto.kt
+ ┃ ┃ ┃ ┗ 📜ZzimLocationResponseDto.kt
+ ┃ ┣ 📂mapper
+ ┃ ┃ ┣ 📜AddedMapMapper.kt
+ ┃ ┃ ┣ 📜AddedMapPostMapper.kt
+ ┃ ┃ ┣ 📜CategoryMapper.kt
+ ┃ ┃ ┣ 📜FeedsMapper.kt
+ ┃ ┃ ┣ 📜GetPostResponseMapper.kt
+ ┃ ┃ ┣ 📜LocationMapper.kt
+ ┃ ┃ ┣ 📜PlaceMapper.kt
+ ┃ ┃ ┣ 📜UserInfoMapper.kt
+ ┃ ┃ ┗ 📜ZzimLocaitonMapper.kt
+ ┃ ┣ 📂repositoryimpl
+ ┃ ┃ ┣ 📜AuthRepositoryImpl.kt
+ ┃ ┃ ┣ 📜CategoryRepositoryImpl.kt
+ ┃ ┃ ┣ 📜ContentUriRequestBody.kt
+ ┃ ┃ ┣ 📜ExploreRepositoryImpl.kt
+ ┃ ┃ ┣ 📜MapRepositoryImpl.kt
+ ┃ ┃ ┣ 📜PostRepositoryImpl.kt
+ ┃ ┃ ┣ 📜RegisterRepositoryImpl.kt
+ ┃ ┃ ┗ 📜ReportRepositoryImpl.kt
+ ┃ ┗ 📂service
+ ┃ ┃ ┣ 📜AuthService.kt
+ ┃ ┃ ┣ 📜CategoryService.kt
+ ┃ ┃ ┣ 📜ExploreService.kt
+ ┃ ┃ ┣ 📜MapService.kt
+ ┃ ┃ ┣ 📜PlaceService.kt
+ ┃ ┃ ┣ 📜PostService.kt
+ ┃ ┃ ┗ 📜ReportService.kt
+ ┣ 📂domain
+ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📜AddedMapPostEntity.kt
+ ┃ ┃ ┣ 📜AddedPlaceEntity.kt
+ ┃ ┃ ┣ 📜CategoryEntity.kt
+ ┃ ┃ ┣ 📜FeedEntity.kt
+ ┃ ┃ ┣ 📜LocationEntity.kt
+ ┃ ┃ ┣ 📜PlaceEntity.kt
+ ┃ ┃ ┣ 📜PostEntity.kt
+ ┃ ┃ ┣ 📜RegisterEntity.kt
+ ┃ ┃ ┗ 📜UserEntity.kt
+ ┃ ┗ 📂repository
+ ┃ ┃ ┣ 📜AuthRepository.kt
+ ┃ ┃ ┣ 📜CategoryRepository.kt
+ ┃ ┃ ┣ 📜ExploreRepository.kt
+ ┃ ┃ ┣ 📜MapRepository.kt
+ ┃ ┃ ┣ 📜PostRepository.kt
+ ┃ ┃ ┣ 📜RegisterRepository.kt
+ ┃ ┃ ┗ 📜ReportRepository.kt
+ ┣ 📂presentation
+ ┃ ┣ 📂explore
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┣ 📂bottomsheet
+ ┃ ┃ ┃ ┃ ┣ 📜ExploreLocationBottomSheet.kt
+ ┃ ┃ ┃ ┃ ┣ 📜ExploreLocationDragHandle.kt
+ ┃ ┃ ┃ ┃ ┗ 📜ExploreSortingBottomSheet.kt
+ ┃ ┃ ┃ ┣ 📜ExploreEmptyScreen.kt
+ ┃ ┃ ┃ ┣ 📜ExploreItem.kt
+ ┃ ┃ ┃ ┗ 📜ExploreTopAppBar.kt
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┗ 📜FeedModel.kt
+ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┃ ┗ 📜ExploreNavigation.kt
+ ┃ ┃ ┣ 📂type
+ ┃ ┃ ┃ ┗ 📜SortingOption.kt
+ ┃ ┃ ┣ 📜ExploreScreen.kt
+ ┃ ┃ ┣ 📜ExploreState.kt
+ ┃ ┃ ┗ 📜ExploreViewModel.kt
+ ┃ ┣ 📂main
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┗ 📜MainBottomBar.kt
+ ┃ ┃ ┣ 📜MainNavigator.kt
+ ┃ ┃ ┣ 📜MainScreen.kt
+ ┃ ┃ ┗ 📜MainTab.kt
+ ┃ ┣ 📂map
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┣ 📂bottomsheet
+ ┃ ┃ ┃ ┃ ┣ 📜MapBottomSheetDragHandle.kt
+ ┃ ┃ ┃ ┃ ┣ 📜MapEmptyScreen.kt
+ ┃ ┃ ┃ ┃ ┗ 📜MapListItem.kt
+ ┃ ┃ ┃ ┗ 📜MapPlaceDetailCard.kt
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┗ 📜LocationModel.kt
+ ┃ ┃ ┣ 📂navigaion
+ ┃ ┃ ┃ ┗ 📜MapNavigation.kt
+ ┃ ┃ ┣ 📂search
+ ┃ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┃ ┣ 📜MapSearchEmptyResultScreen.kt
+ ┃ ┃ ┃ ┃ ┣ 📜MapSearchRecentEmptyScreen.kt
+ ┃ ┃ ┃ ┃ ┣ 📜MapSearchRecentItem.kt
+ ┃ ┃ ┃ ┃ ┣ 📜MapSearchResultItem.kt
+ ┃ ┃ ┃ ┃ ┗ 📜MapSearchTopAppBar.kt
+ ┃ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┃ ┃ ┗ 📜MapSearchNavigation.kt
+ ┃ ┃ ┃ ┣ 📜MapSearchScreen.kt
+ ┃ ┃ ┃ ┣ 📜MapSearchState.kt
+ ┃ ┃ ┃ ┗ 📜MapSearchViewModel.kt
+ ┃ ┃ ┣ 📜MapScreen.kt
+ ┃ ┃ ┣ 📜MapState.kt
+ ┃ ┃ ┗ 📜MapViewModel.kt
+ ┃ ┣ 📂placeDetail
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┣ 📜IconDropdownMenu.kt
+ ┃ ┃ ┃ ┣ 📜PlaceDetailBottomBar.kt
+ ┃ ┃ ┃ ┣ 📜PlaceDetailIconText.kt
+ ┃ ┃ ┃ ┣ 📜PlaceDetailImageLazyRow.kt
+ ┃ ┃ ┃ ┣ 📜ScoopDialog.kt
+ ┃ ┃ ┃ ┣ 📜StoreInfo.kt
+ ┃ ┃ ┃ ┣ 📜StoreInfoItem.kt
+ ┃ ┃ ┃ ┗ 📜UserProfileInfo.kt
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┗ 📜PostModel.kt
+ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┃ ┗ 📜PlaceDetailNavigation.kt
+ ┃ ┃ ┣ 📂type
+ ┃ ┃ ┃ ┗ 📜DropdownOption.kt
+ ┃ ┃ ┣ 📜PlaceDetailRoute.kt
+ ┃ ┃ ┣ 📜PlaceDetailSideEffect.kt
+ ┃ ┃ ┣ 📜PlaceDetailState.kt
+ ┃ ┃ ┗ 📜PlaceDetailViewModel.kt
+ ┃ ┣ 📂register
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┣ 📜AddMenuButtton.kt
+ ┃ ┃ ┃ ┣ 📜CustomDropDownMenu.kt
+ ┃ ┃ ┃ ┣ 📜NextButton.kt
+ ┃ ┃ ┃ ┣ 📜PhotoPicker.kt
+ ┃ ┃ ┃ ┣ 📜RegisterTooltip.kt
+ ┃ ┃ ┃ ┣ 📜SearchResultItem.kt
+ ┃ ┃ ┃ ┗ 📜TopLinearProgressBar.kt
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┣ 📜Category.kt
+ ┃ ┃ ┃ ┗ 📜Place.kt
+ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┃ ┣ 📜RegisterNavigation.kt
+ ┃ ┃ ┃ ┗ 📜RegisterRoute.kt
+ ┃ ┃ ┣ 📜RegisterScreen.kt
+ ┃ ┃ ┣ 📜RegisterState.kt
+ ┃ ┃ ┣ 📜RegisterStepOneScreen.kt
+ ┃ ┃ ┣ 📜RegisterStepTwoScreen.kt
+ ┃ ┃ ┗ 📜RegisterViewModel.kt
+ ┃ ┣ 📂report
+ ┃ ┃ ┣ 📂component
+ ┃ ┃ ┃ ┣ 📜ReportCompleteDialog.kt
+ ┃ ┃ ┃ ┗ 📜ReportRadioButton.kt
+ ┃ ┃ ┣ 📂navigation
+ ┃ ┃ ┃ ┗ 📜ReportNavigation.kt
+ ┃ ┃ ┣ 📂type
+ ┃ ┃ ┃ ┗ 📜ReportOption.kt
+ ┃ ┃ ┣ 📜ReportRoute.kt
+ ┃ ┃ ┣ 📜ReportSideEffect.kt
+ ┃ ┃ ┣ 📜ReportState.kt
+ ┃ ┃ ┗ 📜ReportViewModel.kt
+ ┃ ┣ 📂splash
+ ┃ ┃ ┗ 📜SplashActivity.kt
+ ┃ ┗ 📜MainActivity.kt
+ ┗ 📜Spoony.kt
+```
+
+| 카테고리 | 문서 링크 |
+|---------|-----------|
+| **Convention** | • [안드푼스들의 깃 컨벤션](https://creative-suede-cad.notion.site/Git-Convention-4038dc7126e34df6aa042b400284b188?pvs=4) <br/> • [안드푼스들의 코딩 컨벤션](https://creative-suede-cad.notion.site/Android-Coding-Convention-71015e22d6a44f28b07aa756c81b2cf3?pvs=4) |
+| **작업 트래킹** | • [스푸니 역할 분담](https://creative-suede-cad.notion.site/1add78d751384104b8b436f19342569d?v=667765114277498caeafdc0bab8b42d2&pvs=4) |
+| **프로젝트 설계** | • [스푸니 프로젝트 설계](https://creative-suede-cad.notion.site/1add78d751384104b8b436f19342569d?v=667765114277498caeafdc0bab8b42d2&pvs=4) |
