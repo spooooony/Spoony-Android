@@ -225,7 +225,8 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { currentState ->
                 RegisterState(
-                    categories = currentState.categories
+                    categories = currentState.categories,
+                    showRegisterSnackBar = false
                 )
             }
         }
