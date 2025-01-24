@@ -279,7 +279,7 @@ fun MapScreen(
                             categoryName = categoryEntity.categoryName,
                             textColor = Color.hexToColor(categoryEntity.textColor.toValidHexColor()),
                             backgroundColor = Color.hexToColor(categoryEntity.backgroundColor.toValidHexColor()),
-                            onClick = { onPlaceCardClick(placeId) },
+                            onClick = { onPlaceCardClick(postId) },
                             username = authorName,
                             placeSpoon = authorRegionName,
                             addMapCount = zzimCount
