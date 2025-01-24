@@ -106,6 +106,7 @@ class MapViewModel @Inject constructor(
             ).onSuccess { response ->
                 _state.update {
                     it.copy(
+                        placeCount = response.size,
                         addedPlaceList = if (response.isEmpty()) {
                             UiState.Success(
                                 response.toImmutableList()

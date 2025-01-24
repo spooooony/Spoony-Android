@@ -17,7 +17,8 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 @Composable
 fun MapSearchRecentItem(
     searchText: String,
-    onClick: () -> Unit,
+    onClickIcon: () -> Unit,
+    onClickText: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -30,6 +31,7 @@ fun MapSearchRecentItem(
             color = SpoonyAndroidTheme.colors.black,
             modifier = Modifier
                 .weight(1f)
+                .noRippleClickable(onClick = onClickText)
         )
 
         Icon(
@@ -38,7 +40,7 @@ fun MapSearchRecentItem(
             tint = SpoonyAndroidTheme.colors.gray400,
             modifier = Modifier
                 .padding(vertical = 14.dp)
-                .noRippleClickable(onClick = onClick)
+                .noRippleClickable(onClick = onClickIcon)
         )
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,6 +68,7 @@ private fun MapSearchScreen(
     onDeleteAllButtonClick: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -122,8 +124,13 @@ private fun MapSearchScreen(
                         ) { searchKeyword ->
                             MapSearchRecentItem(
                                 searchText = searchKeyword,
-                                onClick = {
+                                onClickIcon = {
                                     onDeleteButtonClick(searchKeyword)
+                                },
+                                onClickText = {
+                                    onSearchKeywordChanged(searchKeyword)
+                                    onSearchButtonClick()
+                                    focusManager.clearFocus()
                                 }
                             )
                         }
