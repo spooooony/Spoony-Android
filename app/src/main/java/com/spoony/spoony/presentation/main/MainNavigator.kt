@@ -16,6 +16,7 @@ import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
+import com.spoony.spoony.presentation.register.navigation.Register
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
@@ -65,12 +66,22 @@ class MainNavigator(
     }
 
     fun navigateToExplore(
-        navOptions: NavOptions? = navOptions {
-            popUpTo(Explore) {
-                inclusive = false
+        fromRegister: Boolean = false,
+        navOptions: NavOptions? = if (fromRegister) {
+            navOptions {
+                popUpTo(Register) {
+                    inclusive = true
+                }
+                launchSingleTop = true
             }
-            restoreState = true
-            launchSingleTop = true
+        } else {
+            navOptions {
+                popUpTo(Explore) {
+                    inclusive = false
+                }
+                restoreState = true
+                launchSingleTop = true
+            }
         }
     ) {
         navController.navigateToExplore(navOptions)

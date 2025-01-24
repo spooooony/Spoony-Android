@@ -117,7 +117,11 @@ class PlaceDetailViewModel @Inject constructor(
                 .onSuccess {
                     _state.update {
                         it.copy(
-                            isScooped = true
+                            isScooped = true,
+                            spoonCount = when (val spoonState = it.spoonCount) {
+                                is UiState.Success -> UiState.Success(spoonState.data - 1)
+                                else -> spoonState
+                            }
                         )
                     }
                 }
