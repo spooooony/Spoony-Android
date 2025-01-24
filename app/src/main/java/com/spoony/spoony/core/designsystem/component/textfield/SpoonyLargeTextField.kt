@@ -198,7 +198,6 @@ private fun CustomBasicTextField(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun SpoonyLargeTextFieldPreview() {
