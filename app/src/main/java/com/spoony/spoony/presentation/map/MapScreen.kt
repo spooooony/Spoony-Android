@@ -18,12 +18,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,11 +41,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.overlay.OverlayImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.tag.LogoTag
@@ -52,6 +61,8 @@ import com.spoony.spoony.core.designsystem.type.TagSize
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.core.util.extension.toValidHexColor
+import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.map.component.MapPlaceDetailCard
 import com.spoony.spoony.presentation.map.component.bottomsheet.MapBottomSheetDragHandle
@@ -61,7 +72,7 @@ import com.spoony.spoony.presentation.map.model.LocationModel
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun MapRoute(
@@ -97,8 +108,12 @@ fun MapRoute(
                 paddingValues = paddingValues,
                 cameraPositionState = cameraPositionState,
                 userName = userName,
+                placeCount = state.placeCount,
+                spoonCount = state.spoonCount,
                 placeList = (state.addedPlaceList as UiState.Success<ImmutableList<AddedPlaceEntity>>).data,
+                placeCardList = state.placeCardInfo,
                 locationInfo = state.locationModel,
+                onPlaceItemClick = viewModel::getPlaceInfo,
                 onPlaceCardClick = navigateToPlaceDetail,
                 navigateToMapSearch = navigateToMapSearch,
                 onBackButtonClick = navigateUp
@@ -115,8 +130,12 @@ fun MapScreen(
     paddingValues: PaddingValues,
     cameraPositionState: CameraPositionState,
     userName: String,
+    placeCount: Int,
+    spoonCount: Int,
     locationInfo: LocationModel,
     placeList: ImmutableList<AddedPlaceEntity>,
+    placeCardList: UiState<ImmutableList<AddedMapPostEntity>>,
+    onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
     onBackButtonClick: () -> Unit
@@ -133,16 +152,53 @@ fun MapScreen(
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
     var isSelected by remember { mutableStateOf(false) }
+    var selectedMarkerId by remember { mutableIntStateOf(-1) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         NaverMap(
             cameraPositionState = cameraPositionState,
             onMapClick = { _, _ ->
                 if (isSelected) {
+                    selectedMarkerId = -1
                     isSelected = false
                 }
             }
-        )
+        ) {
+            placeList.forEach { place ->
+                key(place.placeId) {
+                    Marker(
+                        state = MarkerState(LatLng(place.latitude, place.longitude)),
+                        captionText = place.placeName,
+                        captionColor = SpoonyAndroidTheme.colors.black,
+                        captionHaloColor = SpoonyAndroidTheme.colors.white,
+                        captionRequestedWidth = 10.dp,
+                        captionOffset = (-15).dp,
+                        iconTintColor = Color.Unspecified,
+                        icon = OverlayImage.fromResource(
+                            if (selectedMarkerId == place.placeId) {
+                                R.drawable.ic_selected_marker
+                            } else {
+                                R.drawable.ic_unselected_marker
+                            }
+                        ),
+                        onClick = {
+                            selectedMarkerId = if (selectedMarkerId == place.placeId) -1 else place.placeId
+                            onPlaceItemClick(place.placeId)
+                            isSelected = selectedMarkerId == place.placeId
+                            cameraPositionState.move(
+                                CameraUpdate.scrollTo(
+                                    LatLng(place.latitude, place.longitude)
+                                ).animate(CameraAnimation.Easing)
+                            )
+                            true
+                        }
+                    )
+                }
+            }
+        }
 
         if (locationInfo.placeId == null) {
             Row(
@@ -152,7 +208,7 @@ fun MapScreen(
                     .padding(vertical = 6.dp, horizontal = 20.dp)
             ) {
                 LogoTag(
-                    count = 10,
+                    count = spoonCount,
                     tagSize = TagSize.Large,
                     modifier = Modifier
                         .padding(end = 11.dp)
@@ -202,23 +258,35 @@ fun MapScreen(
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOut(targetOffset = { IntOffset(0, it.height) })
         ) {
-            MapPlaceDetailCard(
-                placeName = "파오리",
-                review = "리뷰에옹",
-                imageUrlList = persistentListOf(
-                    "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
-                    "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
-                    "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png"
-                ),
-                categoryIconUrl = "https://github.com/Morfly/advanced-bottomsheet-compose/raw/main/demos/demo_cover.png",
-                categoryName = "주류",
-                textColor = SpoonyAndroidTheme.colors.white,
-                backgroundColor = SpoonyAndroidTheme.colors.white,
-                onClick = { onPlaceCardClick(1) },
-                username = "효비",
-                placeSpoon = "성동구",
-                addMapCount = 21
-            )
+            if (placeCardList is UiState.Success) {
+                val pagerState = rememberPagerState(
+                    initialPage = 0,
+                    pageCount = { placeCardList.data.size }
+                )
+
+                HorizontalPager(
+                    state = pagerState,
+                    beyondViewportPageCount = 1
+                ) { currentPage ->
+                    val pageIndex = currentPage % placeCardList.data.size
+
+                    with(placeCardList.data[pageIndex]) {
+                        MapPlaceDetailCard(
+                            placeName = placeName,
+                            review = postTitle,
+                            imageUrlList = photoUrlList.take(3).toImmutableList(),
+                            categoryIconUrl = categoryEntity.iconUrl,
+                            categoryName = categoryEntity.categoryName,
+                            textColor = Color.hexToColor(categoryEntity.textColor.toValidHexColor()),
+                            backgroundColor = Color.hexToColor(categoryEntity.backgroundColor.toValidHexColor()),
+                            onClick = { onPlaceCardClick(postId) },
+                            username = authorName,
+                            placeSpoon = authorRegionName,
+                            addMapCount = zzimCount
+                        )
+                    }
+                }
+            }
         }
 
         AnimatedVisibility(
@@ -232,7 +300,7 @@ fun MapScreen(
                     if (placeList.isNotEmpty()) {
                         MapBottomSheetDragHandle(
                             name = userName,
-                            5
+                            resultCount = placeCount
                         )
                     }
                 },
@@ -245,6 +313,7 @@ fun MapScreen(
                         )
                     } else {
                         LazyColumn(
+                            contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = paddingValues.calculateBottomPadding())
@@ -261,9 +330,15 @@ fun MapScreen(
                                         imageUrl = photoUrl,
                                         categoryIconUrl = categoryInfo.iconUrl,
                                         categoryName = categoryInfo.categoryName,
-                                        textColor = Color.hexToColor(categoryInfo.textColor ?: "000000"),
-                                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor ?: "000000"),
+                                        textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
+                                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
                                         onClick = {
+                                            onPlaceItemClick(placeId)
+                                            cameraPositionState.move(
+                                                CameraUpdate.scrollTo(
+                                                    LatLng(addedPlace.latitude, addedPlace.longitude)
+                                                ).animate(CameraAnimation.Easing)
+                                            )
                                             isSelected = true
                                         }
                                     )

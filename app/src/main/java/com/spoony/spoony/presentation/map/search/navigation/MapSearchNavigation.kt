@@ -16,10 +16,13 @@ fun NavController.navigateToMapSearch(
 }
 
 fun NavGraphBuilder.mapSearchNavGraph(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigateUp: () -> Unit
 ) {
     composable<MapSearch> {
-        MapSearchRoute()
+        MapSearchRoute(
+            navigateUp = navigateUp
+        )
     }
 }
 

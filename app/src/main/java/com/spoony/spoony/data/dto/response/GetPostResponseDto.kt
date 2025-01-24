@@ -37,18 +37,18 @@ data class GetPostResponseDto(
     val isScoop: Boolean,
     @SerialName("categoryColorResponse")
     val categoryColorResponse: CategoryColorResponse
-) {
-    @Serializable
-    data class CategoryColorResponse(
-        @SerialName("categoryId")
-        val categoryId: Int,
-        @SerialName("categoryName")
-        val categoryName: String,
-        @SerialName("iconUrl")
-        val iconUrl: String,
-        @SerialName("iconTextColor")
-        val iconTextColor: String,
-        @SerialName("iconBackgroundColor")
-        val iconBackgroundColor: String
-    )
-}
+)
+
+@Serializable
+data class CategoryColorResponse(
+    @SerialName("categoryId")
+    val categoryId: Int,
+    @SerialName("categoryName")
+    val categoryName: String,
+    @SerialName("iconUrl")
+    val iconUrl: String,
+    @SerialName("iconTextColor")
+    val iconTextColor: String,
+    @SerialName("iconBackgroundColor")
+    val iconBackgroundColor: String
+)

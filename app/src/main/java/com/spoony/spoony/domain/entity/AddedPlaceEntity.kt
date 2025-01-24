@@ -1,5 +1,10 @@
 package com.spoony.spoony.domain.entity
 
+data class AddedPlaceListEntity(
+    val count: Int,
+    val placeList: List<AddedPlaceEntity>
+)
+
 data class AddedPlaceEntity(
     val placeId: Int,
     val placeName: String,
