@@ -21,16 +21,23 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 @Composable
 fun NextButton(
     enabled: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    var isClicked by remember { mutableStateOf(false) }
+
     SpoonyButton(
         text = "다음",
         size = ButtonSize.Xlarge,
         style = ButtonStyle.Primary,
         modifier = modifier.fillMaxWidth(),
-        enabled = enabled,
-        onClick = onClick
+        enabled = enabled && !isClicked,
+        onClick = {
+            if (!isClicked) {
+                isClicked = true
+                onClick()
+            }
+        }
     )
 }
 
