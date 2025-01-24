@@ -33,7 +33,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun MapSearchRoute(
     navigateUp: () -> Unit,
     navigateToLocationMap: (Int, String, String, String, String) -> Unit,
-    viewModel: MapSearchViewModel = hiltViewModel(),
+    viewModel: MapSearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -64,7 +64,7 @@ private fun MapSearchScreen(
     onBackButtonClick: () -> Unit,
     onDeleteButtonClick: (String) -> Unit,
     onResultItemClick: (Int, String, String, String, String) -> Unit,
-    onDeleteAllButtonClick: () -> Unit,
+    onDeleteAllButtonClick: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -118,7 +118,7 @@ private fun MapSearchScreen(
                             .padding(horizontal = 20.dp)
                     ) {
                         items(
-                            items = recentSearchList,
+                            items = recentSearchList
                         ) { searchKeyword ->
                             MapSearchRecentItem(
                                 searchText = searchKeyword,

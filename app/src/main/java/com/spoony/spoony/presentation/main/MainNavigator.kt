@@ -64,16 +64,31 @@ class MainNavigator(
         navController.navigateToReport(postId = postId)
     }
 
-    fun navigateToExplore(
-        fromRegister: Boolean = false,
-        navOptions: NavOptions? = if (fromRegister) {
-            navOptions {
-                popUpTo(Register) {
-                    inclusive = true
-                }
-                launchSingleTop = true
+    fun navigateMapToExplore(
+        navOptions: NavOptions = navOptions {
+            popUpTo(Map()) {
+                inclusive = true
             }
-        } else {
+        }
+    ) {
+        navController.navigateToExplore(navOptions)
+    }
+
+    fun navigateRegisterToExplore(
+        navOptions: NavOptions = navOptions {
+            popUpTo(Register) {
+                inclusive = true
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    ) {
+        navController.navigateToExplore(navOptions)
+    }
+
+    fun navigateReportToExplore(
+        navOptions: NavOptions =
             navOptions {
                 popUpTo(Explore) {
                     inclusive = false
@@ -81,12 +96,21 @@ class MainNavigator(
                 restoreState = true
                 launchSingleTop = true
             }
-        }
     ) {
         navController.navigateToExplore(navOptions)
     }
 
-    fun navigateToRegister(navOptions: NavOptions? = null) {
+    fun navigateExploreToRegister(
+        navOptions: NavOptions =
+            navOptions {
+                popUpTo(Explore) {
+                    inclusive = true
+                    saveState = true
+                }
+                restoreState = true
+                launchSingleTop = true
+            }
+    ) {
         navController.navigateToRegister(navOptions)
     }
 
@@ -102,12 +126,15 @@ class MainNavigator(
     }
 
     fun navigateToLocationMap(
-        navOptions: NavOptions? = null,
+        navOptions: NavOptions = navOptions {
+            popUpTo(Map()) {
+            }
+        },
         locationId: Int? = null,
         locationName: String? = null,
         scale: String? = null,
         latitude: String? = null,
-        longitude: String? = null,
+        longitude: String? = null
     ) {
         navController.navigateToMap(
             locationId = locationId,
