@@ -13,11 +13,13 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 fun MapSearchTopAppBar(
     value: String,
     onValueChanged: (String) -> Unit,
+    onBackButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     onSearchAction: () -> Unit
 ) {
     SpoonyBasicTopAppBar(
         showBackButton = true,
+        onBackButtonClick = onBackButtonClick,
         modifier = modifier
             .background(SpoonyAndroidTheme.colors.white)
     ) {

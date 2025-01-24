@@ -6,6 +6,7 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.MapRepository
+import com.spoony.spoony.domain.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -14,9 +15,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
+    private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
@@ -26,7 +29,24 @@ class MapViewModel @Inject constructor(
 
     init {
         getUserInfo()
+        getSpoonCount()
         getAddedPlaceList()
+    }
+
+    fun getPlaceInfo(placeId: Int) {
+        viewModelScope.launch {
+            postRepository.getAddedMapPost(USER_ID, placeId)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            placeCardInfo = UiState.Success(
+                                response.toImmutableList()
+                            )
+                        )
+                    }
+                }
+                .onFailure(Timber::e)
+        }
     }
 
     private fun getAddedPlaceList() {
@@ -35,9 +55,14 @@ class MapViewModel @Inject constructor(
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
-                            addedPlaceList = UiState.Success(
-                                response.toImmutableList()
-                            )
+                            placeCount = response.count,
+                            addedPlaceList = if (response.count == 0) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(
+                                    response.placeList.toImmutableList()
+                                )
+                            }
                         )
                     }
                 }
@@ -58,6 +83,19 @@ class MapViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             userName = UiState.Success(response.userName)
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun getSpoonCount() {
+        viewModelScope.launch {
+            authRepository.getSpoonCount(USER_ID)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            spoonCount = response
                         )
                     }
                 }

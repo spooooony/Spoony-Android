@@ -4,6 +4,8 @@ import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.request.AddMapRequestDto
 import com.spoony.spoony.data.dto.request.PostScoopRequestDto
+import com.spoony.spoony.data.dto.response.AddedMapListResponseDto
+import com.spoony.spoony.data.dto.response.AddedMapPostListDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import com.spoony.spoony.data.dto.response.ZzimLocationResponseDto
 import com.spoony.spoony.data.service.PostService
@@ -25,6 +27,15 @@ class PostRemoteDataSourceImpl @Inject constructor(
             postId = postId,
             userId = userId
         )
+
+    override suspend fun getAddedMapPost(postId: Int, userId: Int): BaseResponse<AddedMapPostListDto> =
+        postService.getAddedMapPost(
+            postId = postId,
+            userId = userId
+        )
+
+    override suspend fun getAddedMap(userId: Int): BaseResponse<AddedMapListResponseDto> =
+        postService.getAddedMap(userId)
 
     override suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean> =
         postService.postAddMapPost(

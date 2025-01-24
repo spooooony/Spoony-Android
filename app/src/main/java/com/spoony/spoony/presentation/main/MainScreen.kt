@@ -131,7 +131,8 @@ fun MainScreen(
                 )
 
                 mapSearchNavGraph(
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp
                 )
             }
         }

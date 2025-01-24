@@ -23,20 +23,6 @@ class MapSearchViewModel @Inject constructor(
     val state: StateFlow<MapSearchState>
         get() = _state.asStateFlow()
 
-    init {
-        _state.update {
-            it.copy(
-                recentSearchQueryList = persistentListOf(
-                    "디쟌쌤 안녕하세요",
-                    "QA 잘 부탁드립니다",
-                    "디자인 너무 예뻐요",
-                    "사랑합니다",
-                    "😘😘😘😘"
-                )
-            )
-        }
-    }
-
     fun initRecentSearch() {
         _state.update {
             it.copy(
