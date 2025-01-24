@@ -34,10 +34,12 @@ fun MapSearchRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    viewModel::searchLocation.MapSearchScreen(
+    MapSearchScreen(
         searchKeyword = state.searchKeyword,
         recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
+        onSearchButtonClick = viewModel::searchLocation,
+        initResult = viewModel::initRecentSearch,
         onSearchKeywordChanged = viewModel::updateSearchKeyword,
         onBackButtonClick = navigateUp,
         onDeleteButtonClick = {},
@@ -47,11 +49,13 @@ fun MapSearchRoute(
 }
 
 @Composable
-private fun (() -> Unit).MapSearchScreen(
+private fun MapSearchScreen(
     searchKeyword: String,
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
+    initResult: () -> Unit,
     onSearchKeywordChanged: (String) -> Unit,
+    onSearchButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onDeleteButtonClick: () -> Unit,
     onResultItemClick: (Int, String, String, String, String) -> Unit,
@@ -60,8 +64,11 @@ private fun (() -> Unit).MapSearchScreen(
     Column {
         MapSearchTopAppBar(
             value = searchKeyword,
-            onValueChanged = onSearchKeywordChanged,
-            onSearchAction = this@MapSearchScreen,
+            onValueChanged = {
+                onSearchKeywordChanged(it)
+                initResult()
+            },
+            onSearchAction = onSearchButtonClick,
             onBackButtonClick = onBackButtonClick
         )
 

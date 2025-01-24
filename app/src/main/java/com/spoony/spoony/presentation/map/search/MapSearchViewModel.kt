@@ -66,4 +66,12 @@ class MapSearchViewModel @Inject constructor(
             )
         }
     }
+
+    fun initLocationModelList() {
+        _state.update {
+            it.copy(
+                locationModelList = UiState.Loading
+            )
+        }
+    }
 }

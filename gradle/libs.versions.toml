@@ -117,7 +117,6 @@ naver-map-location = { module = "io.github.fornewid:naver-map-location", version
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
-transportation-consumer = { group = "com.google.android.libraries.mapsplatform.transportation", name = "transportation-consumer", version.ref = "transportationConsumer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
