@@ -9,8 +9,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,31 +21,36 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.presentation.map.model.LocationModel
 import com.spoony.spoony.presentation.map.search.component.MapSearchEmptyResultScreen
 import com.spoony.spoony.presentation.map.search.component.MapSearchRecentEmptyScreen
 import com.spoony.spoony.presentation.map.search.component.MapSearchRecentItem
 import com.spoony.spoony.presentation.map.search.component.MapSearchResultItem
 import com.spoony.spoony.presentation.map.search.component.MapSearchTopAppBar
-import com.spoony.spoony.presentation.map.search.model.LocationModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun MapSearchRoute(
     navigateUp: () -> Unit,
-    viewModel: MapSearchViewModel = hiltViewModel()
+    navigateToLocationMap: (Int, String, String, String, String) -> Unit,
+    viewModel: MapSearchViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.searchKeyword.isEmpty()) {
+        viewModel.getAllSearches()
+    }
 
     MapSearchScreen(
         searchKeyword = state.searchKeyword,
         recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
-        onSearchKeywordChanged = viewModel::updateSearchKeyword,
         onSearchButtonClick = viewModel::searchLocation,
-        onDeleteButtonClick = {},
-        onResultItemClick = {},
+        onSearchKeywordChanged = viewModel::updateSearchKeyword,
         onBackButtonClick = navigateUp,
-        onDeleteAllButtonClick = viewModel::initRecentSearch
+        onDeleteButtonClick = viewModel::deleteSearchByText,
+        onResultItemClick = navigateToLocationMap,
+        onDeleteAllButtonClick = viewModel::deleteAllSearches
     )
 }
 
@@ -52,18 +60,25 @@ private fun MapSearchScreen(
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
     onSearchKeywordChanged: (String) -> Unit,
-    onBackButtonClick: () -> Unit,
     onSearchButtonClick: () -> Unit,
-    onDeleteButtonClick: () -> Unit,
-    onResultItemClick: (Int) -> Unit,
-    onDeleteAllButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    onDeleteButtonClick: (String) -> Unit,
+    onResultItemClick: (Int, String, String, String, String) -> Unit,
+    onDeleteAllButtonClick: () -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Column {
         MapSearchTopAppBar(
             value = searchKeyword,
             onValueChanged = onSearchKeywordChanged,
             onSearchAction = onSearchButtonClick,
-            onBackButtonClick = onBackButtonClick
+            onBackButtonClick = onBackButtonClick,
+            focusRequester = focusRequester
         )
 
         when {
@@ -104,11 +119,12 @@ private fun MapSearchScreen(
                     ) {
                         items(
                             items = recentSearchList,
-                            key = { it }
                         ) { searchKeyword ->
                             MapSearchRecentItem(
                                 searchText = searchKeyword,
-                                onClick = onDeleteButtonClick
+                                onClick = {
+                                    onDeleteButtonClick(searchKeyword)
+                                }
                             )
                         }
                     }
@@ -125,17 +141,22 @@ private fun MapSearchScreen(
                                 .background(SpoonyAndroidTheme.colors.gray0)
                         ) {
                             items(
-                                items = locationModelList.data,
-                                key = { locationInfo ->
-                                    locationInfo.locationId
-                                }
+                                items = locationModelList.data
                             ) { locationInfo ->
                                 MapSearchResultItem(
-                                    placeName = locationInfo.locationName,
-                                    address = locationInfo.locationAddress,
+                                    placeName = locationInfo.placeName ?: "",
+                                    address = locationInfo.locationAddress ?: "",
                                     modifier = Modifier
                                         .background(SpoonyAndroidTheme.colors.white)
-                                        .noRippleClickable { onResultItemClick(locationInfo.locationId) }
+                                        .noRippleClickable {
+                                            onResultItemClick(
+                                                locationInfo.placeId ?: 0,
+                                                locationInfo.placeName ?: "",
+                                                locationInfo.scale.toString(),
+                                                locationInfo.latitude.toString(),
+                                                locationInfo.longitude.toString()
+                                            )
+                                        }
                                 )
                             }
                         }

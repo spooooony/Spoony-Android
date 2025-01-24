@@ -112,7 +112,6 @@ private fun ExploreScreen(
 
     if (isLocationBottomSheetVisible) {
         ExploreLocationBottomSheet(
-            selectedCity = selectedCity,
             onDismiss = { isLocationBottomSheetVisible = false },
             onClick = onLocationSortingButtonClick
         )

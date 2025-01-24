@@ -129,7 +129,7 @@ fun MapPlaceDetailCard(
                         color = SpoonyAndroidTheme.colors.gray900
                     )
                     Text(
-                        text = "$placeSpoon 수저",
+                        text = "서울시 $placeSpoon 수저",
                         style = SpoonyAndroidTheme.typography.caption1m,
                         color = SpoonyAndroidTheme.colors.gray600,
                         modifier = Modifier

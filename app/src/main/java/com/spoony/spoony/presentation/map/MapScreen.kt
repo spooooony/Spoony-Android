@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -46,6 +48,7 @@ import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
@@ -54,7 +57,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.tag.LogoTag
-import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
+import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.designsystem.type.TagSize
@@ -72,17 +75,24 @@ import com.spoony.spoony.presentation.map.model.LocationModel
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun MapRoute(
     paddingValues: PaddingValues,
-    viewModel: MapViewModel = hiltViewModel(),
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
-    navigateUp: () -> Unit
+    navigateToExplore: () -> Unit,
+    navigateUp: () -> Unit,
+    viewModel: MapViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getAddedPlaceList()
+        viewModel.getSpoonCount()
+    }
 
     val userName = when (state.userName) {
         is UiState.Success -> {
@@ -102,6 +112,12 @@ fun MapRoute(
         )
     }
 
+    LaunchedEffect(state.locationModel.placeId) {
+        if (state.locationModel.placeId != null) {
+            viewModel.getAddedPlaceListByLocation(locationId = state.locationModel.placeId ?: 0)
+        }
+    }
+
     when (state.addedPlaceList) {
         is UiState.Success -> {
             MapScreen(
@@ -113,10 +129,11 @@ fun MapRoute(
                 placeList = (state.addedPlaceList as UiState.Success<ImmutableList<AddedPlaceEntity>>).data,
                 placeCardList = state.placeCardInfo,
                 locationInfo = state.locationModel,
+                onExploreButtonClick = navigateToExplore,
                 onPlaceItemClick = viewModel::getPlaceInfo,
                 onPlaceCardClick = navigateToPlaceDetail,
                 navigateToMapSearch = navigateToMapSearch,
-                onBackButtonClick = navigateUp
+                onBackButtonClick = viewModel::resetSelectedPlace
             )
         }
 
@@ -135,13 +152,14 @@ fun MapScreen(
     locationInfo: LocationModel,
     placeList: ImmutableList<AddedPlaceEntity>,
     placeCardList: UiState<ImmutableList<AddedMapPostEntity>>,
+    onExploreButtonClick: () -> Unit,
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
     onBackButtonClick: () -> Unit
 ) {
     val sheetState = rememberBottomSheetState(
-        initialValue = AdvancedSheetState.PartiallyExpanded,
+        initialValue = if(placeList.isNotEmpty()) AdvancedSheetState.Collapsed else AdvancedSheetState.PartiallyExpanded,
         defineValues = {
             AdvancedSheetState.Collapsed at height(20)
             AdvancedSheetState.PartiallyExpanded at height(50)
@@ -150,6 +168,7 @@ fun MapScreen(
         confirmValueChange = { true }
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
+    val lazyListState = rememberLazyListState()
 
     var isSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -160,6 +179,9 @@ fun MapScreen(
     ) {
         NaverMap(
             cameraPositionState = cameraPositionState,
+            uiSettings = MapUiSettings(
+                isZoomControlEnabled = false
+            ),
             onMapClick = { _, _ ->
                 if (isSelected) {
                     selectedMarkerId = -1
@@ -243,9 +265,9 @@ fun MapScreen(
                 }
             }
         } else {
-            TitleTopAppBar(
+            CloseTopAppBar(
                 title = locationInfo.placeName ?: "",
-                onBackButtonClick = onBackButtonClick
+                onCloseButtonClick = onBackButtonClick
             )
         }
 
@@ -307,13 +329,14 @@ fun MapScreen(
                 sheetContent = {
                     if (placeList.isEmpty()) {
                         MapEmptyBottomSheetContent(
-                            onClick = {},
+                            onClick = onExploreButtonClick,
                             modifier = Modifier
                                 .padding(bottom = paddingValues.calculateBottomPadding())
                         )
                     } else {
                         LazyColumn(
                             contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
+                            state = lazyListState,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = paddingValues.calculateBottomPadding())

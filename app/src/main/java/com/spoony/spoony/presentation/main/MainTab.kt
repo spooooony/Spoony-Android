@@ -19,7 +19,7 @@ enum class MainTab(
         selectedIconResource = R.drawable.ic_map_main400_24,
         unselectedIconResource = R.drawable.ic_map_gray400_24,
         label = "내 지도",
-        route = Map
+        route = Map()
     ),
     EXPLORE(
         selectedIconResource = R.drawable.ic_explore_main400_24,

@@ -100,6 +100,7 @@ fun MainScreen(
                         )
                     },
                     navigateToMapSearch = navigator::navigateToMapSearch,
+                    navigateToExplore = navigator::navigateToExplore,
                     navigateUp = navigator::navigateUp
                 )
 
@@ -132,7 +133,16 @@ fun MainScreen(
 
                 mapSearchNavGraph(
                     paddingValues = paddingValues,
-                    navigateUp = navigator::navigateUp
+                    navigateUp = navigator::navigateUp,
+                    navigateToLocationMap = { locationId, locationName, scale, latitude, longitude ->
+                        navigator.navigateToLocationMap(
+                            locationId = locationId,
+                            locationName = locationName,
+                            scale = scale,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    }
                 )
             }
         }

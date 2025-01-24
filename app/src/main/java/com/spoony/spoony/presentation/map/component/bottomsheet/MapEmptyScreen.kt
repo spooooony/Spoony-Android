@@ -29,7 +29,7 @@ fun MapEmptyBottomSheetContent(
             .fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
+            painter = painterResource(R.drawable.img_empty_home),
             contentDescription = null
         )
         Text(

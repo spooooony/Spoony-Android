@@ -86,7 +86,7 @@ fun ExploreItem(
             )
 
             Text(
-                text = "$placeSpoon 수저",
+                text = "서울시 $placeSpoon 수저",
                 style = SpoonyAndroidTheme.typography.caption2m,
                 color = SpoonyAndroidTheme.colors.gray500
             )

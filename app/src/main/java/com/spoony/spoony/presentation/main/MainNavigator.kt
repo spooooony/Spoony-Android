@@ -26,7 +26,7 @@ class MainNavigator(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Map
+    val startDestination = Map()
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
@@ -46,7 +46,7 @@ class MainNavigator(
         }
 
         when (tab) {
-            MainTab.MAP -> navController.navigateToMap(navOptions)
+            MainTab.MAP -> navController.navigateToMap(navOptions = navOptions)
             MainTab.REGISTER -> navController.navigateToRegister(navOptions)
             MainTab.EXPLORE -> navController.navigateToExplore(navOptions)
         }
@@ -99,6 +99,24 @@ class MainNavigator(
         navOptions: NavOptions? = null
     ) {
         navController.navigateToPlaceDetail(postId = postId)
+    }
+
+    fun navigateToLocationMap(
+        navOptions: NavOptions? = null,
+        locationId: Int? = null,
+        locationName: String? = null,
+        scale: String? = null,
+        latitude: String? = null,
+        longitude: String? = null,
+    ) {
+        navController.navigateToMap(
+            locationId = locationId,
+            locationName = locationName,
+            scale = scale,
+            latitude = latitude,
+            longitude = longitude,
+            navOptions = navOptions
+        )
     }
 
     fun navigateUp() {
