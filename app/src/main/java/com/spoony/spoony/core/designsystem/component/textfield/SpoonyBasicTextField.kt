@@ -102,7 +102,7 @@ fun SpoonyBasicTextField(
     )
 }
 
-private object SpoonyValidator {
+object SpoonyValidator {
     private val emojiPatternString = "[\\uD83C-\\uDBFF\\uDC00-\\uDFFF]"
     private val emojiPattern = Regex(emojiPatternString)
 

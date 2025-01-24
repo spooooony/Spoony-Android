@@ -66,7 +66,7 @@ fun SpoonyIconButtonTextField(
             },
             onFocusChanged = { isFocused = it },
             trailingIcon = {
-                if (showDeleteIcon && value.isNotEmpty()) {
+                if (showDeleteIcon) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_minus_gray400_24),
                         contentDescription = null,

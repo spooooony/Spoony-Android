@@ -3,6 +3,8 @@ package com.spoony.spoony.presentation.explore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.USER_ID
+import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
@@ -16,7 +18,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val exploreRepository: ExploreRepository
+    private val exploreRepository: ExploreRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreState> = MutableStateFlow(ExploreState())
     val state: StateFlow<ExploreState>
@@ -40,6 +43,19 @@ class ExploreViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             categoryList = UiState.Failure("카테고리 목록 조회 실패")
+                        )
+                    }
+                }
+        }
+    }
+
+    fun getSpoonAccount() {
+        viewModelScope.launch {
+            authRepository.getSpoonCount(userId = USER_ID)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            spoonCount = UiState.Success(response)
                         )
                     }
                 }

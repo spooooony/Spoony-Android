@@ -15,11 +15,12 @@ import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
+import com.spoony.spoony.presentation.register.navigation.Register
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
 class MainNavigator(
-    val navController: NavHostController,
+    val navController: NavHostController
 ) {
     private val currentDestination: NavDestination?
         @Composable get() = navController
@@ -58,19 +59,29 @@ class MainNavigator(
 
     fun navigateToReport(
         postId: Int,
-        navOptions: NavOptions? = null,
+        navOptions: NavOptions? = null
     ) {
         navController.navigateToReport(postId = postId)
     }
 
     fun navigateToExplore(
-        navOptions: NavOptions? = navOptions {
-            popUpTo(Explore) {
-                inclusive = false
+        fromRegister: Boolean = false,
+        navOptions: NavOptions? = if (fromRegister) {
+            navOptions {
+                popUpTo(Register) {
+                    inclusive = true
+                }
+                launchSingleTop = true
             }
-            restoreState = true
-            launchSingleTop = true
-        },
+        } else {
+            navOptions {
+                popUpTo(Explore) {
+                    inclusive = false
+                }
+                restoreState = true
+                launchSingleTop = true
+            }
+        }
     ) {
         navController.navigateToExplore(navOptions)
     }
@@ -85,7 +96,7 @@ class MainNavigator(
 
     fun navigateToPlaceDetail(
         postId: Int,
-        navOptions: NavOptions? = null,
+        navOptions: NavOptions? = null
     ) {
         navController.navigateToPlaceDetail(postId = postId)
     }
@@ -119,7 +130,7 @@ class MainNavigator(
 
 @Composable
 fun rememberMainNavigator(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberNavController()
 ): MainNavigator = remember(navController) {
     MainNavigator(navController)
 }
