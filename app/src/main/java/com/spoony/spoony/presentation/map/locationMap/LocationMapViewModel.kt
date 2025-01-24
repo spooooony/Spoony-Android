@@ -1,13 +1,15 @@
-package com.spoony.spoony.presentation.map
+package com.spoony.spoony.presentation.map.locationMap
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
+import com.spoony.spoony.presentation.map.locationMap.navigation.LocationMap
 import com.spoony.spoony.presentation.map.model.LocationModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -20,20 +22,33 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltViewModel
-class MapViewModel @Inject constructor(
+class LocationMapViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
     private val authRepository: AuthRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private var _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
-    val state: StateFlow<MapState>
+    private var _state: MutableStateFlow<LocationMapState> = MutableStateFlow(LocationMapState())
+    val state: StateFlow<LocationMapState>
         get() = _state.asStateFlow()
 
     init {
         getUserInfo()
-        getSpoonCount()
 
-        getAddedPlaceList()
+        with(savedStateHandle.toRoute<LocationMap>()) {
+            getAddedPlaceListByLocation(locationId = locationId ?: 0)
+            _state.update {
+                it.copy(
+                    locationModel = LocationModel(
+                        placeName = locationName,
+                        placeId = locationId,
+                        scale = scale?.toDouble() ?: 0.00,
+                        latitude = latitude?.toDouble() ?: 0.00,
+                        longitude = longitude?.toDouble() ?: 0.00
+                    )
+                )
+            }
+        }
     }
 
     fun getPlaceInfo(placeId: Int) {
@@ -49,33 +64,6 @@ class MapViewModel @Inject constructor(
                     }
                 }
                 .onFailure(Timber::e)
-        }
-    }
-
-    private fun getAddedPlaceList() {
-        viewModelScope.launch {
-            mapRepository.getAddedPlaceList(USER_ID)
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            placeCount = response.count,
-                            addedPlaceList = if (response.count == 0) {
-                                UiState.Empty
-                            } else {
-                                UiState.Success(
-                                    response.placeList.toImmutableList()
-                                )
-                            }
-                        )
-                    }
-                }
-                .onFailure {
-                    _state.update {
-                        it.copy(
-                            addedPlaceList = UiState.Failure("지도 장소 리스트 조회 실패")
-                        )
-                    }
-                }
         }
     }
 
@@ -111,27 +99,6 @@ class MapViewModel @Inject constructor(
                         )
                     }
                 }
-        }
-    }
-
-    private fun getSpoonCount() {
-        viewModelScope.launch {
-            authRepository.getSpoonCount(USER_ID)
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            spoonCount = response
-                        )
-                    }
-                }
-        }
-    }
-
-    fun updateLocationModel(locationModel: LocationModel) {
-        _state.update {
-            it.copy(
-                locationModel = locationModel
-            )
         }
     }
 }

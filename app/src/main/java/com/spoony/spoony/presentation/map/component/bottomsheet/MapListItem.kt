@@ -53,7 +53,11 @@ fun MapListItem(
                 Text(
                     text = placeName,
                     style = typography.body1b,
-                    color = color.black
+                    color = color.black,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .weight(1f)
                 )
                 IconTag(
                     text = categoryName,

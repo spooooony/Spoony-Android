@@ -21,6 +21,7 @@ import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
+import com.spoony.spoony.presentation.map.locationMap.navigation.locationMapNavGraph
 import com.spoony.spoony.presentation.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.map.search.navigation.mapSearchNavGraph
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
@@ -100,6 +101,7 @@ fun MainScreen(
                         )
                     },
                     navigateToMapSearch = navigator::navigateToMapSearch,
+                    navigateToExplore = navigator::navigateToExplore,
                     navigateUp = navigator::navigateUp
                 )
 
@@ -132,6 +134,22 @@ fun MainScreen(
 
                 mapSearchNavGraph(
                     paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
+                    navigateToLocationMap = { locationId, locationName, scale, latitude, longitude ->
+                        navigator.navigateToLocationMap(
+                            locationId = locationId,
+                            locationName = locationName,
+                            scale = scale,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    }
+                )
+
+                locationMapNavGraph(
+                    paddingValues = paddingValues,
+                    navigateToPlaceDetail = navigator::navigateToPlaceDetail,
+                    navigateToExplore = navigator::navigateToExplore,
                     navigateUp = navigator::navigateUp
                 )
             }

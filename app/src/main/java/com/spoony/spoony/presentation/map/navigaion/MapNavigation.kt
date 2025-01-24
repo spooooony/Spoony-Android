@@ -19,6 +19,7 @@ fun NavGraphBuilder.mapNavGraph(
     paddingValues: PaddingValues,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
+    navigateToExplore: () -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<Map> {
@@ -26,6 +27,7 @@ fun NavGraphBuilder.mapNavGraph(
             paddingValues = paddingValues,
             navigateToPlaceDetail = navigateToPlaceDetail,
             navigateToMapSearch = navigateToMapSearch,
+            navigateToExplore = navigateToExplore,
             navigateUp = navigateUp
         )
     }

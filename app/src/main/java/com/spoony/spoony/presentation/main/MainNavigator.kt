@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.explore.navigation.Explore
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
+import com.spoony.spoony.presentation.map.locationMap.navigation.navigateToLocationMap
 import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
@@ -88,6 +89,23 @@ class MainNavigator(
         navOptions: NavOptions? = null
     ) {
         navController.navigateToPlaceDetail(postId = postId)
+    }
+
+    fun navigateToLocationMap(
+        navOptions: NavOptions? = null,
+        locationId: Int? = null,
+        locationName: String? = null,
+        scale: String? = null,
+        latitude: String? = null,
+        longitude: String? = null
+    ) {
+        navController.navigateToLocationMap(
+            locationId = locationId,
+            locationName = locationName,
+            scale = scale,
+            latitude = latitude,
+            longitude = longitude
+        )
     }
 
     fun navigateUp() {

@@ -18,51 +18,50 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.presentation.map.model.LocationModel
 import com.spoony.spoony.presentation.map.search.component.MapSearchEmptyResultScreen
 import com.spoony.spoony.presentation.map.search.component.MapSearchRecentEmptyScreen
 import com.spoony.spoony.presentation.map.search.component.MapSearchRecentItem
 import com.spoony.spoony.presentation.map.search.component.MapSearchResultItem
 import com.spoony.spoony.presentation.map.search.component.MapSearchTopAppBar
-import com.spoony.spoony.presentation.map.search.model.LocationModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun MapSearchRoute(
     navigateUp: () -> Unit,
+    navigateToLocationMap: (Int, String, String, String, String) -> Unit,
     viewModel: MapSearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    MapSearchScreen(
+    viewModel::searchLocation.MapSearchScreen(
         searchKeyword = state.searchKeyword,
         recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
         onSearchKeywordChanged = viewModel::updateSearchKeyword,
-        onSearchButtonClick = viewModel::searchLocation,
-        onDeleteButtonClick = {},
-        onResultItemClick = {},
         onBackButtonClick = navigateUp,
+        onDeleteButtonClick = {},
+        onResultItemClick = navigateToLocationMap,
         onDeleteAllButtonClick = viewModel::initRecentSearch
     )
 }
 
 @Composable
-private fun MapSearchScreen(
+private fun (() -> Unit).MapSearchScreen(
     searchKeyword: String,
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
     onSearchKeywordChanged: (String) -> Unit,
     onBackButtonClick: () -> Unit,
-    onSearchButtonClick: () -> Unit,
     onDeleteButtonClick: () -> Unit,
-    onResultItemClick: (Int) -> Unit,
+    onResultItemClick: (Int, String, String, String, String) -> Unit,
     onDeleteAllButtonClick: () -> Unit
 ) {
     Column {
         MapSearchTopAppBar(
             value = searchKeyword,
             onValueChanged = onSearchKeywordChanged,
-            onSearchAction = onSearchButtonClick,
+            onSearchAction = this@MapSearchScreen,
             onBackButtonClick = onBackButtonClick
         )
 
@@ -125,17 +124,22 @@ private fun MapSearchScreen(
                                 .background(SpoonyAndroidTheme.colors.gray0)
                         ) {
                             items(
-                                items = locationModelList.data,
-                                key = { locationInfo ->
-                                    locationInfo.locationId
-                                }
+                                items = locationModelList.data
                             ) { locationInfo ->
                                 MapSearchResultItem(
-                                    placeName = locationInfo.locationName,
-                                    address = locationInfo.locationAddress,
+                                    placeName = locationInfo.placeName ?: "",
+                                    address = locationInfo.locationAddress ?: "",
                                     modifier = Modifier
                                         .background(SpoonyAndroidTheme.colors.white)
-                                        .noRippleClickable { onResultItemClick(locationInfo.locationId) }
+                                        .noRippleClickable {
+                                            onResultItemClick(
+                                                locationInfo.placeId ?: 0,
+                                                locationInfo.placeName ?: "",
+                                                locationInfo.scale.toString(),
+                                                locationInfo.latitude.toString(),
+                                                locationInfo.longitude.toString()
+                                            )
+                                        }
                                 )
                             }
                         }
