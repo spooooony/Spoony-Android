@@ -78,7 +78,7 @@ fun Modifier.spoonyGradient(
     }
 }
 
-fun Modifier.positionAwareImePadding() = composed {
+fun Modifier.advancedImePadding() = composed {
     var consumePadding by remember { mutableStateOf(0) }
     onGloballyPositioned { coordinates ->
         val rootCoordinate = coordinates.findRootCoordinates()

@@ -33,7 +33,7 @@ import com.spoony.spoony.core.designsystem.component.textfield.SpoonyIconButtonT
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonySearchTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
-import com.spoony.spoony.core.util.extension.positionAwareImePadding
+import com.spoony.spoony.core.util.extension.advancedImePadding
 import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_MENU_COUNT
 import com.spoony.spoony.presentation.register.component.AddMenuButton
 import com.spoony.spoony.presentation.register.component.CustomDropDownMenu
@@ -70,7 +70,7 @@ fun RegisterStepOneScreen(
         modifier = modifier
             .fillMaxSize()
             .addFocusCleaner(focusManager)
-            .positionAwareImePadding()
+            .advancedImePadding()
             .verticalScroll(rememberScrollState())
             .padding(top = 22.dp, bottom = 17.dp)
     ) {
