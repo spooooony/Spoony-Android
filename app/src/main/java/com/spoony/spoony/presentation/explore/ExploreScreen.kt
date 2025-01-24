@@ -61,6 +61,10 @@ fun ExploreRoute(
         else -> 0
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.getSpoonAccount()
+    }
+
     val categoryList = when (state.categoryList) {
         is UiState.Success -> (state.categoryList as? UiState.Success<ImmutableList<CategoryEntity>>)?.data ?: persistentListOf()
         else -> persistentListOf()
