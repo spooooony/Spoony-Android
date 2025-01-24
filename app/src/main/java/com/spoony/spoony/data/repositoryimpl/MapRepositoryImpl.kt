@@ -51,6 +51,6 @@ class MapRepositoryImpl @Inject constructor(
 
     override suspend fun addSearch(searchText: String) =
         runCatching {
-            searchDao.addSearchWithLimit(SearchEntity(text = searchText))
+            searchDao.addSearchWithLimit(searchText)
         }
 }

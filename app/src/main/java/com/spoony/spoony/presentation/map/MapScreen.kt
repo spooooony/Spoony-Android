@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.map
 
-import android.view.Gravity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
@@ -76,6 +75,7 @@ import com.spoony.spoony.presentation.map.model.LocationModel
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -133,7 +133,7 @@ fun MapRoute(
                 onPlaceItemClick = viewModel::getPlaceInfo,
                 onPlaceCardClick = navigateToPlaceDetail,
                 navigateToMapSearch = navigateToMapSearch,
-                onBackButtonClick = navigateUp
+                onBackButtonClick = viewModel::resetSelectedPlace
             )
         }
 
@@ -159,7 +159,7 @@ fun MapScreen(
     onBackButtonClick: () -> Unit
 ) {
     val sheetState = rememberBottomSheetState(
-        initialValue = AdvancedSheetState.Collapsed,
+        initialValue = if(placeList.isNotEmpty()) AdvancedSheetState.Collapsed else AdvancedSheetState.PartiallyExpanded,
         defineValues = {
             AdvancedSheetState.Collapsed at height(20)
             AdvancedSheetState.PartiallyExpanded at height(50)

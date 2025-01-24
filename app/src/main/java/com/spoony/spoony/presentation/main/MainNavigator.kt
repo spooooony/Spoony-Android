@@ -11,7 +11,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.explore.navigation.Explore
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
-import com.spoony.spoony.presentation.map.locationMap.navigation.navigateToLocationMap
 import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
@@ -20,13 +19,13 @@ import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
 class MainNavigator(
-    val navController: NavHostController
+    val navController: NavHostController,
 ) {
     private val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Map
+    val startDestination = Map()
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
@@ -46,7 +45,7 @@ class MainNavigator(
         }
 
         when (tab) {
-            MainTab.MAP -> navController.navigateToMap(navOptions)
+            MainTab.MAP -> navController.navigateToMap(navOptions = navOptions)
             MainTab.REGISTER -> navController.navigateToRegister(navOptions)
             MainTab.EXPLORE -> navController.navigateToExplore(navOptions)
         }
@@ -59,7 +58,7 @@ class MainNavigator(
 
     fun navigateToReport(
         postId: Int,
-        navOptions: NavOptions? = null
+        navOptions: NavOptions? = null,
     ) {
         navController.navigateToReport(postId = postId)
     }
@@ -71,7 +70,7 @@ class MainNavigator(
             }
             restoreState = true
             launchSingleTop = true
-        }
+        },
     ) {
         navController.navigateToExplore(navOptions)
     }
@@ -86,7 +85,7 @@ class MainNavigator(
 
     fun navigateToPlaceDetail(
         postId: Int,
-        navOptions: NavOptions? = null
+        navOptions: NavOptions? = null,
     ) {
         navController.navigateToPlaceDetail(postId = postId)
     }
@@ -97,14 +96,15 @@ class MainNavigator(
         locationName: String? = null,
         scale: String? = null,
         latitude: String? = null,
-        longitude: String? = null
+        longitude: String? = null,
     ) {
-        navController.navigateToLocationMap(
+        navController.navigateToMap(
             locationId = locationId,
             locationName = locationName,
             scale = scale,
             latitude = latitude,
-            longitude = longitude
+            longitude = longitude,
+            navOptions = navOptions
         )
     }
 
@@ -119,7 +119,7 @@ class MainNavigator(
 
 @Composable
 fun rememberMainNavigator(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ): MainNavigator = remember(navController) {
     MainNavigator(navController)
 }
