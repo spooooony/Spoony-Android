@@ -24,7 +24,6 @@ class ExploreViewModel @Inject constructor(
 
     init {
         getCategoryList()
-        getFeedList()
     }
 
     private fun getCategoryList() {

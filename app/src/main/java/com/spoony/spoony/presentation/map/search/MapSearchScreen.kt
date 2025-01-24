@@ -9,8 +9,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,21 +33,24 @@ import kotlinx.collections.immutable.ImmutableList
 fun MapSearchRoute(
     navigateUp: () -> Unit,
     navigateToLocationMap: (Int, String, String, String, String) -> Unit,
-    viewModel: MapSearchViewModel = hiltViewModel()
+    viewModel: MapSearchViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.searchKeyword.isEmpty()) {
+        viewModel.getAllSearches()
+    }
 
     MapSearchScreen(
         searchKeyword = state.searchKeyword,
         recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
         onSearchButtonClick = viewModel::searchLocation,
-        initResult = viewModel::initRecentSearch,
         onSearchKeywordChanged = viewModel::updateSearchKeyword,
         onBackButtonClick = navigateUp,
-        onDeleteButtonClick = {},
+        onDeleteButtonClick = viewModel::deleteSearchByText,
         onResultItemClick = navigateToLocationMap,
-        onDeleteAllButtonClick = viewModel::initRecentSearch
+        onDeleteAllButtonClick = viewModel::deleteAllSearches
     )
 }
 
@@ -53,23 +59,26 @@ private fun MapSearchScreen(
     searchKeyword: String,
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
-    initResult: () -> Unit,
     onSearchKeywordChanged: (String) -> Unit,
     onSearchButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
-    onDeleteButtonClick: () -> Unit,
+    onDeleteButtonClick: (String) -> Unit,
     onResultItemClick: (Int, String, String, String, String) -> Unit,
-    onDeleteAllButtonClick: () -> Unit
+    onDeleteAllButtonClick: () -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Column {
         MapSearchTopAppBar(
             value = searchKeyword,
-            onValueChanged = {
-                onSearchKeywordChanged(it)
-                initResult()
-            },
+            onValueChanged = onSearchKeywordChanged,
             onSearchAction = onSearchButtonClick,
-            onBackButtonClick = onBackButtonClick
+            onBackButtonClick = onBackButtonClick,
+            focusRequester = focusRequester
         )
 
         when {
@@ -110,11 +119,12 @@ private fun MapSearchScreen(
                     ) {
                         items(
                             items = recentSearchList,
-                            key = { it }
                         ) { searchKeyword ->
                             MapSearchRecentItem(
                                 searchText = searchKeyword,
-                                onClick = onDeleteButtonClick
+                                onClick = {
+                                    onDeleteButtonClick(searchKeyword)
+                                }
                             )
                         }
                     }

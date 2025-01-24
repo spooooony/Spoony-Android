@@ -56,6 +56,9 @@ ksp = "2.0.0-1.0.24"
 appcompat = "1.7.0"
 playServicesMaps = "19.0.0"
 
+## Room
+room = "2.6.1"
+
 [libraries]
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -118,6 +121,11 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
+## Room
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -175,3 +183,5 @@ naverMap = [
     "naver-map-location",
     "play-services-location"
 ]
+
+room = ["room-ktx", "room-runtime"]

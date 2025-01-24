@@ -23,7 +23,7 @@ import timber.log.Timber
 class MapViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
-    private val authRepository: AuthRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
     val state: StateFlow<MapState>
@@ -31,9 +31,6 @@ class MapViewModel @Inject constructor(
 
     init {
         getUserInfo()
-        getSpoonCount()
-
-        getAddedPlaceList()
     }
 
     fun getPlaceInfo(placeId: Int) {
@@ -52,7 +49,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    private fun getAddedPlaceList() {
+    fun getAddedPlaceList() {
         viewModelScope.launch {
             mapRepository.getAddedPlaceList(USER_ID)
                 .onSuccess { response ->
@@ -114,7 +111,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    private fun getSpoonCount() {
+    fun getSpoonCount() {
         viewModelScope.launch {
             authRepository.getSpoonCount(USER_ID)
                 .onSuccess { response ->
@@ -131,6 +128,16 @@ class MapViewModel @Inject constructor(
         _state.update {
             it.copy(
                 locationModel = locationModel
+            )
+        }
+    }
+
+    fun resetSelectedPlace() {
+        _state.update {
+            it.copy(
+                locationModel = it.locationModel.copy(
+                    placeId = null
+                )
             )
         }
     }
