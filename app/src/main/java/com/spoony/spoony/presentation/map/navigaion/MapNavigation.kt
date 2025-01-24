@@ -10,9 +10,22 @@ import com.spoony.spoony.presentation.map.MapRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToMap(
+    locationId: Int? = null,
+    locationName: String? = null,
+    scale: String? = null,
+    latitude: String? = null,
+    longitude: String? = null,
     navOptions: NavOptions? = null
 ) {
-    navigate(Map, navOptions)
+    navigate(
+        Map(
+            locationId = locationId,
+            locationName = locationName,
+            scale = scale,
+            latitude = latitude,
+            longitude = longitude
+        ), navOptions
+    )
 }
 
 fun NavGraphBuilder.mapNavGraph(
@@ -34,4 +47,10 @@ fun NavGraphBuilder.mapNavGraph(
 }
 
 @Serializable
-data object Map : MainTabRoute
+data class Map(
+    val locationId: Int? = null,
+    val locationName: String? = null,
+    val scale: String? = null,
+    val latitude: String? = null,
+    val longitude: String? = null
+) : MainTabRoute

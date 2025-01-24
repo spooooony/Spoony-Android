@@ -2,6 +2,7 @@ package com.spoony.spoony.core.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.spoony.spoony.core.database.entity.SearchEntity
@@ -26,14 +27,14 @@ interface SearchDao {
 
     // 검색어 추가 시, 최근 6개만 유지하도록 처리
     @Transaction
-    suspend fun addSearchWithLimit(searchEntity: SearchEntity) {
-        // 검색어 추가
-        insertSearch(searchEntity)
+    suspend fun addSearchWithLimit(searchText: String) {
+        // 새 검색어 삽입
+        insertSearch(SearchEntity(text = searchText))
 
-        // 총 검색어 수가 6개를 초과하면 오래된 검색어 삭제
-        val allSearches = getAllSearches() // 모든 검색어 가져오기
+        // 6개 초과 검색어 삭제
+        val allSearches = getAllSearches()
         if (allSearches.size > 6) {
-            val excessSearches = allSearches.drop(6) // 초과된 검색어
+            val excessSearches = allSearches.drop(6)
             excessSearches.forEach { deleteSearchById(it.id) }
         }
     }
