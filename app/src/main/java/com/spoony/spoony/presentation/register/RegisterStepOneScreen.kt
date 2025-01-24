@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +33,7 @@ import com.spoony.spoony.core.designsystem.component.textfield.SpoonyIconButtonT
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonySearchTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
+import com.spoony.spoony.core.util.extension.advancedImePadding
 import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_MENU_COUNT
 import com.spoony.spoony.presentation.register.component.AddMenuButton
 import com.spoony.spoony.presentation.register.component.CustomDropDownMenu
@@ -70,6 +70,7 @@ fun RegisterStepOneScreen(
         modifier = modifier
             .fillMaxSize()
             .addFocusCleaner(focusManager)
+            .advancedImePadding()
             .verticalScroll(rememberScrollState())
             .padding(top = 22.dp, bottom = 17.dp)
     ) {
@@ -112,11 +113,8 @@ fun RegisterStepOneScreen(
             onMenuAdd = viewModel::addMenu
         )
 
-        Spacer(
-            modifier = Modifier
-                .weight(1f)
-                .defaultMinSize(37.dp)
-        )
+        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(20.dp))
 
         NextButton(
             enabled = isNextButtonEnabled,
