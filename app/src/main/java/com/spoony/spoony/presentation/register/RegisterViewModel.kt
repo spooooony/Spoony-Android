@@ -231,6 +231,10 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    fun hideRegisterSnackBar() {
+        _state.update { it.copy(showRegisterSnackBar = false) }
+    }
+
     companion object {
         const val MIN_MENU_COUNT = 1
         const val MAX_MENU_COUNT = 3
