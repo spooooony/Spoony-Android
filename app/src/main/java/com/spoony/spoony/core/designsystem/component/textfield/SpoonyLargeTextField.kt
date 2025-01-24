@@ -137,7 +137,11 @@ private fun CustomBasicTextField(
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         BasicTextField(
             value = value,
-            onValueChange = onValueChanged,
+            onValueChange = { newValue ->
+                if (SpoonyValidator.isNotContainsEmoji(newValue)) {
+                    onValueChanged(newValue)
+                }
+            },
             modifier = modifier
                 .clip(RoundedCornerShape(8.dp))
                 .border(
