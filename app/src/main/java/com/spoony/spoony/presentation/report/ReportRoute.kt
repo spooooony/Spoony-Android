@@ -205,7 +205,7 @@ private fun ReportScreen(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Text(
-                    text = "스푸니는 철저한 광고 제한 정책과 모니터링을 실시하고 있어요. 부적절한 후기 작성자를 발견하면, '수저 뺏기'로 그들의 수저를 빼앗아 주세요!",
+                    text = "스푸니는 철저한 광고 제한 정책과 모니터링을 실시하고 있어요. 부적절한 후기 작성자를 발견하면, 바로 신고해 주세요!",
                     style = SpoonyAndroidTheme.typography.caption1m,
                     color = SpoonyAndroidTheme.colors.gray400
                 )

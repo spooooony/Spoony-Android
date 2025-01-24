@@ -40,12 +40,11 @@ fun SpoonyBasicTextField(
     imeAction: ImeAction = ImeAction.Done,
     onDoneAction: () -> Unit = {},
     onSearchAction: () -> Unit = {},
+    focusRequester: FocusRequester = FocusRequester(),
     singleLine: Boolean = true,
     leadingIcon: @Composable () -> Unit = {},
     trailingIcon: @Composable () -> Unit = {}
 ) {
-    val focusRequester = remember { FocusRequester() }
-
     BasicTextField(
         value = value,
         onValueChange = { newValue ->

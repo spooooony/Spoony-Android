@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -28,6 +29,7 @@ fun SpoonySearchTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     maxLength: Int = Int.MAX_VALUE,
+    focusRequester: FocusRequester = FocusRequester(),
     onSearchAction: () -> Unit
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -74,6 +76,7 @@ fun SpoonySearchTextField(
             }
         },
         imeAction = ImeAction.Search,
+        focusRequester = focusRequester,
         onSearchAction = {
             onSearchAction()
             keyboardController?.hide()

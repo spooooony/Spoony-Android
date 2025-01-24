@@ -75,7 +75,6 @@ val CITY_LIST = persistentListOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreLocationBottomSheet(
-    selectedCity: String,
     onDismiss: () -> Unit,
     onClick: (String) -> Unit
 ) {
@@ -84,7 +83,7 @@ fun ExploreLocationBottomSheet(
         skipPartiallyExpanded = true
     )
 
-    var currentCity by remember { mutableStateOf(selectedCity) }
+    var currentCity by remember { mutableStateOf("") }
     var columnHeight by remember { mutableIntStateOf(0) }
 
     GetColumnHeight(
@@ -144,6 +143,7 @@ fun ExploreLocationBottomSheet(
                     onClick(currentCity)
                     onDismiss()
                 },
+                enabled = currentCity.isNotEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(

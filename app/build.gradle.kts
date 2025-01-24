@@ -92,6 +92,10 @@ dependencies {
 
     // Naver Map
     implementation(libs.bundles.naverMap)
+
+    // Room
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
 }
 
 ktlint {

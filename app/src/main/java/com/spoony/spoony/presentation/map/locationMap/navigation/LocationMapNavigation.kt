@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.Route
-import com.spoony.spoony.presentation.map.LocationMapRoute
+import com.spoony.spoony.presentation.map.locationMap.LocationMapRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToLocationMap(

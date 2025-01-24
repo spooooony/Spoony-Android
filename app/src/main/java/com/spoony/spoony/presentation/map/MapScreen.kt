@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.map
 
+import android.view.Gravity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,6 +49,7 @@ import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
@@ -85,6 +88,11 @@ fun MapRoute(
     viewModel: MapViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getAddedPlaceList()
+        viewModel.getSpoonCount()
+    }
 
     val userName = when (state.userName) {
         is UiState.Success -> {
@@ -160,6 +168,7 @@ fun MapScreen(
         confirmValueChange = { true }
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
+    val lazyListState = rememberLazyListState()
 
     var isSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -170,6 +179,9 @@ fun MapScreen(
     ) {
         NaverMap(
             cameraPositionState = cameraPositionState,
+            uiSettings = MapUiSettings(
+                isZoomControlEnabled = false
+            ),
             onMapClick = { _, _ ->
                 if (isSelected) {
                     selectedMarkerId = -1
@@ -324,6 +336,7 @@ fun MapScreen(
                     } else {
                         LazyColumn(
                             contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
+                            state = lazyListState,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = paddingValues.calculateBottomPadding())
