@@ -60,7 +60,7 @@ fun RegisterTooltip(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_register_tooltip_arrow),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier.offset(y = (-5).dp).padding(end = 8.dp)
+            modifier = Modifier.offset(y = (-5).dp).padding(end = 12.dp)
         )
     }
 }
