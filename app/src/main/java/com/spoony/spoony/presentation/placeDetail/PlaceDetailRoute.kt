@@ -239,17 +239,18 @@ private fun PlaceDetailScreen(
                 location = "서울시 $userRegion 수저",
                 modifier = Modifier.weight(1f)
             )
-
-            IconDropdownMenu(
-                menuItems = dropdownMenuList,
-                onMenuItemClick = { menu ->
-                    when (menu) {
-                        DropdownOption.REPORT.name -> {
-                            onReportButtonClick()
+            if (dropdownMenuList.isNotEmpty()) {
+                IconDropdownMenu(
+                    menuItems = dropdownMenuList,
+                    onMenuItemClick = { menu ->
+                        when (menu) {
+                            DropdownOption.REPORT.name -> {
+                                onReportButtonClick()
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
