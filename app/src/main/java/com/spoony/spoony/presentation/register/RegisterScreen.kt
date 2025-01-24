@@ -97,8 +97,8 @@ fun RegisterScreen(
                 text = "장소를 등록하면 수저를 획득할 수 있어요"
             )
             LaunchedEffect(Unit) {
-                viewModel.hideRegisterSnackBar()
                 delay(SHOW_REGISTER_SNACKBAR_TIME)
+                viewModel.hideRegisterSnackBar()
             }
         }
     }
