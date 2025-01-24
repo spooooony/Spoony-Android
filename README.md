@@ -36,9 +36,9 @@
 
 |       뷰       |                                                              1                                                              |                                                              2                                                              |                                                              3                                                              |
 |:-------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|
-| 메인 지도 <br> 탐색하기  | <img src="/api/placeholder/400/800" alt="메인지도1"/> | <img src="/api/placeholder/400/800" alt="메인지도2"/> | <img src="/api/placeholder/400/800" alt="메인지도3"/> |
-| 장소 등록하기 | <img src="/api/placeholder/400/800" alt="장소등록1"/> | <img src="/api/placeholder/400/800" alt="장소등록2"/> | <img src="/api/placeholder/400/800" alt="장소등록3"/> |
-| 장소 상세페이지 <br> 신고하기 | <img src="/api/placeholder/400/800" alt="상세페이지1"/> | <img src="/api/placeholder/400/800" alt="상세페이지2"/> | <img src="/api/placeholder/400/800" alt="상세페이지3"/> |
+| 메인 지도 <br> 탐색하기  | <img src="https://github.com/user-attachments/assets/dc0c8185-ebaf-4eb4-bc8a-f502b5c8082c" width="200"/> | <img src="https://github.com/user-attachments/assets/bd3efd23-dcf7-46ba-9444-233c1f17fe7c" width="200"/>  | <img src="https://github.com/user-attachments/assets/c4ed289e-8392-47a4-9c45-c18bf34ffbf7" width="200"/> |
+| 장소 등록하기 | <img src="https://github.com/user-attachments/assets/3d59742f-5f49-429b-bcb4-a48acef84574" width="200"/> | <img src="https://github.com/user-attachments/assets/63d82360-49b7-4aa8-8d94-d0d0d8047658" width="200"/>  | <img src="https://github.com/user-attachments/assets/6156985e-6103-42bd-b2fb-acb37e468344" width="200"/> |
+| 장소 상세페이지 <br> 신고하기 |<img src="https://github.com/user-attachments/assets/2c9486e6-5608-4676-b301-de487d42913d" width="200"/> | <img src="https://github.com/user-attachments/assets/134940f7-7aca-47c7-ad2d-e3f3e9c236fa" width="200"/>  | <img src="https://github.com/user-attachments/assets/cfada0cd-93c8-4c61-bded-254b3e179e15" width="200"/> |
 
 
 
