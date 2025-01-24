@@ -111,7 +111,7 @@ fun MainScreen(
 
                 registerNavGraph(
                     paddingValues = paddingValues,
-                    navigateToExplore = navigator::navigateToExplore
+                    navigateToExplore = { navigator.navigateToExplore(fromRegister = true) }
                 )
 
                 placeDetailNavGraph(
