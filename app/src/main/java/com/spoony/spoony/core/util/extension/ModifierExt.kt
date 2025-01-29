@@ -111,7 +111,7 @@ fun Modifier.hapticClick(
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ): Modifier = composed {
     val view = LocalView.current
 
@@ -133,7 +133,7 @@ fun Modifier.bounceClick(
     scaleDown: Float = 0.8f,
     scaleUp: Float = 1.2f,
     defaultScale: Float = 1.0f,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ): Modifier = composed {
     val scope = rememberCoroutineScope()
     var isClicked by remember { mutableStateOf(false) }
@@ -188,17 +188,19 @@ fun Modifier.bounceClick(
 fun Modifier.rotateClick(
     scaleDown: Float = 0.01f,
     rotateMax: Float = 1000f,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ): Modifier = composed {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
     val scale by animateFloatAsState(
-        if (isPressed) scaleDown else 1f, label = ""
+        if (isPressed) scaleDown else 1f,
+        label = ""
     )
 
     val rotation by animateFloatAsState(
-        if (isPressed) rotateMax else 1f, label = ""
+        if (isPressed) rotateMax else 1f,
+        label = ""
     )
     this
         .graphicsLayer {

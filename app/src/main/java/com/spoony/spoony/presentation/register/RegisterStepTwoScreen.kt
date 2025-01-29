@@ -147,7 +147,6 @@ private fun ReviewSection(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-
         Text(
             text = "당신의 맛집을 한 줄로 표현해 주세요",
             style = SpoonyAndroidTheme.typography.body1sb,
