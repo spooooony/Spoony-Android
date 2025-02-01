@@ -93,8 +93,8 @@ class MainNavigator(
                 popUpTo(Explore) {
                     inclusive = false
                 }
-                restoreState = true
                 launchSingleTop = true
+                restoreState = true
             }
     ) {
         navController.navigateToExplore(navOptions)
