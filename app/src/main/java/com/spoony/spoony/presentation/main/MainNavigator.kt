@@ -17,6 +17,8 @@ import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDeta
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
+const val NAVIGATION_ROOT = 0
+
 class MainNavigator(
     val navController: NavHostController
 ) {
@@ -63,9 +65,11 @@ class MainNavigator(
 
     fun navigateToExplore(
         navOptions: NavOptions = navOptions {
-            popUpTo(navController.graph.startDestinationId) {
+            popUpTo(NAVIGATION_ROOT) {
                 inclusive = true
+                saveState = true
             }
+            restoreState = true
             launchSingleTop = true
         }
     ) {
@@ -75,7 +79,7 @@ class MainNavigator(
     fun navigateToRegister(
         navOptions: NavOptions =
             navOptions {
-                popUpTo(navController.graph.startDestinationId) {
+                popUpTo(NAVIGATION_ROOT) {
                     inclusive = true
                     saveState = true
                 }
