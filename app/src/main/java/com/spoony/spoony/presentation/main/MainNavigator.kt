@@ -65,10 +65,8 @@ class MainNavigator(
         navOptions: NavOptions = navOptions {
             popUpTo(navController.graph.startDestinationId) {
                 inclusive = true
-                saveState = true
             }
             launchSingleTop = true
-            restoreState = true
         }
     ) {
         navController.navigateToExplore(navOptions)
