@@ -100,7 +100,7 @@ fun MainScreen(
                         )
                     },
                     navigateToMapSearch = navigator::navigateToMapSearch,
-                    navigateToExplore = navigator::navigateMapToExplore,
+                    navigateToExplore = navigator::navigateToExplore,
                     navigateUp = navigator::navigateUp
                 )
 
@@ -112,7 +112,7 @@ fun MainScreen(
 
                 registerNavGraph(
                     paddingValues = paddingValues,
-                    navigateToExplore = navigator::navigateRegisterToExplore
+                    navigateToExplore = navigator::navigateToExplore
                 )
 
                 placeDetailNavGraph(
@@ -128,7 +128,7 @@ fun MainScreen(
                 reportNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToExplore = navigator::navigateReportToExplore
+                    navigateToExplore = navigator::navigateToExplore
                 )
 
                 mapSearchNavGraph(
