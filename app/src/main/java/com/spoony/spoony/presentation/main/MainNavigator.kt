@@ -15,7 +15,6 @@ import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
-import com.spoony.spoony.presentation.register.navigation.Register
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
@@ -58,8 +57,7 @@ class MainNavigator(
     }
 
     fun navigateToReport(
-        postId: Int,
-        navOptions: NavOptions? = null
+        postId: Int
     ) {
         navController.navigateToReport(postId = postId)
     }
