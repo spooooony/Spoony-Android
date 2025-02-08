@@ -107,7 +107,7 @@ fun MainScreen(
                 exploreNavGraph(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
-                    navigateToRegister = navigator::navigateExploreToRegister
+                    navigateToRegister = navigator::navigateToRegister
                 )
 
                 registerNavGraph(

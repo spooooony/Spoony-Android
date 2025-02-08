@@ -9,7 +9,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.spoony.spoony.presentation.explore.navigation.Explore
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
@@ -75,10 +74,10 @@ class MainNavigator(
         navController.navigateToExplore(navOptions)
     }
 
-    fun navigateExploreToRegister(
+    fun navigateToRegister(
         navOptions: NavOptions =
             navOptions {
-                popUpTo(Explore) {
+                popUpTo(navController.graph.startDestinationId) {
                     inclusive = true
                     saveState = true
                 }
