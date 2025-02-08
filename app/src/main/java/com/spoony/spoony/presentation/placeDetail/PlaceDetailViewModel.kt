@@ -40,7 +40,6 @@ class PlaceDetailViewModel @Inject constructor(
             postId = UiState.Success(data = postArgs.postId)
         )
         getPost(postArgs.postId)
-//        getUserInfo()
         getUserSpoonCount()
     }
 
