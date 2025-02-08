@@ -62,8 +62,8 @@ class MainNavigator(
         navController.navigateToReport(postId = postId)
     }
 
-    fun navigateToExplore() {
-        val navOptions = navOptions {
+    fun navigateToExplore(
+        navOptions: NavOptions = navOptions {
             popUpTo(navController.graph.startDestinationId) {
                 inclusive = true
                 saveState = true
@@ -71,6 +71,7 @@ class MainNavigator(
             launchSingleTop = true
             restoreState = true
         }
+    ) {
         navController.navigateToExplore(navOptions)
     }
 
