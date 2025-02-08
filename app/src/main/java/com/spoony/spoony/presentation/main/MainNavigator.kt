@@ -64,39 +64,15 @@ class MainNavigator(
         navController.navigateToReport(postId = postId)
     }
 
-    fun navigateMapToExplore(
-        navOptions: NavOptions = navOptions {
-            popUpTo(Map()) {
-                inclusive = true
-            }
-        }
-    ) {
-        navController.navigateToExplore(navOptions)
-    }
-
-    fun navigateRegisterToExplore(
-        navOptions: NavOptions = navOptions {
-            popUpTo(Register) {
+    fun navigateToExplore() {
+        val navOptions = navOptions {
+            popUpTo(navController.graph.startDestinationId) {
                 inclusive = true
                 saveState = true
             }
             launchSingleTop = true
             restoreState = true
         }
-    ) {
-        navController.navigateToExplore(navOptions)
-    }
-
-    fun navigateReportToExplore(
-        navOptions: NavOptions =
-            navOptions {
-                popUpTo(Explore) {
-                    inclusive = false
-                }
-                launchSingleTop = true
-                restoreState = true
-            }
-    ) {
         navController.navigateToExplore(navOptions)
     }
 
