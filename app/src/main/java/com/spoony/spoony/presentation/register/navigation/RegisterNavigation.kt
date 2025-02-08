@@ -6,9 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import com.spoony.spoony.core.navigation.MainTabRoute
-import com.spoony.spoony.presentation.main.MainTab
 import com.spoony.spoony.presentation.register.RegisterScreen
 import com.spoony.spoony.presentation.register.RegisterStepOneScreen
 import com.spoony.spoony.presentation.register.RegisterStepTwoScreen
@@ -17,12 +15,7 @@ import com.spoony.spoony.presentation.register.RegisterViewModel
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRegister(
-    navOptions: NavOptions = navOptions {
-        popUpTo(MainTab.MAP) {
-            inclusive = true
-        }
-        launchSingleTop = true
-    }
+    navOptions: NavOptions? = null
 ) {
     navigate(Register, navOptions)
 }
