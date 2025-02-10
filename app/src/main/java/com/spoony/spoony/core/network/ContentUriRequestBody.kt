@@ -129,14 +129,14 @@ class ContentUriRequestBody @Inject constructor(
                 }
             }
         ) { "Failed to decode bitmap" }
-    }?.let { bitmap ->
+    }.let { bitmap ->
         val orientation = getOrientation(uri)
         if (orientation != ORIENTATION_NORMAL) {
             rotateBitmap(bitmap, orientation)
         } else {
             bitmap
         }
-    } ?: throw IllegalStateException("Failed to load bitmap")
+    }
 
     private fun getOrientation(uri: Uri): Int =
         contentResolver.query(
@@ -187,7 +187,7 @@ class ContentUriRequestBody @Inject constructor(
         var lowerQuality = MIN_QUALITY       // 최소 품질 (예: 20)
         var upperQuality = INITIAL_QUALITY   // 초기 품질 (예: 100)
         var bestQuality = lowerQuality       // 조건을 만족하는 최고 품질 값
-        var bestByteArray: ByteArray = ByteArray(0)
+        var bestByteArray = ByteArray(0)
 
         // 이진 탐색을 통해 파일 크기가 maxFileSize 이하가 되는 최대 품질을 찾음
         while (lowerQuality <= upperQuality) {
@@ -270,7 +270,6 @@ class ContentUriRequestBody @Inject constructor(
         // 압축 품질 관련
         private const val INITIAL_QUALITY = 100
         private const val MIN_QUALITY = 20
-        private const val QUALITY_DECREMENT = 5
 
         // 이미지 회전 관련
         private const val ORIENTATION_NORMAL = 0
