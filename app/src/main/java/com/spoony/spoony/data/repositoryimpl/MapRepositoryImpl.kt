@@ -1,7 +1,6 @@
 package com.spoony.spoony.data.repositoryimpl
 
 import com.spoony.spoony.core.database.SearchDao
-import com.spoony.spoony.core.database.entity.SearchEntity
 import com.spoony.spoony.data.datasource.MapRemoteDataSource
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
@@ -14,7 +13,7 @@ import javax.inject.Inject
 class MapRepositoryImpl @Inject constructor(
     private val mapRemoteDataSource: MapRemoteDataSource,
     private val postRemoteDataSource: PostRemoteDataSource,
-    private val searchDao: SearchDao,
+    private val searchDao: SearchDao
 ) : MapRepository {
     override suspend fun searchLocation(query: String): Result<List<LocationEntity>> =
         runCatching {

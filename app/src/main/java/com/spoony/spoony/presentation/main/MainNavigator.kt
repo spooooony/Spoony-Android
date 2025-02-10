@@ -107,7 +107,7 @@ class MainNavigator(
         locationName: String? = null,
         scale: String? = null,
         latitude: String? = null,
-        longitude: String? = null,
+        longitude: String? = null
     ) {
         navController.navigateToMap(
             locationId = locationId,
