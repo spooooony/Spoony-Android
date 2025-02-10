@@ -116,156 +116,92 @@ class RegisterRepositoryImpl @Inject constructor(
     private suspend fun testCompressionPerformance(uri: Uri): MultipartBody.Part {
         val isTestMode = false // true이면 기존 방식, false이면 개선된 방식
 
-        // 1. 원본 이미지 크기 측정 (바이트 단위)
-        val originalSize: Long = context.contentResolver.openInputStream(uri)?.available()?.toLong() ?: -1L
+        // 1. 원본 이미지 크기 측정
+        val originalSize = context.contentResolver.openInputStream(uri)?.use {
+            it.available().toLong()
+        } ?: -1L
 
-        // 2. 압축 전 네이티브 힙 메모리 사용량 측정 (바이트 단위)
-        val nativeHeapBefore: Long = getNativeHeapAllocatedSize()
+        val beforeMemory = measureMemoryState()
 
-        // 3. 이미지 압축 처리 및 실행 시간 측정
+        // 3. 이미지 압축 실행 및 시간 측정
         lateinit var result: MultipartBody.Part
-        val elapsedTime = measureTimeMillis {
+        val compressionTime = measureTimeMillis {
             result = if (isTestMode) {
-                // 기존 압축 방식 (예: ContentUriRequestBodyLegacy 사용)
                 ContentUriRequestBodyLegacy(context, uri).toFormData("photos")
             } else {
-                // 개선된 압축 방식 (예: ContentUriRequestBody 사용, prepareImage() 호출)
                 ContentUriRequestBody(context, uri).apply {
                     prepareImage()
                 }.toFormData("photos")
             }
         }
 
-        // 4. 압축 후 네이티브 힙 메모리 사용량 측정 (바이트 단위)
-        val nativeHeapAfter: Long = getNativeHeapAllocatedSize()
+        // 4. 압축 후 메모리 상태
+        val afterMemory = measureMemoryState()
 
-        // 5. 압축에 사용된 네이티브 힙 메모리 (바이트 단위)
-        val memoryUsedForCompression: Long = nativeHeapAfter - nativeHeapBefore
+        // 5. 압축된 크기 확인
+        val compressedSize = result.body.contentLength()
 
-        // 6. 압축 후 이미지 크기 측정 (RequestBody의 contentLength())
-        val compressedSize: Long = result.body.contentLength()
-
-        // 7. 로그 출력 (MB 단위로 변환)
-        val originalSizeMB = originalSize / (1024f * 1024f)
-        val compressedSizeMB = compressedSize / (1024f * 1024f)
-        val memoryUsedMB = memoryUsedForCompression / (1024f * 1024f)
+        // 메모리 사용량 계산
+        val memoryDiff = afterMemory - beforeMemory
 
         Timber.d(
             """
-            ✨ 이미지 압축 성능 및 메모리 사용량 평가 (${if (isTestMode) "기존" else "개선"} 방식):
-            📊 원본 이미지 크기: $originalSizeMB MB
-            📉 압축 후 이미지 크기: $compressedSizeMB MB
-            📈 압축률: ${"%.2f".format((1 - (compressedSize.toFloat() / originalSize)) * 100)}%
-            ⏱️ 실행 시간: ${elapsedTime}ms
-            💾 압축에 사용된 네이티브 힙 메모리: $memoryUsedMB MB
+        📸 이미지 압축 성능 분석 (${if (isTestMode) "기존" else "개선"} 방식):
+        
+        📊 크기 정보:
+        - 원본: ${originalSize.bytesToMB()} MB
+        - 압축 후: ${compressedSize.bytesToMB()} MB
+        - 압축률: ${calculateCompressionRate(originalSize, compressedSize)}%
+        
+        💾 메모리 사용량:
+        - 압축 전: ${beforeMemory.bytesToMB()} MB
+        - 압축 후: ${afterMemory.bytesToMB()} MB
+        - 실제 사용: ${maxOf(0L, memoryDiff).bytesToMB()} MB
+        
+        ⚡ 성능:
+        - 처리 시간: ${compressionTime}ms
+        - 최대 가용 메모리: ${Runtime.getRuntime().maxMemory().bytesToMB()} MB
+        
+        ⚠️ OOM 위험도: ${assessOOMRisk(originalSize, maxOf(0L, memoryDiff))}
             """.trimIndent()
         )
-
-        // 원본 이미지 크기와 비교하여, 압축에 사용된 메모리가 과도하다면 경고 로그 출력 (OOM 위험 판단)
-        if (memoryUsedForCompression > originalSize) {
-            Timber.w("경고: 압축에 사용된 메모리($memoryUsedMB MB)가 원본 이미지 크기($originalSizeMB MB)보다 큽니다. OOM 위험이 있을 수 있습니다.")
-        }
 
         return result
     }
 
-    /**
-     * Debug API를 사용하여 네이티브 힙에 할당된 메모리 크기를 측정합니다.
-     * 반환 값은 바이트 단위입니다.
-     */
-    private fun getNativeHeapAllocatedSize(): Long {
-        return Debug.getNativeHeapAllocatedSize()
+    private fun Long.bytesToMB() = this / (1024.0 * 1024.0)
+
+    private fun calculateCompressionRate(originalSize: Long, compressedSize: Long): String {
+        return String.format(Locale.US, "%.1f", (1 - compressedSize.toDouble() / originalSize) * 100)
     }
 
-//    private suspend fun testCompressionPerformance(uri: Uri): MultipartBody.Part {
-//        val isTestMode = false // true이면 기존 방식, false이면 개선된 방식
-//
-//        // 1. 원본 이미지 크기 측정
-//        val originalSize = context.contentResolver.openInputStream(uri)?.use {
-//            it.available().toLong()
-//        } ?: -1L
-//
-//        val beforeMemory = measureMemoryState()
-//
-//        // 3. 이미지 압축 실행 및 시간 측정
-//        lateinit var result: MultipartBody.Part
-//        val compressionTime = measureTimeMillis {
-//            result = if (isTestMode) {
-//                ContentUriRequestBodyLegacy(context, uri).toFormData("photos")
-//            } else {
-//                ContentUriRequestBody(context, uri).apply {
-//                    prepareImage()
-//                }.toFormData("photos")
-//            }
-//        }
-//
-//        // 4. 압축 후 메모리 상태
-//        val afterMemory = measureMemoryState()
-//
-//        // 5. 압축된 크기 확인
-//        val compressedSize = result.body.contentLength()
-//
-//        // 메모리 사용량 계산
-//        val memoryDiff = afterMemory - beforeMemory
-//
-//        Timber.d(
-//            """
-//        📸 이미지 압축 성능 분석 (${if (isTestMode) "기존" else "개선"} 방식):
-//
-//        📊 크기 정보:
-//        - 원본: ${originalSize.bytesToMB()} MB
-//        - 압축 후: ${compressedSize.bytesToMB()} MB
-//        - 압축률: ${calculateCompressionRate(originalSize, compressedSize)}%
-//
-//        💾 메모리 사용량:
-//        - 압축 전: ${beforeMemory.bytesToMB()} MB
-//        - 압축 후: ${afterMemory.bytesToMB()} MB
-//        - 실제 사용: ${maxOf(0L, memoryDiff).bytesToMB()} MB
-//
-//        ⚡ 성능:
-//        - 처리 시간: ${compressionTime}ms
-//        - 최대 가용 메모리: ${Runtime.getRuntime().maxMemory().bytesToMB()} MB
-//
-//        ⚠️ OOM 위험도: ${assessOOMRisk(originalSize, maxOf(0L, memoryDiff))}
-//            """.trimIndent()
-//        )
-//
-//        return result
-//    }
-//
-//    private fun Long.bytesToMB() = this / (1024.0 * 1024.0)
-//
-//    private fun calculateCompressionRate(originalSize: Long, compressedSize: Long): String {
-//        return String.format(Locale.US, "%.1f", (1 - compressedSize.toDouble() / originalSize) * 100)
-//    }
-//
-//    private fun assessOOMRisk(originalSize: Long, usedMemory: Long): String {
-//        val ratio = usedMemory.toDouble() / originalSize.toDouble()
-//        return when {
-//            ratio > 3.0 -> "높음 (메모리 사용량이 원본 대비 3배 초과)"
-//            ratio > 2.0 -> "중간 (메모리 사용량이 원본 대비 2-3배)"
-//            else -> "낮음 (메모리 사용량이 원본 대비 2배 미만)"
-//        }
-//    }
-//
-//    private fun measureMemoryState(): Long {
-//        var attempt = 0
-//        var memoryState: Long
-//
-//        // 최대 3번 시도하며 안정적인 메모리 측정값을 얻음
-//        do {
-//            System.gc()
-//            Thread.sleep(200) // GC 완료를 위해 대기 시간 증가
-//
-//            val javaHeap = Runtime.getRuntime().run {
-//                totalMemory() - freeMemory()
-//            }
-//            val nativeHeap = Debug.getNativeHeapAllocatedSize()
-//            memoryState = javaHeap + nativeHeap
-//
-//            attempt++
-//        } while (attempt < 3 && memoryState < 0)
-//
-//        return memoryState
-//    }
+    private fun assessOOMRisk(originalSize: Long, usedMemory: Long): String {
+        val ratio = usedMemory.toDouble() / originalSize.toDouble()
+        return when {
+            ratio > 3.0 -> "높음 (메모리 사용량이 원본 대비 3배 초과)"
+            ratio > 2.0 -> "중간 (메모리 사용량이 원본 대비 2-3배)"
+            else -> "낮음 (메모리 사용량이 원본 대비 2배 미만)"
+        }
+    }
+
+    private fun measureMemoryState(): Long {
+        var attempt = 0
+        var memoryState: Long
+
+        // 최대 3번 시도하며 안정적인 메모리 측정값을 얻음
+        do {
+            System.gc()
+            Thread.sleep(200) // GC 완료를 위해 대기 시간 증가
+
+            val javaHeap = Runtime.getRuntime().run {
+                totalMemory() - freeMemory()
+            }
+            val nativeHeap = Debug.getNativeHeapAllocatedSize()
+            memoryState = javaHeap + nativeHeap
+
+            attempt++
+        } while (attempt < 3 && memoryState < 0)
+
+        return memoryState
+    }
 }
