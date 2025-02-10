@@ -80,7 +80,7 @@ class ContentUriRequestBody @Inject constructor(
             runCatching {
                 compressedImage = compressImage(safeUri)
             }.onFailure { error ->
-                Timber.e(error, "Image compression failed")
+                Timber.e(error, "이미지 압축에 실패했습니다.")
                 throw error
             }
         }
@@ -128,7 +128,7 @@ class ContentUriRequestBody @Inject constructor(
                     BitmapFactory.decodeStream(secondInput, null, options)
                 }
             }
-        ) { "Failed to decode bitmap" }
+        ) { "비트맵 디코딩 실패" }
     }.let { bitmap ->
         val orientation = getOrientation(uri)
         if (orientation != ORIENTATION_NORMAL) {
@@ -213,7 +213,7 @@ class ContentUriRequestBody @Inject constructor(
             }
         }
 
-        Timber.d("Selected quality: $bestQuality for compressed image size: ${bestByteArray.size} bytes")
+        Timber.d("선택된 품질: $bestQuality, 압축된 이미지 크기: ${bestByteArray.size} 바이트")
         bestByteArray
     }
 
