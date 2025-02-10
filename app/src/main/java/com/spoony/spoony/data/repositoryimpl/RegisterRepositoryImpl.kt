@@ -16,14 +16,13 @@ import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
-import javax.inject.Inject
-import kotlin.system.measureTimeMillis
 
 class RegisterRepositoryImpl @Inject constructor(
     private val placeDataSource: PlaceDataSource,
@@ -160,5 +159,4 @@ class RegisterRepositoryImpl @Inject constructor(
     private fun getNativeHeapAllocatedSize(): Long {
         return Debug.getNativeHeapAllocatedSize()
     }
-
 }

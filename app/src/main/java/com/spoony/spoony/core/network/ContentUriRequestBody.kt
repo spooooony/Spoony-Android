@@ -11,6 +11,8 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
 import androidx.annotation.RequiresApi
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
@@ -19,12 +21,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
-import javax.inject.Inject
 
 class ContentUriRequestBody @Inject constructor(
     context: Context,
-    private val uri: Uri?,
+    private val uri: Uri?
 ) : RequestBody() {
     private val contentResolver = context.contentResolver
     private var compressedImage: ByteArray? = null
@@ -56,7 +56,7 @@ class ContentUriRequestBody @Inject constructor(
             arrayOf(MediaStore.Images.Media.SIZE, MediaStore.Images.Media.DISPLAY_NAME),
             null,
             null,
-            null,
+            null
         )?.use { cursor ->
             if (cursor.moveToFirst()) {
                 size = cursor.getLong(
@@ -156,10 +156,12 @@ class ContentUriRequestBody @Inject constructor(
     private fun getExifOrientation(uri: Uri): Int =
         contentResolver.openInputStream(uri)?.use { input ->
             val exif = ExifInterface(input)
-            when (exif.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_NORMAL
-            )) {
+            when (
+                exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )
+            ) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> ORIENTATION_ROTATE_90
                 ExifInterface.ORIENTATION_ROTATE_180 -> ORIENTATION_ROTATE_180
                 ExifInterface.ORIENTATION_ROTATE_270 -> ORIENTATION_ROTATE_270
@@ -184,9 +186,9 @@ class ContentUriRequestBody @Inject constructor(
 
     private suspend fun compressBitmap(bitmap: Bitmap): ByteArray = withContext(Dispatchers.IO) {
         val maxFileSize = MAX_FILE_SIZE_BYTES
-        var lowerQuality = MIN_QUALITY       // 최소 품질 (예: 20)
-        var upperQuality = INITIAL_QUALITY   // 초기 품질 (예: 100)
-        var bestQuality = lowerQuality       // 조건을 만족하는 최고 품질 값
+        var lowerQuality = MIN_QUALITY // 최소 품질 (예: 20)
+        var upperQuality = INITIAL_QUALITY // 초기 품질 (예: 100)
+        var bestQuality = lowerQuality // 조건을 만족하는 최고 품질 값
         var bestByteArray = ByteArray(0)
 
         // 이진 탐색을 통해 파일 크기가 maxFileSize 이하가 되는 최대 품질을 찾음
@@ -215,11 +217,10 @@ class ContentUriRequestBody @Inject constructor(
         bestByteArray
     }
 
-
     private fun calculateInSampleSize(
         options: BitmapFactory.Options,
         reqWidth: Int,
-        reqHeight: Int,
+        reqHeight: Int
     ): Int {
         val (height: Int, width: Int) = options.run { outHeight to outWidth }
         var inSampleSize = 1
@@ -284,7 +285,7 @@ class ContentUriRequestBody @Inject constructor(
 
 class ContentUriRequestBodyLegacy(
     context: Context,
-    private val uri: Uri?,
+    private val uri: Uri?
 ) : RequestBody() {
     private val contentResolver = context.contentResolver
 
@@ -299,7 +300,7 @@ class ContentUriRequestBodyLegacy(
                 arrayOf(MediaStore.Images.Media.SIZE, MediaStore.Images.Media.DISPLAY_NAME),
                 null,
                 null,
-                null,
+                null
             )?.use { cursor ->
                 if (cursor.moveToFirst()) {
                     size =
@@ -362,7 +363,7 @@ class ContentUriRequestBodyLegacy(
                 originalBitmap.compress(
                     Bitmap.CompressFormat.JPEG,
                     if (imageSizeMb >= IMAGE_SIZE_MB) compressRate else 100,
-                    it,
+                    it
                 )
             }
             compressedImage = outputStream.toByteArray()
@@ -373,7 +374,7 @@ class ContentUriRequestBodyLegacy(
     private fun calculateInSampleSize(
         options: BitmapFactory.Options,
         reqWidth: Int,
-        reqHeight: Int,
+        reqHeight: Int
     ): Int {
         val (height: Int, width: Int) = options.run { outHeight to outWidth }
         var inSampleSize = 1

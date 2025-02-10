@@ -12,6 +12,7 @@ import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.presentation.map.model.LocationModel
 import com.spoony.spoony.presentation.map.navigaion.Map
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,14 +20,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
     private val authRepository: AuthRepository,
-    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
     val state: StateFlow<MapState>
@@ -114,13 +114,12 @@ class MapViewModel @Inject constructor(
                             UiState.Success(
                                 response.toImmutableList()
                             )
-                        },
+                        }
                     )
                 }
             }.onFailure(Timber::e)
         }
     }
-
 
     private fun getUserInfo() {
         viewModelScope.launch {
