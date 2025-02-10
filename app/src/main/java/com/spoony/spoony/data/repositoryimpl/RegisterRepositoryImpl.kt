@@ -89,23 +89,13 @@ class RegisterRepositoryImpl @Inject constructor(
      *
      * 측정 항목:
      * - 이미지 크기:
-     *   - 원본 크기 (ContentResolver.available())
-     *   - 압축 후 크기 (RequestBody.contentLength())
      *
      * - 메모리 사용량:
-     *   - Java Heap: Runtime.totalMemory() - freeMemory()
-     *   - Native Heap: Debug.getNativeHeapAllocatedSize()
-     *   - GC 실행 후 측정하여 정확도 향상
+     *   - GC 실행 후 측정
      *
      * - 성능 지표:
-     *   - 압축 소요 시간 (measureTimeMillis)
-     *   - 압축률 (원본 대비 압축 후 크기)
      *
      * - OOM 위험도 평가:
-     *   - 메모리 사용량/원본 크기 비율 기반
-     *   - 낮음: 2배 미만
-     *   - 중간: 2-3배
-     *   - 높음: 3배 초과
      *
      * 결과는 Timber.d()를 통해 상세 로그로 출력됩니다.
      *
@@ -187,11 +177,9 @@ class RegisterRepositoryImpl @Inject constructor(
     private fun measureMemoryState(): Long {
         var attempt = 0
         var memoryState: Long
-
-        // 최대 3번 시도하며 안정적인 메모리 측정값을 얻음
         do {
             System.gc()
-            Thread.sleep(200) // GC 완료를 위해 대기 시간 증가
+            Thread.sleep(200)
 
             val javaHeap = Runtime.getRuntime().run {
                 totalMemory() - freeMemory()
