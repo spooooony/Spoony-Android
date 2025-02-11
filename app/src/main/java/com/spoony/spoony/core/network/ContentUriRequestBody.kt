@@ -22,6 +22,7 @@ import okio.BufferedSink
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+import kotlin.math.max
 import kotlin.math.min
 
 class ContentUriRequestBody @Inject constructor(
@@ -245,20 +246,10 @@ class ContentUriRequestBody @Inject constructor(
         }.getOrDefault(bitmap)
 
     private fun calculateInSampleSize(width: Int, height: Int): Int {
-        var inSampleSize = 1
-
-        if (height > config.maxHeight || width > config.maxWidth) {
-            val halfHeight = height / 2
-            val halfWidth = width / 2
-
-            while (halfHeight / inSampleSize >= config.maxHeight &&
-                halfWidth / inSampleSize >= config.maxWidth) {
-                inSampleSize *= 2
-            }
-        }
-
-        return inSampleSize
+        val ratio = max(1, min(height / config.maxHeight, width / config.maxWidth))
+        return Integer.highestOneBit(ratio)
     }
+
 
     private fun calculateTargetSize(width: Int, height: Int): Size {
         val ratio = width.toFloat() / height.toFloat()
