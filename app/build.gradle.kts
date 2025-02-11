@@ -72,6 +72,7 @@ dependencies {
     // Androidx
     implementation(libs.bundles.androidx)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.kotlinx.immutable)
 
     // Network
     implementation(platform(libs.okhttp.bom))
@@ -87,8 +88,6 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.lottie)
     implementation(libs.advanced.bottom.sheet)
-
-    implementation(libs.kotlinx.immutable) 
 
     // Naver Map
     implementation(libs.bundles.naverMap)
