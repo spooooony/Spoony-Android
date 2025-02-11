@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DBModule {
+object DatabaseModule {
     @Singleton
     @Provides
     fun providesDataBase(
@@ -26,3 +26,4 @@ object DBModule {
         searchDatabase: SearchDatabase
     ) = searchDatabase.SearchDao()
 }
+
