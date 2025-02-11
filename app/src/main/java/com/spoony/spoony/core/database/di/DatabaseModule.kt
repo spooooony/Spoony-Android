@@ -26,4 +26,3 @@ object DatabaseModule {
         searchDatabase: SearchDatabase
     ) = searchDatabase.SearchDao()
 }
-
