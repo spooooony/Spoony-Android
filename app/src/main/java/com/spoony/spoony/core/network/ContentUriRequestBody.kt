@@ -170,7 +170,6 @@ class ContentUriRequestBody @Inject constructor(
                 var lowerQuality = config.minQuality
                 var upperQuality = config.initialQuality
                 var bestQuality = lowerQuality
-                var finalByteArray: ByteArray? = null
 
                 while (lowerQuality <= upperQuality) {
                     val midQuality = (lowerQuality + upperQuality) / 2
@@ -181,16 +180,15 @@ class ContentUriRequestBody @Inject constructor(
                     if (buffer.size() <= config.maxFileSize) {
                         bestQuality = midQuality
                         lowerQuality = midQuality + 1
-                        finalByteArray = buffer.toByteArray()
                     } else {
                         upperQuality = midQuality - 1
                     }
                 }
 
                 if (BuildConfig.DEBUG) {
-                    Timber.d("Compression completed - Quality: $bestQuality, Size: ${finalByteArray?.size ?: 0} bytes")
+                    Timber.d("Compression completed - Quality: $bestQuality, Size: ${buffer.size()} bytes")
                 }
-                finalByteArray ?: ByteArray(0)
+                return@use buffer.toByteArray()
             }
         }
 
