@@ -12,6 +12,10 @@ import android.provider.MediaStore
 import android.util.Size
 import androidx.annotation.RequiresApi
 import com.spoony.spoony.BuildConfig
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
+import kotlin.math.max
+import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
@@ -20,10 +24,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
-import javax.inject.Inject
-import kotlin.math.max
-import kotlin.math.min
 
 class ContentUriRequestBody @Inject constructor(
     context: Context,
@@ -87,7 +87,9 @@ class ContentUriRequestBody @Inject constructor(
                         size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)),
                         mimeType = contentResolver.getType(uri)
                     )
-                } else ImageMetadata.EMPTY
+                } else {
+                    ImageMetadata.EMPTY
+                }
             } ?: ImageMetadata.EMPTY
         }.getOrDefault(ImageMetadata.EMPTY)
 
@@ -157,7 +159,9 @@ class ContentUriRequestBody @Inject constructor(
                     getOrientation(uri).let { orientation ->
                         if (orientation != ORIENTATION_NORMAL) {
                             rotateBitmap(bitmap, orientation)
-                        } else bitmap
+                        } else {
+                            bitmap
+                        }
                     }
                 } ?: error("비트맵 디코딩 실패")
             }
@@ -247,7 +251,6 @@ class ContentUriRequestBody @Inject constructor(
         val ratio = max(1, min(height / config.maxHeight, width / config.maxWidth))
         return Integer.highestOneBit(ratio)
     }
-
 
     private fun calculateTargetSize(width: Int, height: Int): Size {
         val ratio = width.toFloat() / height.toFloat()
