@@ -22,6 +22,7 @@ import okio.BufferedSink
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+import kotlin.math.min
 
 class ContentUriRequestBody @Inject constructor(
     context: Context,
@@ -163,32 +164,32 @@ class ContentUriRequestBody @Inject constructor(
 
     private suspend fun compressBitmap(bitmap: Bitmap): ByteArray =
         withContext(Dispatchers.IO) {
-            ByteArrayOutputStream(bitmap.byteCount / 2).use { buffer ->
+            val estimatedSize = min(bitmap.byteCount / 4, config.maxFileSize)
+            ByteArrayOutputStream(estimatedSize).use { buffer ->
                 var lowerQuality = config.minQuality
                 var upperQuality = config.initialQuality
                 var bestQuality = lowerQuality
-                var bestByteArray = ByteArray(0)
+                var finalByteArray: ByteArray? = null
 
                 while (lowerQuality <= upperQuality) {
                     val midQuality = (lowerQuality + upperQuality) / 2
                     buffer.reset()
 
                     bitmap.compress(config.format, midQuality, buffer)
-                    buffer.toByteArray().let { byteArray ->
-                        if (byteArray.size <= config.maxFileSize) {
-                            bestQuality = midQuality
-                            bestByteArray = byteArray
-                            lowerQuality = midQuality + 1
-                        } else {
-                            upperQuality = midQuality - 1
-                        }
+
+                    if (buffer.size() <= config.maxFileSize) {
+                        bestQuality = midQuality
+                        lowerQuality = midQuality + 1
+                        finalByteArray = buffer.toByteArray()
+                    } else {
+                        upperQuality = midQuality - 1
                     }
                 }
 
                 if (BuildConfig.DEBUG) {
-                    Timber.d("Compression completed - Quality: $bestQuality, Size: ${bestByteArray.size} bytes")
+                    Timber.d("Compression completed - Quality: $bestQuality, Size: ${finalByteArray?.size ?: 0} bytes")
                 }
-                bestByteArray
+                finalByteArray ?: ByteArray(0)
             }
         }
 
