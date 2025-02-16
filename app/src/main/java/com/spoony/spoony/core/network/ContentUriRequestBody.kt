@@ -2,19 +2,14 @@ package com.spoony.spoony.core.network
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
-import androidx.annotation.RequiresApi
-import com.spoony.spoony.BuildConfig
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
-import kotlin.math.max
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,6 +25,7 @@ class ContentUriRequestBody @Inject constructor(
     private val uri: Uri?,
     private val config: ImageConfig = ImageConfig.DEFAULT
 ) : RequestBody() {
+
     private val contentResolver = context.contentResolver
     private var compressedImage: ByteArray? = null
     private var metadata: ImageMetadata? = null
@@ -69,30 +65,6 @@ class ContentUriRequestBody @Inject constructor(
         }
     }
 
-    private fun extractMetadata(uri: Uri): ImageMetadata =
-        runCatching {
-            contentResolver.query(
-                uri,
-                arrayOf(
-                    MediaStore.Images.Media.SIZE,
-                    MediaStore.Images.Media.DISPLAY_NAME
-                ),
-                null,
-                null,
-                null
-            )?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    ImageMetadata(
-                        fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)),
-                        size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)),
-                        mimeType = contentResolver.getType(uri)
-                    )
-                } else {
-                    ImageMetadata.EMPTY
-                }
-            } ?: ImageMetadata.EMPTY
-        }.getOrDefault(ImageMetadata.EMPTY)
-
     suspend fun prepareImage(): Result<Unit> = runCatching {
         withContext(Dispatchers.IO) {
             uri?.let { safeUri ->
@@ -103,6 +75,12 @@ class ContentUriRequestBody @Inject constructor(
         }
     }
 
+    fun toFormData(name: String): MultipartBody.Part = MultipartBody.Part.createFormData(
+        name,
+        metadata?.fileName ?: DEFAULT_FILE_NAME,
+        this
+    )
+
     private suspend fun compressImage(uri: Uri): Result<ByteArray> =
         withContext(Dispatchers.IO) {
             loadBitmap(uri).map { bitmap ->
@@ -112,8 +90,7 @@ class ContentUriRequestBody @Inject constructor(
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private suspend fun loadBitmapWithImageDecoder(uri: Uri): Result<Bitmap> =
+    private suspend fun loadBitmap(uri: Uri): Result<Bitmap> =
         withContext(Dispatchers.IO) {
             runCatching {
                 val source = ImageDecoder.createSource(contentResolver, uri)
@@ -124,46 +101,14 @@ class ContentUriRequestBody @Inject constructor(
                         decoder.setTargetSize(size.width, size.height)
                     }
                 }
-            }
-        }
-
-    private suspend fun loadBitmap(uri: Uri): Result<Bitmap> =
-        withContext(Dispatchers.IO) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                loadBitmapWithImageDecoder(uri)
-            } else {
-                loadBitmapLegacy(uri)
-            }
-        }
-
-    private suspend fun loadBitmapLegacy(uri: Uri): Result<Bitmap> =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val options = BitmapFactory.Options().apply {
-                    inJustDecodeBounds = true
-                }
-
-                contentResolver.openInputStream(uri)?.use { input ->
-                    BitmapFactory.decodeStream(input, null, options)
-                }
-
-                options.apply {
-                    inJustDecodeBounds = false
-                    inSampleSize = calculateInSampleSize(outWidth, outHeight)
-                    inPreferredConfig = Bitmap.Config.ARGB_8888
-                }
-
-                contentResolver.openInputStream(uri)?.use { input ->
-                    BitmapFactory.decodeStream(input, null, options)
-                }?.let { bitmap ->
-                    getOrientation(uri).let { orientation ->
-                        if (orientation != ORIENTATION_NORMAL) {
-                            rotateBitmap(bitmap, orientation)
-                        } else {
-                            bitmap
-                        }
+            }.map { bitmap ->
+                getOrientation(uri).let { orientation ->
+                    if (orientation != ORIENTATION_NORMAL) {
+                        rotateBitmap(bitmap, orientation)
+                    } else {
+                        bitmap
                     }
-                } ?: error("비트맵 디코딩 실패")
+                }
             }
         }
 
@@ -189,12 +134,34 @@ class ContentUriRequestBody @Inject constructor(
                     }
                 }
 
-                if (BuildConfig.DEBUG) {
-                    Timber.d("Compression completed - Quality: $bestQuality, Size: ${buffer.size()} bytes")
-                }
+                Timber.d("Compression completed - Quality: $bestQuality, Size: ${buffer.size()} bytes")
                 return@use buffer.toByteArray()
             }
         }
+
+    private fun extractMetadata(uri: Uri): ImageMetadata =
+        runCatching {
+            contentResolver.query(
+                uri,
+                arrayOf(
+                    MediaStore.Images.Media.SIZE,
+                    MediaStore.Images.Media.DISPLAY_NAME
+                ),
+                null,
+                null,
+                null
+            )?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    ImageMetadata(
+                        fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)),
+                        size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)),
+                        mimeType = contentResolver.getType(uri)
+                    )
+                } else {
+                    ImageMetadata.EMPTY
+                }
+            } ?: ImageMetadata.EMPTY
+        }.getOrDefault(ImageMetadata.EMPTY)
 
     private fun getOrientation(uri: Uri): Int {
         contentResolver.query(
@@ -247,11 +214,6 @@ class ContentUriRequestBody @Inject constructor(
             }
         }.getOrDefault(bitmap)
 
-    private fun calculateInSampleSize(width: Int, height: Int): Int {
-        val ratio = max(1, min(height / config.maxHeight, width / config.maxWidth))
-        return Integer.highestOneBit(ratio)
-    }
-
     private fun calculateTargetSize(width: Int, height: Int): Size {
         val ratio = width.toFloat() / height.toFloat()
         return if (width > height) {
@@ -262,16 +224,12 @@ class ContentUriRequestBody @Inject constructor(
     }
 
     override fun contentLength(): Long = compressedImage?.size?.toLong() ?: -1L
+
     override fun contentType(): MediaType? = metadata?.mimeType?.toMediaTypeOrNull()
+
     override fun writeTo(sink: BufferedSink) {
         compressedImage?.let(sink::write)
     }
-
-    fun toFormData(name: String): MultipartBody.Part = MultipartBody.Part.createFormData(
-        name,
-        metadata?.fileName ?: DEFAULT_FILE_NAME,
-        this
-    )
 
     companion object {
         private const val ORIENTATION_NORMAL = 0
