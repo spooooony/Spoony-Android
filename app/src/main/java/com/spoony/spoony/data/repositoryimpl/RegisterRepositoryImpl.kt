@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -55,38 +56,38 @@ class RegisterRepositoryImpl @Inject constructor(
         categoryId: Int,
         menuList: List<String>,
         photos: List<Uri>
-    ): Result<Unit> = runCatching {
-        val requestDto = RegisterPostRequestDto(
-            userId = userId,
-            title = title,
-            description = description,
-            placeName = placeName,
-            placeAddress = placeAddress,
-            placeRoadAddress = placeRoadAddress,
-            latitude = latitude,
-            longitude = longitude,
-            categoryId = categoryId,
-            menuList = menuList
-        )
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            val requestDto = RegisterPostRequestDto(
+                userId = userId,
+                title = title,
+                description = description,
+                placeName = placeName,
+                placeAddress = placeAddress,
+                placeRoadAddress = placeRoadAddress,
+                latitude = latitude,
+                longitude = longitude,
+                categoryId = categoryId,
+                menuList = menuList
+            )
 
-        coroutineScope {
-            val deferredRequestBody = async {
-                Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
+            coroutineScope {
+                val requestBody = Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
                     .toRequestBody("application/json".toMediaType())
-            }
 
-            val deferredPhotoParts = photos.map { uri ->
-                async(Dispatchers.IO) {
-                    ContentUriRequestBody(context, uri)
-                        .apply { prepareImage() }
-                        .toFormData("photos")
+                val photoParts = photos.map { uri ->
+                    async {
+                        ContentUriRequestBody(context, uri)
+                            .apply { prepareImage() }
+                            .toFormData("photos")
+                    }
                 }
-            }
 
-            postService.registerPost(
-                data = deferredRequestBody.await(),
-                photos = deferredPhotoParts.awaitAll()
-            ).data
+                postService.registerPost(
+                    data = requestBody,
+                    photos = photoParts.awaitAll()
+                ).data!!
+            }
         }
     }
 }
