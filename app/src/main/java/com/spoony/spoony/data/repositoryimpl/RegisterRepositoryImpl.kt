@@ -73,13 +73,13 @@ class RegisterRepositoryImpl @Inject constructor(
 
             coroutineScope {
                 val requestBody = Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
-                    .toRequestBody("application/json".toMediaType())
+                    .toRequestBody(MEDIA_TYPE_JSON.toMediaType())
 
                 val photoParts = photos.map { uri ->
                     async {
                         ContentUriRequestBody(context, uri)
                             .apply { prepareImage() }
-                            .toFormData("photos")
+                            .toFormData(FORM_DATA_NAME_PHOTOS)
                     }
                 }
 
@@ -89,5 +89,10 @@ class RegisterRepositoryImpl @Inject constructor(
                 ).data!!
             }
         }
+    }
+
+    companion object {
+        private const val MEDIA_TYPE_JSON = "application/json"
+        private const val FORM_DATA_NAME_PHOTOS = "photos"
     }
 }
