@@ -224,7 +224,6 @@ class ContentUriRequestBody @Inject constructor(
         return Size(targetWidth, targetHeight)
     }
 
-
     override fun contentLength(): Long = compressedImage?.size?.toLong() ?: -1L
 
     override fun contentType(): MediaType? = metadata?.mimeType?.toMediaTypeOrNull()
