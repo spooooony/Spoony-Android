@@ -9,15 +9,15 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.spoony.spoony.presentation.explore.navigation.Explore
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.map.navigaion.Map
 import com.spoony.spoony.presentation.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
-import com.spoony.spoony.presentation.register.navigation.Register
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
+
+const val NAVIGATION_ROOT = 0
 
 class MainNavigator(
     val navController: NavHostController
@@ -58,35 +58,35 @@ class MainNavigator(
     }
 
     fun navigateToReport(
-        postId: Int,
-        navOptions: NavOptions? = null
+        postId: Int
     ) {
         navController.navigateToReport(postId = postId)
     }
 
     fun navigateToExplore(
-        fromRegister: Boolean = false,
-        navOptions: NavOptions? = if (fromRegister) {
-            navOptions {
-                popUpTo(Register) {
-                    inclusive = true
-                }
-                launchSingleTop = true
+        navOptions: NavOptions = navOptions {
+            popUpTo(NAVIGATION_ROOT) {
+                inclusive = true
+                saveState = true
             }
-        } else {
-            navOptions {
-                popUpTo(Explore) {
-                    inclusive = false
-                }
-                restoreState = true
-                launchSingleTop = true
-            }
+            restoreState = true
+            launchSingleTop = true
         }
     ) {
         navController.navigateToExplore(navOptions)
     }
 
-    fun navigateToRegister(navOptions: NavOptions? = null) {
+    fun navigateToRegister(
+        navOptions: NavOptions =
+            navOptions {
+                popUpTo(NAVIGATION_ROOT) {
+                    inclusive = true
+                    saveState = true
+                }
+                restoreState = true
+                launchSingleTop = true
+            }
+    ) {
         navController.navigateToRegister(navOptions)
     }
 
@@ -102,7 +102,10 @@ class MainNavigator(
     }
 
     fun navigateToLocationMap(
-        navOptions: NavOptions? = null,
+        navOptions: NavOptions = navOptions {
+            popUpTo(Map()) {
+            }
+        },
         locationId: Int? = null,
         locationName: String? = null,
         scale: String? = null,

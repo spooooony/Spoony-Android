@@ -81,7 +81,7 @@ fun RegisterStepTwoScreen(
             color = SpoonyAndroidTheme.colors.black
         )
 
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         ReviewSection(
             oneLineReview = state.oneLineReview,
@@ -147,6 +147,14 @@ private fun ReviewSection(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
+        Text(
+            text = "당신의 맛집을 한 줄로 표현해 주세요",
+            style = SpoonyAndroidTheme.typography.body1sb,
+            color = SpoonyAndroidTheme.colors.black
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         SpoonyLineTextField(
             value = oneLineReview,
             onValueChanged = onOneLineReviewChange,

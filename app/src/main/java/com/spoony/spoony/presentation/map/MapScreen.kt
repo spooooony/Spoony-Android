@@ -89,8 +89,10 @@ fun MapRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getAddedPlaceList()
-        viewModel.getSpoonCount()
+        if (state.locationModel.placeId == null) {
+            viewModel.getAddedPlaceList()
+            viewModel.getSpoonCount()
+        }
     }
 
     val userName = when (state.userName) {
@@ -132,7 +134,7 @@ fun MapRoute(
                 onPlaceItemClick = viewModel::getPlaceInfo,
                 onPlaceCardClick = navigateToPlaceDetail,
                 navigateToMapSearch = navigateToMapSearch,
-                onBackButtonClick = viewModel::resetSelectedPlace
+                onBackButtonClick = navigateUp
             )
         }
 
