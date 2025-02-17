@@ -215,13 +215,15 @@ class ContentUriRequestBody @Inject constructor(
         }.getOrDefault(bitmap)
 
     private fun calculateTargetSize(width: Int, height: Int): Size {
-        val ratio = width.toFloat() / height.toFloat()
-        return if (width > height) {
-            Size(config.maxWidth, (config.maxWidth / ratio).toInt())
-        } else {
-            Size((config.maxHeight * ratio).toInt(), config.maxHeight)
+        if (width <= config.maxWidth && height <= config.maxHeight) {
+            return Size(width, height)
         }
+        val scaleFactor = min(config.maxWidth / width.toFloat(), config.maxHeight / height.toFloat())
+        val targetWidth = (width * scaleFactor).toInt()
+        val targetHeight = (height * scaleFactor).toInt()
+        return Size(targetWidth, targetHeight)
     }
+
 
     override fun contentLength(): Long = compressedImage?.size?.toLong() ?: -1L
 
