@@ -6,6 +6,7 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.presentation.map.model.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -14,11 +15,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class MapSearchViewModel @Inject constructor(
-    private val mapRepository: MapRepository,
+    private val mapRepository: MapRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<MapSearchState> = MutableStateFlow(MapSearchState())
     val state: StateFlow<MapSearchState>

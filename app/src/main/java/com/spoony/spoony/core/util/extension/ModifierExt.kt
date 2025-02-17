@@ -1,15 +1,24 @@
 package com.spoony.spoony.core.util.extension
 
+import android.view.HapticFeedbackConstants
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -22,15 +31,20 @@ import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.black
 import com.spoony.spoony.core.designsystem.theme.gray500
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
@@ -88,4 +102,117 @@ fun Modifier.advancedImePadding() = composed {
     }
         .consumeWindowInsets(PaddingValues(bottom = (consumePadding / LocalDensity.current.density).dp))
         .imePadding()
+}
+
+@Composable
+fun Modifier.hapticClick(
+    interactionSource: MutableInteractionSource = MutableInteractionSource(),
+    indication: Indication? = null,
+    enabled: Boolean = true,
+    onClickLabel: String? = null,
+    role: Role? = null,
+    onClick: () -> Unit = {}
+): Modifier = composed {
+    val view = LocalView.current
+
+    this.clickable(
+        interactionSource = interactionSource,
+        indication = indication,
+        enabled = enabled,
+        onClickLabel = onClickLabel,
+        role = role,
+        onClick = {
+            onClick()
+            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        }
+    )
+}
+
+@Composable
+fun Modifier.bounceClick(
+    scaleDown: Float = 0.8f,
+    scaleUp: Float = 1.2f,
+    defaultScale: Float = 1.0f,
+    onClick: () -> Unit = {}
+): Modifier = composed {
+    val scope = rememberCoroutineScope()
+    var isClicked by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val durationMillis by remember { mutableIntStateOf(100) }
+
+    LaunchedEffect(isClicked) {
+        if (isClicked) {
+            delay(150)
+            isClicked = false
+        }
+    }
+
+    val scaleXSate by animateFloatAsState(
+        targetValue = if (isClicked) scaleUp else defaultScale,
+        animationSpec = tween(
+            durationMillis = durationMillis,
+            easing = LinearEasing
+        ),
+        label = ""
+    )
+
+    val scaleYState by animateFloatAsState(
+        targetValue = if (isClicked) scaleDown else defaultScale,
+        animationSpec = tween(
+            durationMillis = durationMillis,
+            easing = LinearEasing
+        ),
+        label = ""
+    )
+
+    this
+        .graphicsLayer {
+            scaleX = scaleXSate
+            scaleY = scaleYState
+        }
+        .hapticClick(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = {
+                onClick()
+                scope.launch {
+                    // 화면 전환과 동시에 애니메이션이 들어갈 경우 부자연스러워짐을 방지하기 위한 delay
+                    delay(100)
+                    isClicked = true
+                }
+            }
+        )
+}
+
+@Composable
+fun Modifier.rotateClick(
+    scaleDown: Float = 0.01f,
+    rotateMax: Float = 1000f,
+    onClick: () -> Unit = {}
+): Modifier = composed {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val scale by animateFloatAsState(
+        if (isPressed) scaleDown else 1f,
+        label = ""
+    )
+
+    val rotation by animateFloatAsState(
+        if (isPressed) rotateMax else 1f,
+        label = ""
+    )
+    this
+        .graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+            rotationX = rotation
+            rotationY = rotation
+            rotationZ = rotation
+        }
+        .hapticClick(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick
+        )
 }

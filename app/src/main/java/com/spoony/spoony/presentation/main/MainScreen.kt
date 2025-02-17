@@ -30,7 +30,7 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-const val SHOW_SNACKBAR_TIMEMILLIS = 2500L
+const val SHOW_SNACKBAR_TIMEMILLIS = 3000L
 
 @Composable
 fun MainScreen(
@@ -112,7 +112,7 @@ fun MainScreen(
 
                 registerNavGraph(
                     paddingValues = paddingValues,
-                    navigateToExplore = { navigator.navigateToExplore(fromRegister = true) }
+                    navigateToExplore = navigator::navigateToExplore
                 )
 
                 placeDetailNavGraph(

@@ -88,7 +88,7 @@ dependencies {
     implementation(libs.lottie)
     implementation(libs.advanced.bottom.sheet)
 
-    implementation(libs.kotlinx.immutable) 
+    implementation(libs.kotlinx.immutable)
 
     // Naver Map
     implementation(libs.bundles.naverMap)

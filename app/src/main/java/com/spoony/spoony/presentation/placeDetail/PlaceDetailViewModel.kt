@@ -40,13 +40,12 @@ class PlaceDetailViewModel @Inject constructor(
             postId = UiState.Success(data = postArgs.postId)
         )
         getPost(postArgs.postId)
-        getUserInfo()
         getUserSpoonCount()
     }
 
-    private fun getUserInfo() {
+    private fun getUserInfo(userId: Int) {
         viewModelScope.launch {
-            authRepository.getUserInfo(userId = USER_ID)
+            authRepository.getUserInfo(userId = userId)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -68,6 +67,7 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.getPost(postId = postId, userId = USER_ID)
                 .onSuccess { response ->
+                    getUserInfo(response.userId)
                     _state.update {
                         it.copy(
                             postModel = UiState.Success(

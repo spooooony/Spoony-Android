@@ -75,7 +75,6 @@ import com.spoony.spoony.presentation.map.model.LocationModel
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -90,8 +89,10 @@ fun MapRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getAddedPlaceList()
-        viewModel.getSpoonCount()
+        if (state.locationModel.placeId == null) {
+            viewModel.getAddedPlaceList()
+            viewModel.getSpoonCount()
+        }
     }
 
     val userName = when (state.userName) {
@@ -133,7 +134,7 @@ fun MapRoute(
                 onPlaceItemClick = viewModel::getPlaceInfo,
                 onPlaceCardClick = navigateToPlaceDetail,
                 navigateToMapSearch = navigateToMapSearch,
-                onBackButtonClick = viewModel::resetSelectedPlace
+                onBackButtonClick = navigateUp
             )
         }
 
@@ -159,7 +160,7 @@ fun MapScreen(
     onBackButtonClick: () -> Unit
 ) {
     val sheetState = rememberBottomSheetState(
-        initialValue = if(placeList.isNotEmpty()) AdvancedSheetState.Collapsed else AdvancedSheetState.PartiallyExpanded,
+        initialValue = if (placeList.isNotEmpty()) AdvancedSheetState.Collapsed else AdvancedSheetState.PartiallyExpanded,
         defineValues = {
             AdvancedSheetState.Collapsed at height(20)
             AdvancedSheetState.PartiallyExpanded at height(50)

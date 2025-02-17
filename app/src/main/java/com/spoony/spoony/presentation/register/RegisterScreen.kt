@@ -84,9 +84,6 @@ fun RegisterScreen(
                     viewModel = viewModel
                 )
             }
-
-            if (state.isLoading) {
-            }
         }
 
         AnimatedVisibility(

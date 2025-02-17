@@ -57,7 +57,7 @@ fun MapListItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f, false)
                 )
                 IconTag(
                     text = categoryName,

@@ -150,7 +150,7 @@ private fun CustomBasicTextField(
                     RoundedCornerShape(8.dp)
                 )
                 .background(backgroundColor)
-                .padding(12.dp)
+                .padding(horizontal = 12.dp)
                 .focusRequester(focusRequester)
                 .onFocusChanged { focusState ->
                     onFocusChanged(focusState.isFocused)
@@ -170,7 +170,8 @@ private fun CustomBasicTextField(
             ),
             decorationBox = { innerTextField ->
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.padding(vertical = 12.dp)
                 ) {
                     Box(
                         modifier = Modifier
