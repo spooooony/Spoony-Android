@@ -67,7 +67,7 @@ fun RegisterScreen(
                 totalSteps = 3f,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 56.dp, bottom = 10.dp,start = 20.dp, end = 20.dp)
+                    .padding(top = 56.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
             )
 
             NavHost(

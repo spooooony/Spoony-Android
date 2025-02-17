@@ -305,4 +305,3 @@ private fun MenuSection(
         }
     }
 }
-
