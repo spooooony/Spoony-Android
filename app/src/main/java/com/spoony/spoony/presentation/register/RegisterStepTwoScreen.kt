@@ -73,7 +73,7 @@ fun RegisterStepTwoScreen(
             .fillMaxSize()
             .addFocusCleaner(focusManager)
             .verticalScroll(rememberScrollState())
-            .padding(top = 22.dp, bottom = 17.dp)
+            .padding(top = 22.dp, bottom = 17.dp, start = 20.dp, end = 20.dp)
     ) {
         Text(
             text = "거의 다 왔어요!",
