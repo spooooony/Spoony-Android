@@ -13,6 +13,7 @@ import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -20,7 +21,6 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
-import kotlin.system.measureTimeMillis
 
 class RegisterRepositoryImpl @Inject constructor(
     private val placeDataSource: PlaceDataSource,
