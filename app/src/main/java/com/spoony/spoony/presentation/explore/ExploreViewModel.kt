@@ -65,7 +65,7 @@ class ExploreViewModel @Inject constructor(
     fun getFeedList() {
         viewModelScope.launch {
             exploreRepository.getFeedList(
-                userId = 30,
+                userId = USER_ID,
                 categoryId = _state.value.selectedCategoryId,
                 locationQuery = _state.value.selectedCity,
                 sortBy = _state.value.selectedSortingOption.stringCode
