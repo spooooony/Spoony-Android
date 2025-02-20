@@ -24,7 +24,8 @@ fun NavController.navigateToMap(
             scale = scale,
             latitude = latitude,
             longitude = longitude
-        ), navOptions
+        ),
+        navOptions
     )
 }
 

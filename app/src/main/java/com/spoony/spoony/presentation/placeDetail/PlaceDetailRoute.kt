@@ -157,7 +157,7 @@ fun PlaceDetailRoute(
                             modifier = Modifier
                                 .navigationBarsPadding(),
                             addMapCount = state.addMapCount,
-                            isScooped = state.isScooped,
+                            isScooped = state.isScooped || data.isMine,
                             isAddMap = state.isAddMap,
                             onScoopButtonClick = {
                                 scoopDialogVisibility = true
@@ -188,7 +188,7 @@ fun PlaceDetailRoute(
                             date = data.date.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,
                             placeName = data.placeName,
-                            isScooped = state.isScooped,
+                            isScooped = state.isScooped || data.isMine,
                             dropdownMenuList = dropDownMenuList,
                             onReportButtonClick = { navigateToReport(postId) }
                         )

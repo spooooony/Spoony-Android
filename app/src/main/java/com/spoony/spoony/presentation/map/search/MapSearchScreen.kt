@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +34,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun MapSearchRoute(
     navigateUp: () -> Unit,
     navigateToLocationMap: (Int, String, String, String, String) -> Unit,
-    viewModel: MapSearchViewModel = hiltViewModel(),
+    viewModel: MapSearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -64,9 +65,10 @@ private fun MapSearchScreen(
     onBackButtonClick: () -> Unit,
     onDeleteButtonClick: (String) -> Unit,
     onResultItemClick: (Int, String, String, String, String) -> Unit,
-    onDeleteAllButtonClick: () -> Unit,
+    onDeleteAllButtonClick: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -118,12 +120,17 @@ private fun MapSearchScreen(
                             .padding(horizontal = 20.dp)
                     ) {
                         items(
-                            items = recentSearchList,
+                            items = recentSearchList
                         ) { searchKeyword ->
                             MapSearchRecentItem(
                                 searchText = searchKeyword,
-                                onClick = {
+                                onClickIcon = {
                                     onDeleteButtonClick(searchKeyword)
+                                },
+                                onClickText = {
+                                    onSearchKeywordChanged(searchKeyword)
+                                    onSearchButtonClick()
+                                    focusManager.clearFocus()
                                 }
                             )
                         }
