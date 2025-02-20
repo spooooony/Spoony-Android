@@ -8,24 +8,31 @@ import com.spoony.spoony.core.database.entity.SearchEntity
 
 @Dao
 interface SearchDao {
+    // 검색어 추가
     @Insert
     suspend fun insertSearch(searchEntity: SearchEntity)
 
+    // 특정 검색어 삭제
     @Query("DELETE FROM search WHERE text = :searchText")
     suspend fun deleteSearchByText(searchText: String)
 
+    // 전체 검색어 삭제
     @Query("DELETE FROM search")
     suspend fun deleteAllSearches()
 
+    // 특정 검색어 존재 여부 확인
     @Query("SELECT EXISTS(SELECT 1 FROM search WHERE text = :searchText)")
     suspend fun isSearchExists(searchText: String): Boolean
 
+    // 가장 오래된 검색어 삭제
     @Query("DELETE FROM search WHERE id IN (SELECT id FROM search ORDER BY id ASC LIMIT 1)")
     suspend fun deleteOldestSearch()
 
+    // 최신순으로 최대 6개의 검색어 가져오기
     @Query("SELECT * FROM search ORDER BY id DESC LIMIT 6")
     suspend fun getRecentSearches(): List<SearchEntity>
 
+    // 전체 검색어 개수 가져오기
     @Query("SELECT COUNT(*) FROM search")
     suspend fun getSearchCount(): Int
 
