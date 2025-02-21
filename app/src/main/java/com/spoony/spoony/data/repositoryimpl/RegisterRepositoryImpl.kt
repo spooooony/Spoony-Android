@@ -2,6 +2,7 @@ package com.spoony.spoony.data.repositoryimpl
 
 import android.content.Context
 import android.net.Uri
+import com.spoony.spoony.core.network.ContentUriRequestBody
 import com.spoony.spoony.data.datasource.CategoryDataSource
 import com.spoony.spoony.data.datasource.PlaceDataSource
 import com.spoony.spoony.data.dto.request.RegisterPostRequestDto
@@ -12,9 +13,14 @@ import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import timber.log.Timber
 
 class RegisterRepositoryImpl @Inject constructor(
     private val placeDataSource: PlaceDataSource,
@@ -51,31 +57,42 @@ class RegisterRepositoryImpl @Inject constructor(
         menuList: List<String>,
         photos: List<Uri>
     ): Result<Unit> = runCatching {
-        // 1. Request DTO를 RequestBody로 변환
-        val requestDto = RegisterPostRequestDto(
-            userId = userId,
-            title = title,
-            description = description,
-            placeName = placeName,
-            placeAddress = placeAddress,
-            placeRoadAddress = placeRoadAddress,
-            latitude = latitude,
-            longitude = longitude,
-            categoryId = categoryId,
-            menuList = menuList
-        )
-
-        val jsonString = Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
-        val requestBody = jsonString.toRequestBody("application/json".toMediaType())
-
-        // 2. ContentUriRequestBody를 사용하여 이미지 변환
-        val photoParts = photos.map { uri ->
-            ContentUriRequestBody(context, uri).toFormData("photos")
+        coroutineScope {
+            val totalTime = measureTimeMillis {
+                val asyncRequestBody = async {
+                    val requestDto = RegisterPostRequestDto(
+                        userId = userId,
+                        title = title,
+                        description = description,
+                        placeName = placeName,
+                        placeAddress = placeAddress,
+                        placeRoadAddress = placeRoadAddress,
+                        latitude = latitude,
+                        longitude = longitude,
+                        categoryId = categoryId,
+                        menuList = menuList
+                    )
+                    Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
+                        .toRequestBody(MEDIA_TYPE_JSON.toMediaType())
+                }
+                val asyncPhotoParts = photos.map { uri ->
+                    async {
+                        ContentUriRequestBody(context, uri)
+                            .apply { prepareImage() }
+                            .toFormData(FORM_DATA_NAME_PHOTOS)
+                    }
+                }
+                postService.registerPost(
+                    data = asyncRequestBody.await(),
+                    photos = asyncPhotoParts.awaitAll()
+                ).data
+            }
+            Timber.d("전체 업로드 소요 시간: $totalTime ms")
         }
+    }
 
-        postService.registerPost(
-            data = requestBody,
-            photos = photoParts
-        ).data
+    companion object {
+        private const val MEDIA_TYPE_JSON = "application/json"
+        private const val FORM_DATA_NAME_PHOTOS = "photos"
     }
 }
