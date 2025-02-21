@@ -28,15 +28,15 @@ interface SearchDao {
     @Query("DELETE FROM search WHERE id IN (SELECT id FROM search ORDER BY id ASC LIMIT 1)")
     suspend fun deleteOldestSearch()
 
-    // 최신순으로 최대 6개의 검색어 가져오기
-    @Query("SELECT * FROM search ORDER BY id DESC LIMIT 6")
+    // 최신순으로 최대 검색어 가져오기
+    @Query("SELECT * FROM search ORDER BY id DESC LIMIT " + MAX_RECENT_SEARCHES)
     suspend fun getRecentSearches(): List<SearchEntity>
 
     // 전체 검색어 개수 가져오기
     @Query("SELECT COUNT(*) FROM search")
     suspend fun getSearchCount(): Int
 
-    // 검색어 추가 시, 중복 체크 및 최근 6개만 유지하도록 처리
+    // 검색어 추가 시, 중복 체크 및 최근 검색어 유지하도록 처리
     @Transaction
     suspend fun addSearchWithLimit(searchText: String) {
         // 검색어 정규화 - 앞뒤 공백 제거
@@ -50,12 +50,16 @@ interface SearchDao {
             deleteSearchByText(trimmedText)
         }
 
-        // 검색어가 6개 이상인 경우 가장 오래된 검색어 삭제
-        if (getSearchCount() >= 6) {
+        // 검색어가 최대 개수 이상인 경우 가장 오래된 검색어 삭제
+        if (getSearchCount() >= MAX_RECENT_SEARCHES) {
             deleteOldestSearch()
         }
 
         // 새로운 검색어 추가
         insertSearch(SearchEntity(text = trimmedText))
+    }
+
+    companion object {
+        private const val MAX_RECENT_SEARCHES = 6
     }
 }
