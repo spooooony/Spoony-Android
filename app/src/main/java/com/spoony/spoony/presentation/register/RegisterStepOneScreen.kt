@@ -1,5 +1,10 @@
 package com.spoony.spoony.presentation.register
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,7 +77,7 @@ fun RegisterStepOneScreen(
             .addFocusCleaner(focusManager)
             .advancedImePadding()
             .verticalScroll(rememberScrollState())
-            .padding(top = 22.dp, bottom = 17.dp)
+            .padding(top = 22.dp, bottom = 17.dp, start = 20.dp, end = 20.dp)
     ) {
         Text(
             text = "나의 찐맛집을 등록해볼까요?",
@@ -291,7 +296,11 @@ private fun MenuSection(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (menuList.size < MAX_MENU_COUNT) {
+        AnimatedVisibility(
+            visible = menuList.size < MAX_MENU_COUNT,
+            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+        ) {
             AddMenuButton(onClick = onMenuAdd)
         }
     }

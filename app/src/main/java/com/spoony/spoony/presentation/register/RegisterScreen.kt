@@ -61,14 +61,13 @@ fun RegisterScreen(
             modifier = modifier
                 .fillMaxSize()
                 .background(SpoonyAndroidTheme.colors.white)
-                .padding(horizontal = 20.dp)
         ) {
             TopLinearProgressBar(
                 currentStep = state.currentStep,
                 totalSteps = 3f,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 56.dp, bottom = 10.dp)
+                    .padding(top = 56.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
             )
 
             NavHost(
