@@ -1,5 +1,7 @@
 package com.spoony.spoony.presentation.register.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -39,7 +41,20 @@ fun NavGraphBuilder.registerGraph(
     viewModel: RegisterViewModel,
     onResetRegisterState: () -> Unit
 ) {
-    composable<RegisterRoute.StepOne> {
+    composable<RegisterRoute.StepOne>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        }
+    ) {
         RegisterStepOneScreen(
             viewModel = viewModel,
             onNextClick = {
@@ -52,7 +67,20 @@ fun NavGraphBuilder.registerGraph(
         )
     }
 
-    composable<RegisterRoute.StepTwo> {
+    composable<RegisterRoute.StepTwo>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        }
+    ) {
         RegisterStepTwoScreen(
             viewModel = viewModel,
             onStepTwoComplete = {
