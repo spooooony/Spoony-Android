@@ -45,7 +45,17 @@ object RetrofitModule {
                 Timber.tag("okhttp").d(JSONObject(message).toString(4))
 
             else -> {
-                Timber.tag("okhttp").d("CONNECTION INFO -> $message")
+                if (message.contains("Content-Disposition: form-data;")) {
+                    val jsonStart = message.indexOf("{")
+                    val jsonEnd = message.lastIndexOf("}")
+                    if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
+                        val jsonMessage = message.substring(jsonStart, jsonEnd + 1)
+
+                        Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(4))
+                    }
+                } else {
+                    Timber.tag("okhttp").d("CONNECTION INFO -> $message")
+                }
             }
         }
     }.apply {
