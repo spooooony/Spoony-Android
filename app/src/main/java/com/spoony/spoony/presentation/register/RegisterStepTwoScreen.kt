@@ -38,6 +38,7 @@ import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLineTextFie
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
+import com.spoony.spoony.core.util.extension.advancedImePadding
 import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_DETAIL_REVIEW_LENGTH
 import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MAX_ONE_LINE_REVIEW_LENGTH
 import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MIN_DETAIL_REVIEW_LENGTH
@@ -72,6 +73,7 @@ fun RegisterStepTwoScreen(
         modifier = modifier
             .fillMaxSize()
             .addFocusCleaner(focusManager)
+            .advancedImePadding()
             .verticalScroll(rememberScrollState())
             .padding(top = 22.dp, bottom = 17.dp, start = 20.dp, end = 20.dp)
     ) {
