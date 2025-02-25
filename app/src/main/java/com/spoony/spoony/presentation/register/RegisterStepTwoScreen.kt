@@ -98,11 +98,8 @@ fun RegisterStepTwoScreen(
             onPhotosSelected = viewModel::updatePhotos
         )
 
-        Spacer(
-            modifier = Modifier
-                .weight(1f)
-                .defaultMinSize(24.dp)
-        )
+        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(24.dp))
 
         NextButton(
             enabled = isNextButtonEnabled,
