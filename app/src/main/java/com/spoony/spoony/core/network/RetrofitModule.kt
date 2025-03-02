@@ -1,4 +1,4 @@
-package com.spoony.spoony.data.di
+package com.spoony.spoony.core.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.spoony.spoony.BuildConfig.BASE_URL
