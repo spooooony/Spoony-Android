@@ -7,11 +7,11 @@ import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import com.spoony.spoony.data.dto.response.ZzimLocationResponseDto
 
 interface PostRemoteDataSource {
-    suspend fun postScoopPost(postId: Int, userId: Int): BaseResponse<Boolean>
-    suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto>
-    suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean>
-    suspend fun deletePinMap(postId: Int, userId: Int): BaseResponse<Boolean>
-    suspend fun getAddedMapPost(postId: Int, userId: Int): BaseResponse<AddedMapPostListDto>
-    suspend fun getAddedMap(userId: Int): BaseResponse<AddedMapListResponseDto>
-    suspend fun getZzimByLocation(userId: Int, locationId: Int): BaseResponse<ZzimLocationResponseDto>
+    suspend fun postScoopPost(postId: Int): BaseResponse<Boolean>
+    suspend fun getPostData(postId: Int): BaseResponse<GetPostResponseDto>
+    suspend fun postAddMapData(postId: Int): BaseResponse<Boolean>
+    suspend fun deletePinMap(postId: Int): BaseResponse<Boolean>
+    suspend fun getAddedMapPost(postId: Int): BaseResponse<AddedMapPostListDto>
+    suspend fun getAddedMap(): BaseResponse<AddedMapListResponseDto>
+    suspend fun getZzimByLocation(locationId: Int): BaseResponse<ZzimLocationResponseDto>
 }

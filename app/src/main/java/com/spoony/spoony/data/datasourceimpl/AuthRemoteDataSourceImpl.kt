@@ -10,8 +10,8 @@ import javax.inject.Inject
 class AuthRemoteDataSourceImpl @Inject constructor(
     private val authService: AuthService
 ) : AuthRemoteDataSource {
-    override suspend fun getUserInfo(userId: Int): BaseResponse<UserInfoResponseDto> =
-        authService.getUserInfo(userId)
-    override suspend fun getSpoonCount(userId: Int): BaseResponse<UserSpoonCountResponseDto> =
-        authService.getSpoonCount(userId)
+    override suspend fun getUserInfo(): BaseResponse<UserInfoResponseDto> =
+        authService.getUserInfo()
+    override suspend fun getSpoonCount(): BaseResponse<UserSpoonCountResponseDto> =
+        authService.getSpoonCount()
 }

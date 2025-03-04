@@ -5,6 +5,6 @@ import com.spoony.spoony.data.dto.response.UserInfoResponseDto
 import com.spoony.spoony.data.dto.response.UserSpoonCountResponseDto
 
 interface AuthRemoteDataSource {
-    suspend fun getUserInfo(userId: Int): BaseResponse<UserInfoResponseDto>
-    suspend fun getSpoonCount(userId: Int): BaseResponse<UserSpoonCountResponseDto>
+    suspend fun getUserInfo(): BaseResponse<UserInfoResponseDto>
+    suspend fun getSpoonCount(): BaseResponse<UserSpoonCountResponseDto>
 }

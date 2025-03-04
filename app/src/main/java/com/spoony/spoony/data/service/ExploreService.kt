@@ -7,9 +7,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ExploreService {
-    @GET("/api/v1/feed/{userId}/{categoryId}")
+    @GET("/api/v1/feed/{categoryId}")
     suspend fun getFeedsList(
-        @Path("userId") userId: Int,
         @Path("categoryId") categoryId: Int,
         @Query("query") query: String,
         @Query("sortBy") sortBy: String

@@ -3,7 +3,6 @@ package com.spoony.spoony.presentation.explore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.presentation.explore.model.toModel
@@ -51,7 +50,7 @@ class ExploreViewModel @Inject constructor(
 
     fun getSpoonAccount() {
         viewModelScope.launch {
-            authRepository.getSpoonCount(userId = USER_ID)
+            authRepository.getSpoonCount()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -65,7 +64,6 @@ class ExploreViewModel @Inject constructor(
     fun getFeedList() {
         viewModelScope.launch {
             exploreRepository.getFeedList(
-                userId = USER_ID,
                 categoryId = _state.value.selectedCategoryId,
                 locationQuery = _state.value.selectedCity,
                 sortBy = _state.value.selectedSortingOption.stringCode

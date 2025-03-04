@@ -5,8 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RegisterPostRequestDto(
-    @SerialName("userId")
-    val userId: Int,
     @SerialName("title")
     val title: String,
     @SerialName("description")

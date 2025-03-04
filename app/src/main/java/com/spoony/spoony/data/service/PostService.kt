@@ -18,15 +18,13 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface PostService {
-    @GET("/api/v1/post/{userId}/{postId}")
+    @GET("/api/v1/post/{postId}")
     suspend fun getPost(
-        @Path("userId") userId: Int,
         @Path("postId") postId: Int
     ): BaseResponse<GetPostResponseDto>
 
-    @GET("/api/v1/post/zzim/location/{userId}/{locationId}")
+    @GET("/api/v1/post/zzim/location/{locationId}")
     suspend fun getZzimByLocation(
-        @Path("userId") userId: Int,
         @Path("locationId") locationId: Int
     ): BaseResponse<ZzimLocationResponseDto>
 
@@ -40,20 +38,16 @@ interface PostService {
         @Body postScoopRequestDto: PostScoopRequestDto
     ): BaseResponse<Boolean>
 
-    @DELETE("/api/v1/post/zzim/{userId}/{postId}")
+    @DELETE("/api/v1/post/zzim/{postId}")
     suspend fun deletePinMap(
-        @Path("userId") userId: Int,
         @Path("postId") postId: Int
     ): BaseResponse<Boolean>
 
-    @GET("/api/v1/post/zzim/{userId}")
-    suspend fun getAddedMap(
-        @Path("userId") userId: Int
-    ): BaseResponse<AddedMapListResponseDto>
+    @GET("/api/v1/post/zzim")
+    suspend fun getAddedMap(): BaseResponse<AddedMapListResponseDto>
 
-    @GET("/api/v1/post/zzim/{userId}/{postId}")
+    @GET("/api/v1/post/zzim/{postId}")
     suspend fun getAddedMapPost(
-        @Path("userId") userId: Int,
         @Path("postId") postId: Int
     ): BaseResponse<AddedMapPostListDto>
 

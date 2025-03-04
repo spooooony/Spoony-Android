@@ -10,12 +10,10 @@ class ExploreRemoteDataSourceImpl @Inject constructor(
     private val exploreService: ExploreService
 ) : ExploreRemoteDataSource {
     override suspend fun getFeedList(
-        userId: Int,
         categoryId: Int,
         query: String,
         sortBy: String
     ): BaseResponse<FeedsResponseDto> = exploreService.getFeedsList(
-        userId = userId,
         categoryId = categoryId,
         query = query,
         sortBy = sortBy
