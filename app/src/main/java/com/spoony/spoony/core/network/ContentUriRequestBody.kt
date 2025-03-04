@@ -98,7 +98,8 @@ class ContentUriRequestBody @Inject constructor(
         MultipartBody.Part.createFormData(
             name = name,
             filename = metadata?.fileName ?: DEFAULT_FILE_NAME,
-            body = this)
+            body = this
+        )
 
     /**
      * compressImage(): 주어진 URI로부터 비트맵을 로드하고 압축 작업을 수행합니다.
