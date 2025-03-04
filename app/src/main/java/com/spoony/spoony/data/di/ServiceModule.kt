@@ -2,7 +2,6 @@ package com.spoony.spoony.data.di
 
 import com.spoony.spoony.data.service.AuthService
 import com.spoony.spoony.data.service.CategoryService
-import com.spoony.spoony.data.service.DummyService
 import com.spoony.spoony.data.service.ExploreService
 import com.spoony.spoony.data.service.MapService
 import com.spoony.spoony.data.service.PlaceService
@@ -18,11 +17,6 @@ import retrofit2.Retrofit
 @Module
 @InstallIn(SingletonComponent::class)
 object ServiceModule {
-    @Provides
-    @Singleton
-    fun provideDummyService(retrofit: Retrofit): DummyService =
-        retrofit.create(DummyService::class.java)
-
     @Provides
     @Singleton
     fun providePostService(retrofit: Retrofit): PostService =
