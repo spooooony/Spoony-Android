@@ -2,8 +2,6 @@ package com.spoony.spoony.core.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.spoony.spoony.BuildConfig.BASE_URL
-import com.spoony.spoony.core.util.extension.isJsonArray
-import com.spoony.spoony.core.util.extension.isJsonObject
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
