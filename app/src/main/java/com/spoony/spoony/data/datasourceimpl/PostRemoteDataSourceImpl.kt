@@ -1,7 +1,7 @@
 package com.spoony.spoony.data.datasourceimpl
 
+import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
-import com.spoony.spoony.data.dto.base.BaseResponse
 import com.spoony.spoony.data.dto.request.AddMapRequestDto
 import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.response.AddedMapListResponseDto
@@ -14,34 +14,32 @@ import javax.inject.Inject
 class PostRemoteDataSourceImpl @Inject constructor(
     private val postService: PostService
 ) : PostRemoteDataSource {
-    override suspend fun getPostData(postId: Int, userId: Int): BaseResponse<GetPostResponseDto> =
-        postService.getPost(userId = userId, postId = postId)
+    override suspend fun getPostData(postId: Int): BaseResponse<GetPostResponseDto> =
+        postService.getPost(postId = postId)
 
-    override suspend fun postScoopPost(postId: Int, userId: Int): BaseResponse<Boolean> =
+    override suspend fun postScoopPost(postId: Int): BaseResponse<Boolean> =
         postService.postScoopPost(
-            PostScoopRequestDto(postId = postId, userId = userId)
+            PostScoopRequestDto(postId = postId)
         )
 
-    override suspend fun deletePinMap(postId: Int, userId: Int): BaseResponse<Boolean> =
+    override suspend fun deletePinMap(postId: Int): BaseResponse<Boolean> =
         postService.deletePinMap(
-            postId = postId,
-            userId = userId
+            postId = postId
         )
 
-    override suspend fun getAddedMapPost(postId: Int, userId: Int): BaseResponse<AddedMapPostListDto> =
+    override suspend fun getAddedMapPost(postId: Int): BaseResponse<AddedMapPostListDto> =
         postService.getAddedMapPost(
-            postId = postId,
-            userId = userId
+            postId = postId
         )
 
-    override suspend fun getAddedMap(userId: Int): BaseResponse<AddedMapListResponseDto> =
-        postService.getAddedMap(userId)
+    override suspend fun getAddedMap(): BaseResponse<AddedMapListResponseDto> =
+        postService.getAddedMap()
 
-    override suspend fun postAddMapData(postId: Int, userId: Int): BaseResponse<Boolean> =
+    override suspend fun postAddMapData(postId: Int): BaseResponse<Boolean> =
         postService.postAddMapPost(
-            AddMapRequestDto(postId = postId, userId = userId)
+            AddMapRequestDto(postId = postId)
         )
 
-    override suspend fun getZzimByLocation(userId: Int, locationId: Int): BaseResponse<ZzimLocationResponseDto> =
-        postService.getZzimByLocation(userId, locationId)
+    override suspend fun getZzimByLocation(locationId: Int): BaseResponse<ZzimLocationResponseDto> =
+        postService.getZzimByLocation(locationId)
 }

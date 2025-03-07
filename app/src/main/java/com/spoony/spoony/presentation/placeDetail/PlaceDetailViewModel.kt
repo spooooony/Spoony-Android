@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.presentation.placeDetail.model.toModel
@@ -45,7 +44,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getUserInfo(userId: Int) {
         viewModelScope.launch {
-            authRepository.getUserInfo(userId = userId)
+            authRepository.getUserInfo()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -65,7 +64,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getPost(postId: Int) {
         viewModelScope.launch {
-            postRepository.getPost(postId = postId, userId = USER_ID)
+            postRepository.getPost(postId = postId)
                 .onSuccess { response ->
                     getUserInfo(response.userId)
                     _state.update {
@@ -91,7 +90,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getUserSpoonCount() {
         viewModelScope.launch {
-            authRepository.getSpoonCount(userId = USER_ID)
+            authRepository.getSpoonCount()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -113,7 +112,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     fun useSpoon(postId: Int) {
         viewModelScope.launch {
-            postRepository.postScoopPost(postId = postId, userId = USER_ID)
+            postRepository.postScoopPost(postId = postId)
                 .onSuccess {
                     _state.update {
                         it.copy(
@@ -131,7 +130,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     fun addMyMap(postId: Int) {
         viewModelScope.launch {
-            postRepository.postAddMap(postId = postId, userId = USER_ID)
+            postRepository.postAddMap(postId = postId)
                 .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
                     _state.update {
@@ -147,7 +146,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     fun deletePinMap(postId: Int) {
         viewModelScope.launch {
-            postRepository.deletePinMap(postId = postId, userId = USER_ID)
+            postRepository.deletePinMap(postId = postId)
                 .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
                     _state.update {

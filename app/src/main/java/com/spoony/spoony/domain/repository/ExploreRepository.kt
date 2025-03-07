@@ -7,7 +7,6 @@ interface ExploreRepository {
     suspend fun getCategoryList(): Result<List<CategoryEntity>>
 
     suspend fun getFeedList(
-        userId: Int,
         categoryId: Int,
         locationQuery: String,
         sortBy: String
