@@ -38,25 +38,30 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideLoggingInterceptor() = HttpLoggingInterceptor { message ->
-        when {
-            message.isJsonObject() ->
-                Timber.tag("okhttp").d(JSONObject(message).toString(4))
+        val jsonMessage = when {
+            message.contains("Content-Disposition: form-data;") -> {
+                val jsonStart = message.indexOf("{")
+                val jsonEnd = message.lastIndexOf("}")
 
-            message.isJsonArray() ->
-                Timber.tag("okhttp").d(JSONObject(message).toString(4))
+                if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
+                    message.substring(jsonStart, jsonEnd + 1)
+                } else {
+                    message
+                }
+            }
+
+            else -> message
+        }
+
+        when {
+            jsonMessage.isJsonObject() ->
+                Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(4))
+
+            jsonMessage.isJsonArray() ->
+                Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(4))
 
             else -> {
-                if (message.contains("Content-Disposition: form-data;")) {
-                    val jsonStart = message.indexOf("{")
-                    val jsonEnd = message.lastIndexOf("}")
-                    if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
-                        val jsonMessage = message.substring(jsonStart, jsonEnd + 1)
-
-                        Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(4))
-                    }
-                } else {
-                    Timber.tag("okhttp").d("CONNECTION INFO -> $message")
-                }
+                Timber.tag("okhttp").d("CONNECTION INFO -> $jsonMessage")
             }
         }
     }.apply {
