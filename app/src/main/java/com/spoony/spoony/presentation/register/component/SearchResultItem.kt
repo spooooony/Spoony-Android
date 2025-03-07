@@ -47,7 +47,9 @@ fun SearchResultItem(
         Row(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.padding(vertical = 10.dp)
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .weight(1f)
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_pin_24),
