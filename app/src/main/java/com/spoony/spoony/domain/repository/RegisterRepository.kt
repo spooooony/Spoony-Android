@@ -8,12 +8,10 @@ interface RegisterRepository {
     suspend fun getFoodCategories(): Result<List<CategoryEntity>>
     suspend fun searchPlace(query: String, display: Int = 5): Result<List<PlaceEntity>>
     suspend fun checkDuplicatePlace(
-        userId: Int,
         latitude: Double,
         longitude: Double
     ): Result<Boolean>
     suspend fun registerPost(
-        userId: Int,
         title: String,
         description: String,
         placeName: String,

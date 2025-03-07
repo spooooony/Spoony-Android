@@ -110,7 +110,6 @@ fun PlaceDetailRoute(
         is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
         else -> UserEntity(
             userId = -1,
-            userEmail = "",
             userProfileUrl = "",
             userName = "",
             userRegion = ""

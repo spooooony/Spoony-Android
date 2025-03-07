@@ -22,14 +22,14 @@ class MapRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getAddedPlaceList(userId: Int): Result<AddedPlaceListEntity> =
+    override suspend fun getAddedPlaceList(): Result<AddedPlaceListEntity> =
         runCatching {
-            postRemoteDataSource.getAddedMap(userId).data!!.toDomain()
+            postRemoteDataSource.getAddedMap().data!!.toDomain()
         }
 
-    override suspend fun getAddedPlaceListByLocation(userId: Int, locationId: Int): Result<List<AddedPlaceEntity>> =
+    override suspend fun getAddedPlaceListByLocation(locationId: Int): Result<List<AddedPlaceEntity>> =
         runCatching {
-            postRemoteDataSource.getZzimByLocation(userId, locationId)
+            postRemoteDataSource.getZzimByLocation(locationId)
                 .data!!.zzimCardResponses.map { it.toDomain() }
         }
 

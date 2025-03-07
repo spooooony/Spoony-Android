@@ -37,15 +37,13 @@ class RegisterRepositoryImpl @Inject constructor(
     }
 
     override suspend fun checkDuplicatePlace(
-        userId: Int,
         latitude: Double,
         longitude: Double
     ): Result<Boolean> = runCatching {
-        placeDataSource.checkDuplicatePlace(userId, latitude, longitude).data!!.idDuplicated
+        placeDataSource.checkDuplicatePlace(latitude, longitude).data!!.idDuplicated
     }
 
     override suspend fun registerPost(
-        userId: Int,
         title: String,
         description: String,
         placeName: String,
@@ -61,7 +59,6 @@ class RegisterRepositoryImpl @Inject constructor(
             val totalTime = measureTimeMillis {
                 val asyncRequestBody = async {
                     val requestDto = RegisterPostRequestDto(
-                        userId = userId,
                         title = title,
                         description = description,
                         placeName = placeName,

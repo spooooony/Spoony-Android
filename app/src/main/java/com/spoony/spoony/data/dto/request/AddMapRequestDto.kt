@@ -6,7 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AddMapRequestDto(
     @SerialName("postId")
-    val postId: Int,
-    @SerialName("userId")
-    val userId: Int
+    val postId: Int
 )

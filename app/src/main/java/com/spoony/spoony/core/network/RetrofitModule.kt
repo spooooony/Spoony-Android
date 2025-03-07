@@ -1,4 +1,4 @@
-package com.spoony.spoony.data.di
+package com.spoony.spoony.core.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.spoony.spoony.BuildConfig.BASE_URL
@@ -10,6 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -64,10 +65,16 @@ object RetrofitModule {
 
     @Provides
     @Singleton
+    fun provideAuthInterceptor(authInterceptor: AuthInterceptor): Interceptor = authInterceptor
+
+    @Provides
+    @Singleton
     fun provideClient(
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        .addInterceptor(authInterceptor)
         .build()
 
     @Provides

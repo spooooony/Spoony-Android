@@ -70,13 +70,11 @@ class ExploreRepositoryImpl @Inject constructor(
     )
 
     override suspend fun getFeedList(
-        userId: Int,
         categoryId: Int,
         locationQuery: String,
         sortBy: String
     ): Result<List<FeedEntity>> = runCatching {
         exploreRemoteDataSource.getFeedList(
-            userId = userId,
             categoryId = categoryId,
             query = locationQuery,
             sortBy = sortBy

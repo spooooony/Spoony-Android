@@ -7,8 +7,10 @@ import kotlinx.serialization.Serializable
 data class UserInfoResponseDto(
     @SerialName("userId")
     val userId: Int,
-    @SerialName("userEmail")
-    val userEmail: String,
+    @SerialName("platform")
+    val platform: String,
+    @SerialName("platformId")
+    val plaformId: String,
     @SerialName("userName")
     val userName: String,
     @SerialName("userImageUrl")

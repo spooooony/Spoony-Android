@@ -33,6 +33,12 @@ android {
             properties.getProperty("dev.base.url")
         )
 
+        buildConfigField(
+            "String",
+            "USER_TOKEN",
+            properties.getProperty("user.token")
+        )
+
         manifestPlaceholders["naverClientId"] = properties.getProperty("naverClientId")
         buildConfigField("String", "NAVER_CLIENT_ID", properties.getProperty("naver.client.id"))
     }
