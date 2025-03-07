@@ -9,8 +9,6 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Size
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
@@ -139,53 +137,40 @@ class ContentUriRequestBody @Inject constructor(
 
     /**
      * compressBitmap(): 연산 부담이 큰 이미지 압축 작업은 Dispatchers.Default에서 처리합니다.
-     * 이진 탐색을 통해 압축 품질을 결정하며, 임시 파일을 활용하여 압축 후 파일 크기를 측정합니다.
+     * 이진 탐색을 통해 압축 품질을 결정하며, 메모리 기반 측정을 활용하여 압축 후 파일 크기를 측정합니다.
+     * 바꾼 이유는 요즘 기기들 메모리 생각했을때 이게 맞는거 같음...속도도 빠르고...
      */
     private suspend fun compressBitmap(bitmap: Bitmap): ByteArray =
         withContext(Dispatchers.Default) {
-            var lowerQuality = config.minQuality
-            var upperQuality = config.initialQuality
-            var bestQuality = config.minQuality
+            val estimatedSize = min(bitmap.byteCount / 4, config.maxFileSize)
+            ByteArrayOutputStream(estimatedSize).use { buffer ->
+                var lowerQuality = config.minQuality
+                var upperQuality = config.initialQuality
+                var bestQuality = lowerQuality
 
-            while (lowerQuality <= upperQuality) {
-                val midQuality = (lowerQuality + upperQuality) / 2
-                val currentSize = measureCompressedSize(bitmap, midQuality)
-                if (currentSize <= config.maxFileSize) {
-                    bestQuality = midQuality
-                    lowerQuality = midQuality + 1
-                } else {
-                    upperQuality = midQuality - 1
+                while (lowerQuality <= upperQuality) {
+                    val midQuality = (lowerQuality + upperQuality) / 2
+                    buffer.reset()
+
+                    // 메모리 기반 압축 측정
+                    if (config.format == Bitmap.CompressFormat.PNG) {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, buffer)
+                    } else {
+                        bitmap.compress(config.format, midQuality, buffer)
+                    }
+
+                    if (buffer.size() <= config.maxFileSize) {
+                        bestQuality = midQuality
+                        lowerQuality = midQuality + 1
+                    } else {
+                        upperQuality = midQuality - 1
+                    }
                 }
-            }
-            Timber.d("Compression completed - Quality: $bestQuality")
-            compressToByteArray(bitmap, bestQuality)
-        }
 
-    /**
-     * measureCompressedSize(): 임시 파일을 생성하여 압축 후 파일 크기를 측정합니다.
-     * 이 방식은 메모리 기반 측정보다 대용량 이미지 처리 시 OutOfMemory 위험을 낮춥니다.
-     */
-    private fun measureCompressedSize(bitmap: Bitmap, quality: Int): Int {
-        val tempFile = File.createTempFile("measure", ".tmp")
-        FileOutputStream(tempFile).use { fos ->
-            bitmap.compress(config.format, quality, fos)
-        }
-        return tempFile.length().toInt()
-    }
-
-    /**
-     * compressToByteArray(): ByteArrayOutputStream을 사용하여 압축 결과를 ByteArray로 반환합니다.
-     * PNG 포맷의 경우 품질 설정이 무시되므로 100으로 압축합니다.
-     */
-    private fun compressToByteArray(bitmap: Bitmap, quality: Int): ByteArray {
-        return ByteArrayOutputStream().apply {
-            if (config.format == Bitmap.CompressFormat.PNG) {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, this)
-            } else {
-                bitmap.compress(config.format, quality, this)
+                Timber.d("Compression completed - Quality: $bestQuality, Size: ${buffer.size()} bytes")
+                return@use buffer.toByteArray()
             }
-        }.toByteArray()
-    }
+        }
 
     private fun extractMetadata(uri: Uri): ImageMetadata =
         runCatching {
