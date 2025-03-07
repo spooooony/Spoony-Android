@@ -1,4 +1,4 @@
-package com.spoony.spoony.data.dto.base
+package com.spoony.spoony.core.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
@@ -55,7 +54,7 @@ class MapViewModel @Inject constructor(
 
     fun getPlaceInfo(placeId: Int) {
         viewModelScope.launch {
-            postRepository.getAddedMapPost(USER_ID, placeId)
+            postRepository.getAddedMapPost(placeId)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -71,7 +70,7 @@ class MapViewModel @Inject constructor(
 
     fun getAddedPlaceList() {
         viewModelScope.launch {
-            mapRepository.getAddedPlaceList(USER_ID)
+            mapRepository.getAddedPlaceList()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -101,7 +100,6 @@ class MapViewModel @Inject constructor(
     fun getAddedPlaceListByLocation(locationId: Int) {
         viewModelScope.launch {
             mapRepository.getAddedPlaceListByLocation(
-                userId = USER_ID,
                 locationId = locationId
             ).onSuccess { response ->
                 _state.update {
@@ -124,7 +122,7 @@ class MapViewModel @Inject constructor(
 
     private fun getUserInfo() {
         viewModelScope.launch {
-            authRepository.getUserInfo(USER_ID)
+            authRepository.getUserInfo()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
@@ -137,7 +135,7 @@ class MapViewModel @Inject constructor(
 
     fun getSpoonCount() {
         viewModelScope.launch {
-            authRepository.getSpoonCount(USER_ID)
+            authRepository.getSpoonCount()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(

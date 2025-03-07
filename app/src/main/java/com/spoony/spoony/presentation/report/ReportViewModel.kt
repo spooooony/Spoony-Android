@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.repository.ReportRepository
 import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
 import com.spoony.spoony.presentation.report.type.ReportOption
@@ -61,7 +60,7 @@ class ReportViewModel @Inject constructor(
 
     fun reportPost(postId: Int, reportType: String, reportDetail: String) {
         viewModelScope.launch {
-            reportRepository.postReportPost(postId = postId, userId = USER_ID, reportType = reportType, reportDetail = reportDetail)
+            reportRepository.postReportPost(postId = postId, userId = 4, reportType = reportType, reportDetail = reportDetail)
                 .onSuccess {
                     _sideEffect.emit(ReportSideEffect.ShowDialog)
                 }

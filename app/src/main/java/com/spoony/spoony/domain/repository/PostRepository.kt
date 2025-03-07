@@ -4,13 +4,13 @@ import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.PostEntity
 
 interface PostRepository {
-    suspend fun getPost(postId: Int, userId: Int): Result<PostEntity>
+    suspend fun getPost(postId: Int): Result<PostEntity>
 
-    suspend fun postScoopPost(postId: Int, userId: Int): Result<Boolean>
+    suspend fun postScoopPost(postId: Int): Result<Boolean>
 
-    suspend fun postAddMap(postId: Int, userId: Int): Result<Boolean>
+    suspend fun postAddMap(postId: Int): Result<Boolean>
 
-    suspend fun deletePinMap(postId: Int, userId: Int): Result<Boolean>
+    suspend fun deletePinMap(postId: Int): Result<Boolean>
 
-    suspend fun getAddedMapPost(userId: Int, placeId: Int): Result<List<AddedMapPostEntity>>
+    suspend fun getAddedMapPost(placeId: Int): Result<List<AddedMapPostEntity>>
 }

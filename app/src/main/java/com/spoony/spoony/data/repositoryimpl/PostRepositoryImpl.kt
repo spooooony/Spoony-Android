@@ -10,30 +10,29 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     private val postRemoteDataSource: PostRemoteDataSource
 ) : PostRepository {
-    override suspend fun getPost(postId: Int, userId: Int): Result<PostEntity> =
+    override suspend fun getPost(postId: Int): Result<PostEntity> =
         runCatching {
-            postRemoteDataSource.getPostData(postId, userId).data!!.toDomain()
+            postRemoteDataSource.getPostData(postId).data!!.toDomain()
         }
 
-    override suspend fun postScoopPost(postId: Int, userId: Int): Result<Boolean> =
+    override suspend fun postScoopPost(postId: Int): Result<Boolean> =
         runCatching {
-            postRemoteDataSource.postScoopPost(postId = postId, userId = userId).success
+            postRemoteDataSource.postScoopPost(postId = postId).success
         }
 
-    override suspend fun postAddMap(postId: Int, userId: Int): Result<Boolean> =
+    override suspend fun postAddMap(postId: Int): Result<Boolean> =
         runCatching {
-            postRemoteDataSource.postAddMapData(postId, userId).success
+            postRemoteDataSource.postAddMapData(postId).success
         }
 
-    override suspend fun deletePinMap(postId: Int, userId: Int): Result<Boolean> =
+    override suspend fun deletePinMap(postId: Int): Result<Boolean> =
         runCatching {
-            postRemoteDataSource.deletePinMap(postId = postId, userId = userId).success
+            postRemoteDataSource.deletePinMap(postId = postId).success
         }
 
-    override suspend fun getAddedMapPost(userId: Int, placeId: Int): Result<List<AddedMapPostEntity>> =
+    override suspend fun getAddedMapPost(placeId: Int): Result<List<AddedMapPostEntity>> =
         runCatching {
             postRemoteDataSource.getAddedMapPost(
-                userId = userId,
                 postId = placeId
             ).data?.zzimFocusResponseList!!.map { it.toDomain() }
         }

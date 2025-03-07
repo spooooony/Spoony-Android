@@ -1,6 +1,6 @@
 package com.spoony.spoony.data.service
 
-import com.spoony.spoony.data.dto.base.BaseResponse
+import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.dto.response.CategoryResponseDto
 import com.spoony.spoony.data.dto.response.FoodCategoryResponseDto
 import retrofit2.http.GET

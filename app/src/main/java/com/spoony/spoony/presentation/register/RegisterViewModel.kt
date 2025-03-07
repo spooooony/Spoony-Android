@@ -2,7 +2,6 @@ package com.spoony.spoony.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spoony.spoony.core.util.USER_ID
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
@@ -80,7 +79,6 @@ class RegisterViewModel @Inject constructor(
     fun selectPlace(place: Place) {
         viewModelScope.launch {
             repository.checkDuplicatePlace(
-                userId = USER_ID,
                 latitude = place.latitude,
                 longitude = place.longitude
             ).onSuccess { isDuplicate ->
@@ -199,7 +197,6 @@ class RegisterViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
 
             repository.registerPost(
-                userId = USER_ID,
                 title = state.value.oneLineReview,
                 description = state.value.detailReview,
                 placeName = state.value.selectedPlace.placeName,
