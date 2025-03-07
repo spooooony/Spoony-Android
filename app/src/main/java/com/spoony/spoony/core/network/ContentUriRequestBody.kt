@@ -3,8 +3,6 @@ package com.spoony.spoony.core.network
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Size
@@ -113,7 +111,7 @@ class ContentUriRequestBody @Inject constructor(
     /**
      * loadBitmap(): ImageDecoder를 사용하여 URI에서 비트맵을 로드합니다.
      * 이미지 크기는 설정된 최대 크기(maxWidth, maxHeight) 이하로 리사이즈하며,
-     * EXIF 정보를 고려하여 회전이 필요한 경우 rotateBitmap()을 호출합니다.
+     * EXIF 정보는 ImageDecoder가 자동으로 처리합니다.
      */
     private suspend fun loadBitmap(uri: Uri): Result<Bitmap> =
         withContext(Dispatchers.IO) {
@@ -124,13 +122,6 @@ class ContentUriRequestBody @Inject constructor(
                     decoder.isMutableRequired = true
                     val size = calculateTargetSize(info.size.width, info.size.height)
                     decoder.setTargetSize(size.width, size.height)
-                }
-            }.map { bitmap ->
-                val orientation = getOrientation(uri)
-                if (orientation != ORIENTATION_NORMAL) {
-                    rotateBitmap(bitmap, orientation)
-                } else {
-                    bitmap
                 }
             }
         }
@@ -197,66 +188,6 @@ class ContentUriRequestBody @Inject constructor(
         }.getOrDefault(ImageMetadata.EMPTY)
 
     /**
-     * getOrientation(): MediaStore의 ORIENTATION 값을 우선적으로 조회하고, 없으면 EXIF 데이터를 사용하여 회전 각도를 결정합니다.
-     */
-    private fun getOrientation(uri: Uri): Int {
-        contentResolver.query(
-            uri,
-            arrayOf(MediaStore.Images.Media.ORIENTATION),
-            null,
-            null,
-            null
-        )?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ORIENTATION))
-            }
-        }
-        return getExifOrientation(uri)
-    }
-
-    /**
-     * getExifOrientation(): EXIF 데이터를 통해 이미지의 회전 정보를 읽어 실제 각도(0, 90, 180, 270)로 매핑합니다.
-     */
-    private fun getExifOrientation(uri: Uri): Int =
-        contentResolver.openInputStream(uri)?.use { input ->
-            ExifInterface(input).getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_NORMAL
-            )
-        }?.let { orientation ->
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> ORIENTATION_ROTATE_90
-                ExifInterface.ORIENTATION_ROTATE_180 -> ORIENTATION_ROTATE_180
-                ExifInterface.ORIENTATION_ROTATE_270 -> ORIENTATION_ROTATE_270
-                else -> ORIENTATION_NORMAL
-            }
-        } ?: ORIENTATION_NORMAL
-
-    /**
-     * rotateBitmap(): 주어진 회전 각도만큼 비트맵을 회전시키며, 회전 후 원본을 재활용합니다.
-     */
-    private fun rotateBitmap(bitmap: Bitmap, angle: Int): Bitmap =
-        runCatching {
-            Matrix().apply {
-                postRotate(angle.toFloat())
-            }.let { matrix ->
-                Bitmap.createBitmap(
-                    bitmap,
-                    0,
-                    0,
-                    bitmap.width,
-                    bitmap.height,
-                    matrix,
-                    true
-                )
-            }
-        }.onSuccess { rotatedBitmap ->
-            if (rotatedBitmap != bitmap) {
-                bitmap.recycle()
-            }
-        }.getOrDefault(bitmap)
-
-    /**
      * calculateTargetSize(): 이미지의 가로/세로 크기가
      * 설정된 최대 크기를 넘지 않도록 리사이징할 크기를 계산합니다.
      */
@@ -282,10 +213,6 @@ class ContentUriRequestBody @Inject constructor(
     }
 
     companion object {
-        private const val ORIENTATION_NORMAL = 0
-        private const val ORIENTATION_ROTATE_90 = 90
-        private const val ORIENTATION_ROTATE_180 = 180
-        private const val ORIENTATION_ROTATE_270 = 270
         private const val DEFAULT_FILE_NAME = "image.jpg"
     }
 }
