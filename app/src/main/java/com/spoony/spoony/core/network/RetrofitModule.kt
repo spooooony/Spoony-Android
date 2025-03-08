@@ -20,6 +20,8 @@ import timber.log.Timber
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
+    private const val UNIT_TAB = 4
+
     @Provides
     @Singleton
     fun provideJson(): Json =
@@ -53,10 +55,10 @@ object RetrofitModule {
 
         when {
             jsonMessage.isJsonObject() ->
-                Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(4))
+                Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(UNIT_TAB))
 
             jsonMessage.isJsonArray() ->
-                Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(4))
+                Timber.tag("okhttp").d(JSONObject(jsonMessage).toString(UNIT_TAB))
 
             else -> {
                 Timber.tag("okhttp").d("CONNECTION INFO -> $jsonMessage")
