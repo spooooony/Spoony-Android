@@ -6,10 +6,12 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Size
-import kotlinx.coroutines.Deferred
 import java.io.ByteArrayOutputStream
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import kotlin.math.max
 import kotlin.math.min
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -20,9 +22,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
 import timber.log.Timber
-import java.util.WeakHashMap
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.max
 
 class ContentUriRequestBody @Inject constructor(
     context: Context,
