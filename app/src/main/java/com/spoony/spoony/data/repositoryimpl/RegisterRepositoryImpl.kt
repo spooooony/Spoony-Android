@@ -75,7 +75,7 @@ class RegisterRepositoryImpl @Inject constructor(
                 // 각 사진에 대해 ContentUriRequestBody 인스턴스를 생성하고 비동기로 압축 준비 후 form-data 변환
                 val asyncPhotoParts = photos.map { uri ->
                     async {
-                        val photoBody = ContentUriRequestBody(context, uri)
+                        val photoBody = ContentUriRequestBody.getOrCreate(context, uri)
                         photoBody.prepareImage()
                         photoBody.toFormData(FORM_DATA_NAME_PHOTOS)
                     }
