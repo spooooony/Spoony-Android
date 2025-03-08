@@ -6,10 +6,13 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Size
+import kotlinx.coroutines.Deferred
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -17,6 +20,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
 import timber.log.Timber
+import java.util.WeakHashMap
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.max
 
 class ContentUriRequestBody @Inject constructor(
     context: Context,
@@ -67,22 +73,34 @@ class ContentUriRequestBody @Inject constructor(
     }
 
     init {
-        if (uri != null) {
-            metadata = extractMetadata(uri)
+        uri?.let {
+            metadata = extractMetadata(it)
         }
     }
 
+    @Volatile
+    private var prepareImageDeferred: Deferred<Result<Unit>>? = null
+
     /**
      * prepareImage(): 이미지 압축 작업을 비동기로 준비합니다.
-     * URI가 null이 아닌 경우 compressImage()를 호출하여 압축 결과를 저장합니다.
+     * 동일 인스턴스 내에서 여러 호출이 동시에 들어오면, 첫 번째 작업의 Deferred를 공유합니다.
      */
-    suspend fun prepareImage(): Result<Unit> = runCatching {
-        withContext(Dispatchers.IO) {
-            if (uri != null) {
-                compressImage(uri).onSuccess { bytes ->
-                    compressedImage = bytes
+    suspend fun prepareImage(): Result<Unit> {
+        if (compressedImage != null) return Result.success(Unit)
+
+        prepareImageDeferred?.let { return it.await() }
+
+        return coroutineScope {
+            val deferred = async(Dispatchers.IO) {
+                if (compressedImage == null && uri != null) {
+                    compressImage(uri).onSuccess { bytes ->
+                        compressedImage = bytes
+                    }
                 }
+                Result.success(Unit)
             }
+            prepareImageDeferred = deferred
+            deferred.await()
         }
     }
 
@@ -99,12 +117,22 @@ class ContentUriRequestBody @Inject constructor(
 
     /**
      * compressImage(): 주어진 URI로부터 비트맵을 로드하고 압축 작업을 수행합니다.
-     * prepareImage()에서 호출되어 압축된 이미지를 반환합니다.
+     * 파일 크기가 1MB 이하이면 압축을 건너뛰고 100% 품질로 처리합니다.
      */
     private suspend fun compressImage(uri: Uri): Result<ByteArray> =
         withContext(Dispatchers.IO) {
             loadBitmap(uri).map { bitmap ->
-                compressBitmap(bitmap).also { bitmap.recycle() }
+                if ((metadata?.size ?: 0) <= config.maxFileSize) {
+                    ByteArrayOutputStream().use { buffer ->
+                        bitmap.compress(config.format, 100, buffer)
+                        bitmap.recycle()
+                        buffer.toByteArray()
+                    }
+                } else {
+                    compressBitmap(bitmap).apply {
+                        bitmap.recycle()
+                    }
+                }
             }
         }
 
@@ -127,13 +155,13 @@ class ContentUriRequestBody @Inject constructor(
         }
 
     /**
-     * compressBitmap(): 연산 부담이 큰 이미지 압축 작업은 Dispatchers.Default에서 처리합니다.
+     * compressBitmap(): CPU연산 부담이 큰 이미지 압축 작업은 Dispatchers.Default에서 처리합니다.
      * 이진 탐색을 통해 압축 품질을 결정하며, 메모리 기반 측정을 활용하여 압축 후 파일 크기를 측정합니다.
-     * 바꾼 이유는 요즘 기기들 메모리 생각했을때 이게 맞는거 같음...속도도 빠르고...
+     * 임시파일 기반에서 바꾼 이유는 요즘 기기들 메모리 생각했을때 이게 맞는거 같음...속도도 빠르고...
      */
     private suspend fun compressBitmap(bitmap: Bitmap): ByteArray =
         withContext(Dispatchers.Default) {
-            val estimatedSize = min(bitmap.byteCount / 4, config.maxFileSize)
+            val estimatedSize = max(32 * 1024, min(bitmap.byteCount / 4, config.maxFileSize))
             ByteArrayOutputStream(estimatedSize).use { buffer ->
                 var lowerQuality = config.minQuality
                 var upperQuality = config.initialQuality
@@ -143,7 +171,6 @@ class ContentUriRequestBody @Inject constructor(
                     val midQuality = (lowerQuality + upperQuality) / 2
                     buffer.reset()
 
-                    // 메모리 기반 압축 측정
                     if (config.format == Bitmap.CompressFormat.PNG) {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, buffer)
                     } else {
@@ -169,7 +196,8 @@ class ContentUriRequestBody @Inject constructor(
                 uri,
                 arrayOf(
                     MediaStore.Images.Media.SIZE,
-                    MediaStore.Images.Media.DISPLAY_NAME
+                    MediaStore.Images.Media.DISPLAY_NAME,
+                    MediaStore.Images.Media.MIME_TYPE
                 ),
                 null,
                 null,
@@ -179,7 +207,7 @@ class ContentUriRequestBody @Inject constructor(
                     ImageMetadata(
                         fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)),
                         size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)),
-                        mimeType = contentResolver.getType(uri)
+                        mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE))
                     )
                 } else {
                     ImageMetadata.EMPTY
@@ -213,6 +241,23 @@ class ContentUriRequestBody @Inject constructor(
     }
 
     companion object {
-        private const val DEFAULT_FILE_NAME = "image.jpg"
+        const val DEFAULT_FILE_NAME = "image.jpg"
+
+        /**
+         * Uri를 키로 사용하여 ContentUriRequestBody 인스턴스를 저장하는 캐시입니다.
+         * 이 캐시는 동일한 Uri에 대한 중복된 이미지 처리 작업을 방지합니다.
+         * ConcurrentHashMap을 사용하여 멀티스레드 환경에서의 동시 접근을 안전하게 처리합니다.
+         */
+        private val cache = ConcurrentHashMap<Uri, ContentUriRequestBody>()
+
+        fun getOrCreate(
+            context: Context,
+            uri: Uri,
+            config: ImageConfig = ImageConfig.DEFAULT
+        ): ContentUriRequestBody {
+            return cache.computeIfAbsent(uri) {
+                ContentUriRequestBody(context, uri, config)
+            }
+        }
     }
 }
