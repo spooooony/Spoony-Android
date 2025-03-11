@@ -359,6 +359,7 @@ fun MapScreen(
                                                 ).animate(CameraAnimation.Easing)
                                             )
                                             isSelected = true
+                                            selectedMarkerId = placeId
                                         }
                                     )
                                 }
