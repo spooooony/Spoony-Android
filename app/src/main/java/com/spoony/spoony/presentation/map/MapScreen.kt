@@ -75,6 +75,7 @@ import com.spoony.spoony.presentation.map.model.LocationModel
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -119,27 +120,21 @@ fun MapRoute(
         }
     }
 
-    when (state.addedPlaceList) {
-        is UiState.Success -> {
-            MapScreen(
-                paddingValues = paddingValues,
-                cameraPositionState = cameraPositionState,
-                userName = userName,
-                placeCount = state.placeCount,
-                spoonCount = state.spoonCount,
-                placeList = (state.addedPlaceList as UiState.Success<ImmutableList<AddedPlaceEntity>>).data,
-                placeCardList = state.placeCardInfo,
-                locationInfo = state.locationModel,
-                onExploreButtonClick = navigateToExplore,
-                onPlaceItemClick = viewModel::getPlaceInfo,
-                onPlaceCardClick = navigateToPlaceDetail,
-                navigateToMapSearch = navigateToMapSearch,
-                onBackButtonClick = navigateUp
-            )
-        }
-
-        else -> {}
-    }
+    MapScreen(
+        paddingValues = paddingValues,
+        cameraPositionState = cameraPositionState,
+        userName = userName,
+        placeCount = state.placeCount,
+        spoonCount = state.spoonCount,
+        placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<AddedPlaceEntity>>)?.data ?: persistentListOf(),
+        placeCardList = state.placeCardInfo,
+        locationInfo = state.locationModel,
+        onExploreButtonClick = navigateToExplore,
+        onPlaceItemClick = viewModel::getPlaceInfo,
+        onPlaceCardClick = navigateToPlaceDetail,
+        navigateToMapSearch = navigateToMapSearch,
+        onBackButtonClick = navigateUp
+    )
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -160,7 +155,7 @@ fun MapScreen(
     onBackButtonClick: () -> Unit
 ) {
     val sheetState = rememberBottomSheetState(
-        initialValue = if (placeList.isNotEmpty()) AdvancedSheetState.Collapsed else AdvancedSheetState.PartiallyExpanded,
+        initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
             AdvancedSheetState.Collapsed at height(20)
             AdvancedSheetState.PartiallyExpanded at height(50)
