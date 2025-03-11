@@ -75,6 +75,8 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+const val DEFAULT_ZOOM = 14.0
+
 @Composable
 fun MapRoute(
     paddingValues: PaddingValues,
@@ -186,7 +188,7 @@ private fun MapScreen(
                                     CameraUpdate
                                         .scrollAndZoomTo(
                                             LatLng(place.latitude, place.longitude),
-                                            14.0
+                                            DEFAULT_ZOOM
                                         )
                                         .animate(CameraAnimation.Easing)
                                 )
