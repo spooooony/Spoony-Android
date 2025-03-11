@@ -72,11 +72,12 @@ class RegisterRepositoryImpl @Inject constructor(
                     Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
                         .toRequestBody(MEDIA_TYPE_JSON.toMediaType())
                 }
+                // 각 사진에 대해 ContentUriRequestBody 인스턴스를 생성하고 비동기로 압축 준비 후 form-data 변환
                 val asyncPhotoParts = photos.map { uri ->
                     async {
-                        ContentUriRequestBody(context, uri)
-                            .apply { prepareImage() }
-                            .toFormData(FORM_DATA_NAME_PHOTOS)
+                        val photoBody = ContentUriRequestBody.getOrCreate(context, uri)
+                        photoBody.prepareImage()
+                        photoBody.toFormData(FORM_DATA_NAME_PHOTOS)
                     }
                 }
                 postService.registerPost(
