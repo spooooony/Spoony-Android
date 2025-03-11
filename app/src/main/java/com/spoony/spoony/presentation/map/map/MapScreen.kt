@@ -48,11 +48,8 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.MapUiSettings
-import com.naver.maps.map.compose.Marker
-import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
-import com.naver.maps.map.overlay.OverlayImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.tag.LogoTag
@@ -67,6 +64,7 @@ import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.map.map.component.MapPlaceDetailCard
+import com.spoony.spoony.presentation.map.map.component.SpoonyMapMarker
 import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapBottomSheetDragHandle
 import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapListItem
@@ -175,31 +173,25 @@ private fun MapScreen(
         ) {
             placeList.forEach { place ->
                 key(place.placeId) {
-                    Marker(
-                        state = MarkerState(LatLng(place.latitude, place.longitude)),
-                        captionText = place.placeName,
-                        captionColor = SpoonyAndroidTheme.colors.black,
-                        captionHaloColor = SpoonyAndroidTheme.colors.white,
-                        captionRequestedWidth = 10.dp,
-                        captionOffset = (-15).dp,
-                        iconTintColor = Color.Unspecified,
-                        icon = OverlayImage.fromResource(
-                            if (selectedMarkerId == place.placeId) {
-                                R.drawable.ic_selected_marker
-                            } else {
-                                R.drawable.ic_unselected_marker
-                            }
-                        ),
+                    SpoonyMapMarker(
+                        review = place,
+                        selectedMarkerId = selectedMarkerId,
                         onClick = {
-                            selectedMarkerId = if (selectedMarkerId == place.placeId) -1 else place.placeId
-                            onPlaceItemClick(place.placeId)
+                            if (selectedMarkerId == place.placeId) {
+                                selectedMarkerId = -1
+                            } else {
+                                selectedMarkerId = place.placeId
+                                onPlaceItemClick(place.placeId)
+                                cameraPositionState.move(
+                                    CameraUpdate
+                                        .scrollAndZoomTo(
+                                            LatLng(place.latitude, place.longitude),
+                                            14.0
+                                        )
+                                        .animate(CameraAnimation.Easing)
+                                )
+                            }
                             isMarkerSelected = selectedMarkerId == place.placeId
-                            cameraPositionState.move(
-                                CameraUpdate.scrollTo(
-                                    LatLng(place.latitude, place.longitude)
-                                ).animate(CameraAnimation.Easing)
-                            )
-                            true
                         }
                     )
                 }
@@ -291,7 +283,6 @@ private fun MapScreen(
                     )
                 }
             }
-
         }
 
         AnimatedVisibility(
