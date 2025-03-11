@@ -154,7 +154,7 @@ private fun MapScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
-    var isSelected by remember { mutableStateOf(false) }
+    var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
 
     Box(
@@ -167,9 +167,9 @@ private fun MapScreen(
                 isZoomControlEnabled = false
             ),
             onMapClick = { _, _ ->
-                if (isSelected) {
+                if (isMarkerSelected) {
                     selectedMarkerId = -1
-                    isSelected = false
+                    isMarkerSelected = false
                 }
             }
         ) {
@@ -193,7 +193,7 @@ private fun MapScreen(
                         onClick = {
                             selectedMarkerId = if (selectedMarkerId == place.placeId) -1 else place.placeId
                             onPlaceItemClick(place.placeId)
-                            isSelected = selectedMarkerId == place.placeId
+                            isMarkerSelected = selectedMarkerId == place.placeId
                             cameraPositionState.move(
                                 CameraUpdate.scrollTo(
                                     LatLng(place.latitude, place.longitude)
@@ -260,7 +260,7 @@ private fun MapScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = paddingValues.calculateBottomPadding())
                 .padding(vertical = 5.dp, horizontal = 26.dp),
-            visible = isSelected,
+            visible = isMarkerSelected,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOut(targetOffset = { IntOffset(0, it.height) })
         ) {
@@ -295,7 +295,7 @@ private fun MapScreen(
         }
 
         AnimatedVisibility(
-            visible = !isSelected,
+            visible = !isMarkerSelected,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOut(targetOffset = { IntOffset(0, it.height) })
         ) {
@@ -344,7 +344,7 @@ private fun MapScreen(
                                                     LatLng(addedPlace.latitude, addedPlace.longitude)
                                                 ).animate(CameraAnimation.Easing)
                                             )
-                                            isSelected = true
+                                            isMarkerSelected = true
                                             selectedMarkerId = placeId
                                         }
                                     )
