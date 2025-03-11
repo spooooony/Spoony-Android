@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -117,7 +116,7 @@ fun MapRoute(
         placeCount = state.placeCount,
         spoonCount = state.spoonCount,
         placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<AddedPlaceEntity>>)?.data ?: persistentListOf(),
-        placeCardList = state.placeCardInfo,
+        placeCardList = (state.placeCardInfo as? UiState.Success<ImmutableList<AddedMapPostEntity>>)?.data ?: persistentListOf(),
         locationInfo = state.locationModel,
         onExploreButtonClick = navigateToExplore,
         onPlaceItemClick = viewModel::getPlaceInfo,
@@ -137,7 +136,7 @@ fun MapScreen(
     spoonCount: Int,
     locationInfo: LocationModel,
     placeList: ImmutableList<AddedPlaceEntity>,
-    placeCardList: UiState<ImmutableList<AddedMapPostEntity>>,
+    placeCardList: ImmutableList<AddedMapPostEntity>,
     onExploreButtonClick: () -> Unit,
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
@@ -154,7 +153,6 @@ fun MapScreen(
         confirmValueChange = { true }
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
-    val lazyListState = rememberLazyListState()
 
     var isSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -266,35 +264,34 @@ fun MapScreen(
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOut(targetOffset = { IntOffset(0, it.height) })
         ) {
-            if (placeCardList is UiState.Success) {
-                val pagerState = rememberPagerState(
-                    initialPage = 0,
-                    pageCount = { placeCardList.data.size }
-                )
+            val pagerState = rememberPagerState(
+                initialPage = 0,
+                pageCount = { placeCardList.size }
+            )
 
-                HorizontalPager(
-                    state = pagerState,
-                    beyondViewportPageCount = 1
-                ) { currentPage ->
-                    val pageIndex = currentPage % placeCardList.data.size
+            HorizontalPager(
+                state = pagerState,
+                beyondViewportPageCount = 1
+            ) { currentPage ->
+                val pageIndex = currentPage % placeCardList.size
 
-                    with(placeCardList.data[pageIndex]) {
-                        MapPlaceDetailCard(
-                            placeName = placeName,
-                            review = postTitle,
-                            imageUrlList = photoUrlList.take(3).toImmutableList(),
-                            categoryIconUrl = categoryEntity.iconUrl,
-                            categoryName = categoryEntity.categoryName,
-                            textColor = Color.hexToColor(categoryEntity.textColor.toValidHexColor()),
-                            backgroundColor = Color.hexToColor(categoryEntity.backgroundColor.toValidHexColor()),
-                            onClick = { onPlaceCardClick(postId) },
-                            username = authorName,
-                            placeSpoon = authorRegionName,
-                            addMapCount = zzimCount
-                        )
-                    }
+                with(placeCardList[pageIndex]) {
+                    MapPlaceDetailCard(
+                        placeName = placeName,
+                        review = postTitle,
+                        imageUrlList = photoUrlList.take(3).toImmutableList(),
+                        categoryIconUrl = categoryEntity.iconUrl,
+                        categoryName = categoryEntity.categoryName,
+                        textColor = Color.hexToColor(categoryEntity.textColor.toValidHexColor()),
+                        backgroundColor = Color.hexToColor(categoryEntity.backgroundColor.toValidHexColor()),
+                        onClick = { onPlaceCardClick(postId) },
+                        username = authorName,
+                        placeSpoon = authorRegionName,
+                        addMapCount = zzimCount
+                    )
                 }
             }
+
         }
 
         AnimatedVisibility(
@@ -322,7 +319,6 @@ fun MapScreen(
                     } else {
                         LazyColumn(
                             contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
-                            state = lazyListState,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = paddingValues.calculateBottomPadding())
