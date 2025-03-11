@@ -128,7 +128,7 @@ fun MapRoute(
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun MapScreen(
+private fun MapScreen(
     paddingValues: PaddingValues,
     cameraPositionState: CameraPositionState,
     userName: String,
