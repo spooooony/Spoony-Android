@@ -89,19 +89,15 @@ fun MapRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        if (state.locationModel.placeId == null) {
-            viewModel.getAddedPlaceList()
-            viewModel.getSpoonCount()
+    with(state.locationModel) {
+        LaunchedEffect(placeId) {
+            if (placeId == null) {
+                viewModel.getAddedPlaceList()
+                viewModel.getSpoonCount()
+            } else {
+                viewModel.getAddedPlaceListByLocation(locationId = placeId)
+            }
         }
-    }
-
-    val userName = when (state.userName) {
-        is UiState.Success -> {
-            (state.userName as UiState.Success<String>).data
-        }
-
-        else -> ""
     }
 
     val cameraPositionState = rememberCameraPositionState {
@@ -114,16 +110,10 @@ fun MapRoute(
         )
     }
 
-    LaunchedEffect(state.locationModel.placeId) {
-        if (state.locationModel.placeId != null) {
-            viewModel.getAddedPlaceListByLocation(locationId = state.locationModel.placeId ?: 0)
-        }
-    }
-
     MapScreen(
         paddingValues = paddingValues,
         cameraPositionState = cameraPositionState,
-        userName = userName,
+        userName = (state.userName as? UiState.Success<String>)?.data ?: "",
         placeCount = state.placeCount,
         spoonCount = state.spoonCount,
         placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<AddedPlaceEntity>>)?.data ?: persistentListOf(),
