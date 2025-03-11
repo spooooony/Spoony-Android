@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.map.map
 
+import android.view.Gravity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
@@ -75,7 +76,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
-const val DEFAULT_ZOOM = 14.0
+private const val DEFAULT_ZOOM = 14.0
 
 @Composable
 fun MapRoute(
@@ -149,57 +150,58 @@ private fun MapScreen(
             AdvancedSheetState.Collapsed at height(20)
             AdvancedSheetState.PartiallyExpanded at height(50)
             AdvancedSheetState.Expanded at height(90)
-        },
-        confirmValueChange = { true }
+        }
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
 
+    NaverMap(
+        cameraPositionState = cameraPositionState,
+        uiSettings = MapUiSettings(
+            isZoomControlEnabled = false,
+            logoGravity = Gravity.TOP or Gravity.START,
+            logoMargin = PaddingValues(start = 20.dp, top = 80.dp)
+        ),
+        onMapClick = { _, _ ->
+            if (isMarkerSelected) {
+                selectedMarkerId = -1
+                isMarkerSelected = false
+            }
+        }
+    ) {
+        placeList.forEach { place ->
+            key(place.placeId) {
+                SpoonyMapMarker(
+                    review = place,
+                    selectedMarkerId = selectedMarkerId,
+                    onClick = {
+                        if (selectedMarkerId == place.placeId) {
+                            selectedMarkerId = -1
+                        } else {
+                            selectedMarkerId = place.placeId
+                            onPlaceItemClick(place.placeId)
+                            cameraPositionState.move(
+                                CameraUpdate
+                                    .scrollAndZoomTo(
+                                        LatLng(place.latitude, place.longitude),
+                                        DEFAULT_ZOOM
+                                    )
+                                    .animate(CameraAnimation.Easing)
+                            )
+                        }
+                        isMarkerSelected = selectedMarkerId == place.placeId
+                    }
+                )
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        NaverMap(
-            cameraPositionState = cameraPositionState,
-            uiSettings = MapUiSettings(
-                isZoomControlEnabled = false
-            ),
-            onMapClick = { _, _ ->
-                if (isMarkerSelected) {
-                    selectedMarkerId = -1
-                    isMarkerSelected = false
-                }
-            }
-        ) {
-            placeList.forEach { place ->
-                key(place.placeId) {
-                    SpoonyMapMarker(
-                        review = place,
-                        selectedMarkerId = selectedMarkerId,
-                        onClick = {
-                            if (selectedMarkerId == place.placeId) {
-                                selectedMarkerId = -1
-                            } else {
-                                selectedMarkerId = place.placeId
-                                onPlaceItemClick(place.placeId)
-                                cameraPositionState.move(
-                                    CameraUpdate
-                                        .scrollAndZoomTo(
-                                            LatLng(place.latitude, place.longitude),
-                                            DEFAULT_ZOOM
-                                        )
-                                        .animate(CameraAnimation.Easing)
-                                )
-                            }
-                            isMarkerSelected = selectedMarkerId == place.placeId
-                        }
-                    )
-                }
-            }
-        }
-
         if (locationInfo.placeId == null) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
