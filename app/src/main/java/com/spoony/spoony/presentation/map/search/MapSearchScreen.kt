@@ -22,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.map.model.LocationModel
+import com.spoony.spoony.presentation.map.map.model.LocationModel
 import com.spoony.spoony.presentation.map.search.component.MapSearchEmptyResultScreen
 import com.spoony.spoony.presentation.map.search.component.MapSearchRecentEmptyScreen
 import com.spoony.spoony.presentation.map.search.component.MapSearchRecentItem

@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.component.bottomsheet
+package com.spoony.spoony.presentation.map.map.component.bottomsheet
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

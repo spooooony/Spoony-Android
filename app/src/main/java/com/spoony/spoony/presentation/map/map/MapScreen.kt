@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map
+package com.spoony.spoony.presentation.map.map
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -66,11 +66,11 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
-import com.spoony.spoony.presentation.map.component.MapPlaceDetailCard
-import com.spoony.spoony.presentation.map.component.bottomsheet.MapBottomSheetDragHandle
-import com.spoony.spoony.presentation.map.component.bottomsheet.MapEmptyBottomSheetContent
-import com.spoony.spoony.presentation.map.component.bottomsheet.MapListItem
-import com.spoony.spoony.presentation.map.model.LocationModel
+import com.spoony.spoony.presentation.map.map.component.MapPlaceDetailCard
+import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapBottomSheetDragHandle
+import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapEmptyBottomSheetContent
+import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapListItem
+import com.spoony.spoony.presentation.map.map.model.LocationModel
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList

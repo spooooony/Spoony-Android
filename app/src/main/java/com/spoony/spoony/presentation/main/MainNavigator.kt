@@ -10,8 +10,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
-import com.spoony.spoony.presentation.map.navigaion.Map
-import com.spoony.spoony.presentation.map.navigaion.navigateToMap
+import com.spoony.spoony.presentation.map.map.navigaion.Map
+import com.spoony.spoony.presentation.map.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.map.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister

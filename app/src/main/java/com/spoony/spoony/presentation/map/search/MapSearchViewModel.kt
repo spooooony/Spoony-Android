@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.MapRepository
-import com.spoony.spoony.presentation.map.model.toModel
+import com.spoony.spoony.presentation.map.map.model.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf

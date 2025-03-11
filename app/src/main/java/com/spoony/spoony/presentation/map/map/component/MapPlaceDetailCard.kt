@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.component
+package com.spoony.spoony.presentation.map.map.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
