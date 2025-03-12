@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.map.map
 
 import android.view.Gravity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -31,6 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,7 +69,6 @@ import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import timber.log.Timber
 
 private const val DEFAULT_ZOOM = 14.0
 
@@ -139,6 +141,8 @@ private fun MapScreen(
     onBackButtonClick: () -> Unit
 ) {
     val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+    val density = LocalDensity.current.density
 
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
@@ -153,65 +157,83 @@ private fun MapScreen(
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
 
-    NaverMap(
-        cameraPositionState = cameraPositionState,
-        uiSettings = MapUiSettings(
-            isZoomControlEnabled = false,
-            logoGravity = Gravity.TOP or Gravity.START,
-            logoMargin = PaddingValues(start = 20.dp, top = 80.dp)
-        ),
-        onMapClick = { _, _ ->
-            if (isMarkerSelected) {
-                selectedMarkerId = -1
-                isMarkerSelected = false
-            }
-        }
-    ) {
-        placeList.forEach { place ->
-            key(place.placeId) {
-                SpoonyMapMarker(
-                    review = place,
-                    selectedMarkerId = selectedMarkerId,
-                    onClick = {
-                        if (selectedMarkerId == place.placeId) {
-                            selectedMarkerId = -1
-                        } else {
-                            selectedMarkerId = place.placeId
-                            onPlaceItemClick(place.placeId)
-                            cameraPositionState.move(
-                                CameraUpdate
-                                    .scrollAndZoomTo(
-                                        LatLng(place.latitude, place.longitude),
-                                        DEFAULT_ZOOM
-                                    )
-                                    .animate(CameraAnimation.Easing)
-                            )
-                        }
-                        isMarkerSelected = selectedMarkerId == place.placeId
-                    }
-                )
-            }
-        }
-    }
-
-    if (locationInfo.placeId == null) {
-        MapTopAppBar(
-            spoonCount = spoonCount,
-            onSearchClick = navigateToMapSearch,
-            modifier = Modifier
-                .padding(top = paddingValues.calculateTopPadding())
-        )
-    } else {
-        CloseTopAppBar(
-            title = locationInfo.placeName ?: "",
-            onCloseButtonClick = onBackButtonClick
-        )
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        NaverMap(
+            modifier = Modifier
+                .fillMaxHeight(
+                    animateFloatAsState(
+                        targetValue = when {
+                            isMarkerSelected -> 1f
+
+                            (sheetState.currentValue == AdvancedSheetState.PartiallyExpanded && sheetState.draggableState.targetValue == AdvancedSheetState.Collapsed) ||
+                                    (sheetState.currentValue == AdvancedSheetState.Collapsed && sheetState.draggableState.targetValue == AdvancedSheetState.PartiallyExpanded) -> {
+                                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+                            }
+
+                            sheetState.currentValue == AdvancedSheetState.Collapsed -> 1f
+
+                            else -> 0.55f
+                        },
+                        label = ""
+                    ).value
+                ),
+            cameraPositionState = cameraPositionState,
+            uiSettings = MapUiSettings(
+                isZoomControlEnabled = false,
+                logoGravity = Gravity.TOP or Gravity.START,
+                logoMargin = PaddingValues(start = 20.dp, top = 80.dp)
+            ),
+            onMapClick = { _, _ ->
+                if (isMarkerSelected) {
+                    selectedMarkerId = -1
+                    isMarkerSelected = false
+                }
+            }
+        ) {
+            placeList.forEach { place ->
+                key(place.placeId) {
+                    SpoonyMapMarker(
+                        review = place,
+                        selectedMarkerId = selectedMarkerId,
+                        onClick = {
+                            if (selectedMarkerId == place.placeId) {
+                                selectedMarkerId = -1
+                            } else {
+                                selectedMarkerId = place.placeId
+                                onPlaceItemClick(place.placeId)
+                                cameraPositionState.move(
+                                    CameraUpdate
+                                        .scrollAndZoomTo(
+                                            LatLng(place.latitude, place.longitude),
+                                            DEFAULT_ZOOM
+                                        )
+                                        .animate(CameraAnimation.Easing)
+                                )
+                            }
+                            isMarkerSelected = selectedMarkerId == place.placeId
+                        }
+                    )
+                }
+            }
+        }
+
+        if (locationInfo.placeId == null) {
+            MapTopAppBar(
+                spoonCount = spoonCount,
+                onSearchClick = navigateToMapSearch,
+                modifier = Modifier
+                    .padding(top = paddingValues.calculateTopPadding())
+            )
+        } else {
+            CloseTopAppBar(
+                title = locationInfo.placeName ?: "",
+                onCloseButtonClick = onBackButtonClick
+            )
+        }
+
         AnimatedVisibility(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -333,7 +355,6 @@ private fun CalculateDefaultHeight() {
         resultCount = 0,
         modifier = Modifier
             .onGloballyPositioned {
-                Timber.d(it.size.height.toString())
                 dragHandleHeight = it.size.height
             }
     )
