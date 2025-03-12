@@ -165,17 +165,22 @@ private fun MapScreen(
             modifier = Modifier
                 .fillMaxHeight(
                     animateFloatAsState(
-                        targetValue = when {
-                            isMarkerSelected -> 1f
+                        targetValue = with(sheetState) {
+                            when {
+                                isMarkerSelected -> 1f
 
-                            (sheetState.currentValue == AdvancedSheetState.PartiallyExpanded && sheetState.draggableState.targetValue == AdvancedSheetState.Collapsed) ||
-                                    (sheetState.currentValue == AdvancedSheetState.Collapsed && sheetState.draggableState.targetValue == AdvancedSheetState.PartiallyExpanded) -> {
-                                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+                                currentValue == AdvancedSheetState.PartiallyExpanded && draggableState.targetValue == AdvancedSheetState.Collapsed -> {
+                                    (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+                                }
+
+                                currentValue == AdvancedSheetState.Collapsed && draggableState.targetValue == AdvancedSheetState.PartiallyExpanded -> {
+                                    (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+                                }
+
+                                currentValue == AdvancedSheetState.Collapsed -> 0.9f
+
+                                else -> 0.55f
                             }
-
-                            sheetState.currentValue == AdvancedSheetState.Collapsed -> 1f
-
-                            else -> 0.55f
                         },
                         label = ""
                     ).value
