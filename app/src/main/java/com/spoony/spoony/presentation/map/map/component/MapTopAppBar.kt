@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.tag.LogoTag
@@ -63,6 +64,8 @@ fun MapTopAppBar(
                 text = "오늘은 어디서 먹어볼까요?",
                 style = SpoonyAndroidTheme.typography.body2m,
                 color = SpoonyAndroidTheme.colors.gray500,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .fillMaxWidth()
             )

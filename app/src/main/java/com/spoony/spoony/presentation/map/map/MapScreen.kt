@@ -8,9 +8,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -41,6 +44,7 @@ import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
+import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
 import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.state.UiState
@@ -129,10 +133,11 @@ private fun MapScreen(
     navigateToMapSearch: () -> Unit,
     onBackButtonClick: () -> Unit
 ) {
+    val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
-            AdvancedSheetState.Collapsed at height(20)
+            AdvancedSheetState.Collapsed at height(85.dp + paddingValues.calculateBottomPadding() + systemPaddingValues.calculateBottomPadding())
             AdvancedSheetState.PartiallyExpanded at height(50)
             AdvancedSheetState.Expanded at height(90)
         }
@@ -199,12 +204,12 @@ private fun MapScreen(
 
     Box(
         modifier = Modifier
-            .padding(paddingValues)
             .fillMaxSize()
     ) {
         AnimatedVisibility(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
+                .padding(bottom = paddingValues.calculateBottomPadding())
                 .padding(vertical = 5.dp, horizontal = 26.dp),
             visible = isMarkerSelected,
             enter = slideInVertically(initialOffsetY = { it }),
@@ -252,6 +257,8 @@ private fun MapScreen(
                             name = userName,
                             resultCount = placeCount
                         )
+                    } else {
+                        SpoonyBasicDragHandle()
                     }
                 },
                 sheetContent = {
@@ -263,7 +270,10 @@ private fun MapScreen(
                         )
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
+                            contentPadding = PaddingValues(
+                                top = 6.dp,
+                                bottom = paddingValues.calculateBottomPadding()
+                            ),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = paddingValues.calculateBottomPadding())
