@@ -4,27 +4,18 @@ import android.view.Gravity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,8 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,20 +40,16 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
-import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
-import com.spoony.spoony.core.designsystem.component.tag.LogoTag
 import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
-import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
-import com.spoony.spoony.core.designsystem.type.TagSize
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
-import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.map.map.component.MapPlaceDetailCard
+import com.spoony.spoony.presentation.map.map.component.MapTopAppBar
 import com.spoony.spoony.presentation.map.map.component.SpoonyMapMarker
 import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapBottomSheetDragHandle
 import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapEmptyBottomSheetContent
@@ -198,63 +183,28 @@ private fun MapScreen(
         }
     }
 
+    if (locationInfo.placeId == null) {
+        MapTopAppBar(
+            spoonCount = spoonCount,
+            onSearchClick = navigateToMapSearch,
+            modifier = Modifier
+                .padding(top = paddingValues.calculateTopPadding())
+        )
+    } else {
+        CloseTopAppBar(
+            title = locationInfo.placeName ?: "",
+            onCloseButtonClick = onBackButtonClick
+        )
+    }
+
     Box(
         modifier = Modifier
+            .padding(paddingValues)
             .fillMaxSize()
     ) {
-        if (locationInfo.placeId == null) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(top = paddingValues.calculateTopPadding())
-                    .padding(vertical = 6.dp, horizontal = 20.dp)
-            ) {
-                LogoTag(
-                    count = spoonCount,
-                    tagSize = TagSize.Large,
-                    modifier = Modifier
-                        .padding(end = 11.dp)
-                )
-                Row(
-                    modifier = Modifier
-                        .noRippleClickable(onClick = navigateToMapSearch)
-                        .background(
-                            color = SpoonyAndroidTheme.colors.white,
-                            RoundedCornerShape(10.dp)
-                        )
-                        .border(
-                            BorderStroke(1.dp, SpoonyAndroidTheme.colors.gray100),
-                            RoundedCornerShape(10.dp)
-                        )
-                        .padding(vertical = 12.dp, horizontal = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_search_24),
-                        contentDescription = null,
-                        tint = SpoonyAndroidTheme.colors.gray600,
-                        modifier = Modifier
-                            .size(20.dp)
-                    )
-                    Text(
-                        text = "오늘은 어디서 먹어볼까요?",
-                        style = SpoonyAndroidTheme.typography.body2m,
-                        color = SpoonyAndroidTheme.colors.gray500,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-            }
-        } else {
-            CloseTopAppBar(
-                title = locationInfo.placeName ?: "",
-                onCloseButtonClick = onBackButtonClick
-            )
-        }
-
         AnimatedVisibility(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = paddingValues.calculateBottomPadding())
                 .padding(vertical = 5.dp, horizontal = 26.dp),
             visible = isMarkerSelected,
             enter = slideInVertically(initialOffsetY = { it }),
