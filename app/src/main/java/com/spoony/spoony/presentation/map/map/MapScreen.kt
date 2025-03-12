@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,6 +53,7 @@ import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
+import com.spoony.spoony.presentation.map.map.DefaultHeight.dragHandleHeight
 import com.spoony.spoony.presentation.map.map.component.MapPlaceDetailCard
 import com.spoony.spoony.presentation.map.map.component.MapTopAppBar
 import com.spoony.spoony.presentation.map.map.component.SpoonyMapMarker
@@ -64,6 +66,7 @@ import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import timber.log.Timber
 
 private const val DEFAULT_ZOOM = 14.0
 
@@ -98,6 +101,8 @@ fun MapRoute(
             state.locationModel.scale
         )
     }
+
+    CalculateDefaultHeight()
 
     MapScreen(
         paddingValues = paddingValues,
@@ -134,10 +139,11 @@ private fun MapScreen(
     onBackButtonClick: () -> Unit
 ) {
     val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
+
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
-            AdvancedSheetState.Collapsed at height(85.dp + paddingValues.calculateBottomPadding() + systemPaddingValues.calculateBottomPadding())
+            AdvancedSheetState.Collapsed at height(dragHandleHeight.dp + paddingValues.calculateBottomPadding() + systemPaddingValues.calculateBottomPadding())
             AdvancedSheetState.PartiallyExpanded at height(50)
             AdvancedSheetState.Expanded at height(90)
         }
@@ -318,4 +324,21 @@ private fun MapScreen(
             ) {}
         }
     }
+}
+
+@Composable
+private fun CalculateDefaultHeight() {
+    MapBottomSheetDragHandle(
+        name = "",
+        resultCount = 0,
+        modifier = Modifier
+            .onGloballyPositioned {
+                Timber.d(it.size.height.toString())
+                dragHandleHeight = it.size.height
+            }
+    )
+}
+
+private object DefaultHeight {
+    var dragHandleHeight = 86
 }
