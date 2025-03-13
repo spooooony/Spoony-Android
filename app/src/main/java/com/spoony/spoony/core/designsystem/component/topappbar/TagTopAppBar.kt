@@ -1,6 +1,5 @@
 package com.spoony.spoony.core.designsystem.component.topappbar
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +27,8 @@ fun TagTopAppBar(
             LogoTag(
                 count = count,
                 tagSize = tagSize,
-                modifier = Modifier.padding(end = 20.dp)
+                modifier = Modifier
+                    .padding(end = 20.dp)
             )
         },
         content = content,
@@ -47,7 +47,7 @@ private fun TagTopAppBarPreview() {
             Text(
                 text = "홍대입구역",
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(start = 20.dp)
             )
         }
     }

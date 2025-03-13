@@ -1,7 +1,6 @@
 package com.spoony.spoony.core.designsystem.component.topappbar
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -45,7 +44,6 @@ fun CloseTopAppBar(
             color = SpoonyAndroidTheme.colors.black,
             modifier = Modifier
                 .padding(start = 20.dp)
-                .fillMaxWidth()
         )
     }
 }

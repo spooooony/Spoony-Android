@@ -1,10 +1,14 @@
 package com.spoony.spoony.core.designsystem.component.topappbar
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
@@ -21,7 +25,11 @@ fun TitleTopAppBar(
             Text(
                 text = title,
                 style = SpoonyAndroidTheme.typography.title2b,
-                color = SpoonyAndroidTheme.colors.black
+                color = SpoonyAndroidTheme.colors.black,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 44.dp),
+                textAlign = TextAlign.Center
             )
         },
         modifier = modifier,
