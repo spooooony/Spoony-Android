@@ -32,6 +32,7 @@ fun ExploreTopAppBar(
             modifier = Modifier
                 .padding(start = 20.dp)
                 .noRippleClickable(onClick = onClick)
+                .padding(vertical = 4.dp)
         ) {
             Text(
                 text = "서울특별시 $place",

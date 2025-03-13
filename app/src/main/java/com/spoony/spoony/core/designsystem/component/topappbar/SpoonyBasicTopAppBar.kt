@@ -2,6 +2,7 @@ package com.spoony.spoony.core.designsystem.component.topappbar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,15 +45,19 @@ fun SpoonyBasicTopAppBar(
                 .weight(1f)
         ) {
             if (showBackButton) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left_24),
-                    contentDescription = null,
-                    tint = SpoonyAndroidTheme.colors.gray700,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
+                        .padding(start = 20.dp)
                         .size(32.dp)
                         .noRippleClickable(onBackButtonClick)
-                        .padding(start = 12.dp)
-                )
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left_24),
+                        contentDescription = null,
+                        tint = SpoonyAndroidTheme.colors.gray700
+                    )
+                }
             }
             content()
         }
