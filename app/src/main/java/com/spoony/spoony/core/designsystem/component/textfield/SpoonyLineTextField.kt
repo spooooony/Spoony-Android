@@ -77,7 +77,7 @@ fun SpoonyLineTextField(
             modifier = modifier,
             onFocusChanged = {
                 isFocused = it
-                if (value.length >= minLength) {
+                if (value.trim().length >= minLength) {
                     isError = false
                 }
             },
