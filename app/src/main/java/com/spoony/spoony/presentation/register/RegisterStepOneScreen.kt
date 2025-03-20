@@ -1,10 +1,11 @@
 package com.spoony.spoony.presentation.register
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -278,7 +279,13 @@ private fun MenuSection(
         Spacer(modifier = Modifier.height(12.dp))
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = FastOutSlowInEasing
+                )
+            )
         ) {
             menuList.forEachIndexed { index, menu ->
                 SpoonyIconButtonTextField(
@@ -298,8 +305,12 @@ private fun MenuSection(
 
         AnimatedVisibility(
             visible = menuList.size < MAX_MENU_COUNT,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            enter = expandVertically(
+                animationSpec = tween(300)
+            ),
+            exit = shrinkVertically(
+                animationSpec = tween(300)
+            )
         ) {
             AddMenuButton(onClick = onMenuAdd)
         }
