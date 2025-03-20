@@ -238,7 +238,7 @@ class RegisterViewModel @Inject constructor(
         const val MAX_MENU_COUNT = 3
         const val MIN_PHOTO_COUNT = 1
         const val MAX_PHOTO_COUNT = 5
-        const val MIN_DETAIL_REVIEW_LENGTH = 50
+        const val MIN_DETAIL_REVIEW_LENGTH = 1
         const val MAX_DETAIL_REVIEW_LENGTH = 500
         const val MAX_ONE_LINE_REVIEW_LENGTH = 30
     }
