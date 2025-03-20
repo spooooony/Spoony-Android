@@ -119,8 +119,7 @@ fun RegisterStepTwoScreen(
             text = "좋아요!",
             buttonStyle = ButtonStyle.Primary,
             onDismiss = {
-                onRegisterComplete()
-                isDialogVisible = false
+                isDialogVisible = true // 백드롭 불가
             },
             onClick = {
                 onRegisterComplete()
