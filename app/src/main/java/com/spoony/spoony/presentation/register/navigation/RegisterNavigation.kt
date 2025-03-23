@@ -10,12 +10,12 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.register.RegisterScreen
-import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
-import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepTwo
 import com.spoony.spoony.presentation.register.RegisterStepOneScreen
 import com.spoony.spoony.presentation.register.RegisterStepTwoScreen
 import com.spoony.spoony.presentation.register.RegisterSteps
 import com.spoony.spoony.presentation.register.RegisterViewModel
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepTwo
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRegister(
