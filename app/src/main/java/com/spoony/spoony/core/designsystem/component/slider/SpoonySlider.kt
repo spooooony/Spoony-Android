@@ -1,0 +1,82 @@
+package com.spoony.spoony.core.designsystem.component.slider
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Slider
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SpoonySlider(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    thumbIcon: Int = R.drawable.ic_register_main400_24,
+    iconSize: Dp = 32.dp,
+    iconColor: Color = Color.Unspecified,
+    activeTrackColor: Color = SpoonyAndroidTheme.colors.main400,
+    inactiveTrackColor: Color = SpoonyAndroidTheme.colors.gray200,
+    trackHeight: Dp = 11.dp,
+    activeTrackBrush: Brush? = null
+) {
+    Slider(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        enabled = enabled,
+        valueRange = 0f..1f,
+        thumb = {
+            Icon(
+                imageVector = ImageVector.vectorResource(thumbIcon),
+                contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier.size(iconSize)
+            )
+        },
+        track = { sliderState ->
+            val defaultBrush = remember(activeTrackColor) {
+                Brush.horizontalGradient(
+                    listOf(Color.White, activeTrackColor)
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(trackHeight)
+                    .background(
+                        color = inactiveTrackColor,
+                        shape = RoundedCornerShape(50)
+                    )
+                    .clip(RoundedCornerShape(50))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(sliderState.value)
+                        .height(trackHeight)
+                        .background(
+                            brush = activeTrackBrush ?: defaultBrush,
+                            shape = RoundedCornerShape(50)
+                        )
+                )
+            }
+        }
+    )
+}
