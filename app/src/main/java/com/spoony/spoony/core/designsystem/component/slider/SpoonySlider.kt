@@ -1,5 +1,6 @@
 package com.spoony.spoony.core.designsystem.component.slider
 
+import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,13 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
-// TODO: 디자인적 요소들은 무조건 변경해야함
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpoonySlider(
@@ -43,10 +44,10 @@ fun SpoonySlider(
     trackHeight: Dp = 11.dp,
     activeTrackBrush: Brush? = null,
     hapticEnabled: Boolean = true,
-    hapticStep: Float = 0.01f
+    hapticStep: Float = 0.1f
 ) {
-    val haptic = LocalHapticFeedback.current
     var previousValue by remember { mutableStateOf(value) }
+    val view = LocalView.current  // 추가: 직접 뷰에 접근
 
     Slider(
         value = value,
@@ -57,7 +58,10 @@ fun SpoonySlider(
                 val currentStep = (newValue / hapticStep).toInt()
                 val previousStep = (previousValue / hapticStep).toInt()
                 if (currentStep != previousStep) {
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    view.performHapticFeedback(
+                        HapticFeedbackConstants.CLOCK_TICK,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+                    )
                 }
             }
             previousValue = newValue
