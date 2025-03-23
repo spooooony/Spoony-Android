@@ -63,7 +63,6 @@ fun RegisterStepOneScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
-    var sliderPosition by remember { mutableStateOf(0.5f) }
 
     val isNextButtonEnabled = remember(
         state.selectedPlace,
@@ -127,8 +126,8 @@ fun RegisterStepOneScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         SliderSection(
-            sliderPosition = sliderPosition,
-            onSliderPositionChange = { sliderPosition = it }
+            sliderPosition = state.userSatisfactionValue,
+            onSliderPositionChange = viewModel::updateUserSatisfactionValue
         )
 
         Spacer(modifier = Modifier.weight(1f))
