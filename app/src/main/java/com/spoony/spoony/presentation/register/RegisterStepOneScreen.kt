@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,8 +26,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -35,6 +38,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
+import com.spoony.spoony.core.designsystem.component.slider.SpoonySlider
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyIconButtonTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonySearchTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -59,6 +63,7 @@ fun RegisterStepOneScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
+    var sliderPosition by remember { mutableStateOf(0.5f) }
 
     val isNextButtonEnabled = remember(
         state.selectedPlace,
@@ -119,8 +124,15 @@ fun RegisterStepOneScreen(
             onMenuAdd = viewModel::addMenu
         )
 
+        Spacer(modifier = Modifier.height(32.dp))
+
+        SliderSection(
+            sliderPosition = sliderPosition,
+            onSliderPositionChange = { sliderPosition = it }
+        )
+
         Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         NextButton(
             enabled = isNextButtonEnabled,
@@ -313,6 +325,52 @@ private fun MenuSection(
             )
         ) {
             AddMenuButton(onClick = onMenuAdd)
+        }
+    }
+}
+
+@Composable
+private fun SliderSection(
+    sliderPosition: Float,
+    onSliderPositionChange: (Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "가격 대비 만족도는 어땠나요?",
+            style = SpoonyAndroidTheme.typography.body1sb,
+            color = SpoonyAndroidTheme.colors.black
+        )
+
+        SpoonySlider(
+            value = sliderPosition,
+            onValueChange = onSliderPositionChange
+        )
+
+        Spacer(modifier = Modifier.height(21.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "아쉬움",
+                style = SpoonyAndroidTheme.typography.body2m,
+                color = SpoonyAndroidTheme.colors.black
+            )
+
+            Text(
+                text = "적당함",
+                style = SpoonyAndroidTheme.typography.body2m,
+                color = SpoonyAndroidTheme.colors.black
+            )
+
+            Text(
+                text = "훌륭함",
+                style = SpoonyAndroidTheme.typography.body2m,
+                color = SpoonyAndroidTheme.colors.black
+            )
         }
     }
 }
