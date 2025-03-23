@@ -47,7 +47,8 @@ fun SpoonyLargeTextField(
     maxLength: Int = Int.MAX_VALUE,
     minLength: Int = 0,
     minErrorText: String? = null,
-    maxErrorText: String? = null
+    maxErrorText: String? = null,
+    decorationBoxHeight: Int = 55
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
@@ -80,6 +81,7 @@ fun SpoonyLargeTextField(
                     onValueChanged(newText)
                 }
             },
+            decorationBoxHeight = decorationBoxHeight,
             maxLength = maxLength,
             borderColor = borderColor,
             subContentColor = subContentColor,
@@ -127,7 +129,8 @@ private fun CustomBasicTextField(
     maxLength: Int = 0,
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     imeAction: ImeAction = ImeAction.Done,
-    singleLine: Boolean = false
+    singleLine: Boolean = false,
+    decorationBoxHeight: Int = 55
 ) {
     val focusRequester = remember { FocusRequester() }
     val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
@@ -176,7 +179,7 @@ private fun CustomBasicTextField(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(80.dp)
+                            .height(decorationBoxHeight.dp)
                     ) {
                         innerTextField()
                         if (value.isEmpty()) {
