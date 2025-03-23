@@ -16,6 +16,7 @@ data class RegisterState(
     val menuList: ImmutableList<String> = persistentListOf(""),
 
     val oneLineReview: String = "", // TODO: 추후 삭제 예정
+    val userSatisfactionValue: Float = 0.5f,
     val detailReview: String = "",
     val optionalReview: String = "",
     val selectedPhotos: ImmutableList<SelectedPhoto> = persistentListOf(),
