@@ -10,6 +10,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.register.RegisterScreen
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepTwo
 import com.spoony.spoony.presentation.register.RegisterStepOneScreen
 import com.spoony.spoony.presentation.register.RegisterStepTwoScreen
 import com.spoony.spoony.presentation.register.RegisterSteps
@@ -41,7 +43,7 @@ fun NavGraphBuilder.registerGraph(
     viewModel: RegisterViewModel,
     onResetRegisterState: () -> Unit
 ) {
-    composable<RegisterRoute.StepOne>(
+    composable<StepOne>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
@@ -58,7 +60,7 @@ fun NavGraphBuilder.registerGraph(
         RegisterStepOneScreen(
             viewModel = viewModel,
             onNextClick = {
-                navController.navigate(RegisterRoute.StepTwo)
+                navController.navigate(StepTwo)
                 onUpdateProgress(RegisterSteps.FIRST)
             },
             onInitialProgress = {
@@ -67,7 +69,7 @@ fun NavGraphBuilder.registerGraph(
         )
     }
 
-    composable<RegisterRoute.StepTwo>(
+    composable<StepTwo>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
@@ -88,7 +90,7 @@ fun NavGraphBuilder.registerGraph(
             },
             onRegisterComplete = {
                 onResetRegisterState()
-                navController.popBackStack(RegisterRoute.StepOne, true)
+                navController.popBackStack(StepOne, true)
                 navigateToExplore()
             }
         )
