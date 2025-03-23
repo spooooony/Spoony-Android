@@ -48,7 +48,7 @@ fun SpoonyLargeTextField(
     minLength: Int = 0,
     minErrorText: String? = null,
     maxErrorText: String? = null,
-    decorationBoxHeight: Int = 55
+    decorationBoxHeight: Int = 80
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
