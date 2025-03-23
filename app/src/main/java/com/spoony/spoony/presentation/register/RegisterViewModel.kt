@@ -155,6 +155,10 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    fun updateUserSatisfactionValue(value: Float) {
+        _state.update { it.copy(userSatisfactionValue = value) }
+    }
+
     fun updateStep(step: RegisterSteps) {
         _state.update { it.copy(currentStep = step.step) }
     }
