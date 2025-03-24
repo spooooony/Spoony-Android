@@ -43,32 +43,29 @@ fun SpoonyBasicTextField(
     focusRequester: FocusRequester = FocusRequester(),
     singleLine: Boolean = true,
     leadingIcon: @Composable () -> Unit = {},
-    trailingIcon: @Composable () -> Unit = {}
+    trailingIcon: @Composable () -> Unit = {},
+    isFilterEmoji: Boolean = true,
+    isFilterSpecialChars: Boolean = true
 ) {
     BasicTextField(
         value = value,
         onValueChange = { newValue ->
-            if (SpoonyValidator.isNotContainsEmoji(newValue)) {
-                onValueChanged(newValue)
-            }
+            val filteredValue = newValue.takeIf {
+                (!isFilterEmoji || SpoonyValidator.isNotContainsEmoji(it)) &&
+                        (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
+            } ?: value
+
+            onValueChanged(filteredValue)
         },
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .border(
-                1.dp,
-                borderColor,
-                RoundedCornerShape(8.dp)
-            )
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
             .background(backgroundColor)
             .padding(horizontal = 12.dp)
             .focusRequester(focusRequester)
-            .onFocusChanged { focusState ->
-                onFocusChanged(focusState.isFocused)
-            },
+            .onFocusChanged { focusState -> onFocusChanged(focusState.isFocused) },
         singleLine = singleLine,
-        keyboardOptions = KeyboardOptions(
-            imeAction = imeAction
-        ),
+        keyboardOptions = KeyboardOptions(imeAction = imeAction),
         keyboardActions = KeyboardActions(
             onDone = { onDoneAction() },
             onSearch = { onSearchAction() }
@@ -100,15 +97,6 @@ fun SpoonyBasicTextField(
             }
         }
     )
-}
-
-object SpoonyValidator {
-    private val emojiPatternString = "[\\uD83C-\\uDBFF\\uDC00-\\uDFFF]"
-    private val emojiPattern = Regex(emojiPatternString)
-
-    fun isNotContainsEmoji(input: String): Boolean {
-        return !emojiPattern.containsMatchIn(input)
-    }
 }
 
 @Preview(showBackground = true)

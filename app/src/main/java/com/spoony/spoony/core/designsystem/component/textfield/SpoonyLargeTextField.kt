@@ -48,7 +48,9 @@ fun SpoonyLargeTextField(
     minLength: Int = 0,
     minErrorText: String? = null,
     maxErrorText: String? = null,
-    decorationBoxHeight: Int = 80
+    decorationBoxHeight: Int = 80,
+    isFilterEmoji: Boolean = true,
+    isFilterSpecialChars: Boolean = false
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
@@ -91,7 +93,9 @@ fun SpoonyLargeTextField(
                 if (value.trim().length >= minLength) {
                     isError = false
                 }
-            }
+            },
+            isFilterEmoji = isFilterEmoji,
+            isFilterSpecialChars = isFilterSpecialChars
         )
 
         if (((minErrorText != null || maxErrorText != null) && isError)) {
@@ -130,7 +134,9 @@ private fun CustomBasicTextField(
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     imeAction: ImeAction = ImeAction.Done,
     singleLine: Boolean = false,
-    decorationBoxHeight: Int = 55
+    decorationBoxHeight: Int = 55,
+    isFilterEmoji: Boolean = true,
+    isFilterSpecialChars: Boolean = true
 ) {
     val focusRequester = remember { FocusRequester() }
     val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
@@ -141,9 +147,12 @@ private fun CustomBasicTextField(
         BasicTextField(
             value = value,
             onValueChange = { newValue ->
-                if (SpoonyValidator.isNotContainsEmoji(newValue)) {
-                    onValueChanged(newValue)
-                }
+                val filteredValue = newValue.takeIf {
+                    (!isFilterEmoji || SpoonyValidator.isNotContainsEmoji(it)) &&
+                            (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
+                } ?: value
+
+                onValueChanged(filteredValue)
             },
             modifier = modifier
                 .clip(RoundedCornerShape(8.dp))

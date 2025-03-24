@@ -30,7 +30,9 @@ fun SpoonySearchTextField(
     modifier: Modifier = Modifier,
     maxLength: Int = Int.MAX_VALUE,
     focusRequester: FocusRequester = FocusRequester(),
-    onSearchAction: () -> Unit
+    onSearchAction: () -> Unit,
+    isFilterEmoji: Boolean = true,
+    isFilterSpecialChars: Boolean = true
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -81,7 +83,9 @@ fun SpoonySearchTextField(
             onSearchAction()
             keyboardController?.hide()
             focusManager.clearFocus()
-        }
+        },
+        isFilterEmoji = isFilterEmoji,
+        isFilterSpecialChars = isFilterSpecialChars
     )
 }
 

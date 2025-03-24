@@ -33,7 +33,9 @@ fun SpoonyLineTextField(
     maxLength: Int = Int.MAX_VALUE,
     minLength: Int = 0,
     minErrorText: String? = null,
-    maxErrorText: String? = null
+    maxErrorText: String? = null,
+    isFilterEmoji: Boolean = true,
+    isFilterSpecialChars: Boolean = true
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
@@ -87,7 +89,9 @@ fun SpoonyLineTextField(
                     style = SpoonyAndroidTheme.typography.caption1m,
                     color = subContentColor
                 )
-            }
+            },
+            isFilterEmoji = isFilterEmoji,
+            isFilterSpecialChars = isFilterSpecialChars
         )
 
         if (((minErrorText != null || maxErrorText != null) && isError)) {
