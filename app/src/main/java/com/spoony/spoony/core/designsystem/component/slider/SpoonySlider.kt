@@ -47,7 +47,7 @@ fun SpoonySlider(
     hapticStep: Float = 0.1f
 ) {
     var previousValue by remember { mutableStateOf(value) }
-    val view = LocalView.current  // 추가: 직접 뷰에 접근
+    val view = LocalView.current
 
     Slider(
         value = value,
@@ -57,12 +57,7 @@ fun SpoonySlider(
             if (hapticEnabled && hapticStep > 0) {
                 val currentStep = (newValue / hapticStep).toInt()
                 val previousStep = (previousValue / hapticStep).toInt()
-                if (currentStep != previousStep) {
-                    view.performHapticFeedback(
-                        HapticFeedbackConstants.CLOCK_TICK,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                    )
-                }
+                if (currentStep != previousStep) view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
             }
             previousValue = newValue
         },
