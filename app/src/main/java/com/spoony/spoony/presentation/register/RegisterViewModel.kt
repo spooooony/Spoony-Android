@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
+import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.Category
 import com.spoony.spoony.presentation.register.model.Place
@@ -12,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,8 +25,11 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val repository: RegisterRepository
+    private val repository: RegisterRepository,
+    private val tooltipPreferencesRepository: TooltipPreferencesRepository
 ) : ViewModel() {
+
+    val tooltipShownFlow: Flow<Boolean> = tooltipPreferencesRepository.isTooltipShown()
 
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState>
@@ -230,7 +235,9 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun hideRegisterSnackBar() {
-        _state.update { it.copy(showRegisterSnackBar = false) }
+        viewModelScope.launch {
+            tooltipPreferencesRepository.setTooltipShown(false)
+        }
     }
 
     companion object {
