@@ -1,5 +1,6 @@
 [versions]
 compileSdk = "35"
+datastorePreferences = "1.1.3"
 minSdk = "28"
 targetSdk = "35"
 jvmTarget = "11"
@@ -71,6 +72,7 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
 # Androidx
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-core-splachscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplachscreen" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
