@@ -153,7 +153,8 @@ private fun ReviewSection(
             maxLength = MAX_DETAIL_REVIEW_LENGTH,
             minLength = MIN_DETAIL_REVIEW_LENGTH,
             minErrorText = "자세한 후기는 필수예요",
-            maxErrorText = "글자 수 500자 이하로 입력해 주세요"
+            maxErrorText = "글자 수 500자 이하로 입력해 주세요",
+            isFilterEmoji = false
         )
     }
 }
