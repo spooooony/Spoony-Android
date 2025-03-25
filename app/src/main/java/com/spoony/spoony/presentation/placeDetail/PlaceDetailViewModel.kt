@@ -44,7 +44,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getUserInfo(userId: Int) {
         viewModelScope.launch {
-            authRepository.getUserInfo()
+            authRepository.getUserInfoById(userId)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
