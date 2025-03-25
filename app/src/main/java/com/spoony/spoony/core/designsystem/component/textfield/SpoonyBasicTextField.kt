@@ -52,7 +52,7 @@ fun SpoonyBasicTextField(
         onValueChange = { newValue ->
             val filteredValue = newValue.takeIf {
                 (!isFilterEmoji || SpoonyValidator.isNotContainsEmoji(it)) &&
-                        (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
+                    (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
             } ?: value
 
             onValueChanged(filteredValue)
