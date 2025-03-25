@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
@@ -44,6 +44,12 @@ fun SpoonySlider(
     hapticEnabled: Boolean = true,
     hapticStep: Float = 0.1f
 ) {
+    val defaultBrush = remember {
+        Brush.horizontalGradient(
+            listOf(Color.White, activeTrackColor)
+        )
+    }
+
     var previousValue by remember { mutableStateOf(value) }
     val view = LocalView.current
 
@@ -71,20 +77,15 @@ fun SpoonySlider(
             )
         },
         track = { sliderState ->
-            val defaultBrush = remember(activeTrackColor) {
-                Brush.horizontalGradient(
-                    listOf(Color.White, activeTrackColor)
-                )
-            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(trackHeight)
                     .background(
                         color = inactiveTrackColor,
-                        shape = RoundedCornerShape(50)
+                        shape = CircleShape
                     )
-                    .clip(RoundedCornerShape(50))
+                    .clip(CircleShape)
             ) {
                 Box(
                     modifier = Modifier
@@ -92,7 +93,7 @@ fun SpoonySlider(
                         .height(trackHeight)
                         .background(
                             brush = activeTrackBrush ?: defaultBrush,
-                            shape = RoundedCornerShape(50)
+                            shape = CircleShape
                         )
                 )
             }
