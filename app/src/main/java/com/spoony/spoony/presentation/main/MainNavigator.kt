@@ -58,9 +58,10 @@ class MainNavigator(
     }
 
     fun navigateToReport(
-        postId: Int
+        postId: Int,
+        userId: Int
     ) {
-        navController.navigateToReport(postId = postId)
+        navController.navigateToReport(postId = postId, userId = userId)
     }
 
     fun navigateToExplore(

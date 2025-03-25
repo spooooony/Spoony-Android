@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.ReportRepository
-import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
+import com.spoony.spoony.presentation.report.navigation.Report
 import com.spoony.spoony.presentation.report.type.ReportOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -32,9 +32,10 @@ class ReportViewModel @Inject constructor(
         get() = _sideEffect
 
     init {
-        val reportArgs = savedStateHandle.toRoute<PlaceDetail>()
+        val reportArgs = savedStateHandle.toRoute<Report>()
         _state.value = _state.value.copy(
-            postId = UiState.Success(data = reportArgs.postId)
+            postId = UiState.Success(data = reportArgs.postId),
+            userId = UiState.Success(data = reportArgs.userId)
         )
     }
 
@@ -58,13 +59,22 @@ class ReportViewModel @Inject constructor(
         return input.length in minLength..maxLength
     }
 
-    fun reportPost(postId: Int, reportType: String, reportDetail: String) {
-        viewModelScope.launch {
-            reportRepository.postReportPost(postId = postId, userId = 4, reportType = reportType, reportDetail = reportDetail)
-                .onSuccess {
-                    _sideEffect.emit(ReportSideEffect.ShowDialog)
+    fun reportPost(reportType: String, reportDetail: String) {
+        val postId = _state.value.postId
+        val userId = _state.value.userId
+        when (postId is UiState.Success && userId is UiState.Success) {
+            true -> {
+                val postIdData = postId.data
+                val userIdData = userId.data
+                viewModelScope.launch {
+                    reportRepository.postReportPost(postId = postIdData, userId = userIdData, reportType = reportType, reportDetail = reportDetail)
+                        .onSuccess {
+                            _sideEffect.emit(ReportSideEffect.ShowDialog)
+                        }
+                        .onFailure(Timber::e)
                 }
-                .onFailure(Timber::e)
+            }
+            false -> Timber.e("postId or userId is not exist")
         }
     }
 }

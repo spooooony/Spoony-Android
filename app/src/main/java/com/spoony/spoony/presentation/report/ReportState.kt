@@ -7,6 +7,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 data class ReportState(
     val postId: UiState<Int> = UiState.Loading,
+    val userId: UiState<Int> = UiState.Loading,
     val reportOptions: ImmutableList<ReportOption> = ReportOption.entries.toImmutableList(),
     val selectedReportOption: ReportOption = ReportOption.ADVERTISEMENT,
     val reportContext: String = "",
