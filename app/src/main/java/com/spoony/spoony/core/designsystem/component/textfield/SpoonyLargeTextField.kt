@@ -1,5 +1,10 @@
 package com.spoony.spoony.core.designsystem.component.textfield
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,9 +40,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.countGraphemes
 
 @Composable
 fun SpoonyLargeTextField(
@@ -48,7 +56,7 @@ fun SpoonyLargeTextField(
     minLength: Int = 0,
     minErrorText: String? = null,
     maxErrorText: String? = null,
-    decorationBoxHeight: Int = 80,
+    decorationBoxHeight: Dp = 80.dp,
     isFilterEmoji: Boolean = true,
     isFilterSpecialChars: Boolean = false
 ) {
@@ -57,11 +65,14 @@ fun SpoonyLargeTextField(
     var isOverflowed: Boolean by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
     val errorText = if (isOverflowed) maxErrorText else minErrorText
-    val borderColor = remember(isError, isFocused) {
-        when {
-            isError -> spoonyColors.error400
-            isFocused -> spoonyColors.main400
-            else -> spoonyColors.gray100
+
+    val borderColor by remember(isError, isFocused) {
+        derivedStateOf {
+            when {
+                isError -> spoonyColors.error400
+                isFocused -> spoonyColors.main400
+                else -> spoonyColors.gray100
+            }
         }
     }
 
@@ -77,9 +88,10 @@ fun SpoonyLargeTextField(
             value = value,
             placeholder = placeholder,
             onValueChanged = { newText ->
-                isError = (newText.length > maxLength || newText.trim().length < minLength)
-                isOverflowed = newText.length > maxLength
-                if (newText.length <= maxLength) {
+                isError = (newText.countGraphemes() > maxLength || newText.countGraphemes(true) < minLength)
+                isOverflowed = newText.countGraphemes() > maxLength
+
+                if (newText.countGraphemes() <= maxLength) {
                     onValueChanged(newText)
                 }
             },
@@ -90,7 +102,7 @@ fun SpoonyLargeTextField(
             modifier = modifier,
             onFocusChanged = {
                 isFocused = it
-                if (value.trim().length >= minLength) {
+                if (value.countGraphemes(true) >= minLength) {
                     isError = false
                 }
             },
@@ -98,7 +110,11 @@ fun SpoonyLargeTextField(
             isFilterSpecialChars = isFilterSpecialChars
         )
 
-        if (((minErrorText != null || maxErrorText != null) && isError)) {
+        AnimatedVisibility(
+            visible = errorText != null && isError,
+            enter = fadeIn() + slideInVertically(initialOffsetY = { -it }),
+            exit = fadeOut() + slideOutVertically(targetOffsetY = { -it })
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -134,12 +150,12 @@ private fun CustomBasicTextField(
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     imeAction: ImeAction = ImeAction.Done,
     singleLine: Boolean = false,
-    decorationBoxHeight: Int = 55,
+    decorationBoxHeight: Dp = 55.dp,
     isFilterEmoji: Boolean = true,
     isFilterSpecialChars: Boolean = true
 ) {
     val focusRequester = remember { FocusRequester() }
-    val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
+    val counterText = stringResource(R.string.COUNTER_TEXT, value.countGraphemes(), maxLength)
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
@@ -149,10 +165,12 @@ private fun CustomBasicTextField(
             onValueChange = { newValue ->
                 val filteredValue = newValue.takeIf {
                     (!isFilterEmoji || SpoonyValidator.isNotContainsEmoji(it)) &&
-                            (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
+                        (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
                 } ?: value
 
-                onValueChanged(filteredValue)
+                if (filteredValue != value) {
+                    onValueChanged(filteredValue)
+                }
             },
             modifier = modifier
                 .clip(RoundedCornerShape(8.dp))
@@ -188,7 +206,7 @@ private fun CustomBasicTextField(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(decorationBoxHeight.dp)
+                            .height(decorationBoxHeight)
                     ) {
                         innerTextField()
                         if (value.isEmpty()) {
