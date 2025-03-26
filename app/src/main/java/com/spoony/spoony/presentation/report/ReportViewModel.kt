@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.ReportRepository
 import com.spoony.spoony.presentation.report.navigation.Report
 import com.spoony.spoony.presentation.report.type.ReportOption
@@ -21,7 +20,7 @@ import timber.log.Timber
 @HiltViewModel
 class ReportViewModel @Inject constructor(
     private val reportRepository: ReportRepository,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<ReportState> = MutableStateFlow(ReportState())
     val state: StateFlow<ReportState>
@@ -30,14 +29,6 @@ class ReportViewModel @Inject constructor(
     private val _sideEffect = MutableSharedFlow<ReportSideEffect>()
     val sideEffect: SharedFlow<ReportSideEffect>
         get() = _sideEffect
-
-    init {
-        val reportArgs = savedStateHandle.toRoute<Report>()
-        _state.value = _state.value.copy(
-            postId = UiState.Success(data = reportArgs.postId),
-            userId = UiState.Success(data = reportArgs.userId)
-        )
-    }
 
     fun updateSelectedReportOption(newOption: ReportOption) {
         _state.update {
@@ -60,14 +51,13 @@ class ReportViewModel @Inject constructor(
     }
 
     fun reportPost(reportType: String, reportDetail: String) {
-        val postId = _state.value.postId
-        val userId = _state.value.userId
-        when (postId is UiState.Success && userId is UiState.Success) {
+        val reportArgs = savedStateHandle.toRoute<Report>()
+        val postId = reportArgs.postId
+        val userId = reportArgs.userId
+        when (postId > 0 && userId > 0) {
             true -> {
-                val postIdData = postId.data
-                val userIdData = userId.data
                 viewModelScope.launch {
-                    reportRepository.postReportPost(postId = postIdData, userId = userIdData, reportType = reportType, reportDetail = reportDetail)
+                    reportRepository.postReportPost(postId = postId, userId = userId, reportType = reportType, reportDetail = reportDetail)
                         .onSuccess {
                             _sideEffect.emit(ReportSideEffect.ShowDialog)
                         }
