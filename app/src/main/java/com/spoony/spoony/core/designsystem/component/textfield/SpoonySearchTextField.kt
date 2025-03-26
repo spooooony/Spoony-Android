@@ -27,10 +27,10 @@ fun SpoonySearchTextField(
     value: String,
     onValueChanged: (String) -> Unit,
     placeholder: String,
+    onSearchAction: () -> Unit,
     modifier: Modifier = Modifier,
     maxLength: Int = Int.MAX_VALUE,
     focusRequester: FocusRequester = FocusRequester(),
-    onSearchAction: () -> Unit,
     isFilterEmoji: Boolean = true,
     isFilterSpecialChars: Boolean = true
 ) {
