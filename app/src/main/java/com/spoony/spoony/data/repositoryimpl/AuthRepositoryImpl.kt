@@ -14,11 +14,6 @@ class AuthRepositoryImpl @Inject constructor(
             authRemoteDataSource.getUserInfo().data!!.toDomain()
         }
 
-    override suspend fun getUserInfoById(userId: Int): Result<UserEntity> =
-        runCatching {
-            authRemoteDataSource.getUserInfoById(userId).data!!.toDomain()
-        }
-
     override suspend fun getSpoonCount(): Result<Int> =
         runCatching {
             authRemoteDataSource.getSpoonCount().data!!.spoonAmount

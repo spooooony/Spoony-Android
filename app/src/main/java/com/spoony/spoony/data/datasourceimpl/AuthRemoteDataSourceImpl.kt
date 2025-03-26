@@ -13,9 +13,6 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     override suspend fun getUserInfo(): BaseResponse<UserInfoResponseDto> =
         authService.getUserInfo()
 
-    override suspend fun getUserInfoById(userId: Int): BaseResponse<UserInfoResponseDto> =
-        authService.getUserInfoById(userId)
-
     override suspend fun getSpoonCount(): BaseResponse<UserSpoonCountResponseDto> =
         authService.getSpoonCount()
 }
