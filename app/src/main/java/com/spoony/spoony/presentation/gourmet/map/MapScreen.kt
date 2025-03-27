@@ -66,6 +66,7 @@ import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapBotto
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapListItem
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import io.morfly.compose.bottomsheet.material3.BottomSheetState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
@@ -143,8 +144,6 @@ private fun MapScreen(
     onBackButtonClick: () -> Unit
 ) {
     val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
-    val screenHeight = LocalConfiguration.current.screenHeightDp
-    val density = LocalDensity.current.density
 
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
@@ -167,23 +166,10 @@ private fun MapScreen(
             modifier = Modifier
                 .fillMaxHeight(
                     animateFloatAsState(
-                        targetValue = with(sheetState) {
-                            when {
-                                isMarkerSelected -> 1f
-
-                                currentValue == AdvancedSheetState.PartiallyExpanded && draggableState.targetValue == AdvancedSheetState.Collapsed -> {
-                                    (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
-                                }
-
-                                currentValue == AdvancedSheetState.Collapsed && draggableState.targetValue == AdvancedSheetState.PartiallyExpanded -> {
-                                    (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
-                                }
-
-                                currentValue == AdvancedSheetState.Collapsed -> 0.9f
-
-                                else -> 0.55f
-                            }
-                        },
+                        targetValue = calculateMapHeight(
+                            isMarkerSelected = isMarkerSelected,
+                            sheetState = sheetState
+                        ),
                         label = ""
                     ).value
                 ),
@@ -370,6 +356,34 @@ private fun CalculateDefaultHeight() {
                 dragHandleHeight = it.size.height
             }
     )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun calculateMapHeight(
+    isMarkerSelected: Boolean,
+    sheetState: BottomSheetState<AdvancedSheetState>
+): Float {
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+    val density = LocalDensity.current.density
+
+    return with(sheetState) {
+        when {
+            isMarkerSelected -> 1f
+
+            currentValue == AdvancedSheetState.PartiallyExpanded && draggableState.targetValue == AdvancedSheetState.Collapsed -> {
+                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+            }
+
+            currentValue == AdvancedSheetState.Collapsed && draggableState.targetValue == AdvancedSheetState.PartiallyExpanded -> {
+                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+            }
+
+            currentValue == AdvancedSheetState.Collapsed -> 0.9f
+
+            else -> 0.55f
+        }
+    }
 }
 
 private object DefaultHeight {
