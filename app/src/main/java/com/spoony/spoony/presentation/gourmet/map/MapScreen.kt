@@ -75,6 +75,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 private const val DEFAULT_ZOOM = 14.0
 
+@OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun MapRoute(
     paddingValues: PaddingValues,
@@ -122,7 +123,17 @@ fun MapRoute(
         onPlaceItemClick = viewModel::getPlaceInfo,
         onPlaceCardClick = navigateToPlaceDetail,
         navigateToMapSearch = navigateToMapSearch,
-        onBackButtonClick = navigateUp
+        onBackButtonClick = navigateUp,
+        moveCamera = { latitude, longitude ->
+            cameraPositionState.move(
+                CameraUpdate
+                    .scrollAndZoomTo(
+                        LatLng(latitude, longitude),
+                        DEFAULT_ZOOM
+                    )
+                    .animate(CameraAnimation.Easing)
+            )
+        }
     )
 }
 
@@ -141,7 +152,8 @@ private fun MapScreen(
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    moveCamera: (Double, Double) -> Unit
 ) {
     val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
 
@@ -197,14 +209,7 @@ private fun MapScreen(
                             } else {
                                 selectedMarkerId = place.placeId
                                 onPlaceItemClick(place.placeId)
-                                cameraPositionState.move(
-                                    CameraUpdate
-                                        .scrollAndZoomTo(
-                                            LatLng(place.latitude, place.longitude),
-                                            DEFAULT_ZOOM
-                                        )
-                                        .animate(CameraAnimation.Easing)
-                                )
+                                moveCamera(place.latitude, place.longitude)
                             }
                             isMarkerSelected = selectedMarkerId == place.placeId
                         }
@@ -319,11 +324,7 @@ private fun MapScreen(
                                             backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
                                             onClick = {
                                                 onPlaceItemClick(placeId)
-                                                cameraPositionState.move(
-                                                    CameraUpdate.scrollTo(
-                                                        LatLng(addedPlace.latitude, addedPlace.longitude)
-                                                    ).animate(CameraAnimation.Easing)
-                                                )
+                                                moveCamera(addedPlace.latitude, addedPlace.longitude)
                                                 isMarkerSelected = true
                                                 selectedMarkerId = placeId
                                             }
