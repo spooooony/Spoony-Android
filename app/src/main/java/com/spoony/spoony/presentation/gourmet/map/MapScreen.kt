@@ -262,7 +262,7 @@ private fun MapScreen(
                 with(placeCardList[pageIndex]) {
                     MapPlaceDetailCard(
                         placeName = placeName,
-                        review = postTitle,
+                        review = "",
                         imageUrlList = photoUrlList.take(3).toImmutableList(),
                         categoryIconUrl = categoryEntity.iconUrl,
                         categoryName = categoryEntity.categoryName,
@@ -319,7 +319,7 @@ private fun MapScreen(
                                     MapListItem(
                                         placeName = placeName,
                                         address = placeAddress,
-                                        review = postTitle,
+                                        review = "",
                                         imageUrl = photoUrl,
                                         categoryIconUrl = categoryInfo.iconUrl,
                                         categoryName = categoryInfo.categoryName,

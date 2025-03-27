@@ -17,8 +17,6 @@ data class AddedMapPostDto(
     val authorRegionName: String,
     @SerialName("postId")
     val postId: Int,
-    @SerialName("postTitle")
-    val postTitle: String,
     @SerialName("zzimCount")
     val zzimCount: Int,
     @SerialName("photoUrlList")
