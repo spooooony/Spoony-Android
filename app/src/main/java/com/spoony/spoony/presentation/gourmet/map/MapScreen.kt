@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.map
+package com.spoony.spoony.presentation.gourmet.map
 
 import android.view.Gravity
 import androidx.compose.animation.AnimatedVisibility
@@ -56,14 +56,14 @@ import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
-import com.spoony.spoony.presentation.map.map.DefaultHeight.dragHandleHeight
-import com.spoony.spoony.presentation.map.map.component.MapPlaceDetailCard
-import com.spoony.spoony.presentation.map.map.component.MapTopAppBar
-import com.spoony.spoony.presentation.map.map.component.SpoonyMapMarker
-import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapBottomSheetDragHandle
-import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapEmptyBottomSheetContent
-import com.spoony.spoony.presentation.map.map.component.bottomsheet.MapListItem
-import com.spoony.spoony.presentation.map.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.dragHandleHeight
+import com.spoony.spoony.presentation.gourmet.map.component.MapPlaceDetailCard
+import com.spoony.spoony.presentation.gourmet.map.component.MapTopAppBar
+import com.spoony.spoony.presentation.gourmet.map.component.SpoonyMapMarker
+import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapBottomSheetDragHandle
+import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
+import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapListItem
+import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList

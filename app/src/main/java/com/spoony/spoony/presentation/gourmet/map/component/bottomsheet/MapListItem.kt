@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.map.component.bottomsheet
+package com.spoony.spoony.presentation.gourmet.map.component.bottomsheet
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border

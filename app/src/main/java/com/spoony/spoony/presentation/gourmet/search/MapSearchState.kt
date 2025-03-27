@@ -1,7 +1,7 @@
-package com.spoony.spoony.presentation.map.search
+package com.spoony.spoony.presentation.gourmet.search
 
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.presentation.map.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

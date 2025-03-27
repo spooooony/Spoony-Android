@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.map
+package com.spoony.spoony.presentation.gourmet.map
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,8 +8,8 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
-import com.spoony.spoony.presentation.map.map.model.LocationModel
-import com.spoony.spoony.presentation.map.map.navigaion.Map
+import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList

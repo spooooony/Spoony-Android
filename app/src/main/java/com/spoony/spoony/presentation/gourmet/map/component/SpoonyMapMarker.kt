@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.map.component
+package com.spoony.spoony.presentation.gourmet.map.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
