@@ -6,7 +6,9 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -148,8 +150,8 @@ private fun MapScreen(
         initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
             AdvancedSheetState.Collapsed at height(dragHandleHeight.dp + paddingValues.calculateBottomPadding() + systemPaddingValues.calculateBottomPadding())
-            AdvancedSheetState.PartiallyExpanded at height(50)
-            AdvancedSheetState.Expanded at height(90)
+            AdvancedSheetState.PartiallyExpanded at height(60)
+            AdvancedSheetState.Expanded at height(100)
         }
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
@@ -225,20 +227,6 @@ private fun MapScreen(
             }
         }
 
-        if (locationInfo.placeId == null) {
-            MapTopAppBar(
-                spoonCount = spoonCount,
-                onSearchClick = navigateToMapSearch,
-                modifier = Modifier
-                    .padding(top = paddingValues.calculateTopPadding())
-            )
-        } else {
-            CloseTopAppBar(
-                title = locationInfo.placeName ?: "",
-                onCloseButtonClick = onBackButtonClick
-            )
-        }
-
         AnimatedVisibility(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -276,79 +264,98 @@ private fun MapScreen(
                 }
             }
         }
-
-        AnimatedVisibility(
-            visible = !isMarkerSelected,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOut(targetOffset = { IntOffset(0, it.height) })
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            SpoonyAdvancedBottomSheet(
-                sheetState = scaffoldState,
-                dragHandle = {
-                    if (placeList.isNotEmpty()) {
-                        MapBottomSheetDragHandle(
-                            name = userName,
-                            resultCount = placeCount
-                        )
-                    } else {
-                        SpoonyBasicDragHandle()
-                    }
-                },
-                sheetContent = {
-                    if (placeList.isEmpty()) {
-                        MapEmptyBottomSheetContent(
-                            onClick = onExploreButtonClick,
-                            modifier = Modifier
-                                .padding(bottom = paddingValues.calculateBottomPadding())
-                        )
-                    } else {
-                        LazyColumn(
-                            contentPadding = PaddingValues(
-                                top = 6.dp,
-                                bottom = paddingValues.calculateBottomPadding()
-                            ),
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = paddingValues.calculateBottomPadding())
-                        ) {
-                            items(
-                                items = placeList,
-                                key = { it.placeId }
-                            ) { addedPlace ->
-                                with(addedPlace) {
-                                    MapListItem(
-                                        placeName = placeName,
-                                        address = placeAddress,
-                                        review = "",
-                                        imageUrl = photoUrl,
-                                        categoryIconUrl = categoryInfo.iconUrl,
-                                        categoryName = categoryInfo.categoryName,
-                                        textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
-                                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
-                                        onClick = {
-                                            onPlaceItemClick(placeId)
-                                            cameraPositionState.move(
-                                                CameraUpdate.scrollTo(
-                                                    LatLng(addedPlace.latitude, addedPlace.longitude)
-                                                ).animate(CameraAnimation.Easing)
-                                            )
-                                            isMarkerSelected = true
-                                            selectedMarkerId = placeId
-                                        }
+            if (locationInfo.placeId == null) {
+                MapTopAppBar(
+                    spoonCount = spoonCount,
+                    onSearchClick = navigateToMapSearch,
+                    modifier = Modifier
+                        .padding(top = paddingValues.calculateTopPadding())
+                )
+            } else {
+                CloseTopAppBar(
+                    title = locationInfo.placeName ?: "",
+                    onCloseButtonClick = onBackButtonClick
+                )
+            }
+
+            AnimatedVisibility(
+                visible = !isMarkerSelected,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOut(targetOffset = { IntOffset(0, it.height) })
+            ) {
+                SpoonyAdvancedBottomSheet(
+                    sheetState = scaffoldState,
+                    dragHandle = {
+                        if (placeList.isNotEmpty()) {
+                            MapBottomSheetDragHandle(
+                                name = userName,
+                                resultCount = placeCount
+                            )
+                        } else {
+                            SpoonyBasicDragHandle()
+                        }
+                    },
+                    sheetContent = {
+                        if (placeList.isEmpty()) {
+                            MapEmptyBottomSheetContent(
+                                onClick = onExploreButtonClick,
+                                modifier = Modifier
+                                    .padding(bottom = paddingValues.calculateBottomPadding())
+                            )
+                        } else {
+                            LazyColumn(
+                                contentPadding = PaddingValues(
+                                    top = 6.dp,
+                                    bottom = paddingValues.calculateBottomPadding()
+                                ),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = paddingValues.calculateBottomPadding())
+                            ) {
+                                items(
+                                    items = placeList,
+                                    key = { it.placeId }
+                                ) { addedPlace ->
+                                    with(addedPlace) {
+                                        MapListItem(
+                                            placeName = placeName,
+                                            address = placeAddress,
+                                            review = "",
+                                            imageUrl = photoUrl,
+                                            categoryIconUrl = categoryInfo.iconUrl,
+                                            categoryName = categoryInfo.categoryName,
+                                            textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
+                                            backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
+                                            onClick = {
+                                                onPlaceItemClick(placeId)
+                                                cameraPositionState.move(
+                                                    CameraUpdate.scrollTo(
+                                                        LatLng(addedPlace.latitude, addedPlace.longitude)
+                                                    ).animate(CameraAnimation.Easing)
+                                                )
+                                                isMarkerSelected = true
+                                                selectedMarkerId = placeId
+                                            }
+                                        )
+                                    }
+                                }
+                                item {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
                                     )
                                 }
                             }
-                            item {
-                                Spacer(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                )
-                            }
                         }
-                    }
-                },
-                sheetSwipeEnabled = placeList.isNotEmpty()
-            ) {}
+                    },
+                    sheetSwipeEnabled = placeList.isNotEmpty()
+                ) {}
+            }
         }
     }
 }
