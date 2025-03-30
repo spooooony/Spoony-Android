@@ -15,7 +15,6 @@ fun AddedMapResponseDto.toDomain(): AddedPlaceEntity =
         placeId = this.placeId,
         placeName = this.placeName,
         placeAddress = this.placeAddress,
-        postTitle = this.postTitle,
         photoUrl = this.photoUrlList,
         latitude = this.latitude,
         longitude = this.longitude,

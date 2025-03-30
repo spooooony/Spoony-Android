@@ -9,7 +9,6 @@ fun ZzimCardResponseDto.toDomain(): AddedPlaceEntity =
         placeId = placeId,
         placeName = placeName,
         placeAddress = placeAddress,
-        postTitle = postTitle,
         photoUrl = photoUrl,
         latitude = latitude,
         longitude = longitude,

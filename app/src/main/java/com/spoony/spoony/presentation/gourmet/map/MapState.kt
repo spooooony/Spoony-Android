@@ -1,9 +1,9 @@
-package com.spoony.spoony.presentation.map
+package com.spoony.spoony.presentation.gourmet.map
 
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
-import com.spoony.spoony.presentation.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
 import kotlinx.collections.immutable.ImmutableList
 
 data class MapState(

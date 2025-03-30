@@ -7,7 +7,6 @@ data class AddedMapPostEntity(
     val authorName: String,
     val authorRegionName: String,
     val postId: Int,
-    val postTitle: String,
     val zzimCount: Int,
     val photoUrlList: List<String>
 )
