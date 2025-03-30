@@ -10,7 +10,6 @@ fun AddedMapPostDto.toDomain() = AddedMapPostEntity(
     authorName = this.authorName,
     authorRegionName = this.authorRegionName,
     postId = this.postId,
-    postTitle = this.postTitle,
     zzimCount = this.zzimCount,
     photoUrlList = this.photoUrlList
 )
