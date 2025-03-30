@@ -35,7 +35,7 @@ fun SpoonyIconButtonTextField(
     showDeleteIcon: Boolean = true,
     maxLength: Int = Int.MAX_VALUE,
     helperText: String? = null,
-    isFilterEmoji: Boolean = true,
+    isFilterEmoji: Boolean = false,
     isFilterSpecialChars: Boolean = false
 ) {
     var isFocused by remember { mutableStateOf(false) }

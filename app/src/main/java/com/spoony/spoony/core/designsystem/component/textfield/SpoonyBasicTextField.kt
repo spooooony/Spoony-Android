@@ -44,12 +44,16 @@ fun SpoonyBasicTextField(
     singleLine: Boolean = true,
     leadingIcon: @Composable () -> Unit = {},
     trailingIcon: @Composable () -> Unit = {},
-    isFilterEmoji: Boolean = true,
-    isFilterSpecialChars: Boolean = true
+    isFilterEmoji: Boolean = false,
+    isFilterSpecialChars: Boolean = false
 ) {
     BasicTextField(
         value = value,
         onValueChange = { newValue ->
+            /**
+             * 입력된 새로운 값(newValue)이 이모지나 특수 문자를 포함하는지 확인하고,
+             * 필터링 조건(isFilterEmoji, isFilterSpecialChars)에 따라 입력 자체를 제한하여 값을 업데이트 합니다.
+             */
             val filteredValue = newValue.takeIf {
                 (!isFilterEmoji || SpoonyValidator.isNotContainsEmoji(it)) &&
                     (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
