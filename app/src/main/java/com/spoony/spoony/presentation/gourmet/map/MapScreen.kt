@@ -58,6 +58,8 @@ import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
+import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.COLLAPSED_HEIGHT
+import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.MIN_PARTIALLY_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.dragHandleHeight
 import com.spoony.spoony.presentation.gourmet.map.component.MapPlaceDetailCard
 import com.spoony.spoony.presentation.gourmet.map.component.MapTopAppBar
@@ -373,20 +375,23 @@ private fun calculateMapHeight(
             isMarkerSelected -> 1f
 
             currentValue == AdvancedSheetState.PartiallyExpanded && draggableState.targetValue == AdvancedSheetState.Collapsed -> {
-                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(MIN_PARTIALLY_HEIGHT)
             }
 
             currentValue == AdvancedSheetState.Collapsed && draggableState.targetValue == AdvancedSheetState.PartiallyExpanded -> {
-                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(0.55f)
+                (1f - sheetState.sheetVisibleHeight / (screenHeight * density) + 0.1f).coerceAtLeast(MIN_PARTIALLY_HEIGHT)
             }
 
-            currentValue == AdvancedSheetState.Collapsed -> 0.9f
+            currentValue == AdvancedSheetState.Collapsed -> COLLAPSED_HEIGHT
 
-            else -> 0.55f
+            else -> MIN_PARTIALLY_HEIGHT
         }
     }
 }
 
 private object DefaultHeight {
+    const val COLLAPSED_HEIGHT = 0.9f
+    const val MIN_PARTIALLY_HEIGHT = 0.55f
+
     var dragHandleHeight = 86
 }
