@@ -206,7 +206,7 @@ private fun OptionalReviewSection(
         SpoonyLargeTextField(
             value = optionalReview,
             onValueChanged = onOptionalReviewChange,
-            placeholder = "사장님한테는 비밀인데 이런 게 하나 아쉬웠다!\n이 내용은 비공개 처리돼요!(선택)",
+            placeholder = "사장님 몰래 솔직 후기!\n이 내용은 비공개 처리돼요!(선택)",
             maxLength = MAX_OPTIONAL_REVIEW_LENGTH,
             maxErrorText = "글자 수 ${MAX_OPTIONAL_REVIEW_LENGTH}자 이하로 입력해 주세요",
             decorationBoxHeight = 80.dp,
