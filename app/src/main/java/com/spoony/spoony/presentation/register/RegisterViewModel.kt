@@ -160,19 +160,23 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    fun updateUserSatisfactionValue(value: Float) {
+        _state.update { it.copy(userSatisfactionValue = value) }
+    }
+
     fun updateStep(step: RegisterSteps) {
         _state.update { it.copy(currentStep = step.step) }
     }
 
-    fun updateOneLineReview(review: String) {
+    fun updateOptionalReview(review: String) {
         _state.update {
-            it.copy(oneLineReview = review.take(MAX_ONE_LINE_REVIEW_LENGTH))
+            it.copy(optionalReview = review)
         }
     }
 
     fun updateDetailReview(review: String) {
         _state.update {
-            it.copy(detailReview = review.take(MAX_DETAIL_REVIEW_LENGTH))
+            it.copy(detailReview = review)
         }
     }
 
@@ -192,8 +196,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun checkSecondStepValidation(): Boolean = with(_state.value) {
-        oneLineReview.trim().length in 1..MAX_ONE_LINE_REVIEW_LENGTH &&
-            detailReview.trim().length >= MIN_DETAIL_REVIEW_LENGTH &&
+        detailReview.trim().length >= MIN_DETAIL_REVIEW_LENGTH &&
             selectedPhotos.size >= MIN_PHOTO_COUNT
     }
 
@@ -202,7 +205,7 @@ class RegisterViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
 
             repository.registerPost(
-                title = state.value.oneLineReview,
+                title = state.value.oneLineReview, // TODO: 추후 옵셔널 리뷰로 변경
                 description = state.value.detailReview,
                 placeName = state.value.selectedPlace.placeName,
                 placeAddress = state.value.selectedPlace.placeAddress,
@@ -245,9 +248,9 @@ class RegisterViewModel @Inject constructor(
         const val MAX_MENU_COUNT = 3
         const val MIN_PHOTO_COUNT = 1
         const val MAX_PHOTO_COUNT = 5
-        const val MIN_DETAIL_REVIEW_LENGTH = 50
+        const val MIN_DETAIL_REVIEW_LENGTH = 1
         const val MAX_DETAIL_REVIEW_LENGTH = 500
-        const val MAX_ONE_LINE_REVIEW_LENGTH = 30
+        const val MAX_OPTIONAL_REVIEW_LENGTH = 100
     }
 }
 

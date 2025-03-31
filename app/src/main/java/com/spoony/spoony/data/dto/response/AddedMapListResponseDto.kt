@@ -11,8 +11,6 @@ data class AddedMapResponseDto(
     val placeName: String,
     @SerialName("placeAddress")
     val placeAddress: String,
-    @SerialName("postTitle")
-    val postTitle: String,
     @SerialName("photoUrl")
     val photoUrlList: String,
     @SerialName("latitude")

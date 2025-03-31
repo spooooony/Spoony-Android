@@ -1,6 +1,5 @@
 package com.spoony.spoony.core.designsystem.component.textfield
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -21,16 +20,19 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import timber.log.Timber
 
 @Composable
 fun SpoonySearchTextField(
     value: String,
     onValueChanged: (String) -> Unit,
     placeholder: String,
+    onSearchAction: () -> Unit,
     modifier: Modifier = Modifier,
     maxLength: Int = Int.MAX_VALUE,
     focusRequester: FocusRequester = FocusRequester(),
-    onSearchAction: () -> Unit
+    isAllowEmoji: Boolean = false,
+    isAllowSpecialChars: Boolean = false
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -81,7 +83,9 @@ fun SpoonySearchTextField(
             onSearchAction()
             keyboardController?.hide()
             focusManager.clearFocus()
-        }
+        },
+        isAllowEmoji = isAllowEmoji,
+        isAllowSpecialChars = isAllowSpecialChars
     )
 }
 
@@ -97,7 +101,7 @@ private fun SpoonySearchTextFieldPreview() {
             placeholder = "플레이스 홀더",
             maxLength = 30,
             onSearchAction = {
-                Log.d(text, "Enter key pressed with text: $text")
+                Timber.d("Enter key pressed with text: $text")
             }
         )
     }

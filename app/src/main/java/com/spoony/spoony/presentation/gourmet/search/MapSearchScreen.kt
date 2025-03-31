@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.search
+package com.spoony.spoony.presentation.gourmet.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +22,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.map.model.LocationModel
-import com.spoony.spoony.presentation.map.search.component.MapSearchEmptyResultScreen
-import com.spoony.spoony.presentation.map.search.component.MapSearchRecentEmptyScreen
-import com.spoony.spoony.presentation.map.search.component.MapSearchRecentItem
-import com.spoony.spoony.presentation.map.search.component.MapSearchResultItem
-import com.spoony.spoony.presentation.map.search.component.MapSearchTopAppBar
+import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.search.component.MapSearchEmptyResultScreen
+import com.spoony.spoony.presentation.gourmet.search.component.MapSearchRecentEmptyScreen
+import com.spoony.spoony.presentation.gourmet.search.component.MapSearchRecentItem
+import com.spoony.spoony.presentation.gourmet.search.component.MapSearchResultItem
+import com.spoony.spoony.presentation.gourmet.search.component.MapSearchTopAppBar
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
