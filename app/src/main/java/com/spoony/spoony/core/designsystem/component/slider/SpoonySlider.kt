@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,6 +25,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.theme.white
+import com.spoony.spoony.core.util.extension.spoonyGradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,13 +35,11 @@ fun SpoonySlider(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    thumbIcon: Int = R.drawable.ic_register_main400_24,
-    iconSize: Dp = 32.dp,
+    thumbIcon: Int = R.drawable.ic_slyder_thumb,
     iconColor: Color = Color.Unspecified,
     activeTrackColor: Color = SpoonyAndroidTheme.colors.main400,
     inactiveTrackColor: Color = SpoonyAndroidTheme.colors.gray200,
     trackHeight: Dp = 11.dp,
-    activeTrackBrush: Brush? = null,
     hapticEnabled: Boolean = true,
     hapticStep: Float = 0.1f
 ) {
@@ -73,7 +72,7 @@ fun SpoonySlider(
                 imageVector = ImageVector.vectorResource(thumbIcon),
                 contentDescription = null,
                 tint = iconColor,
-                modifier = Modifier.size(iconSize)
+                modifier = Modifier
             )
         },
         track = { sliderState ->
@@ -92,7 +91,7 @@ fun SpoonySlider(
                         .fillMaxWidth(sliderState.value)
                         .height(trackHeight)
                         .background(
-                            brush = activeTrackBrush ?: defaultBrush,
+                            brush = defaultBrush,
                             shape = CircleShape
                         )
                 )
