@@ -172,7 +172,7 @@ private fun CustomBasicTextField(
                  * 조건을 만족하는 경우에만 입력값을 업데이트하고, 그렇지 않으면 기존 값을 유지합니다.
                  */
                 val isValidInput = (isAllowEmoji || SpoonyValidator.isNotContainsEmoji(newValue)) &&
-                        (isAllowSpecialChars || SpoonyValidator.isNotContainsSpecialChars(newValue))
+                    (isAllowSpecialChars || SpoonyValidator.isNotContainsSpecialChars(newValue))
 
                 val filteredValue = if (isValidInput) newValue else value
 

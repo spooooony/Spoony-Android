@@ -267,7 +267,7 @@ private fun CategorySection(
                         isGradient = true,
                         secondColor = SpoonyAndroidTheme.colors.white,
                         mainColor = SpoonyAndroidTheme.colors.main400,
-                        selectedBorderColor = SpoonyAndroidTheme.colors.main200,
+                        selectedBorderColor = SpoonyAndroidTheme.colors.main200
                     )
                 }
             }
