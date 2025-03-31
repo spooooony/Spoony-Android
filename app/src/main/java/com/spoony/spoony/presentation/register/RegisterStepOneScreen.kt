@@ -310,7 +310,8 @@ private fun MenuSection(
                     placeholder = "메뉴 이름",
                     onDeleteClick = { onMenuRemove(index) },
                     showDeleteIcon = menu.isNotBlank() || menuList.size > 1,
-                    maxLength = 30
+                    maxLength = 30,
+                    isAllowSpecialChars = true
                 )
             }
         }
