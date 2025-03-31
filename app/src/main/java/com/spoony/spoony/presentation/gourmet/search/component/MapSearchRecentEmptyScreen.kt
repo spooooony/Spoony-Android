@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.search.component
+package com.spoony.spoony.presentation.gourmet.search.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -10,21 +10,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
-fun MapSearchEmptyResultScreen() {
+fun MapSearchRecentEmptyScreen(
+    modifier: Modifier = Modifier
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 72.dp)
     ) {
         Image(
-            painter = painterResource(R.drawable.img_map_search_location_empty),
+            painter = painterResource(R.drawable.img_map_search_recent_empty),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -32,19 +33,11 @@ fun MapSearchEmptyResultScreen() {
                 .padding(horizontal = 50.dp)
         )
         Text(
-            text = "검색결과가 없어요",
-            style = SpoonyAndroidTheme.typography.body2sb,
-            color = SpoonyAndroidTheme.colors.black,
-            modifier = Modifier
-                .padding(top = 24.dp)
-        )
-        Text(
-            text = "정확한 지명(구/동),\n지하철역을 입력해 보세요",
+            text = "구체적인 장소를 검색해 보세요",
             style = SpoonyAndroidTheme.typography.body2m,
             color = SpoonyAndroidTheme.colors.gray500,
-            textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(top = 8.dp)
+                .padding(top = 24.dp)
         )
     }
 }

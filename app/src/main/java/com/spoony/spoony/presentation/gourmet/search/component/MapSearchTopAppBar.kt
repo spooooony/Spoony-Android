@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.search.component
+package com.spoony.spoony.presentation.gourmet.search.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding

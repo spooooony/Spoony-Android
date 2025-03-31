@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.map.model
+package com.spoony.spoony.presentation.gourmet.map.model
 
 import com.spoony.spoony.domain.entity.LocationEntity
 
