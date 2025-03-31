@@ -93,12 +93,13 @@ fun RegisterTooltip(
     }
 }
 
-
 @Preview
 @Composable
 private fun RegisterTooltipPreview() {
     SpoonyAndroidTheme {
-        RegisterTooltip(text = "닉네임을 입력해주세요.",
-        modifier = Modifier.offset { IntOffset(0,0) })
+        RegisterTooltip(
+            text = "닉네임을 입력해주세요.",
+            modifier = Modifier.offset { IntOffset(0, 0) }
+        )
     }
 }
