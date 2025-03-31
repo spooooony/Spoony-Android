@@ -25,8 +25,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.theme.white
-import com.spoony.spoony.core.util.extension.spoonyGradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
