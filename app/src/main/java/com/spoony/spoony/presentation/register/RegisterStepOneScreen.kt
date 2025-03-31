@@ -181,9 +181,7 @@ private fun PlaceSearchSection(
                         if (searchQuery.isNotEmpty()) {
                             onSearchAction(searchQuery)
                         }
-                    },
-                    isFilterEmoji = true,
-                    isFilterSpecialChars = true
+                    }
                 )
 
                 if (searchResults.isNotEmpty()) {

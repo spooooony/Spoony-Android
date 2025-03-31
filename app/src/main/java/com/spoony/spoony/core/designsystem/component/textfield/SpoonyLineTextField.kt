@@ -34,8 +34,8 @@ fun SpoonyLineTextField(
     minLength: Int = 0,
     minErrorText: String? = null,
     maxErrorText: String? = null,
-    isFilterEmoji: Boolean = false,
-    isFilterSpecialChars: Boolean = false
+    isAllowEmoji: Boolean = false,
+    isAllowSpecialChars: Boolean = false
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
@@ -90,8 +90,8 @@ fun SpoonyLineTextField(
                     color = subContentColor
                 )
             },
-            isFilterEmoji = isFilterEmoji,
-            isFilterSpecialChars = isFilterSpecialChars
+            isAllowEmoji = isAllowEmoji,
+            isAllowSpecialChars = isAllowSpecialChars
         )
 
         if (((minErrorText != null || maxErrorText != null) && isError)) {
