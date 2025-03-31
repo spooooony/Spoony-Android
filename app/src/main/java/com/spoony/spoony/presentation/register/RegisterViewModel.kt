@@ -165,7 +165,7 @@ class RegisterViewModel @Inject constructor(
 
     fun updateOptionalReview(review: String) {
         _state.update {
-            it.copy(optionalReview = review.take(MAX_OPTIONAL_REVIEW_LENGTH))
+            it.copy(optionalReview = review)
         }
     }
 
