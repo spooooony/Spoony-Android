@@ -263,7 +263,11 @@ private fun CategorySection(
                         onClick = {
                             onSelectCategory(category)
                         },
-                        isSelected = selectedCategory.categoryId == category.categoryId
+                        isSelected = selectedCategory.categoryId == category.categoryId,
+                        isGradient = true,
+                        secondColor = SpoonyAndroidTheme.colors.white,
+                        mainColor = SpoonyAndroidTheme.colors.main400,
+                        selectedBorderColor = SpoonyAndroidTheme.colors.main200,
                     )
                 }
             }
