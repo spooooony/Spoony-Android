@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -34,7 +37,8 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 @Composable
 fun RegisterTooltip(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    arrowPositionFraction: Float = 0.75f
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val offsetY by infiniteTransition.animateFloat(
@@ -47,7 +51,7 @@ fun RegisterTooltip(
     )
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.End,
         modifier = modifier
             .padding(horizontal = 42.dp)
             .offset(y = offsetY.dp)
@@ -75,11 +79,26 @@ fun RegisterTooltip(
             )
         }
 
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_register_tooltip_arrow),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier.offset(y = (-5).dp)
-        )
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_register_tooltip_arrow),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier.offset(
+                    x = (maxWidth * arrowPositionFraction),
+                    y = (-5).dp
+                )
+            )
+        }
+    }
+}
+
+
+@Preview
+@Composable
+private fun RegisterTooltipPreview() {
+    SpoonyAndroidTheme {
+        RegisterTooltip(text = "닉네임을 입력해주세요.",
+        modifier = Modifier.offset { IntOffset(0,0) })
     }
 }
