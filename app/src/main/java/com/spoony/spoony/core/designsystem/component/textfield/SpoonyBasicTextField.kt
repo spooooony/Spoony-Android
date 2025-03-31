@@ -51,16 +51,21 @@ fun SpoonyBasicTextField(
         value = value,
         onValueChange = { newValue ->
             /**
-             * 입력된 새로운 값(newValue)이 이모지나 특수 문자를 포함하는지 확인하고,
-             * 필터링 조건(isFilterEmoji, isFilterSpecialChars)에 따라 입력 자체를 제한하여 값을 업데이트 합니다.
+             * 입력된 새로운 값(newValue)이 필터링 조건을 충족하는지 검사합니다.
+             *
+             * - isFilterEmoji가 true이면, 입력값이 이모지를 포함하지 않아야 합니다.
+             * - isFilterSpecialChars가 true이면, 입력값이 특수 문자를 포함하지 않아야 합니다.
+             *
+             * 조건을 만족하는 경우에만 입력값을 업데이트하고, 그렇지 않으면 기존 값을 유지합니다.
              */
-            val filteredValue = newValue.takeIf {
-                (!isFilterEmoji || SpoonyValidator.isNotContainsEmoji(it)) &&
-                    (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(it))
-            } ?: value
+            val isValidInput = (!isFilterEmoji || SpoonyValidator.isNotContainsEmoji(newValue)) &&
+                    (!isFilterSpecialChars || SpoonyValidator.isNotContainsSpecialChars(newValue))
+
+            val filteredValue = if (isValidInput) newValue else value
 
             onValueChanged(filteredValue)
         },
+
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, borderColor, RoundedCornerShape(8.dp))
