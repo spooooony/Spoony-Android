@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
@@ -31,11 +32,13 @@ fun SingleButtonDialog(
     text: String,
     onDismiss: () -> Unit,
     onClick: () -> Unit,
+    properties: DialogProperties = DialogProperties(usePlatformDefaultWidth = false),
     buttonStyle: ButtonStyle = ButtonStyle.Secondary,
     content: @Composable () -> Unit = {}
 ) {
     SpoonyBasicDialog(
         onDismiss = onDismiss,
+        properties = properties,
         content = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(20.dp),

@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -114,9 +115,12 @@ fun RegisterStepTwoScreen(
             message = "수저 1개를 획득했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
             text = "좋아요!",
             buttonStyle = ButtonStyle.Primary,
-            onDismiss = {
-                isDialogVisible = true // 백드롭 불가
-            },
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false
+            ),
+            onDismiss = {},
             onClick = {
                 onRegisterComplete()
                 isDialogVisible = false
