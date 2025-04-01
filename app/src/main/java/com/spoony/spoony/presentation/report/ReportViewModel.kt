@@ -52,19 +52,19 @@ class ReportViewModel @Inject constructor(
 
     fun reportPost(reportType: String, reportDetail: String) {
         val reportArgs = savedStateHandle.toRoute<Report>()
-        val postId = reportArgs.postId
-        val userId = reportArgs.userId
-        when (postId > 0 && userId > 0) {
-            true -> {
-                viewModelScope.launch {
-                    reportRepository.postReportPost(postId = postId, userId = userId, reportType = reportType, reportDetail = reportDetail)
-                        .onSuccess {
-                            _sideEffect.emit(ReportSideEffect.ShowDialog)
-                        }
-                        .onFailure(Timber::e)
+        with(reportArgs) {
+            when (postId > 0 && userId > 0) {
+                true -> {
+                    viewModelScope.launch {
+                        reportRepository.postReportPost(postId = postId, userId = userId, reportType = reportType, reportDetail = reportDetail)
+                            .onSuccess {
+                                _sideEffect.emit(ReportSideEffect.ShowDialog)
+                            }
+                            .onFailure(Timber::e)
+                    }
                 }
+                false -> Timber.e("postId or userId is not exist")
             }
-            false -> Timber.e("postId or userId is not exist")
         }
     }
 }
