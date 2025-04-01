@@ -37,7 +37,7 @@ enum class MainTab(
     MYPAGE(
         selectedIconResource = R.drawable.ic_mypage_main400_24,
         unselectedIconResource = R.drawable.ic_mypage_gray400_24,
-        label = "마이페이지",
+        label = "마이",
         route = MyPage
     );
 
