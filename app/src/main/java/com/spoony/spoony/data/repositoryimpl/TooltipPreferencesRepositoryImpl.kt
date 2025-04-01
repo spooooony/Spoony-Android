@@ -9,7 +9,7 @@ class TooltipPreferencesRepositoryImpl(
 ) : TooltipPreferencesRepository {
     override fun isTooltipShown(): Flow<Boolean> = dataSource.isTooltipShown
 
-    override suspend fun setTooltipShown(shown: Boolean) {
-        dataSource.setTooltipShown(shown)
+    override suspend fun disableTooltip() {
+        dataSource.disableTooltip()
     }
 }
