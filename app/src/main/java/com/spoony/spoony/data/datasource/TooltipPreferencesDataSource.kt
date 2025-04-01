@@ -12,9 +12,9 @@ class TooltipPreferencesDataSource(private val dataStore: DataStore<Preferences>
     val isTooltipShown: Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[SHOW_REGISTER_TOOLTIP] ?: true }
 
-    suspend fun setTooltipShown(shown: Boolean) {
+    suspend fun disableTooltip() {
         dataStore.edit { preferences ->
-            preferences[SHOW_REGISTER_TOOLTIP] = shown
+            preferences[SHOW_REGISTER_TOOLTIP] = false
         }
     }
 
