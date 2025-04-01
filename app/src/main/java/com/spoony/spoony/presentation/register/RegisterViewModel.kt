@@ -239,7 +239,7 @@ class RegisterViewModel @Inject constructor(
 
     fun hideRegisterSnackBar() {
         viewModelScope.launch {
-            tooltipPreferencesRepository.setTooltipShown(false)
+            tooltipPreferencesRepository.disableTooltip()
         }
     }
 
