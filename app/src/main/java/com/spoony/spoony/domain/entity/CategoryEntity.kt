@@ -1,5 +1,9 @@
 package com.spoony.spoony.domain.entity
 
+/**
+ * 카테고리 정보
+ */
+
 data class CategoryEntity(
     val categoryId: Int,
     val categoryName: String,

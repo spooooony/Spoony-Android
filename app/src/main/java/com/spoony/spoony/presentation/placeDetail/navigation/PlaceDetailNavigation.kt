@@ -18,7 +18,7 @@ fun NavController.navigateToPlaceDetail(
 
 fun NavGraphBuilder.placeDetailNavGraph(
     paddingValues: PaddingValues,
-    navigateToReport: (postId: Int) -> Unit,
+    navigateToReport: (postId: Int, userId: Int) -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<PlaceDetail> {

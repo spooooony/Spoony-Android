@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.PostRepository
+import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.placeDetail.model.toModel
 import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,7 @@ import timber.log.Timber
 class PlaceDetailViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
@@ -44,7 +46,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getUserInfo(userId: Int) {
         viewModelScope.launch {
-            authRepository.getUserInfo()
+            userRepository.getUserInfoById(userId)
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
