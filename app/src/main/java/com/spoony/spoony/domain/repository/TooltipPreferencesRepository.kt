@@ -4,5 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface TooltipPreferencesRepository {
     fun isTooltipShown(): Flow<Boolean>
-    suspend fun setTooltipShown(shown: Boolean)
+    suspend fun disableTooltip()
 }
