@@ -29,6 +29,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.graphicsLayer
@@ -65,7 +66,9 @@ fun Modifier.addFocusCleaner(focusManager: FocusManager): Modifier {
 
 @Composable
 fun Modifier.spoonyGradient(
-    cornerRadius: Dp
+    cornerRadius: Dp,
+    mainColor: Color = black,
+    secondColor: Color = gray500
 ) = composed {
     this.drawWithContent {
         val roundedCornerPath = Path().apply {
@@ -79,8 +82,8 @@ fun Modifier.spoonyGradient(
 
         clipPath(roundedCornerPath) {
             val gradientBrush = Brush.radialGradient(
-                0.48f to black,
-                1f to gray500,
+                0.48f to mainColor,
+                1f to secondColor,
                 center = Offset(size.width, -size.height),
                 radius = size.width * 2
             )

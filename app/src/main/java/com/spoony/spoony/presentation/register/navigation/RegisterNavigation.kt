@@ -14,6 +14,8 @@ import com.spoony.spoony.presentation.register.RegisterStepOneScreen
 import com.spoony.spoony.presentation.register.RegisterStepTwoScreen
 import com.spoony.spoony.presentation.register.RegisterSteps
 import com.spoony.spoony.presentation.register.RegisterViewModel
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepTwo
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRegister(
@@ -41,7 +43,7 @@ fun NavGraphBuilder.registerGraph(
     viewModel: RegisterViewModel,
     onResetRegisterState: () -> Unit
 ) {
-    composable<RegisterRoute.StepOne>(
+    composable<StepOne>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
@@ -58,7 +60,7 @@ fun NavGraphBuilder.registerGraph(
         RegisterStepOneScreen(
             viewModel = viewModel,
             onNextClick = {
-                navController.navigate(RegisterRoute.StepTwo)
+                navController.navigate(StepTwo)
                 onUpdateProgress(RegisterSteps.FIRST)
             },
             onInitialProgress = {
@@ -67,7 +69,7 @@ fun NavGraphBuilder.registerGraph(
         )
     }
 
-    composable<RegisterRoute.StepTwo>(
+    composable<StepTwo>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
@@ -88,7 +90,7 @@ fun NavGraphBuilder.registerGraph(
             },
             onRegisterComplete = {
                 onResetRegisterState()
-                navController.popBackStack(RegisterRoute.StepOne, true)
+                navController.popBackStack(StepOne, true)
                 navigateToExplore()
             }
         )

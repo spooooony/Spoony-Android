@@ -1,5 +1,10 @@
 package com.spoony.spoony.core.designsystem.component.textfield
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,9 +40,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.countGraphemes
 
 @Composable
 fun SpoonyLargeTextField(
@@ -47,18 +55,24 @@ fun SpoonyLargeTextField(
     maxLength: Int = Int.MAX_VALUE,
     minLength: Int = 0,
     minErrorText: String? = null,
-    maxErrorText: String? = null
+    maxErrorText: String? = null,
+    decorationBoxHeight: Dp = 80.dp,
+    isAllowEmoji: Boolean = false,
+    isAllowSpecialChars: Boolean = false
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var isError: Boolean by remember { mutableStateOf(false) }
     var isOverflowed: Boolean by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
     val errorText = if (isOverflowed) maxErrorText else minErrorText
-    val borderColor = remember(isError, isFocused) {
-        when {
-            isError -> spoonyColors.error400
-            isFocused -> spoonyColors.main400
-            else -> spoonyColors.gray100
+
+    val borderColor by remember(isError, isFocused) {
+        derivedStateOf {
+            when {
+                isError -> spoonyColors.error400
+                isFocused -> spoonyColors.main400
+                else -> spoonyColors.gray100
+            }
         }
     }
 
@@ -74,25 +88,33 @@ fun SpoonyLargeTextField(
             value = value,
             placeholder = placeholder,
             onValueChanged = { newText ->
-                isError = (newText.length > maxLength || newText.trim().length < minLength)
-                isOverflowed = newText.length > maxLength
-                if (newText.length <= maxLength) {
+                isError = (newText.countGraphemes() > maxLength || newText.countGraphemes(true) < minLength)
+                isOverflowed = newText.countGraphemes() > maxLength
+
+                if (newText.countGraphemes() <= maxLength) {
                     onValueChanged(newText)
                 }
             },
+            decorationBoxHeight = decorationBoxHeight,
             maxLength = maxLength,
             borderColor = borderColor,
             subContentColor = subContentColor,
             modifier = modifier,
             onFocusChanged = {
                 isFocused = it
-                if (value.length >= minLength) {
+                if (value.countGraphemes(true) >= minLength) {
                     isError = false
                 }
-            }
+            },
+            isAllowEmoji = isAllowEmoji,
+            isAllowSpecialChars = isAllowSpecialChars
         )
 
-        if (((minErrorText != null || maxErrorText != null) && isError)) {
+        AnimatedVisibility(
+            visible = errorText != null && isError,
+            enter = fadeIn() + slideInVertically(initialOffsetY = { -it }),
+            exit = fadeOut() + slideOutVertically(targetOffsetY = { -it })
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -127,10 +149,13 @@ private fun CustomBasicTextField(
     maxLength: Int = 0,
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     imeAction: ImeAction = ImeAction.Done,
-    singleLine: Boolean = false
+    singleLine: Boolean = false,
+    decorationBoxHeight: Dp = 55.dp,
+    isAllowEmoji: Boolean = false,
+    isAllowSpecialChars: Boolean = false
 ) {
     val focusRequester = remember { FocusRequester() }
-    val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
+    val counterText = stringResource(R.string.COUNTER_TEXT, value.countGraphemes(), maxLength)
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
@@ -138,9 +163,20 @@ private fun CustomBasicTextField(
         BasicTextField(
             value = value,
             onValueChange = { newValue ->
-                if (SpoonyValidator.isNotContainsEmoji(newValue)) {
-                    onValueChanged(newValue)
-                }
+                /**
+                 * 입력된 새로운 값(newValue)이 허용 조건을 만족하는지 검사합니다.
+                 *
+                 * - isAllowEmoji가 false이면, 입력값이 이모지를 포함하지 않아야 합니다.
+                 * - isAllowSpecialChars가 false이면, 입력값이 특수 문자를 포함하지 않아야 합니다.
+                 *
+                 * 조건을 만족하는 경우에만 입력값을 업데이트하고, 그렇지 않으면 기존 값을 유지합니다.
+                 */
+                val isValidInput = (isAllowEmoji || SpoonyValidator.isNotContainsEmoji(newValue)) &&
+                    (isAllowSpecialChars || SpoonyValidator.isNotContainsSpecialChars(newValue))
+
+                val filteredValue = if (isValidInput) newValue else value
+
+                onValueChanged(filteredValue)
             },
             modifier = modifier
                 .clip(RoundedCornerShape(8.dp))
@@ -176,7 +212,7 @@ private fun CustomBasicTextField(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(80.dp)
+                            .height(decorationBoxHeight)
                     ) {
                         innerTextField()
                         if (value.isEmpty()) {

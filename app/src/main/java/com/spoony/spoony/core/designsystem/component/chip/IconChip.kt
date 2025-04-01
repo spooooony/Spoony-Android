@@ -19,11 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.theme.black
+import com.spoony.spoony.core.designsystem.theme.gray500
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
 
@@ -34,6 +37,10 @@ fun IconChip(
     unSelectedIconUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    defaultBorderColor: Color = SpoonyAndroidTheme.colors.gray100,
+    selectedBorderColor: Color = SpoonyAndroidTheme.colors.gray100,
+    secondColor: Color = gray500,
+    mainColor: Color = black,
     isSelected: Boolean = false,
     isGradient: Boolean = false
 ) {
@@ -45,12 +52,12 @@ fun IconChip(
             .clip(RoundedCornerShape(12.dp))
             .border(
                 width = 1.dp,
-                color = SpoonyAndroidTheme.colors.gray100,
+                color = if (isSelected) selectedBorderColor else defaultBorderColor,
                 shape = RoundedCornerShape(12.dp)
             )
             .then(
                 when {
-                    isSelected && isGradient -> Modifier.spoonyGradient(12.dp)
+                    isSelected && isGradient -> Modifier.spoonyGradient(12.dp, mainColor = mainColor, secondColor = secondColor)
                     isSelected -> Modifier.background(color = SpoonyAndroidTheme.colors.main400)
                     else -> Modifier.background(color = SpoonyAndroidTheme.colors.gray0)
                 }

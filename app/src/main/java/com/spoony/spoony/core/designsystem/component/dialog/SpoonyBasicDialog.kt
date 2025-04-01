@@ -16,11 +16,12 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 @Composable
 fun SpoonyBasicDialog(
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    properties: DialogProperties = DialogProperties(usePlatformDefaultWidth = false)
 ) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = properties
     ) {
         Box(
             modifier = Modifier

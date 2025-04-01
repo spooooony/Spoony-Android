@@ -46,7 +46,6 @@ import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
-import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.report.component.ReportCompleteDialog
 import com.spoony.spoony.presentation.report.component.ReportRadioButton
@@ -65,8 +64,6 @@ fun ReportRoute(
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
     var reportSuccessDialogVisibility by remember { mutableStateOf(false) }
-
-    val postId = (state.postId as? UiState.Success)?.data ?: return
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -90,7 +87,7 @@ fun ReportRoute(
         reportButtonEnabled = state.reportButtonEnabled,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
-        onReportClick = { viewModel.reportPost(postId, state.selectedReportOption.code, state.reportContext) },
+        onReportClick = { viewModel.reportPost(state.selectedReportOption.code, state.reportContext) },
         onBackButtonClick = navigateUp
     )
 
