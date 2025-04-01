@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +48,6 @@ fun MainBottomBar(
         Column(
             modifier = Modifier
                 .background(SpoonyAndroidTheme.colors.white)
-                .clickable(enabled = false) {}
         ) {
             HorizontalDivider(
                 color = SpoonyAndroidTheme.colors.gray200,
