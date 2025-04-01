@@ -34,7 +34,9 @@ fun SpoonyIconButtonTextField(
     modifier: Modifier = Modifier,
     showDeleteIcon: Boolean = true,
     maxLength: Int = Int.MAX_VALUE,
-    helperText: String? = null
+    helperText: String? = null,
+    isAllowEmoji: Boolean = false,
+    isAllowSpecialChars: Boolean = false
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val spoonyColors = SpoonyAndroidTheme.colors
@@ -74,7 +76,9 @@ fun SpoonyIconButtonTextField(
                         modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
                     )
                 }
-            }
+            },
+            isAllowEmoji = isAllowEmoji,
+            isAllowSpecialChars = isAllowSpecialChars
         )
 
         if (helperText != null) {

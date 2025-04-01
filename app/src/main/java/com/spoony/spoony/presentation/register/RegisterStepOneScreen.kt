@@ -1,15 +1,17 @@
 package com.spoony.spoony.presentation.register
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +28,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
+import com.spoony.spoony.core.designsystem.component.slider.SpoonySlider
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyIconButtonTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonySearchTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -118,8 +122,15 @@ fun RegisterStepOneScreen(
             onMenuAdd = viewModel::addMenu
         )
 
+        Spacer(modifier = Modifier.height(32.dp))
+
+        SliderSection(
+            sliderPosition = state.userSatisfactionValue,
+            onSliderPositionChange = viewModel::updateUserSatisfactionValue
+        )
+
         Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         NextButton(
             enabled = isNextButtonEnabled,
@@ -252,7 +263,11 @@ private fun CategorySection(
                         onClick = {
                             onSelectCategory(category)
                         },
-                        isSelected = selectedCategory.categoryId == category.categoryId
+                        isSelected = selectedCategory.categoryId == category.categoryId,
+                        isGradient = true,
+                        secondColor = SpoonyAndroidTheme.colors.white,
+                        mainColor = SpoonyAndroidTheme.colors.main400,
+                        selectedBorderColor = SpoonyAndroidTheme.colors.main200
                     )
                 }
             }
@@ -278,7 +293,13 @@ private fun MenuSection(
         Spacer(modifier = Modifier.height(12.dp))
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = FastOutSlowInEasing
+                )
+            )
         ) {
             menuList.forEachIndexed { index, menu ->
                 SpoonyIconButtonTextField(
@@ -289,7 +310,8 @@ private fun MenuSection(
                     placeholder = "메뉴 이름",
                     onDeleteClick = { onMenuRemove(index) },
                     showDeleteIcon = menu.isNotBlank() || menuList.size > 1,
-                    maxLength = 30
+                    maxLength = 30,
+                    isAllowSpecialChars = true
                 )
             }
         }
@@ -298,10 +320,60 @@ private fun MenuSection(
 
         AnimatedVisibility(
             visible = menuList.size < MAX_MENU_COUNT,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            enter = expandVertically(
+                animationSpec = tween(300)
+            ),
+            exit = shrinkVertically(
+                animationSpec = tween(300)
+            )
         ) {
             AddMenuButton(onClick = onMenuAdd)
+        }
+    }
+}
+
+@Composable
+private fun SliderSection(
+    sliderPosition: Float,
+    onSliderPositionChange: (Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "가격 대비 만족도는 어땠나요?",
+            style = SpoonyAndroidTheme.typography.body1sb,
+            color = SpoonyAndroidTheme.colors.black
+        )
+
+        SpoonySlider(
+            value = sliderPosition,
+            onValueChange = onSliderPositionChange
+        )
+
+        Spacer(modifier = Modifier.height(21.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "아쉬움",
+                style = SpoonyAndroidTheme.typography.body2m,
+                color = SpoonyAndroidTheme.colors.black
+            )
+
+            Text(
+                text = "적당함",
+                style = SpoonyAndroidTheme.typography.body2m,
+                color = SpoonyAndroidTheme.colors.black
+            )
+
+            Text(
+                text = "훌륭함",
+                style = SpoonyAndroidTheme.typography.body2m,
+                color = SpoonyAndroidTheme.colors.black
+            )
         }
     }
 }
