@@ -41,6 +41,7 @@ fun RegisterScreen(
     navigateToExplore: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
+    val isTooltipVisible by viewModel.tooltipShownFlow.collectAsStateWithLifecycle(initialValue = false)
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val showSnackBar = LocalSnackBarTrigger.current
@@ -86,7 +87,7 @@ fun RegisterScreen(
         }
 
         AnimatedVisibility(
-            visible = state.showRegisterSnackBar,
+            visible = isTooltipVisible,
             enter = fadeIn() + slideInVertically(initialOffsetY = { -it }),
             exit = fadeOut() + slideOutVertically(targetOffsetY = { it }),
             modifier = Modifier

@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.bundles.androidx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.kotlinx.immutable)
+    implementation(libs.androidx.datastore.preferences)
 
     // Network
     implementation(platform(libs.okhttp.bom))
