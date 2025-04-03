@@ -14,11 +14,22 @@ plugins {
 val properties = Properties().apply {
     load(project.rootProject.file("local.properties").inputStream())
 }
+
 android {
+    signingConfigs {
+        create("release") {
+            keyAlias = properties.getProperty("keyAlias")
+            keyPassword = properties.getProperty("keyPassword")
+            storeFile = File("${project.rootDir.absolutePath}/keystore/spoony-release-key.jks")
+            storePassword = properties.getProperty("storePassword")
+        }
+    }
+
     namespace = "com.spoony.spoony"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
+        manifestPlaceholders += mapOf()
         applicationId = "com.spoony.spoony"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
@@ -44,12 +55,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
