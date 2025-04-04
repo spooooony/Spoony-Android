@@ -118,6 +118,8 @@ dependencies {
     // Room
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
+
+    implementation(libs.accompanist.systemuicontroller)
 }
 
 ktlint {
