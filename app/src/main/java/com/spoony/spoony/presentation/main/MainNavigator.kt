@@ -17,6 +17,7 @@ import com.spoony.spoony.presentation.myPage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
+import com.spoony.spoony.presentation.splash.navigation.Splash
 
 const val NAVIGATION_ROOT = 0
 
@@ -27,7 +28,7 @@ class MainNavigator(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Map()
+    val startDestination = Splash
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
@@ -57,6 +58,16 @@ class MainNavigator(
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true
+    }
+
+    fun navigateToMap(
+        navOptions: NavOptions? = navOptions {
+            popUpTo(NAVIGATION_ROOT) {
+                inclusive = true
+            }
+        }
+    ) {
+        navController.navigateToMap(navOptions = navOptions)
     }
 
     fun navigateToReport(

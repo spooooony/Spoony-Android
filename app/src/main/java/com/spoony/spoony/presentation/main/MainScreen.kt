@@ -27,6 +27,7 @@ import com.spoony.spoony.presentation.myPage.navigation.myPageNavGraph
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
+import com.spoony.spoony.presentation.splash.navigation.splashNavGraph
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -93,6 +94,10 @@ fun MainScreen(
                 navController = navigator.navController,
                 startDestination = navigator.startDestination
             ) {
+                splashNavGraph(
+                    navigateToMap = navigator::navigateToMap,
+                    paddingValues = paddingValues
+                )
                 mapNavGraph(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = {

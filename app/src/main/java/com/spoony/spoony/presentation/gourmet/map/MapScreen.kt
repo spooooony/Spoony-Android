@@ -24,6 +24,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
@@ -52,6 +54,7 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
 import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
+import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
@@ -87,7 +90,14 @@ fun MapRoute(
     navigateUp: () -> Unit,
     viewModel: MapViewModel = hiltViewModel()
 ) {
+    val systemUiController = rememberSystemUiController()
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    SideEffect {
+        systemUiController.setNavigationBarColor(
+            color = white
+        )
+    }
 
     with(state.locationModel) {
         LaunchedEffect(placeId) {
