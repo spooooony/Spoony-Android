@@ -13,6 +13,7 @@ import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
+import com.spoony.spoony.presentation.myPage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
@@ -49,6 +50,7 @@ class MainNavigator(
             MainTab.MAP -> navController.navigateToMap(navOptions = navOptions)
             MainTab.REGISTER -> navController.navigateToRegister(navOptions)
             MainTab.EXPLORE -> navController.navigateToExplore(navOptions)
+            MainTab.MYPAGE -> navController.navigateToMyPage(navOptions)
         }
     }
 

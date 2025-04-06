@@ -1,5 +1,9 @@
 package com.spoony.spoony.domain.entity
 
+/**
+ * mapper 생성 후 삭제 부탁합니다~
+ */
+
 data class PostEntity(
     val postId: Int,
     val userId: Int,
