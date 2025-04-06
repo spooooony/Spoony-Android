@@ -30,7 +30,7 @@ import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
-fun ExploreItem2 (
+fun ExploreItem(
     username: String,
     placeSpoon: String,
     review: String,
@@ -51,7 +51,7 @@ fun ExploreItem2 (
             .background(SpoonyAndroidTheme.colors.gray0)
             .padding(
                 horizontal = 10.dp,
-                vertical = 18.dp,
+                vertical = 18.dp
             )
     ) {
         Row(
@@ -105,8 +105,8 @@ fun ExploreItem2 (
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ){
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_add_map_main400_24),
                     contentDescription = null,
@@ -136,7 +136,7 @@ fun ExploreItem2 (
 fun PreviewExploreItem2() {
     val menuItems = persistentListOf(ExploreDropdownOption.REPORT)
     SpoonyAndroidTheme {
-        ExploreItem2(
+        ExploreItem(
             username = "gambasgirl",
             placeSpoon = "성북구",
             review = "이자카야인데 친구랑 가서 안주만 5개 넘게 시킴.. 명성이 자자한 고등어봉 초밥은 꼭 시키세요! 입에 넣자마자 사르르 녹아 ...이자카야인데 친구랑 가서 안주만 5개 넘게 시킴.. 명성이 자자한 고등어봉 초밥은 꼭 시키세요! 입에 넣자마자 사르르 녹아 ...",
