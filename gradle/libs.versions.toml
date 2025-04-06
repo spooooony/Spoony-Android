@@ -46,6 +46,7 @@ lottieCompose = "6.1.0"
 coroutine = "1.8.1"
 ktlint = "11.5.1"
 advancedBottomSheet = "0.1.0"
+pebble = "0.0.1"
 
 # Naver Map
 naverMapCompose = "1.7.2"
@@ -102,6 +103,7 @@ accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pa
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+pebble = { group = "io.github.chattymin", name = "pebble", version.ref = "pebble" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlin-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinSerializationConverter" }
