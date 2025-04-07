@@ -103,23 +103,18 @@ private fun IconDropdownPreview() {
     menuItems.add(IconDropdownOption.Option(text = "신고하기", type = "REPORT"))
     menuItems.add(IconDropdownOption.Option(text = "차단하기", type = "BLOCK"))
     SpoonyAndroidTheme {
-        Column(
-            modifier = Modifier.fillMaxSize()
-                .background(SpoonyAndroidTheme.colors.white)
-        ) {
-            IconDropdown(
-                menuItems = menuItems,
-                onMenuItemClick = { option ->
-                    when (option.type) {
-                        "REPORT" -> {
-                            Timber.tag("IconDropdownOption").d("IconDropdownOption.REPORT")
-                        }
-                        "BLOCK" -> {
-                            Timber.tag("IconDropdownOption").d("IconDropdownOption.BLOCK")
-                        }
+        IconDropdown(
+            menuItems = menuItems,
+            onMenuItemClick = { option ->
+                when (option.type) {
+                    "REPORT" -> {
+                        Timber.tag("IconDropdownOption").d("IconDropdownOption.REPORT")
+                    }
+                    "BLOCK" -> {
+                        Timber.tag("IconDropdownOption").d("IconDropdownOption.BLOCK")
                     }
                 }
-            )
-        }
+            }
+        )
     }
 }
