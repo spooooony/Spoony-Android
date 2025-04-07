@@ -1,6 +1,7 @@
 package com.spoony.spoony.core.designsystem.component.topappbar
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -70,28 +71,29 @@ fun TagTopAppBar(
 @Composable
 private fun TagTopAppBarPreview() {
     SpoonyAndroidTheme {
-        TagTopAppBar(
-            count = 99,
-            showBackButton = false
-        ) {
-            Text(
-                text = "홍대입구역"
+        Column {
+            TagTopAppBar(
+                count = 99,
+                showBackButton = true
             )
-        }
-    }
-}
 
-@Preview
-@Composable
-private fun TagTopAppBarWithBackbuttonPreview() {
-    SpoonyAndroidTheme {
-        TagTopAppBar(
-            count = 99,
-            showBackButton = true
-        ) {
-            Text(
-                text = "홍대입구역"
-            )
+            TagTopAppBar(
+                count = 99,
+                showBackButton = false
+            ) {
+                Text(
+                    text = "홍대입구역"
+                )
+            }
+
+            TagTopAppBar(
+                count = 99,
+                showBackButton = true
+            ) {
+                Text(
+                    text = "홍대입구역"
+                )
+            }
         }
     }
 }

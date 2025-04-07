@@ -21,9 +21,9 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun TitleTopAppBar(
-    title: String,
     onBackButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
+    title: String = "",
     backgroundColor: Color = SpoonyAndroidTheme.colors.white
 ) {
     SpoonyBasicTopAppBar(
