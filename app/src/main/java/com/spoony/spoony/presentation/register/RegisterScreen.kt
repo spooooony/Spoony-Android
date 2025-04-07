@@ -41,6 +41,7 @@ fun RegisterScreen(
     navigateToExplore: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
+    val isTooltipVisible by viewModel.tooltipShownFlow.collectAsStateWithLifecycle(initialValue = false)
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val showSnackBar = LocalSnackBarTrigger.current
@@ -86,14 +87,15 @@ fun RegisterScreen(
         }
 
         AnimatedVisibility(
-            visible = state.showRegisterSnackBar,
+            visible = isTooltipVisible,
             enter = fadeIn() + slideInVertically(initialOffsetY = { -it }),
             exit = fadeOut() + slideOutVertically(targetOffsetY = { it }),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         ) {
             RegisterTooltip(
-                text = "장소를 등록하면 수저를 획득할 수 있어요"
+                text = "장소를 등록하면 수저를 획득할 수 있어요",
+                arrowPositionFraction = 0.632f
             )
             LaunchedEffect(Unit) {
                 delay(SHOW_REGISTER_SNACKBAR_TIME)

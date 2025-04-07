@@ -43,32 +43,38 @@ fun SpoonyBasicTextField(
     focusRequester: FocusRequester = FocusRequester(),
     singleLine: Boolean = true,
     leadingIcon: @Composable () -> Unit = {},
-    trailingIcon: @Composable () -> Unit = {}
+    trailingIcon: @Composable () -> Unit = {},
+    isAllowEmoji: Boolean = false,
+    isAllowSpecialChars: Boolean = false
 ) {
     BasicTextField(
         value = value,
         onValueChange = { newValue ->
-            if (SpoonyValidator.isNotContainsEmoji(newValue)) {
-                onValueChanged(newValue)
-            }
+            /**
+             * 입력된 새로운 값(newValue)이 필터링 조건을 충족하는지 검사합니다.
+             *
+             * - isFilterEmoji가 true이면, 입력값이 이모지를 포함하지 않아야 합니다.
+             * - isFilterSpecialChars가 true이면, 입력값이 특수 문자를 포함하지 않아야 합니다.
+             *
+             * 조건을 만족하는 경우에만 입력값을 업데이트하고, 그렇지 않으면 기존 값을 유지합니다.
+             */
+            val isValidInput = (isAllowEmoji || SpoonyValidator.isNotContainsEmoji(newValue)) &&
+                (isAllowSpecialChars || SpoonyValidator.isNotContainsSpecialChars(newValue))
+
+            val filteredValue = if (isValidInput) newValue else value
+
+            onValueChanged(filteredValue)
         },
+
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .border(
-                1.dp,
-                borderColor,
-                RoundedCornerShape(8.dp)
-            )
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
             .background(backgroundColor)
             .padding(horizontal = 12.dp)
             .focusRequester(focusRequester)
-            .onFocusChanged { focusState ->
-                onFocusChanged(focusState.isFocused)
-            },
+            .onFocusChanged { focusState -> onFocusChanged(focusState.isFocused) },
         singleLine = singleLine,
-        keyboardOptions = KeyboardOptions(
-            imeAction = imeAction
-        ),
+        keyboardOptions = KeyboardOptions(imeAction = imeAction),
         keyboardActions = KeyboardActions(
             onDone = { onDoneAction() },
             onSearch = { onSearchAction() }
@@ -100,15 +106,6 @@ fun SpoonyBasicTextField(
             }
         }
     )
-}
-
-object SpoonyValidator {
-    private val emojiPatternString = "[\\uD83C-\\uDBFF\\uDC00-\\uDFFF]"
-    private val emojiPattern = Regex(emojiPatternString)
-
-    fun isNotContainsEmoji(input: String): Boolean {
-        return !emojiPattern.containsMatchIn(input)
-    }
 }
 
 @Preview(showBackground = true)

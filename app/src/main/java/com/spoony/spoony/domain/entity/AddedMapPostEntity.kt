@@ -1,5 +1,9 @@
 package com.spoony.spoony.domain.entity
 
+/**
+ * mapper 생성 후 삭제 부탁합니다~
+ */
+
 data class AddedMapPostEntity(
     val placeId: Int,
     val placeName: String,
@@ -7,7 +11,6 @@ data class AddedMapPostEntity(
     val authorName: String,
     val authorRegionName: String,
     val postId: Int,
-    val postTitle: String,
     val zzimCount: Int,
     val photoUrlList: List<String>
 )
