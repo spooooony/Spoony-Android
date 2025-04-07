@@ -30,7 +30,6 @@ fun ExploreTopAppBar(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(start = 20.dp)
                 .noRippleClickable(onClick = onClick)
                 .padding(vertical = 4.dp)
         ) {

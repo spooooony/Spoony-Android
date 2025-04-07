@@ -1,6 +1,5 @@
 package com.spoony.spoony.core.designsystem.component.topappbar
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -24,17 +23,15 @@ fun CloseTopAppBar(
 ) {
     SpoonyBasicTopAppBar(
         actions = {
-            Row {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_close_24),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .noRippleClickable(onClick = onCloseButtonClick)
-                        .padding(end = 12.dp),
-                    tint = SpoonyAndroidTheme.colors.gray400
-                )
-            }
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_close_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(32.dp)
+                    .noRippleClickable(onClick = onCloseButtonClick)
+                    .padding(end = 12.dp),
+                tint = SpoonyAndroidTheme.colors.gray400
+            )
         },
         backgroundColor = backgroundColor
     ) {
