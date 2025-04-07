@@ -44,7 +44,7 @@ fun MapSearchTopAppBar(
                     tint = SpoonyAndroidTheme.colors.gray700
                 )
             }
-        },
+        }
     ) {
         SpoonySearchTextField(
             value = value,
