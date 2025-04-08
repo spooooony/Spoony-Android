@@ -118,12 +118,12 @@ fun MainScreen(
 
                 myPageNavGraph(
                     paddingValues = paddingValues,
-                    navigateToSettings = {  },
-                    navigateToFollower = {  },
-                    navigateToFollowing = {  },
-                    navigateToProfileEdit = {  },
+                    navigateToSettings = { },
+                    navigateToFollower = { },
+                    navigateToFollowing = { },
+                    navigateToProfileEdit = { },
                     navigateToRegister = navigator::navigateToRegister,
-                    navigateToReviewDetail = {  },
+                    navigateToReviewDetail = { }
                 )
 
                 placeDetailNavGraph(
