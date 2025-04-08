@@ -30,7 +30,7 @@ fun TitleTopAppBar(
         content = {
             Text(
                 text = title,
-                style = SpoonyAndroidTheme.typography.title2b,
+                style = SpoonyAndroidTheme.typography.title3b,
                 color = SpoonyAndroidTheme.colors.black,
                 modifier = Modifier
                     .fillMaxWidth()

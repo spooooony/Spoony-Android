@@ -25,8 +25,9 @@ val PretendardMedium = FontFamily(Font(R.font.pretendard_medium, FontWeight.Medi
 @Stable
 class SpoonyTypography(
     title1: TextStyle,
-    title2b: TextStyle,
-    title2sb: TextStyle,
+    title2: TextStyle,
+    title3b: TextStyle,
+    title3sb: TextStyle,
     body1b: TextStyle,
     body1sb: TextStyle,
     body1m: TextStyle,
@@ -41,9 +42,11 @@ class SpoonyTypography(
 
     var title1 by mutableStateOf(title1)
         private set
-    var title2b by mutableStateOf(title2b)
+    var title2 by mutableStateOf(title2)
         private set
-    var title2sb by mutableStateOf(title2sb)
+    var title3b by mutableStateOf(title3b)
+        private set
+    var title3sb by mutableStateOf(title3sb)
         private set
     var body1b by mutableStateOf(body1b)
         private set
@@ -68,8 +71,9 @@ class SpoonyTypography(
 
     fun copy(
         title1: TextStyle = this.title1,
-        title2b: TextStyle = this.title2b,
-        title2sb: TextStyle = this.title2sb,
+        title2: TextStyle = this.title2,
+        title3b: TextStyle = this.title3b,
+        title3sb: TextStyle = this.title3sb,
         body1b: TextStyle = this.body1b,
         body1sb: TextStyle = this.body1sb,
         body1m: TextStyle = this.body1m,
@@ -83,8 +87,9 @@ class SpoonyTypography(
 
     ): SpoonyTypography = SpoonyTypography(
         title1,
-        title2b,
-        title2sb,
+        title2,
+        title3b,
+        title3sb,
         body1b,
         body1sb,
         body1m,
@@ -99,8 +104,9 @@ class SpoonyTypography(
 
     fun update(other: SpoonyTypography) {
         title1 = other.title1
-        title2b = other.title2b
-        title2sb = other.title2sb
+        title2 = other.title2
+        title3b = other.title3b
+        title3sb = other.title3sb
         body1b = other.body1b
         body1sb = other.body1sb
         body1m = other.body1m
@@ -135,13 +141,17 @@ fun SpoonyTypography(): SpoonyTypography {
     return SpoonyTypography(
         title1 = SpoonyTextStyle(
             fontFamily = PretendardBold,
+            fontSize = 24.sp
+        ),
+        title2 = SpoonyTextStyle(
+            fontFamily = PretendardBold,
             fontSize = 20.sp
         ),
-        title2b = SpoonyTextStyle(
+        title3b = SpoonyTextStyle(
             fontFamily = PretendardBold,
             fontSize = 18.sp
         ),
-        title2sb = SpoonyTextStyle(
+        title3sb = SpoonyTextStyle(
             fontFamily = PretendardSemiBold,
             fontSize = 18.sp
         ),
@@ -199,11 +209,15 @@ fun SpoonyTypographyPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title2b
+                style = SpoonyAndroidTheme.typography.title2
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title2sb
+                style = SpoonyAndroidTheme.typography.title3b
+            )
+            Text(
+                "SpoonyAndroidTheme",
+                style = SpoonyAndroidTheme.typography.title3sb
             )
             Text(
                 "SpoonyAndroidTheme",
