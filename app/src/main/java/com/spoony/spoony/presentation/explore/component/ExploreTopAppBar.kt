@@ -35,7 +35,7 @@ fun ExploreTopAppBar(
         ) {
             Text(
                 text = "서울특별시 $place",
-                style = SpoonyAndroidTheme.typography.title2sb,
+                style = SpoonyAndroidTheme.typography.title3sb,
                 color = SpoonyAndroidTheme.colors.black
             )
             Icon(
