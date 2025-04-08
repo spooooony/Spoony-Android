@@ -43,6 +43,7 @@ import com.spoony.spoony.presentation.explore.component.ExploreTopAppBar
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreLocationBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
 import com.spoony.spoony.presentation.explore.model.FeedModel
+import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -176,6 +177,7 @@ private fun ExploreContent(
     onFeedItemClick: (Int) -> Unit,
     onRegisterButtonClick: () -> Unit
 ) {
+    val menuItems = persistentListOf(ExploreDropdownOption.REPORT)
     when (feedList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
@@ -240,7 +242,16 @@ private fun ExploreContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .noRippleClickable { onFeedItemClick(feed.feedId) }
-                                .padding(horizontal = 20.dp)
+                                .padding(horizontal = 20.dp),
+                            date = "",
+                            menuItems = menuItems,
+                            onMenuItemClick = { option ->
+                                when (option) {
+                                    ExploreDropdownOption.REPORT -> {
+                                        // Handle report option
+                                    }
+                                }
+                            }
                         )
                     }
                 }
