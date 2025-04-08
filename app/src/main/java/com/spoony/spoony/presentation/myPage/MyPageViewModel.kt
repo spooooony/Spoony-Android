@@ -4,12 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
@@ -22,9 +21,8 @@ class MyPageViewModel @Inject constructor(
 
     fun getUserProfile() {
         viewModelScope.launch {
-            delay(500)
             val profile = UserProfile(
-                imageUrl = "https://example.com/profile.jpg",
+                imageUrl = "https://avatars.githubusercontent.com/u/160750136?v=4",
                 nickname = "고졸 사토루",
                 region = "서울 마포구 스푼",
                 introduction = "두 사람은 문제아지만 최강.",
