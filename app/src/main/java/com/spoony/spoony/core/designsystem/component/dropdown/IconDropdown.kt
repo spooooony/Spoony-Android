@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,20 +27,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.type.IconDropdownOption
+import com.spoony.spoony.core.designsystem.type.DropdownItem
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import timber.log.Timber
 
 @Composable
 fun IconDropdown(
-    menuItems: List<IconDropdownOption>,
-    onMenuItemClick: (IconDropdownOption) -> Unit,
-    modifier: Modifier = Modifier
+    menuItems: ImmutableList<DropdownItem>,
+    onMenuItemClick: (DropdownItem) -> Unit,
+    modifier: Modifier = Modifier,
+    icon: ImageVector = ImageVector.vectorResource(R.drawable.ic_menu_24)
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(modifier = modifier.wrapContentSize(Alignment.TopEnd)) {
         Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_menu_24),
+            imageVector = icon,
             contentDescription = null,
             tint = SpoonyAndroidTheme.colors.gray500,
             modifier = Modifier
@@ -52,41 +54,37 @@ fun IconDropdown(
                 }
         )
         Spacer(modifier = Modifier.height(4.dp))
-        MaterialTheme(
-            shapes = MaterialTheme.shapes.copy(RoundedCornerShape(10.dp))
+        DropdownMenu(
+            expanded = expanded,
+            modifier = Modifier
+                .background(
+                    color = SpoonyAndroidTheme.colors.white,
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .padding(
+                    vertical = 2.dp,
+                    horizontal = 8.dp
+                ),
+            onDismissRequest = { expanded = false }
         ) {
-            DropdownMenu(
-                expanded = expanded,
-                modifier = Modifier
-                    .background(
-                        color = SpoonyAndroidTheme.colors.white,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .padding(
-                        vertical = 2.dp,
-                        horizontal = 8.dp
-                    ),
-                onDismissRequest = { expanded = false }
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    menuItems.forEach { menuItem ->
-                        key(menuItem) {
-                            Box(
-                                modifier = Modifier
-                                    .widthIn(min = 91.dp)
-                                    .noRippleClickable {
-                                        onMenuItemClick(menuItem)
-                                        expanded = false
-                                    }
-                                    .padding(6.dp),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                Text(
-                                    text = menuItem.text,
-                                    style = SpoonyAndroidTheme.typography.caption1b,
-                                    color = SpoonyAndroidTheme.colors.gray900
-                                )
-                            }
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                menuItems.forEach { menuItem ->
+                    key(menuItem.type) {
+                        Box(
+                            modifier = Modifier
+                                .widthIn(min = 91.dp)
+                                .noRippleClickable {
+                                    onMenuItemClick(menuItem)
+                                    expanded = false
+                                }
+                                .padding(6.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Text(
+                                text = menuItem.text,
+                                style = SpoonyAndroidTheme.typography.caption1b,
+                                color = SpoonyAndroidTheme.colors.gray900
+                            )
                         }
                     }
                 }
@@ -98,14 +96,15 @@ fun IconDropdown(
 @Preview
 @Composable
 private fun IconDropdownPreview() {
-    val menuItems = mutableListOf<IconDropdownOption>()
-    menuItems.add(IconDropdownOption.Option(text = "신고하기", type = "REPORT"))
-    menuItems.add(IconDropdownOption.Option(text = "차단하기", type = "BLOCK"))
+    val menuItems = persistentListOf(
+        DropdownItem(text = "신고하기", type = "REPORT"),
+        DropdownItem(text = "차단하기", type = "BLOCK")
+    )
     SpoonyAndroidTheme {
         IconDropdown(
             menuItems = menuItems,
-            onMenuItemClick = { option ->
-                when (option.type) {
+            onMenuItemClick = { menuItem ->
+                when (menuItem.type) {
                     "REPORT" -> {
                         Timber.tag("IconDropdownOption").d("IconDropdownOption.REPORT")
                     }
