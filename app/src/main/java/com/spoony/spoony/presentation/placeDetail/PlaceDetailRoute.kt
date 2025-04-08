@@ -273,7 +273,7 @@ private fun PlaceDetailScreen(
 
             Text(
                 text = title,
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.black
             )
 
