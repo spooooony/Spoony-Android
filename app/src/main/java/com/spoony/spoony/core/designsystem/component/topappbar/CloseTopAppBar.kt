@@ -37,7 +37,7 @@ fun CloseTopAppBar(
     ) {
         Text(
             text = title,
-            style = SpoonyAndroidTheme.typography.title2b,
+            style = SpoonyAndroidTheme.typography.title3b,
             color = SpoonyAndroidTheme.colors.black,
             modifier = Modifier
                 .padding(start = 20.dp)
