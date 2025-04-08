@@ -1,9 +1,12 @@
 package com.spoony.spoony.presentation.follow
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.toRoute
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.model.FollowButtonState
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
+import com.spoony.spoony.presentation.follow.navigation.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +16,8 @@ import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class FollowViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _followers = MutableStateFlow<List<UserItemUiState>>(emptyList())
@@ -22,12 +26,18 @@ class FollowViewModel @Inject constructor(
     private val _following = MutableStateFlow<List<UserItemUiState>>(emptyList())
     val following: StateFlow<List<UserItemUiState>> = _following.asStateFlow()
 
+    private val _isFollowingTab = MutableStateFlow(false)
+    val isFollowingTab: StateFlow<Boolean> = _isFollowingTab.asStateFlow()
+
     init {
         loadFollowers()
         loadFollowings()
+
+        with(savedStateHandle.toRoute<Follow>()) {
+            _isFollowingTab.value = this.isFollowing
+        }
     }
 
-    // 팔로워 데이터 로드
     fun loadFollowers() {
         val mockFollowers = listOf(
             UserItemUiState(

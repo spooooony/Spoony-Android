@@ -30,11 +30,12 @@ fun FollowMainScreen(
     paddingValues: PaddingValues,
     navigateToUserProfile: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: FollowViewModel = hiltViewModel(),
+    viewModel: FollowViewModel = hiltViewModel()
 ) {
     val followers by viewModel.followers.collectAsState()
     val following by viewModel.following.collectAsState()
-    var selectedTab by remember { mutableIntStateOf(0) }
+    val isFollowingTab by viewModel.isFollowingTab.collectAsState()
+    var selectedTab by remember { mutableIntStateOf(if (isFollowingTab) 1 else 0) }
     val navController = rememberNavController()
 
     Column(
@@ -69,7 +70,7 @@ fun FollowMainScreen(
 
         NavHost(
             navController = navController,
-            startDestination = FollowRoute.Follower,
+            startDestination = if (isFollowingTab) FollowRoute.Following else FollowRoute.Follower,
             modifier = Modifier.weight(1f)
         ) {
             followGraph(
@@ -79,4 +80,3 @@ fun FollowMainScreen(
         }
     }
 }
-

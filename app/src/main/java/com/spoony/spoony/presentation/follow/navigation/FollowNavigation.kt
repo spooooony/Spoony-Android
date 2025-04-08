@@ -17,9 +17,10 @@ import com.spoony.spoony.presentation.follow.FollowingScreen
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToFollow(
+    isFollowing: Boolean = true,
     navOptions: NavOptions? = null
 ) {
-    navigate(Follow, navOptions)
+    navigate(Follow(isFollowing), navOptions)
 }
 
 fun NavGraphBuilder.followNavGraph(
@@ -30,13 +31,13 @@ fun NavGraphBuilder.followNavGraph(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
+                animationSpec = tween(1000)
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
+                animationSpec = tween(1000)
             )
         }
     ) {
@@ -107,4 +108,4 @@ fun NavGraphBuilder.followGraph(
 }
 
 @Serializable
-data object Follow : Route
+data class Follow(val isFollowing: Boolean) : Route
