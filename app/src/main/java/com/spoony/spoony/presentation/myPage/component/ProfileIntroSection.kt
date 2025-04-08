@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,7 @@ import com.spoony.spoony.core.designsystem.theme.gray900
 import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.core.util.extension.spoonyGradient
 import okhttp3.internal.immutableListOf
 
 @Composable
@@ -29,10 +31,9 @@ fun ProfileIntroSection(
     nickname: String,
     introduction: String,
     buttonText: String,
-    onButtonClicked: () -> Unit,
+    onButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -40,7 +41,8 @@ fun ProfileIntroSection(
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(3.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.weight(1f, fill = true)
         ) {
             immutableListOf(
                 Triple(region, SpoonyAndroidTheme.typography.body2sb, gray600),
@@ -59,15 +61,21 @@ fun ProfileIntroSection(
 
         Surface(
             shape = CircleShape,
-            color = main400,
+            color = Color.Transparent,
             modifier = Modifier
-                .noRippleClickable(onClick = onButtonClicked)
+                .padding(start = 8.dp)
+                .spoonyGradient(
+                    cornerRadius = 20.dp,
+                    mainColor = main400,
+                    secondColor = white
+                )
+                .noRippleClickable(onClick = onButtonClick)
         ) {
             Text(
                 text = buttonText,
                 style = SpoonyAndroidTheme.typography.body2sb,
                 color = white,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
             )
         }
     }
@@ -82,7 +90,7 @@ private fun ProfileIntroSectionPreview() {
             nickname = "슈퍼 순두부",
             introduction = "자기소개 기본멘트.",
             buttonText = "프로필 수정",
-            onButtonClicked = {},
+            onButtonClick = {},
             modifier = Modifier.padding(horizontal = 20.dp)
         )
     }
