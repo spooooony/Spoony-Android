@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.myPage
+package com.spoony.spoony.presentation.mypage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

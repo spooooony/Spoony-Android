@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.myPage
+package com.spoony.spoony.presentation.mypage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,10 +22,10 @@ import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
-import com.spoony.spoony.presentation.myPage.component.MyPageTopAppBar
-import com.spoony.spoony.presentation.myPage.component.ProfileHeaderSection
-import com.spoony.spoony.presentation.myPage.component.ProfileIntroSection
-import com.spoony.spoony.presentation.myPage.component.ReviewCounter
+import com.spoony.spoony.presentation.mypage.component.MyPageTopAppBar
+import com.spoony.spoony.presentation.mypage.component.ProfileHeaderSection
+import com.spoony.spoony.presentation.mypage.component.ProfileIntroSection
+import com.spoony.spoony.presentation.mypage.component.ReviewCounter
 
 @Composable
 fun MyPageRoute(
@@ -146,7 +146,7 @@ fun MyPageScreen(
         when (reviewCount) {
             0 -> {
                 item {
-                    Spacer(modifier = Modifier.height(42.dp))
+                    Spacer(modifier = Modifier.height(54.dp))
 
                     MapEmptyBottomSheetContent(
                         onClick = onEmptyClick,

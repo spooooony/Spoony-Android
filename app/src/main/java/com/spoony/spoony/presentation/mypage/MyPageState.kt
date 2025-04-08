@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.myPage
+package com.spoony.spoony.presentation.mypage
 
 data class MyPageState(
     val userProfile: UserProfile? = null,
