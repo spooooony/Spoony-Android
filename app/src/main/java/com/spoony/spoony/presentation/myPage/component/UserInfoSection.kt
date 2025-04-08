@@ -65,13 +65,13 @@ private fun NameAndCount(
         Text(
             text = title,
             style = SpoonyAndroidTheme.typography.caption1b,
-            color = SpoonyAndroidTheme.colors.gray400,
+            color = SpoonyAndroidTheme.colors.gray400
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = count,
             style = SpoonyAndroidTheme.typography.body1sb,
-            color = SpoonyAndroidTheme.colors.black,
+            color = SpoonyAndroidTheme.colors.black
         )
     }
 }
