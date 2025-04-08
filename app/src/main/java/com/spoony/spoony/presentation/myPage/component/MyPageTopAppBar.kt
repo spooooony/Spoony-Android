@@ -20,7 +20,7 @@ import com.spoony.spoony.core.util.extension.rotateClick
 
 @Composable
 fun MyPageTopAppBar(
-    count: Int,
+    spoonCount: Int,
     onLogoClick: () -> Unit,
     onIconClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -28,7 +28,7 @@ fun MyPageTopAppBar(
     SpoonyBasicTopAppBar(
         content = {
             LogoTag(
-                count = count,
+                count = spoonCount,
                 tagSize = TagSize.Small,
                 modifier = Modifier.rotateClick(onClick = onLogoClick)
             )
@@ -50,7 +50,7 @@ fun MyPageTopAppBar(
 private fun MyPageTopAppBarPreview() {
     SpoonyAndroidTheme {
         MyPageTopAppBar(
-            count = 99,
+            spoonCount = 99,
             onLogoClick = { },
             onIconClick = { },
             modifier = Modifier
