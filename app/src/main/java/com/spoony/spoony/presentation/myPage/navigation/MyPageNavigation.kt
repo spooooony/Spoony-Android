@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
-import com.spoony.spoony.presentation.myPage.MyPageScreen
+import com.spoony.spoony.presentation.myPage.MyPageRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToMyPage(
@@ -16,11 +16,23 @@ fun NavController.navigateToMyPage(
 }
 
 fun NavGraphBuilder.myPageNavGraph(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigateToSettings: () -> Unit,
+    navigateToFollower: () -> Unit,
+    navigateToFollowing: () -> Unit,
+    navigateToProfileEdit: () -> Unit,
+    navigateToRegister: () -> Unit,
+    navigateToReviewDetail: (Int) -> Unit
 ) {
     composable<MyPage> {
-        MyPageScreen(
-            paddingValues = paddingValues
+        MyPageRoute(
+            paddingValues = paddingValues,
+            navigateToSettings = navigateToSettings,
+            navigateToFollower = navigateToFollower,
+            navigateToFollowing = navigateToFollowing,
+            navigateToProfileEdit = navigateToProfileEdit,
+            navigateToRegister = navigateToRegister,
+            navigateToReviewDetail = navigateToReviewDetail
         )
     }
 }
