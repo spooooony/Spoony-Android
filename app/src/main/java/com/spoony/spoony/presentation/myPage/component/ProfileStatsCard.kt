@@ -21,7 +21,7 @@ import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
-fun UserInfoSection(
+fun ProfileStatsCard(
     imageUrl: String,
     reviewCount: Int,
     followerCount: Int,
@@ -78,9 +78,9 @@ private fun NameAndCount(
 
 @Composable
 @Preview(showBackground = true)
-private fun NameAndCountPreview() {
+private fun ProfileStatsCardPreview() {
     SpoonyAndroidTheme {
-        UserInfoSection(
+        ProfileStatsCard(
             imageUrl = "https://example.com/image.jpg",
             reviewCount = 100,
             followerCount = 500,
