@@ -19,13 +19,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
-fun ProfileIntroSection(
+fun ProfileHeaderSection(
     imageUrl: String,
     reviewCount: Int,
     followerCount: Int,
     followingCount: Int,
+    onFollowerClick: () -> Unit = {},
+    onFollowingClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -45,8 +48,16 @@ fun ProfileIntroSection(
             modifier = Modifier.fillMaxWidth()
         ) {
             NameAndCount(title = "리뷰", count = reviewCount.toString())
-            NameAndCount(title = "팔로워", count = followerCount.toString())
-            NameAndCount(title = "팔로잉", count = followingCount.toString())
+            NameAndCount(
+                title = "팔로워",
+                count = followerCount.toString(),
+                onClick = onFollowerClick
+            )
+            NameAndCount(
+                title = "팔로잉",
+                count = followingCount.toString(),
+                onClick = onFollowingClick
+            )
         }
     }
 }
@@ -55,12 +66,13 @@ fun ProfileIntroSection(
 private fun NameAndCount(
     title: String,
     count: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
+        modifier = modifier.noRippleClickable(onClick = onClick)
     ) {
         Text(
             text = title,
@@ -78,10 +90,10 @@ private fun NameAndCount(
 
 @Composable
 @Preview(showBackground = true)
-private fun ProfileIntroSectionPreview() {
+private fun ProfileHeaderSectionPreview() {
     SpoonyAndroidTheme {
-        ProfileIntroSection(
-            imageUrl = "https://example.com/image.jpg",
+        ProfileHeaderSection(
+            imageUrl = "",
             reviewCount = 100,
             followerCount = 500,
             followingCount = 200,
