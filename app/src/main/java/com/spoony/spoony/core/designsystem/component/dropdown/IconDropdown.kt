@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,37 +56,41 @@ fun IconDropdown(
                 }
         )
         Spacer(modifier = Modifier.height(4.dp))
-        DropdownMenu(
-            expanded = expanded,
-            modifier = Modifier
-                .background(
-                    color = SpoonyAndroidTheme.colors.white,
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .padding(
-                    vertical = 2.dp,
-                    horizontal = 8.dp
-                ),
-            onDismissRequest = { expanded = false }
+        MaterialTheme(
+            shapes = MaterialTheme.shapes.copy(RoundedCornerShape(10.dp))
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                menuItems.forEach { menuItem ->
-                    key(menuItem.type) {
-                        Box(
-                            modifier = Modifier
-                                .widthIn(min = 91.dp)
-                                .noRippleClickable {
-                                    onMenuItemClick(menuItem)
-                                    expanded = false
-                                }
-                                .padding(6.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Text(
-                                text = menuItem.text,
-                                style = SpoonyAndroidTheme.typography.caption1b,
-                                color = SpoonyAndroidTheme.colors.gray900
-                            )
+            DropdownMenu(
+                expanded = expanded,
+                modifier = Modifier
+                    .background(
+                        color = SpoonyAndroidTheme.colors.white,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .padding(
+                        vertical = 2.dp,
+                        horizontal = 8.dp
+                    ),
+                onDismissRequest = { expanded = false }
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    menuItems.forEach { menuItem ->
+                        key(menuItem.type) {
+                            Box(
+                                modifier = Modifier
+                                    .widthIn(min = 91.dp)
+                                    .noRippleClickable {
+                                        onMenuItemClick(menuItem)
+                                        expanded = false
+                                    }
+                                    .padding(6.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Text(
+                                    text = menuItem.text,
+                                    style = SpoonyAndroidTheme.typography.caption1b,
+                                    color = SpoonyAndroidTheme.colors.gray900
+                                )
+                            }
                         }
                     }
                 }
