@@ -38,10 +38,11 @@ fun IconDropdown(
     menuItems: ImmutableList<DropdownItem>,
     onMenuItemClick: (DropdownItem) -> Unit,
     modifier: Modifier = Modifier,
+    alignment: Alignment = Alignment.TopEnd,
     icon: ImageVector = ImageVector.vectorResource(R.drawable.ic_menu_24)
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Column(modifier = modifier.wrapContentSize(Alignment.TopEnd)) {
+    Column(modifier = modifier.wrapContentSize(alignment)) {
         Icon(
             imageVector = icon,
             contentDescription = null,
