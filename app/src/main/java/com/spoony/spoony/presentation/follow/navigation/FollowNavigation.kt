@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
@@ -15,8 +14,6 @@ import com.spoony.spoony.presentation.follow.FollowMainScreen
 import com.spoony.spoony.presentation.follow.FollowViewModel
 import com.spoony.spoony.presentation.follow.FollowerScreen
 import com.spoony.spoony.presentation.follow.FollowingScreen
-import com.spoony.spoony.presentation.main.NAVIGATION_ROOT
-import com.spoony.spoony.presentation.register.navigation.Register
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToFollow(
@@ -29,7 +26,20 @@ fun NavGraphBuilder.followNavGraph(
     paddingValues: PaddingValues,
     navigateToUserProfile: (Int) -> Unit
 ) {
-    composable<Follow> {
+    composable<Follow>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        }
+    ) {
         FollowMainScreen(
             paddingValues = paddingValues,
             navigateToUserProfile = navigateToUserProfile
@@ -67,18 +77,6 @@ fun NavGraphBuilder.followGraph(
                 AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(500)
             )
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
-            )
-        },
-        popExitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
-            )
         }
     ) {
         FollowerScreen(
@@ -95,18 +93,6 @@ fun NavGraphBuilder.followGraph(
             )
         },
         exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
-            )
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
-            )
-        },
-        popExitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
                 animationSpec = tween(500)
