@@ -10,6 +10,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
+import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
@@ -18,7 +19,7 @@ import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDeta
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
-const val NAVIGATION_ROOT = 0
+const val NAVIGATION_ROOT = "navigation_root"
 
 class MainNavigator(
     val navController: NavHostController
@@ -91,6 +92,10 @@ class MainNavigator(
             }
     ) {
         navController.navigateToRegister(navOptions)
+    }
+
+    fun navigateToFollow(navOptions: NavOptions? = null) {
+        navController.navigateToFollow(navOptions)
     }
 
     fun navigateToMapSearch(navOptions: NavOptions? = null) {

@@ -31,7 +31,7 @@ fun FollowUserItem(
     followState: FollowButtonState,
     onUserClick: () -> Unit,
     onFollowClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
@@ -39,8 +39,7 @@ fun FollowUserItem(
             .noRippleClickable(onClick = onUserClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
-    )
-    {
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
@@ -57,7 +56,7 @@ fun FollowUserItem(
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(2.dp),
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = userName,
@@ -87,7 +86,7 @@ fun FollowUserItem(
 @Preview(showBackground = true)
 @Composable
 private fun FollowUserItemPreview() {
-    SpoonyAndroidTheme{
+    SpoonyAndroidTheme {
         FollowUserItem(
             imageUrl = "",
             userName = "순두부",
