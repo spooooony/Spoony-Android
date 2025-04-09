@@ -152,8 +152,7 @@ fun MyPageScreen(
                         onClick = onEmptyClick,
                         description = "아직 등록한 리뷰가 없어요\n나만의 찐맛집을 공유해 보세요!",
                         buttonText = "등록하러 가기",
-                        buttonStyle = ButtonStyle.Primary,
-                        modifier = Modifier
+                        buttonStyle = ButtonStyle.Primary
                     )
                 }
             }

@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.mypage.component
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -19,7 +18,6 @@ fun ReviewCounter(
     modifier: Modifier = Modifier
 ) {
     Row(
-        horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
@@ -30,7 +28,7 @@ fun ReviewCounter(
         )
         Spacer(modifier = Modifier.width(6.dp))
         Text(
-            text = reviewCount.toString() + "개",
+            text = "${reviewCount}개",
             style = SpoonyAndroidTheme.typography.body2m,
             color = gray400
         )

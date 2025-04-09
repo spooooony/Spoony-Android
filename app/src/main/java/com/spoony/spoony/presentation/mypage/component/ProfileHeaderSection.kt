@@ -33,7 +33,6 @@ fun ProfileHeaderSection(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.fillMaxWidth()
     ) {
         UrlImage(
@@ -71,7 +70,6 @@ private fun NameAndCount(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.noRippleClickable(onClick = onClick)
     ) {
         Text(
