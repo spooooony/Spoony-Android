@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.presentation.auth.signin.navigation.signInNavGraph
+import com.spoony.spoony.presentation.auth.termsofservice.navigation.termsOfServiceNavGraph
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGraph
@@ -106,6 +107,12 @@ fun MainScreen(
                 )
 
                 signInNavGraph(
+                    navigateToMap = navigator::navigateToMap,
+                    navigateToTermsOfService = navigator::navigateToTermsOfService
+                )
+
+                termsOfServiceNavGraph(
+                    paddingValues = paddingValues,
                     navigateToMap = navigator::navigateToMap
                 )
 

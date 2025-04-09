@@ -37,12 +37,16 @@ fun SignInRoute(
         )
     }
 
-    SignInScreen(navigateToMap = navigateToMap)
+    SignInScreen(
+        navigateToMap = navigateToMap,
+        navigateToTermsOfService = navigateToTermsOfService
+    )
 }
 
 @Composable
 private fun SignInScreen(
-    navigateToMap: () -> Unit
+    navigateToMap: () -> Unit,
+    navigateToTermsOfService: () -> Unit
 ) {
     Image(
         painter = painterResource(R.drawable.img_login_background),
@@ -80,7 +84,7 @@ private fun SignInScreen(
         )
 
         KakaoButton(
-            onClick = navigateToMap
+            onClick = navigateToTermsOfService
         )
     }
 }
