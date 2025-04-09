@@ -16,6 +16,9 @@ import com.spoony.spoony.presentation.follow.FollowerScreen
 import com.spoony.spoony.presentation.follow.FollowingScreen
 import kotlinx.serialization.Serializable
 
+private const val ANIMATION_DURATION = 500
+private const val LONG_ANIMATION_DURATION = 600
+
 fun NavController.navigateToFollow(
     isFollowing: Boolean = true,
     navOptions: NavOptions? = null
@@ -32,20 +35,20 @@ fun NavGraphBuilder.followNavGraph(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(600)
+                animationSpec = tween(LONG_ANIMATION_DURATION)
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(600)
+                animationSpec = tween(LONG_ANIMATION_DURATION)
             )
         }
     ) {
         FollowMainScreen(
             paddingValues = paddingValues,
             navigateToUserProfile = navigateToUserProfile,
-            onBackButtonClick = navigateUp,
+            onBackButtonClick = navigateUp
         )
     }
 }
@@ -61,7 +64,7 @@ fun NavHostController.navigateToFollowTab(route: FollowRoute) {
             restoreState = true
         }
         navigate(route, navOptions)
-    } ?: navigate(route)
+    }
 }
 
 fun NavGraphBuilder.followGraph(
@@ -72,13 +75,13 @@ fun NavGraphBuilder.followGraph(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
+                animationSpec = tween(ANIMATION_DURATION)
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
+                animationSpec = tween(ANIMATION_DURATION)
             )
         }
     ) {
@@ -92,13 +95,13 @@ fun NavGraphBuilder.followGraph(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
+                animationSpec = tween(ANIMATION_DURATION)
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
+                animationSpec = tween(ANIMATION_DURATION)
             )
         }
     ) {

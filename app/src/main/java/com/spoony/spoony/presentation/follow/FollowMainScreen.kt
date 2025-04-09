@@ -12,6 +12,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +49,7 @@ fun FollowMainScreen(
     val followers by viewModel.followers.collectAsState()
     val following by viewModel.following.collectAsState()
     val isFollowingTab by viewModel.isFollowingTab.collectAsState()
-    
+
     FollowMainScreenContent(
         followers = followers,
         following = following,
@@ -81,15 +82,23 @@ private fun FollowMainScreenContent(
     val navController = rememberNavController()
     val refreshState = rememberPullToRefreshState()
 
-    val alpha = if (refreshState.isRefreshing) {
-        1f
-    } else {
-        val progress = refreshState.progress
-        progress * progress * progress
+    val alpha by remember {
+        derivedStateOf {
+            if (refreshState.isRefreshing) {
+                1f
+            } else {
+                val progress = refreshState.progress
+                progress * progress * progress
+            }
+        }
     }
 
-    if (refreshState.isRefreshing) {
-        LaunchedEffect(true) {
+    val counts by remember(followers.size, following.size) {
+        derivedStateOf { Pair(followers.size, following.size) }
+    }
+
+    LaunchedEffect(refreshState.isRefreshing) {
+        if (refreshState.isRefreshing) {
             if (selectedTab == 0) {
                 onRefreshFollowers()
             } else {
@@ -110,8 +119,8 @@ private fun FollowMainScreenContent(
         )
 
         FollowTabRow(
-            followerCount = followers.size,
-            followingCount = following.size,
+            followerCount = counts.first,
+            followingCount = counts.second,
             onFollowerTabClick = {
                 selectedTab = 0
                 navController.navigateToFollowTab(FollowRoute.Follower)
@@ -133,9 +142,13 @@ private fun FollowMainScreenContent(
                 .fillMaxSize()
                 .nestedScroll(refreshState.nestedScrollConnection)
         ) {
+            val startDestination = remember(isFollowingTab) {
+                if (isFollowingTab) FollowRoute.Following else FollowRoute.Follower
+            }
+
             NavHost(
                 navController = navController,
-                startDestination = if (isFollowingTab) FollowRoute.Following else FollowRoute.Follower,
+                startDestination = startDestination,
                 modifier = Modifier.fillMaxSize()
             ) {
                 followGraph(
