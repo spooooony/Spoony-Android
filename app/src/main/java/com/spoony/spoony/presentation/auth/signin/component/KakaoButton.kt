@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.auth.component
+package com.spoony.spoony.presentation.auth.signin.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.auth
+package com.spoony.spoony.presentation.auth.signin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main100
-import com.spoony.spoony.presentation.auth.component.KakaoButton
+import com.spoony.spoony.presentation.auth.signin.component.KakaoButton
 
 @Composable
 fun SignInRoute(
