@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.follow
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
@@ -14,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class FollowViewModel @Inject constructor(
@@ -40,44 +43,36 @@ class FollowViewModel @Inject constructor(
     }
 
     fun loadFollowers() {
-        val mockFollowers = listOf(
+        val mockFollowers = (1..50).map { index ->
             UserItemUiState(
-                userId = 1,
-                userName = "김스푸니",
-                imageUrl = "https://picsum.photos/200",
-                region = "서울",
-                isFollowing = false
-            ),
-            UserItemUiState(
-                userId = 2,
-                userName = "박맛집",
-                imageUrl = "https://picsum.photos/201",
-                region = "부산",
-                isFollowing = true
-            ),
-            UserItemUiState(
-                userId = 3,
-                userName = "이푸드",
-                imageUrl = "https://picsum.photos/202",
-                region = "인천",
-                isFollowing = false
-            ),
-            UserItemUiState(
-                userId = 4,
-                userName = "최미식",
-                imageUrl = "https://picsum.photos/203",
-                region = "대구",
-                isFollowing = true
-            ),
-            UserItemUiState(
-                userId = 5,
-                userName = "정먹방",
-                imageUrl = "https://picsum.photos/204",
-                region = "대전",
-                isFollowing = false
+                userId = index,
+                userName = when (index % 10) {
+                    0 -> "김스푸니$index"
+                    1 -> "박맛집$index"
+                    2 -> "이푸드$index"
+                    3 -> "최미식$index"
+                    4 -> "정먹방$index"
+                    5 -> "황냠냠$index"
+                    6 -> "한맛집$index"
+                    7 -> "송푸드$index"
+                    8 -> "정맛도$index"
+                    else -> "윤미식$index"
+                },
+                imageUrl = "https://picsum.photos/${200 + index}",
+                region = when (index % 8) {
+                    0 -> "서울"
+                    1 -> "부산"
+                    2 -> "인천"
+                    3 -> "대구"
+                    4 -> "대전"
+                    5 -> "광주"
+                    6 -> "울산"
+                    else -> "제주도"
+                },
+                isFollowing = index % 2 == 0
             )
-        ).toImmutableList()
-        
+        }.toImmutableList()
+
         _followers.value = mockFollowers
     }
 
@@ -113,16 +108,28 @@ class FollowViewModel @Inject constructor(
                 isFollowing = true
             )
         ).toImmutableList()
-        
+
         _following.value = mockFollowings
     }
 
-    // 팔로워 팔로우 상태 변경
+    fun refreshFollowers() {
+        viewModelScope.launch {
+            loadFollowers()
+            Timber.d("Followers refreshed")
+        }
+    }
+
+    fun refreshFollowings() {
+        viewModelScope.launch {
+            loadFollowings()
+            Timber.d("Followers refreshed")
+        }
+    }
+
     fun toggleFollowForFollower(userId: Int) {
         toggleFollow(userId, isFollower = true)
     }
 
-    // 팔로잉 팔로우 상태 변경
     fun toggleFollowForFollowing(userId: Int) {
         toggleFollow(userId, isFollower = false)
     }

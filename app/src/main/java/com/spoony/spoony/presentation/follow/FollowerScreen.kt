@@ -1,12 +1,15 @@
 package com.spoony.spoony.presentation.follow
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.spoony.spoony.presentation.follow.component.UserListScreen
-import com.spoony.spoony.presentation.follow.model.UserItemUiState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FollowerScreen(
     modifier: Modifier = Modifier,
@@ -15,10 +18,15 @@ fun FollowerScreen(
 ) {
     val followers by viewModel.followers.collectAsState()
 
-    UserListScreen(
-        users = followers,
-        onUserClick = navigateToUserProfile,
-        onFollowClick = { viewModel.toggleFollowForFollower(it) },
+    Box(
         modifier = modifier
-    )
+            .fillMaxSize()
+    ) {
+        UserListScreen(
+            users = followers,
+            onUserClick = navigateToUserProfile,
+            onFollowClick = { viewModel.toggleFollowForFollower(it) },
+            modifier = Modifier
+        )
+    }
 }

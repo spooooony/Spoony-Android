@@ -20,8 +20,8 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun BackAndMenuTopAppBar(
-    onBackButtonClick: () -> Unit,
-    onMenuButtonClick: () -> Unit,
+    onBackButtonClick: () -> Unit = {},
+    onMenuButtonClick: () -> Unit = {},
     wannaKebab: Boolean = false,
     modifier: Modifier = Modifier
 ) {
