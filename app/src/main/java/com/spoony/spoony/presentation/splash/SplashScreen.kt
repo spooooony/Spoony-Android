@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SplashRoute(
-    navigateToMap: () -> Unit
+    navigateToMap: () -> Unit,
+    navigateToSignIn: () -> Unit
 ) {
     val systemUiController = rememberSystemUiController()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -41,7 +42,7 @@ fun SplashRoute(
     LaunchedEffect(true) {
         lifecycleOwner.lifecycleScope.launch {
             delay(1000)
-            navigateToMap()
+            navigateToSignIn()
         }
     }
 

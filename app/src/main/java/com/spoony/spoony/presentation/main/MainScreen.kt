@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -15,10 +16,12 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
+import com.spoony.spoony.presentation.auth.navigation.signInNavGraph
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGraph
@@ -76,7 +79,9 @@ fun MainScreen(
                     currentTab = navigator.currentTab,
                     onTabSelected = navigator::navigate
                 )
-            }
+            },
+            modifier = Modifier
+                .fillMaxSize()
         ) { paddingValues ->
             NavHost(
                 enterTransition = {
@@ -96,8 +101,14 @@ fun MainScreen(
             ) {
                 splashNavGraph(
                     navigateToMap = navigator::navigateToMap,
+                    navigateToSignIn = navigator::navigateToSignIn,
                     paddingValues = paddingValues
                 )
+
+                signInNavGraph(
+                    navigateToMap = navigator::navigateToMap
+                )
+
                 mapNavGraph(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = {

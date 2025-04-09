@@ -1,0 +1,32 @@
+package com.spoony.spoony.presentation.auth.navigation
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import com.spoony.spoony.core.navigation.Route
+import com.spoony.spoony.presentation.auth.SignInRoute
+import kotlinx.serialization.Serializable
+
+fun NavController.navigateToSignIn(
+    navOptions: NavOptions? = null
+) {
+    navigate(
+        SignIn,
+        navOptions
+    )
+}
+
+fun NavGraphBuilder.signInNavGraph(
+    navigateToMap: () -> Unit
+) {
+    composable<SignIn> {
+        SignInRoute(
+            navigateToMap = navigateToMap,
+            navigateToTermsOfService = {}
+        )
+    }
+}
+
+@Serializable
+data object SignIn : Route
