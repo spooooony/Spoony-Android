@@ -111,7 +111,6 @@ class FollowViewModel @Inject constructor(
     fun refreshFollowers() {
         viewModelScope.launch {
             loadFollowers()
-            Timber.d("Followers refreshed")
         }
     }
 

@@ -16,8 +16,7 @@ import com.spoony.spoony.presentation.follow.FollowerScreen
 import com.spoony.spoony.presentation.follow.FollowingScreen
 import kotlinx.serialization.Serializable
 
-private const val ANIMATION_DURATION = 500
-private const val LONG_ANIMATION_DURATION = 600
+private const val LONG_ANIMATION_DURATION = 300
 
 fun NavController.navigateToFollow(
     isFollowing: Boolean = true,
@@ -49,65 +48,6 @@ fun NavGraphBuilder.followNavGraph(
             paddingValues = paddingValues,
             navigateToUserProfile = navigateToUserProfile,
             onBackButtonClick = navigateUp
-        )
-    }
-}
-
-fun NavHostController.navigateToFollowTab(route: FollowRoute) {
-    currentDestination?.route?.let { currentRoute ->
-        val navOptions = navOptions {
-            popUpTo(currentRoute) {
-                inclusive = true
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-        navigate(route, navOptions)
-    }
-}
-
-fun NavGraphBuilder.followGraph(
-    navigateToUserProfile: (Int) -> Unit,
-    viewModel: FollowViewModel
-) {
-    composable<FollowRoute.Follower>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(ANIMATION_DURATION)
-            )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(ANIMATION_DURATION)
-            )
-        }
-    ) {
-        FollowerScreen(
-            navigateToUserProfile = navigateToUserProfile,
-            viewModel = viewModel
-        )
-    }
-
-    composable<FollowRoute.Following>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(ANIMATION_DURATION)
-            )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(ANIMATION_DURATION)
-            )
-        }
-    ) {
-        FollowingScreen(
-            navigateToUserProfile = navigateToUserProfile,
-            viewModel = viewModel
         )
     }
 }
