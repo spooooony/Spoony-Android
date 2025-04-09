@@ -30,21 +30,53 @@ import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.presentation.follow.component.FollowTabRow
 import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
+import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import com.spoony.spoony.presentation.follow.navigation.FollowRoute
 import com.spoony.spoony.presentation.follow.navigation.followGraph
 import com.spoony.spoony.presentation.follow.navigation.navigateToFollowTab
+import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FollowMainScreen(
     paddingValues: PaddingValues,
     navigateToUserProfile: (Int) -> Unit,
+    onBackButtonClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: FollowViewModel = hiltViewModel()
 ) {
     val followers by viewModel.followers.collectAsState()
     val following by viewModel.following.collectAsState()
     val isFollowingTab by viewModel.isFollowingTab.collectAsState()
+    
+    FollowMainScreenContent(
+        followers = followers,
+        following = following,
+        isFollowingTab = isFollowingTab,
+        paddingValues = paddingValues,
+        navigateToUserProfile = navigateToUserProfile,
+        onBackButtonClick = onBackButtonClick,
+        onRefreshFollowers = viewModel::refreshFollowers,
+        onRefreshFollowings = viewModel::refreshFollowings,
+        viewModel = viewModel,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FollowMainScreenContent(
+    followers: ImmutableList<UserItemUiState>,
+    following: ImmutableList<UserItemUiState>,
+    isFollowingTab: Boolean,
+    paddingValues: PaddingValues,
+    navigateToUserProfile: (Int) -> Unit,
+    onBackButtonClick: () -> Unit,
+    onRefreshFollowers: suspend () -> Unit,
+    onRefreshFollowings: suspend () -> Unit,
+    viewModel: FollowViewModel,
+    modifier: Modifier = Modifier
+) {
     var selectedTab by remember { mutableIntStateOf(if (isFollowingTab) 1 else 0) }
     val navController = rememberNavController()
     val refreshState = rememberPullToRefreshState()
@@ -59,9 +91,9 @@ fun FollowMainScreen(
     if (refreshState.isRefreshing) {
         LaunchedEffect(true) {
             if (selectedTab == 0) {
-                viewModel.refreshFollowers()
+                onRefreshFollowers()
             } else {
-                viewModel.refreshFollowings()
+                onRefreshFollowings()
             }
             refreshState.endRefresh()
         }
@@ -74,8 +106,7 @@ fun FollowMainScreen(
             .background(white)
     ) {
         BackAndMenuTopAppBar(
-            onBackButtonClick = {},
-            onMenuButtonClick = {}
+            onBackButtonClick = onBackButtonClick
         )
 
         FollowTabRow(

@@ -25,7 +25,8 @@ fun NavController.navigateToFollow(
 
 fun NavGraphBuilder.followNavGraph(
     paddingValues: PaddingValues,
-    navigateToUserProfile: (Int) -> Unit
+    navigateToUserProfile: (Int) -> Unit,
+    navigateUp: () -> Unit
 ) {
     composable<Follow>(
         enterTransition = {
@@ -43,7 +44,8 @@ fun NavGraphBuilder.followNavGraph(
     ) {
         FollowMainScreen(
             paddingValues = paddingValues,
-            navigateToUserProfile = navigateToUserProfile
+            navigateToUserProfile = navigateToUserProfile,
+            onBackButtonClick = navigateUp,
         )
     }
 }

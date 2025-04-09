@@ -129,6 +129,7 @@ fun MainScreen(
 
                 followNavGraph(
                     paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
                     navigateToUserProfile = { }
                 )
 
