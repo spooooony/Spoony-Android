@@ -21,14 +21,13 @@ import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.black
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.follow.model.FollowButtonState
 
 @Composable
 fun FollowUserItem(
     imageUrl: String,
     userName: String,
     region: String,
-    followState: FollowButtonState,
+    isFollowing: Boolean,
     onUserClick: () -> Unit,
     onFollowClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -76,7 +75,7 @@ fun FollowUserItem(
         }
 
         FollowButton(
-            followState = followState,
+            isFollowing = isFollowing,
             onClick = onFollowClick,
             modifier = Modifier.padding(start = 8.dp)
         )
@@ -91,7 +90,7 @@ private fun FollowUserItemPreview() {
             imageUrl = "",
             userName = "순두부",
             region = "우리집 우리집 우리집 우리집 우리집 우리집",
-            followState = FollowButtonState.FOLLOW,
+            isFollowing = false,
             onUserClick = { },
             onFollowClick = { }
         )

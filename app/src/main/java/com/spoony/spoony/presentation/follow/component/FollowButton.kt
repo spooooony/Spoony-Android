@@ -23,7 +23,6 @@ import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
-import com.spoony.spoony.presentation.follow.model.FollowButtonState
 
 @Immutable
 private data class ButtonData(
@@ -35,19 +34,20 @@ private data class ButtonData(
 
 @Composable
 fun FollowButton(
-    followState: FollowButtonState,
+    isFollowing: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val buttonData = remember(followState) {
-        when (followState) {
-            FollowButtonState.FOLLOWING -> ButtonData(
+    val buttonData = remember(isFollowing) {
+        if (isFollowing) {
+            ButtonData(
                 text = "팔로잉",
                 textColor = gray500,
                 backgroundColor = gray0,
                 needsGradient = false
             )
-            FollowButtonState.FOLLOW -> ButtonData(
+        } else {
+            ButtonData(
                 text = "팔로우",
                 textColor = white,
                 backgroundColor = Color.Transparent,
@@ -98,17 +98,13 @@ fun FollowButton(
 @Preview
 @Composable
 fun FollowButtonPreview() {
-    var followState by remember { mutableStateOf(FollowButtonState.FOLLOW) }
+    var isFollowing by remember { mutableStateOf(false) }
 
     SpoonyAndroidTheme {
         FollowButton(
-            followState = followState,
+            isFollowing = isFollowing,
             onClick = {
-                followState = if (followState == FollowButtonState.FOLLOW) {
-                    FollowButtonState.FOLLOWING
-                } else {
-                    FollowButtonState.FOLLOW
-                }
+                isFollowing = !isFollowing
             }
         )
     }

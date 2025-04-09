@@ -5,5 +5,5 @@ data class UserItemUiState(
     val userName: String,
     val imageUrl: String,
     val region: String,
-    val followState: FollowButtonState
+    val isFollowing: Boolean
 )

@@ -9,10 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun UserListScreen(
-    users: List<UserItemUiState>,
+    users: ImmutableList<UserItemUiState>,
     onUserClick: (Int) -> Unit,
     onFollowClick: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -29,7 +30,7 @@ fun UserListScreen(
                 imageUrl = user.imageUrl,
                 userName = user.userName,
                 region = user.region,
-                followState = user.followState,
+                isFollowing = user.isFollowing,
                 onUserClick = { onUserClick(user.userId) },
                 onFollowClick = { onFollowClick(user.userId) },
                 modifier = Modifier.padding(vertical = 10.dp)

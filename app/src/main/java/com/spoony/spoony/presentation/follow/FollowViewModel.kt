@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.toRoute
 import com.spoony.spoony.domain.repository.UserRepository
-import com.spoony.spoony.presentation.follow.model.FollowButtonState
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import com.spoony.spoony.presentation.follow.navigation.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,35 +44,35 @@ class FollowViewModel @Inject constructor(
                 userName = "김스푸니",
                 imageUrl = "https://picsum.photos/200",
                 region = "서울",
-                followState = FollowButtonState.FOLLOW
+                isFollowing = false
             ),
             UserItemUiState(
                 userId = 2,
                 userName = "박맛집",
                 imageUrl = "https://picsum.photos/201",
                 region = "부산",
-                followState = FollowButtonState.FOLLOWING
+                isFollowing = true
             ),
             UserItemUiState(
                 userId = 3,
                 userName = "이푸드",
                 imageUrl = "https://picsum.photos/202",
                 region = "인천",
-                followState = FollowButtonState.FOLLOW
+                isFollowing = false
             ),
             UserItemUiState(
                 userId = 4,
                 userName = "최미식",
                 imageUrl = "https://picsum.photos/203",
                 region = "대구",
-                followState = FollowButtonState.FOLLOWING
+                isFollowing = true
             ),
             UserItemUiState(
                 userId = 5,
                 userName = "정먹방",
                 imageUrl = "https://picsum.photos/204",
                 region = "대전",
-                followState = FollowButtonState.FOLLOW
+                isFollowing = false
             )
         )
         _followers.value = mockFollowers
@@ -87,28 +86,28 @@ class FollowViewModel @Inject constructor(
                 userName = "맛집헌터",
                 imageUrl = "https://picsum.photos/205",
                 region = "경기도",
-                followState = FollowButtonState.FOLLOWING
+                isFollowing = true
             ),
             UserItemUiState(
                 userId = 7,
                 userName = "푸드블로거",
                 imageUrl = "https://picsum.photos/206",
                 region = "강원도",
-                followState = FollowButtonState.FOLLOWING
+                isFollowing = true
             ),
             UserItemUiState(
                 userId = 8,
                 userName = "맛있는여행",
                 imageUrl = "https://picsum.photos/207",
                 region = "제주도",
-                followState = FollowButtonState.FOLLOWING
+                isFollowing = true
             ),
             UserItemUiState(
                 userId = 9,
                 userName = "맛집리뷰어",
                 imageUrl = "https://picsum.photos/208",
                 region = "울산",
-                followState = FollowButtonState.FOLLOWING
+                isFollowing = true
             )
         )
         _following.value = mockFollowings
@@ -130,12 +129,7 @@ class FollowViewModel @Inject constructor(
         stateFlow.update { currentList ->
             currentList.map { user ->
                 if (user.userId == userId) {
-                    val newState = if (user.followState == FollowButtonState.FOLLOW) {
-                        FollowButtonState.FOLLOWING
-                    } else {
-                        FollowButtonState.FOLLOW
-                    }
-                    user.copy(followState = newState)
+                    user.copy(isFollowing = !user.isFollowing)
                 } else {
                     user
                 }
