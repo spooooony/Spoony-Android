@@ -53,6 +53,9 @@ val gray700 = Color(0xFF46474C)
 val gray800 = Color(0xFF333438)
 val gray900 = Color(0xFF292A2D)
 
+// Kakao
+val kakaoYellow = Color(0xFFFCE64A)
+
 @Stable
 class SpoonyColors(
     main0: Color,
@@ -88,6 +91,7 @@ class SpoonyColors(
     gray700: Color,
     gray800: Color,
     gray900: Color,
+    kakaoYellow: Color,
     isLight: Boolean
 ) {
     var main0 by mutableStateOf(main0)
@@ -156,6 +160,8 @@ class SpoonyColors(
         private set
     var gray900 by mutableStateOf(gray900)
         private set
+    var kakaoYellow by mutableStateOf(kakaoYellow)
+        private set
     var isLight by mutableStateOf(isLight)
 
     fun copy(): SpoonyColors = SpoonyColors(
@@ -192,6 +198,7 @@ class SpoonyColors(
         gray700,
         gray800,
         gray900,
+        kakaoYellow,
         isLight
     )
 
@@ -229,6 +236,7 @@ class SpoonyColors(
         gray700 = other.gray700
         gray800 = other.gray800
         gray900 = other.gray900
+        kakaoYellow = other.kakaoYellow
         isLight = other.isLight
     }
 }
@@ -266,7 +274,8 @@ fun SpoonyLightColors(
     Gray600: Color = gray600,
     Gray700: Color = gray700,
     Gray800: Color = gray800,
-    Gray900: Color = gray900
+    Gray900: Color = gray900,
+    KakaoYellow: Color = kakaoYellow
 ) = SpoonyColors(
     Main0,
     Main100,
@@ -301,6 +310,7 @@ fun SpoonyLightColors(
     Gray700,
     Gray800,
     Gray900,
+    KakaoYellow,
     isLight = true
 )
 
