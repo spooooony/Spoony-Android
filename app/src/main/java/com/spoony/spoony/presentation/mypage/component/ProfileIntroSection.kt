@@ -23,7 +23,7 @@ import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
-import okhttp3.internal.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ProfileIntroSection(
@@ -44,7 +44,7 @@ fun ProfileIntroSection(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier.weight(1f, fill = true)
         ) {
-            immutableListOf(
+            persistentListOf(
                 Triple(region, SpoonyAndroidTheme.typography.body2sb, gray600),
                 Triple(nickname, SpoonyAndroidTheme.typography.title3sb, black),
                 Triple(introduction, SpoonyAndroidTheme.typography.caption1m, gray900)
