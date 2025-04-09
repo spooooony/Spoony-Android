@@ -31,13 +31,13 @@ fun NavGraphBuilder.followNavGraph(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(1000)
+                animationSpec = tween(600)
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(1000)
+                animationSpec = tween(600)
             )
         }
     ) {

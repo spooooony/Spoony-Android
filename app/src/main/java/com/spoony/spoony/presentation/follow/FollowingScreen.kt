@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.spoony.spoony.presentation.follow.component.UserListScreen
+import com.spoony.spoony.presentation.follow.model.UserItemUiState
 
 @Composable
 fun FollowingScreen(

@@ -8,6 +8,8 @@ import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import com.spoony.spoony.presentation.follow.navigation.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,11 +21,11 @@ class FollowViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _followers = MutableStateFlow<List<UserItemUiState>>(emptyList())
-    val followers: StateFlow<List<UserItemUiState>> = _followers.asStateFlow()
+    private val _followers = MutableStateFlow<ImmutableList<UserItemUiState>>(kotlinx.collections.immutable.persistentListOf())
+    val followers: StateFlow<ImmutableList<UserItemUiState>> = _followers.asStateFlow()
 
-    private val _following = MutableStateFlow<List<UserItemUiState>>(emptyList())
-    val following: StateFlow<List<UserItemUiState>> = _following.asStateFlow()
+    private val _following = MutableStateFlow<ImmutableList<UserItemUiState>>(kotlinx.collections.immutable.persistentListOf())
+    val following: StateFlow<ImmutableList<UserItemUiState>> = _following.asStateFlow()
 
     private val _isFollowingTab = MutableStateFlow(false)
     val isFollowingTab: StateFlow<Boolean> = _isFollowingTab.asStateFlow()
@@ -74,7 +76,8 @@ class FollowViewModel @Inject constructor(
                 region = "대전",
                 isFollowing = false
             )
-        )
+        ).toImmutableList()
+        
         _followers.value = mockFollowers
     }
 
@@ -109,7 +112,8 @@ class FollowViewModel @Inject constructor(
                 region = "울산",
                 isFollowing = true
             )
-        )
+        ).toImmutableList()
+        
         _following.value = mockFollowings
     }
 
@@ -133,7 +137,7 @@ class FollowViewModel @Inject constructor(
                 } else {
                     user
                 }
-            }
+            }.toImmutableList()
         }
     }
 }
