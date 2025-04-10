@@ -32,6 +32,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
+import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreItem
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
@@ -63,6 +64,7 @@ fun ExploreRoute(
             selectedTabIndex = selectedTabIndex,
             paddingValues = paddingValues,
             placeReviewList = placeReviewList,
+            onRegisterButtonClick = navigateToRegister,
             onPlaceDetailItemClick = navigateToPlaceDetail
         )
     }
@@ -75,6 +77,7 @@ private fun ExploreScreen2(
     selectedTabIndex: MutableState<Int>,
     paddingValues: PaddingValues,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
+    onRegisterButtonClick: () -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit
 ) {
     Column(
@@ -113,7 +116,8 @@ private fun ExploreScreen2(
         ExploreContent(
             modifier = Modifier
                 .padding(horizontal = 20.dp),
-            placeReviewList = placeReviewList
+            placeReviewList = placeReviewList,
+            onRegisterButtonClick = onRegisterButtonClick
         )
     }
 }
@@ -121,12 +125,17 @@ private fun ExploreScreen2(
 @Composable
 private fun ExploreContent(
     modifier: Modifier = Modifier,
+    onRegisterButtonClick: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>
 ) {
     val menuItems = persistentListOf(ExploreDropdownOption.REPORT)
     when (placeReviewList) {
         is UiState.Empty -> {
-            //
+            ExploreEmptyScreen(
+                onClick = onRegisterButtonClick,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
         }
         is UiState.Success -> {
             LazyColumn(
