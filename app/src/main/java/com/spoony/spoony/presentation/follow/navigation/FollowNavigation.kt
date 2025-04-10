@@ -5,22 +5,20 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.follow.FollowMainScreen
-import com.spoony.spoony.presentation.follow.FollowViewModel
-import com.spoony.spoony.presentation.follow.FollowerScreen
-import com.spoony.spoony.presentation.follow.FollowingScreen
 import kotlinx.serialization.Serializable
 
 private const val LONG_ANIMATION_DURATION = 300
 
 fun NavController.navigateToFollow(
     isFollowing: Boolean = true,
-    navOptions: NavOptions? = null
+    navOptions: NavOptions = navOptions {
+        launchSingleTop = true
+    }
 ) {
     navigate(Follow(isFollowing), navOptions)
 }
