@@ -22,7 +22,6 @@ import kotlinx.coroutines.sync.withLock
 
 @HiltViewModel
 class FollowViewModel @Inject constructor(
-    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
