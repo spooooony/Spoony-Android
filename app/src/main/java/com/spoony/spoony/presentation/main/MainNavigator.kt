@@ -19,7 +19,7 @@ import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDeta
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 
-const val NAVIGATION_ROOT = "navigation_root"
+const val NAVIGATION_ROOT = 0
 
 class MainNavigator(
     val navController: NavHostController
@@ -85,21 +85,19 @@ class MainNavigator(
             navOptions {
                 popUpTo(NAVIGATION_ROOT) {
                     inclusive = true
-                    saveState = true
                 }
-                restoreState = true
                 launchSingleTop = true
             }
     ) {
         navController.navigateToRegister(navOptions)
     }
 
-    fun navigateToFollower(navOptions: NavOptions? = null) {
-        navController.navigateToFollow(isFollowing = false, navOptions)
+    fun navigateToFollower() {
+        navController.navigateToFollow(isFollowing = false)
     }
 
-    fun navigateToFollowing(navOptions: NavOptions? = null) {
-        navController.navigateToFollow(isFollowing = true, navOptions)
+    fun navigateToFollowing() {
+        navController.navigateToFollow(isFollowing = true)
     }
 
     fun navigateToMapSearch(navOptions: NavOptions? = null) {
