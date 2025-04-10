@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.type.DropdownItem
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -36,8 +35,8 @@ import timber.log.Timber
 
 @Composable
 fun IconDropdown(
-    menuItems: ImmutableList<DropdownItem>,
-    onMenuItemClick: (DropdownItem) -> Unit,
+    menuItems: ImmutableList<String>,
+    onMenuItemClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     alignment: Alignment = Alignment.TopEnd,
     icon: ImageVector = ImageVector.vectorResource(R.drawable.ic_menu_24)
@@ -74,7 +73,7 @@ fun IconDropdown(
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     menuItems.forEach { menuItem ->
-                        key(menuItem.type) {
+                        key(menuItem) {
                             Box(
                                 modifier = Modifier
                                     .widthIn(min = 91.dp)
@@ -86,7 +85,7 @@ fun IconDropdown(
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 Text(
-                                    text = menuItem.text,
+                                    text = menuItem,
                                     style = SpoonyAndroidTheme.typography.caption1b,
                                     color = SpoonyAndroidTheme.colors.gray900
                                 )
@@ -99,22 +98,29 @@ fun IconDropdown(
     }
 }
 
+private enum class IconDropdownPreviewOption(
+    val string: String
+) {
+    REPORT("신고하기"),
+    BLOCK("차단하기")
+}
+
 @Preview
 @Composable
 private fun IconDropdownPreview() {
     val menuItems = persistentListOf(
-        DropdownItem(text = "신고하기", type = "REPORT"),
-        DropdownItem(text = "차단하기", type = "BLOCK")
+        IconDropdownPreviewOption.REPORT.string,
+        IconDropdownPreviewOption.BLOCK.string
     )
     SpoonyAndroidTheme {
         IconDropdown(
             menuItems = menuItems,
             onMenuItemClick = { menuItem ->
-                when (menuItem.type) {
-                    "REPORT" -> {
+                when (menuItem) {
+                    IconDropdownPreviewOption.REPORT.string -> {
                         Timber.tag("IconDropdownOption").d("IconDropdownOption.REPORT")
                     }
-                    "BLOCK" -> {
+                    IconDropdownPreviewOption.BLOCK.string -> {
                         Timber.tag("IconDropdownOption").d("IconDropdownOption.BLOCK")
                     }
                 }
