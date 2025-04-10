@@ -32,6 +32,7 @@ import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -50,11 +51,13 @@ fun ExploreItem(
     username: String?,
     placeSpoon: String?,
     addMapCount: Int? = 0,
+    onClick: () -> Unit = {},
     imageList: ImmutableList<String>? = persistentListOf(),
     menuItems: ImmutableList<ExploreDropdownOption> = persistentListOf(ExploreDropdownOption.REPORT)
 ) {
     Column(
         modifier = modifier
+            .noRippleClickable(onClick)
             .clip(RoundedCornerShape(8.dp))
             .background(SpoonyAndroidTheme.colors.gray0)
             .padding(

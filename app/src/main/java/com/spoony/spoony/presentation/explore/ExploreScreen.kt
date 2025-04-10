@@ -49,6 +49,7 @@ fun ExploreRoute(
     paddingValues: PaddingValues,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToRegister: () -> Unit,
+    navigateToReport: (postId: Int, userId: Int) -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -65,7 +66,8 @@ fun ExploreRoute(
             paddingValues = paddingValues,
             placeReviewList = placeReviewList,
             onRegisterButtonClick = navigateToRegister,
-            onPlaceDetailItemClick = navigateToPlaceDetail
+            onPlaceDetailItemClick = navigateToPlaceDetail,
+            onReportButtonClick = navigateToReport
         )
     }
 }
@@ -78,7 +80,8 @@ private fun ExploreScreen2(
     paddingValues: PaddingValues,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     onRegisterButtonClick: () -> Unit,
-    onPlaceDetailItemClick: (Int) -> Unit
+    onPlaceDetailItemClick: (Int) -> Unit,
+    onReportButtonClick: (postId: Int, userId: Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -117,7 +120,9 @@ private fun ExploreScreen2(
             modifier = Modifier
                 .padding(horizontal = 20.dp),
             placeReviewList = placeReviewList,
-            onRegisterButtonClick = onRegisterButtonClick
+            onRegisterButtonClick = onRegisterButtonClick,
+            onPlaceDetailItemClick = onPlaceDetailItemClick,
+            onReportButtonClick = onReportButtonClick
         )
     }
 }
@@ -126,6 +131,8 @@ private fun ExploreScreen2(
 private fun ExploreContent(
     modifier: Modifier = Modifier,
     onRegisterButtonClick: () -> Unit,
+    onReportButtonClick: (postId: Int, userId: Int) -> Unit,
+    onPlaceDetailItemClick: (Int) -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>
 ) {
     val menuItems = persistentListOf(ExploreDropdownOption.REPORT)
@@ -161,11 +168,10 @@ private fun ExploreContent(
                         tagText = placeReview.category?.categoryName,
                         iconUrl = placeReview.category?.iconUrl,
                         menuItems = menuItems,
+                        onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
                         onMenuItemClick = { option ->
                             when (option) {
-                                ExploreDropdownOption.REPORT -> {
-                                    // Handle report option
-                                }
+                                ExploreDropdownOption.REPORT -> onReportButtonClick(placeReview.reviewId, placeReview.userId)
                             }
                         },
                         modifier = Modifier
