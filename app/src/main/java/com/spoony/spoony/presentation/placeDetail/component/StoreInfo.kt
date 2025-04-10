@@ -97,7 +97,7 @@ fun StoreInfo(
         ) {
             Text(
                 locationSubTitle,
-                style = SpoonyAndroidTheme.typography.title2sb
+                style = SpoonyAndroidTheme.typography.title3sb
             )
             Spacer(modifier = Modifier.height(11.dp))
             PlaceDetailIconText(
