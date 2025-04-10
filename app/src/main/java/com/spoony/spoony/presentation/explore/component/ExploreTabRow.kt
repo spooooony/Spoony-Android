@@ -28,10 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -156,7 +157,7 @@ private fun ExploreTab(
                 text = label,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = SpoonyAndroidTheme.typography.title2sb,
+                style = SpoonyAndroidTheme.typography.title3sb,
                 color = if (selected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray300
             )
         }
@@ -182,7 +183,7 @@ fun ExploreTabRowPreview() {
                     tabList = listOf("전체", "팔로잉")
                 )
                 Icon(
-                    painter = painterResource(R.drawable.ic_search_20),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
                     modifier = Modifier.size(20.dp),
                     contentDescription = null,
                     tint = Color.Unspecified

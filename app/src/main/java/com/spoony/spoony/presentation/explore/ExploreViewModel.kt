@@ -25,7 +25,7 @@ class ExploreViewModel @Inject constructor(
         get() = _state
 
     init {
-        getCategoryList()
+        getAllFeedList()
     }
 
     private fun getCategoryList() {
@@ -88,6 +88,35 @@ class ExploreViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             feedList = UiState.Failure("피드 목록 조회 실패")
+                        )
+                    }
+                }
+        }
+    }
+
+    fun getAllFeedList() {
+        viewModelScope.launch {
+            exploreRepository.getAllFeedList()
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            placeReviewList =
+                            if (response.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(
+                                    response.map { placeReview ->
+                                        placeReview.toModel()
+                                    }.toImmutableList()
+                                )
+                            }
+                        )
+                    }
+                }
+                .onFailure {
+                    _state.update {
+                        it.copy(
+                            placeReviewList = UiState.Failure("피드 목록 조회 실패")
                         )
                     }
                 }

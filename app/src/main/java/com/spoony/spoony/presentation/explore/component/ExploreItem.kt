@@ -39,19 +39,19 @@ import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun ExploreItem(
-    username: String,
-    placeSpoon: String,
     review: String,
-    addMapCount: Int,
-    date: String,
-    iconUrl: String,
-    tagText: String,
     textColor: Color,
     backgroundColor: Color,
-    imageList: ImmutableList<String> = persistentListOf(),
-    menuItems: ImmutableList<ExploreDropdownOption> = persistentListOf(ExploreDropdownOption.REPORT),
     onMenuItemClick: (ExploreDropdownOption) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    iconUrl: String? = "",
+    tagText: String? = "",
+    date: String? = "",
+    username: String?,
+    placeSpoon: String?,
+    addMapCount: Int? = 0,
+    imageList: ImmutableList<String>? = persistentListOf(),
+    menuItems: ImmutableList<ExploreDropdownOption> = persistentListOf(ExploreDropdownOption.REPORT)
 ) {
     Column(
         modifier = modifier
@@ -66,8 +66,8 @@ fun ExploreItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconTag(
-                text = tagText,
-                iconUrl = iconUrl,
+                text = tagText ?: "",
+                iconUrl = iconUrl ?: "",
                 textColor = textColor,
                 backgroundColor = backgroundColor
             )
@@ -82,13 +82,13 @@ fun ExploreItem(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = username,
+                text = username ?: "",
                 style = SpoonyAndroidTheme.typography.body2b,
                 color = SpoonyAndroidTheme.colors.black
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "서울 $placeSpoon 스푼",
+                text = "$placeSpoon 스푼",
                 style = SpoonyAndroidTheme.typography.caption2m,
                 color = SpoonyAndroidTheme.colors.gray500
             )
@@ -107,7 +107,7 @@ fun ExploreItem(
                 .padding(8.dp)
         )
         Spacer(modifier = Modifier.height(18.dp))
-        ImageGrid(imageList = imageList)
+        ImageGrid(imageList = imageList ?: persistentListOf())
 
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -131,7 +131,7 @@ fun ExploreItem(
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = date,
+                text = date ?: "",
                 style = SpoonyAndroidTheme.typography.caption2m,
                 color = SpoonyAndroidTheme.colors.gray400
             )
