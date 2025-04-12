@@ -88,10 +88,10 @@ fun SpoonyLargeTextField(
             value = value,
             placeholder = placeholder,
             onValueChanged = { newText ->
-                isError = (newText.graphemeLength() > maxLength || newText.trim().graphemeLength() < minLength)
-                isOverflowed = newText.graphemeLength() > maxLength
+                isError = (newText.graphemeLength > maxLength || newText.trim().graphemeLength < minLength)
+                isOverflowed = newText.graphemeLength > maxLength
 
-                if (newText.graphemeLength() <= maxLength) {
+                if (newText.graphemeLength <= maxLength) {
                     onValueChanged(newText)
                 }
             },
@@ -102,7 +102,7 @@ fun SpoonyLargeTextField(
             modifier = modifier,
             onFocusChanged = {
                 isFocused = it
-                if (value.trim().graphemeLength() >= minLength) {
+                if (value.trim().graphemeLength >= minLength) {
                     isError = false
                 }
             },
@@ -155,7 +155,7 @@ private fun CustomBasicTextField(
     isAllowSpecialChars: Boolean = false
 ) {
     val focusRequester = remember { FocusRequester() }
-    val counterText = stringResource(R.string.COUNTER_TEXT, value.graphemeLength(), maxLength)
+    val counterText = stringResource(R.string.COUNTER_TEXT, value.graphemeLength, maxLength)
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
