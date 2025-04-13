@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
+import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.presentation.auth.termsofservice.component.AgreeAllButton
@@ -22,6 +25,14 @@ fun TermsOfServiceRoute(
     paddingValues: PaddingValues,
     navigateToMap: () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setNavigationBarColor(
+            color = white
+        )
+    }
+
     TermsOfServiceScreen(
         paddingValues = paddingValues,
         navigateToMap = navigateToMap
@@ -50,11 +61,11 @@ private fun TermsOfServiceScreen(
         )
 
         persistentListOf(
-            Triple("만 14세 이상입니다.", "", false),
-            Triple("스푸니 서비스 이용약관", "", true),
-            Triple("개인정보 처리 방침", "", true),
-            Triple("위치기반 서비스 이용약관", "", true)
-        ).forEach { (title, link, isUnderlined) ->
+            Pair("만 14세 이상입니다.", false),
+            Pair("스푸니 서비스 이용약관", true),
+            Pair("개인정보 처리 방침", true),
+            Pair("위치기반 서비스 이용약관", true)
+        ).forEach { (title, isUnderlined) ->
             AgreeTermsButton(
                 title = title,
                 onCheckBoxClick = {},
