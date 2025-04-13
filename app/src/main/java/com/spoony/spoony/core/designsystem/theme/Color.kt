@@ -321,7 +321,7 @@ fun SpoonyMainColorsPreview() {
         Column {
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main0,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -329,7 +329,7 @@ fun SpoonyMainColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main100,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -337,42 +337,42 @@ fun SpoonyMainColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main200
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main300
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main400
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main500
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main600
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main700
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main800
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.main900
             )
         }
@@ -386,12 +386,12 @@ fun SpoonyPointColorsPreview() {
         Column {
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.orange400
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.orange100,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -399,12 +399,12 @@ fun SpoonyPointColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.pink400
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.pink100,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -412,12 +412,12 @@ fun SpoonyPointColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.green400
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.green100,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -425,12 +425,12 @@ fun SpoonyPointColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.blue400
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.blue100,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -438,12 +438,12 @@ fun SpoonyPointColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.purple400
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.purple100,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -451,7 +451,7 @@ fun SpoonyPointColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.error400
             )
         }
@@ -465,7 +465,7 @@ fun SpoonyStateColorsPreview() {
         Column {
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.error400
             )
         }
@@ -479,7 +479,7 @@ fun SpoonyGrayScaleColorsPreview() {
         Column {
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.white,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -487,12 +487,12 @@ fun SpoonyGrayScaleColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.black
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray0,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -500,7 +500,7 @@ fun SpoonyGrayScaleColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray100,
                 modifier = Modifier.background(
                     color = SpoonyAndroidTheme.colors.black
@@ -508,42 +508,42 @@ fun SpoonyGrayScaleColorsPreview() {
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray200
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray300
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray400
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray500
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray600
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray700
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray800
             )
             Text(
                 "SpoonyAndroidTheme",
-                style = SpoonyAndroidTheme.typography.title1,
+                style = SpoonyAndroidTheme.typography.title2,
                 color = SpoonyAndroidTheme.colors.gray900
             )
         }

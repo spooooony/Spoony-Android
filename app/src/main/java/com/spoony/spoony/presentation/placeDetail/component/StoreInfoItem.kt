@@ -101,7 +101,7 @@ private fun StoreInfoItemLocationPreview() {
             content = {
                 Text(
                     "어키",
-                    style = SpoonyAndroidTheme.typography.title2sb
+                    style = SpoonyAndroidTheme.typography.title3sb
                 )
                 Spacer(modifier = Modifier.height(11.dp))
                 Column(

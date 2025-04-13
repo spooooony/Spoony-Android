@@ -85,7 +85,7 @@ fun RegisterStepOneScreen(
     ) {
         Text(
             text = "나의 찐맛집을 등록해볼까요?",
-            style = SpoonyAndroidTheme.typography.title2b,
+            style = SpoonyAndroidTheme.typography.title3b,
             color = SpoonyAndroidTheme.colors.black
         )
 

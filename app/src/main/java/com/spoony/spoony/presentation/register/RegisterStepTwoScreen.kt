@@ -70,7 +70,7 @@ fun RegisterStepTwoScreen(
     ) {
         Text(
             text = "거의 다 왔어요!",
-            style = SpoonyAndroidTheme.typography.title2b,
+            style = SpoonyAndroidTheme.typography.title3b,
             color = SpoonyAndroidTheme.colors.black
         )
 
