@@ -21,6 +21,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.mypage.component.MyPageTopAppBar
 import com.spoony.spoony.presentation.mypage.component.ProfileHeaderSection
@@ -31,7 +32,7 @@ import com.spoony.spoony.presentation.mypage.component.ReviewCounter
 fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToSettings: () -> Unit,
-    navigateToFollow: (Boolean) -> Unit,
+    navigateToFollow: (FollowType) -> Unit,
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
@@ -80,7 +81,7 @@ fun MyPageScreen(
     introduction: String,
     onLogoClick: () -> Unit,
     onSettingClick: () -> Unit,
-    onFollowClick: (Boolean) -> Unit,
+    onFollowClick: (FollowType) -> Unit,
     onProfileEditClick: () -> Unit,
     onEmptyClick: () -> Unit,
     paddingValues: PaddingValues,
@@ -106,8 +107,8 @@ fun MyPageScreen(
                 reviewCount = reviewCount,
                 followerCount = followerCount,
                 followingCount = followingCount,
-                onFollowerClick = { onFollowClick(false) },
-                onFollowingClick = { onFollowClick(true) },
+                onFollowerClick = { onFollowClick(FollowType.FOLLOWER) },
+                onFollowingClick = { onFollowClick(FollowType.FOLLOWING) },
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
 

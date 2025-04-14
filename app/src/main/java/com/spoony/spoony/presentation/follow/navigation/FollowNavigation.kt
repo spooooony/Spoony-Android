@@ -10,17 +10,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.follow.FollowRoute
+import com.spoony.spoony.presentation.follow.model.FollowType
 import kotlinx.serialization.Serializable
 
 private const val LONG_ANIMATION_DURATION = 300
 
 fun NavController.navigateToFollow(
-    isFollowing: Boolean = true,
+    followType: FollowType,
     navOptions: NavOptions = navOptions {
         launchSingleTop = true
     }
 ) {
-    navigate(Follow(isFollowing), navOptions)
+    navigate(Follow(followType), navOptions)
 }
 
 fun NavGraphBuilder.followNavGraph(
@@ -51,4 +52,4 @@ fun NavGraphBuilder.followNavGraph(
 }
 
 @Serializable
-data class Follow(val isFollowing: Boolean) : Route
+data class Follow(val followType: FollowType) : Route

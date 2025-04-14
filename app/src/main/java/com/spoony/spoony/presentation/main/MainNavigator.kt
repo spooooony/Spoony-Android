@@ -10,6 +10,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
+import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
@@ -92,8 +93,8 @@ class MainNavigator(
         navController.navigateToRegister(navOptions)
     }
 
-    fun navigateToFollow(isFollowing: Boolean) {
-        navController.navigateToFollow(isFollowing = isFollowing)
+    fun navigateToFollow(followType: FollowType) {
+        navController.navigateToFollow(followType)
     }
 
     fun navigateToMapSearch(navOptions: NavOptions? = null) {

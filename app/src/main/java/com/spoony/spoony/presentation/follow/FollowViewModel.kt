@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import com.spoony.spoony.presentation.follow.navigation.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,15 +34,19 @@ class FollowViewModel @Inject constructor(
     private val _isFollowingTab = MutableStateFlow(false)
     val isFollowingTab: StateFlow<Boolean> = _isFollowingTab.asStateFlow()
 
-    private val followersMutex = Mutex()
+    private val _followType = MutableStateFlow(FollowType.FOLLOWER)
+    val followType: StateFlow<FollowType> = _followType.asStateFlow()
+
     private val followingMutex = Mutex()
+    private val followersMutex = Mutex()
 
     init {
-        loadFollowers()
         loadFollowings()
+        loadFollowers()
 
         with(savedStateHandle.toRoute<Follow>()) {
-            _isFollowingTab.value = this.isFollowing
+            _followType.value = this.followType
+            _isFollowingTab.value = this.followType == FollowType.FOLLOWING
         }
     }
 
