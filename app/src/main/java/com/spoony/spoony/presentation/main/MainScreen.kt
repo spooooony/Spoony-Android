@@ -120,8 +120,7 @@ fun MainScreen(
                 myPageNavGraph(
                     paddingValues = paddingValues,
                     navigateToSettings = { },
-                    navigateToFollower = navigator::navigateToFollower,
-                    navigateToFollowing = navigator::navigateToFollowing,
+                    navigateToFollow = navigator::navigateToFollow,
                     navigateToProfileEdit = { },
                     navigateToRegister = navigator::navigateToRegister,
                     navigateToReviewDetail = { }

@@ -9,7 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.spoony.spoony.core.navigation.Route
-import com.spoony.spoony.presentation.follow.FollowMainScreen
+import com.spoony.spoony.presentation.follow.FollowRoute
 import kotlinx.serialization.Serializable
 
 private const val LONG_ANIMATION_DURATION = 300
@@ -42,7 +42,7 @@ fun NavGraphBuilder.followNavGraph(
             )
         }
     ) {
-        FollowMainScreen(
+        FollowRoute(
             paddingValues = paddingValues,
             navigateToUserProfile = navigateToUserProfile,
             onBackButtonClick = navigateUp

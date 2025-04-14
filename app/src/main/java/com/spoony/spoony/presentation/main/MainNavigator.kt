@@ -92,12 +92,8 @@ class MainNavigator(
         navController.navigateToRegister(navOptions)
     }
 
-    fun navigateToFollower() {
-        navController.navigateToFollow(isFollowing = false)
-    }
-
-    fun navigateToFollowing() {
-        navController.navigateToFollow(isFollowing = true)
+    fun navigateToFollow(isFollowing: Boolean) {
+        navController.navigateToFollow(isFollowing = isFollowing)
     }
 
     fun navigateToMapSearch(navOptions: NavOptions? = null) {

@@ -2,7 +2,6 @@ package com.spoony.spoony.presentation.follow
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -12,9 +11,8 @@ import com.spoony.spoony.presentation.follow.component.UserListScreen
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import kotlinx.collections.immutable.ImmutableList
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FollowingScreen(
+fun FollowingRoute(
     modifier: Modifier = Modifier,
     navigateToUserProfile: (Int) -> Unit,
     viewModel: FollowViewModel
@@ -23,7 +21,7 @@ fun FollowingScreen(
 
     val onFollowClick = remember(viewModel) { { userId: Int -> viewModel.toggleFollowForFollowing(userId) } }
 
-    FollowingScreenContent(
+    FollowingRoute(
         following = following,
         onUserClick = navigateToUserProfile,
         onFollowClick = onFollowClick,
@@ -32,7 +30,7 @@ fun FollowingScreen(
 }
 
 @Composable
-private fun FollowingScreenContent(
+private fun FollowingRoute(
     following: ImmutableList<UserItemUiState>,
     onUserClick: (Int) -> Unit,
     onFollowClick: (Int) -> Unit,

@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FollowMainScreen(
+fun FollowRoute(
     paddingValues: PaddingValues,
     navigateToUserProfile: (Int) -> Unit,
     onBackButtonClick: () -> Unit = {},
@@ -47,7 +47,7 @@ fun FollowMainScreen(
     val following by viewModel.following.collectAsState()
     val isFollowingTab by viewModel.isFollowingTab.collectAsState()
 
-    FollowMainScreenContent(
+    FollowScreen(
         followers = followers,
         following = following,
         isFollowingTab = isFollowingTab,
@@ -63,7 +63,7 @@ fun FollowMainScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FollowMainScreenContent(
+private fun FollowScreen(
     followers: ImmutableList<UserItemUiState>,
     following: ImmutableList<UserItemUiState>,
     isFollowingTab: Boolean,
@@ -147,11 +147,11 @@ private fun FollowMainScreenContent(
                 modifier = Modifier.fillMaxSize()
             ) { page ->
                 when (page) {
-                    0 -> FollowerScreen(
+                    0 -> FollowerRoute(
                         navigateToUserProfile = navigateToUserProfile,
                         viewModel = viewModel
                     )
-                    1 -> FollowingScreen(
+                    1 -> FollowingRoute(
                         navigateToUserProfile = navigateToUserProfile,
                         viewModel = viewModel
                     )
