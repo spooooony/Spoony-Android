@@ -20,10 +20,9 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun BackAndMenuTopAppBar(
+    modifier: Modifier = Modifier,
     onBackButtonClick: () -> Unit = {},
-    onMenuButtonClick: () -> Unit = {},
-    wannaKebab: Boolean = false,
-    modifier: Modifier = Modifier
+    onMenuButtonClick: (() -> Unit)? = null
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -45,7 +44,7 @@ fun BackAndMenuTopAppBar(
             )
         }
 
-        if (wannaKebab) {
+        if (onMenuButtonClick != null) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_kebabmenu_gray500_24),
                 contentDescription = null,
