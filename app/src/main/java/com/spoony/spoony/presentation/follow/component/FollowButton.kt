@@ -52,10 +52,10 @@ fun FollowButton(
     val buttonState = remember(isFollowing) {
         if (isFollowing) FollowButtonState.FOLLOWING else FollowButtonState.FOLLOW
     }
-    
+
     val cornerRadius = 12.dp
     val cornerShape = RoundedCornerShape(cornerRadius)
-    
+
     val buttonModifier = modifier
         .border(
             width = 1.dp,
@@ -74,7 +74,7 @@ fun FollowButton(
             }
         )
         .noRippleClickable(onClick = onClick)
-    
+
     Surface(
         shape = cornerShape,
         color = buttonState.backgroundColor,

@@ -8,6 +8,7 @@ import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import com.spoony.spoony.presentation.follow.navigation.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import javax.inject.Inject
 
 @HiltViewModel
 class FollowViewModel @Inject constructor(
