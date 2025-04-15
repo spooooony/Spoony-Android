@@ -98,29 +98,22 @@ fun IconDropdown(
     }
 }
 
-private enum class IconDropdownPreviewOption(
-    val string: String
-) {
-    REPORT("신고하기"),
-    BLOCK("차단하기")
-}
-
 @Preview
 @Composable
 private fun IconDropdownPreview() {
     val menuItems = persistentListOf(
-        IconDropdownPreviewOption.REPORT.string,
-        IconDropdownPreviewOption.BLOCK.string
+        "신고하기",
+        "차단하기"
     )
     SpoonyAndroidTheme {
         IconDropdown(
             menuItems = menuItems,
             onMenuItemClick = { menuItem ->
                 when (menuItem) {
-                    IconDropdownPreviewOption.REPORT.string -> {
+                    "신고하기" -> {
                         Timber.tag("IconDropdownOption").d("IconDropdownOption.REPORT")
                     }
-                    IconDropdownPreviewOption.BLOCK.string -> {
+                    "차단하기" -> {
                         Timber.tag("IconDropdownOption").d("IconDropdownOption.BLOCK")
                     }
                 }
