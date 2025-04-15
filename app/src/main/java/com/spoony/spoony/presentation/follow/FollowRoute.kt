@@ -75,7 +75,7 @@ private fun FollowScreen(
     followType: FollowType,
     onUserClick: (Int) -> Unit,
     onBackButtonClick: () -> Unit,
-    onRefresh: suspend (FollowType) -> Unit,
+    onRefresh: (FollowType) -> Unit,
     onFollowButtonClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
