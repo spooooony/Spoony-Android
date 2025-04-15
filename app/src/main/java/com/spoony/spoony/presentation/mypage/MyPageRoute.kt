@@ -32,7 +32,7 @@ import com.spoony.spoony.presentation.mypage.component.ReviewCounter
 fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToSettings: () -> Unit,
-    navigateToFollow: (FollowType) -> Unit,
+    navigateToFollow: (FollowType, Int) -> Unit,
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
@@ -51,14 +51,15 @@ fun MyPageRoute(
     val userProfile = state.userProfile
 
     MyPageScreen(
+        profileId = userProfile.profileId,
         spoonCount = spoonCount,
-        userImageUrl = userProfile?.imageUrl ?: "",
-        reviewCount = userProfile?.reviewCount ?: 0,
-        followerCount = userProfile?.followerCount ?: 0,
-        followingCount = userProfile?.followingCount ?: 0,
-        region = userProfile?.region ?: "",
-        userName = userProfile?.nickname ?: "",
-        introduction = userProfile?.introduction ?: "",
+        userImageUrl = userProfile.imageUrl,
+        reviewCount = userProfile.reviewCount,
+        followerCount = userProfile.followerCount,
+        followingCount = userProfile.followingCount,
+        region = userProfile.region,
+        userName = userProfile.nickname,
+        introduction = userProfile.introduction,
         onLogoClick = { /* 스푼 뽑기 */ },
         onSettingClick = navigateToSettings,
         onFollowClick = navigateToFollow,
@@ -71,6 +72,7 @@ fun MyPageRoute(
 
 @Composable
 fun MyPageScreen(
+    profileId: Int,
     spoonCount: Int,
     userImageUrl: String,
     reviewCount: Int,
@@ -81,7 +83,7 @@ fun MyPageScreen(
     introduction: String,
     onLogoClick: () -> Unit,
     onSettingClick: () -> Unit,
-    onFollowClick: (FollowType) -> Unit,
+    onFollowClick: (FollowType, Int) -> Unit,
     onProfileEditClick: () -> Unit,
     onEmptyClick: () -> Unit,
     paddingValues: PaddingValues,
@@ -107,8 +109,8 @@ fun MyPageScreen(
                 reviewCount = reviewCount,
                 followerCount = followerCount,
                 followingCount = followingCount,
-                onFollowerClick = { onFollowClick(FollowType.FOLLOWER) },
-                onFollowingClick = { onFollowClick(FollowType.FOLLOWING) },
+                onFollowerClick = { onFollowClick(FollowType.FOLLOWER, profileId) },
+                onFollowingClick = { onFollowClick(FollowType.FOLLOWING, profileId) },
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
 
@@ -168,6 +170,7 @@ private fun MyPageScreenEmptyReviewPreview() {
     val paddingValues = PaddingValues(0.dp)
     SpoonyAndroidTheme {
         MyPageScreen(
+            profileId = 4,
             spoonCount = 99,
             userImageUrl = "",
             reviewCount = 0,
@@ -178,7 +181,7 @@ private fun MyPageScreenEmptyReviewPreview() {
             introduction = "두 사람은 문제아지만 최강.",
             onLogoClick = {},
             onSettingClick = {},
-            onFollowClick = {},
+            onFollowClick = { followType, userId -> },
             onProfileEditClick = {},
             onEmptyClick = {},
             paddingValues = paddingValues,

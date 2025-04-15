@@ -22,6 +22,7 @@ class MyPageViewModel @Inject constructor(
     fun getUserProfile() {
         viewModelScope.launch {
             val profile = UserProfile(
+                profileId = 4,
                 imageUrl = "https://avatars.githubusercontent.com/u/160750136?v=4",
                 nickname = "고졸 사토루",
                 region = "서울 마포구 스푼",

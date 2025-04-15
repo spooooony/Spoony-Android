@@ -19,7 +19,7 @@ fun NavController.navigateToMyPage(
 fun NavGraphBuilder.myPageNavGraph(
     paddingValues: PaddingValues,
     navigateToSettings: () -> Unit,
-    navigateToFollow: (FollowType) -> Unit,
+    navigateToFollow: (FollowType, Int) -> Unit,
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit
