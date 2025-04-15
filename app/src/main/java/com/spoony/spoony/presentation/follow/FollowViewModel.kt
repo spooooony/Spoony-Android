@@ -42,7 +42,6 @@ class FollowViewModel @Inject constructor(
 
     init {
         _followType.value = followInfo.followType
-        
         loadInitialData()
     }
 
@@ -58,7 +57,7 @@ class FollowViewModel @Inject constructor(
             }
         }
     }
-    
+
     private fun generateMockFollowers(userId: Int): ImmutableList<UserItemUiState> {
         return (1..50).map { index ->
             UserItemUiState(
@@ -102,7 +101,7 @@ class FollowViewModel @Inject constructor(
             }
         }
     }
-    
+
     private fun generateMockFollowings(userId: Int): ImmutableList<UserItemUiState> {
         return listOf(
             UserItemUiState(
@@ -122,7 +121,7 @@ class FollowViewModel @Inject constructor(
     fun refreshFollowings() {
         loadFollowings(userId)
     }
-    
+
     fun refresh(type: FollowType) {
         when (type) {
             FollowType.FOLLOWER -> refreshFollowers()

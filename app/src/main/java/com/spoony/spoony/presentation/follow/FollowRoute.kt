@@ -38,8 +38,7 @@ import kotlinx.coroutines.launch
 
 private fun FollowType.toPageIndex(): Int = ordinal
 
-private fun Int.toFollowType(): FollowType = 
-    FollowType.entries[Math.floorMod(this, FollowType.entries.size)]
+private fun Int.toFollowType(): FollowType = FollowType.entries[Math.floorMod(this, FollowType.entries.size)]
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,7 +161,7 @@ private fun FollowScreen(
                         FollowType.FOLLOWING -> following
                     }
                 }
-                
+
                 UserListScreen(
                     users = users,
                     onUserClick = onUserClick,
