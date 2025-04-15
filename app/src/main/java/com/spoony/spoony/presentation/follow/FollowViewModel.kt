@@ -8,17 +8,16 @@ import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import com.spoony.spoony.presentation.follow.navigation.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
 
 @HiltViewModel
 class FollowViewModel @Inject constructor(
@@ -132,23 +131,23 @@ class FollowViewModel @Inject constructor(
     fun toggleFollow(userId: Int) {
         viewModelScope.launch {
             followersMutex.withLock {
-                toggleFollow(_followers, userId)
+                val updatedList = toggleFollow(_followers.value, userId)
+                _followers.value = updatedList
             }
             followingMutex.withLock {
-                toggleFollow(_following, userId)
+                val updatedList = toggleFollow(_following.value, userId)
+                _following.value = updatedList
             }
         }
     }
 
-    private fun toggleFollow(stateFlow: MutableStateFlow<ImmutableList<UserItemUiState>>, userId: Int) {
-        stateFlow.update { currentList ->
-            currentList.map { user ->
-                if (user.userId == userId) {
-                    user.copy(isFollowing = !user.isFollowing)
-                } else {
-                    user
-                }
-            }.toImmutableList()
-        }
+    private fun toggleFollow(currentList: ImmutableList<UserItemUiState>, userId: Int): ImmutableList<UserItemUiState> {
+        return currentList.map { user ->
+            if (user.userId == userId) {
+                user.copy(isFollowing = !user.isFollowing)
+            } else {
+                user
+            }
+        }.toImmutableList()
     }
 }

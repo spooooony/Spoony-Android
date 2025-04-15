@@ -60,12 +60,7 @@ fun FollowRoute(
         paddingValues = paddingValues,
         onUserClick = navigateToUserProfile,
         onBackButtonClick = onBackButtonClick,
-        onRefresh = { type ->
-            when (type) {
-                FollowType.FOLLOWER -> viewModel.refreshFollowers()
-                FollowType.FOLLOWING -> viewModel.refreshFollowings()
-            }
-        },
+        onRefresh = viewModel::refresh,
         onFollowButtonClick = viewModel::toggleFollow,
         modifier = modifier
     )
