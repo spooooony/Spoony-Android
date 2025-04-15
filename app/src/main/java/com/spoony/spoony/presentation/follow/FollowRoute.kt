@@ -33,8 +33,8 @@ import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
 import com.spoony.spoony.presentation.follow.component.UserListScreen
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
+import kotlinx.collections.immutable.ImmutableList
 
 private fun FollowType.toPageIndex(): Int = ordinal
 

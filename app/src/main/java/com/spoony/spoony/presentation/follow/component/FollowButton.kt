@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,13 +23,25 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
 
-@Immutable
-private data class ButtonData(
+private enum class FollowButtonState(
     val text: String,
     val textColor: Color,
     val backgroundColor: Color,
-    val needsGradient: Boolean
-)
+    val useGradient: Boolean
+) {
+    FOLLOW(
+        text = "팔로우",
+        textColor = white,
+        backgroundColor = Color.Transparent,
+        useGradient = true
+    ),
+    FOLLOWING(
+        text = "팔로잉",
+        textColor = gray500,
+        backgroundColor = gray0,
+        useGradient = false
+    )
+}
 
 @Composable
 fun FollowButton(
@@ -38,58 +49,41 @@ fun FollowButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val buttonData = remember(isFollowing) {
-        if (isFollowing) {
-            ButtonData(
-                text = "팔로잉",
-                textColor = gray500,
-                backgroundColor = gray0,
-                needsGradient = false
-            )
-        } else {
-            ButtonData(
-                text = "팔로우",
-                textColor = white,
-                backgroundColor = Color.Transparent,
-                needsGradient = true
-            )
-        }
+    val buttonState = remember(isFollowing) {
+        if (isFollowing) FollowButtonState.FOLLOWING else FollowButtonState.FOLLOW
     }
-
-    val cornerShape = RoundedCornerShape(12.dp)
-
-    val buttonModifier = if (buttonData.needsGradient) {
-        modifier
-            .border(
-                width = 1.dp,
-                color = gray100,
-                shape = cornerShape
-            )
-            .spoonyGradient(
-                cornerRadius = 12.dp,
-                mainColor = main400,
-                secondColor = white
-            )
-            .noRippleClickable(onClick = onClick)
-    } else {
-        modifier
-            .border(
-                width = 1.dp,
-                color = gray100,
-                shape = cornerShape
-            )
-            .noRippleClickable(onClick = onClick)
-    }
-
+    
+    val cornerRadius = 12.dp
+    val cornerShape = RoundedCornerShape(cornerRadius)
+    
+    val buttonModifier = modifier
+        .border(
+            width = 1.dp,
+            color = gray100,
+            shape = cornerShape
+        )
+        .then(
+            if (buttonState.useGradient) {
+                Modifier.spoonyGradient(
+                    cornerRadius = cornerRadius,
+                    mainColor = main400,
+                    secondColor = white
+                )
+            } else {
+                Modifier
+            }
+        )
+        .noRippleClickable(onClick = onClick)
+    
     Surface(
         shape = cornerShape,
-        color = buttonData.backgroundColor,
+        color = buttonState.backgroundColor,
         modifier = buttonModifier
     ) {
         Text(
-            text = buttonData.text,
+            text = buttonState.text,
             style = SpoonyAndroidTheme.typography.body2sb,
-            color = buttonData.textColor,
+            color = buttonState.textColor,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
         )
     }
