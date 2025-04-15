@@ -1,10 +1,6 @@
 package com.spoony.spoony.core.designsystem.component.topappbar
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -24,35 +20,33 @@ fun BackAndMenuTopAppBar(
     onBackButtonClick: () -> Unit = {},
     onMenuButtonClick: (() -> Unit)? = null
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 20.dp)
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(32.dp)
-                .noRippleClickable(onBackButtonClick)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left_24),
-                contentDescription = null,
-                tint = SpoonyAndroidTheme.colors.gray700
-            )
+    SpoonyBasicTopAppBar(
+        modifier = modifier,
+        navigationIcon = {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(32.dp)
+                    .noRippleClickable(onBackButtonClick)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left_24),
+                    contentDescription = null,
+                    tint = SpoonyAndroidTheme.colors.gray700
+                )
+            }
+        },
+        actions = {
+            if (onMenuButtonClick != null) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_kebabmenu_gray500_24),
+                    contentDescription = null,
+                    tint = SpoonyAndroidTheme.colors.gray500,
+                    modifier = Modifier.noRippleClickable(onClick = onMenuButtonClick)
+                )
+            }
         }
-
-        if (onMenuButtonClick != null) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_kebabmenu_gray500_24),
-                contentDescription = null,
-                tint = SpoonyAndroidTheme.colors.gray500,
-                modifier = Modifier.noRippleClickable(onClick = onMenuButtonClick)
-            )
-        }
-    }
+    )
 }
 
 @Preview(showBackground = true)
