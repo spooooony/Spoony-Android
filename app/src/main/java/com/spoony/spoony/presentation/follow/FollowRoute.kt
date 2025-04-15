@@ -30,33 +30,44 @@ import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.presentation.follow.component.FollowTabRow
 import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
+import com.spoony.spoony.presentation.follow.component.UserListScreen
+import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
+
+private fun FollowType.toPageIndex(): Int = ordinal
+
+private fun Int.toFollowType(): FollowType = 
+    FollowType.entries[Math.floorMod(this, FollowType.entries.size)]
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FollowRoute(
     paddingValues: PaddingValues,
+    onBackButtonClick: () -> Unit,
     navigateToUserProfile: (Int) -> Unit,
-    onBackButtonClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: FollowViewModel = hiltViewModel()
 ) {
     val followers by viewModel.followers.collectAsState()
     val following by viewModel.following.collectAsState()
-    val isFollowingTab by viewModel.isFollowingTab.collectAsState()
+    val followType by viewModel.followType.collectAsState()
 
     FollowScreen(
         followers = followers,
         following = following,
-        isFollowingTab = isFollowingTab,
+        followType = followType,
         paddingValues = paddingValues,
-        navigateToUserProfile = navigateToUserProfile,
+        onUserClick = navigateToUserProfile,
         onBackButtonClick = onBackButtonClick,
-        onRefreshFollowers = viewModel::refreshFollowers,
-        onRefreshFollowings = viewModel::refreshFollowings,
-        viewModel = viewModel,
+        onRefresh = { type ->
+            when (type) {
+                FollowType.FOLLOWER -> viewModel.refreshFollowers()
+                FollowType.FOLLOWING -> viewModel.refreshFollowings()
+            }
+        },
+        onFollowButtonClick = viewModel::toggleFollow,
         modifier = modifier
     )
 }
@@ -64,19 +75,17 @@ fun FollowRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FollowScreen(
+    paddingValues: PaddingValues,
     followers: ImmutableList<UserItemUiState>,
     following: ImmutableList<UserItemUiState>,
-    isFollowingTab: Boolean,
-    paddingValues: PaddingValues,
-    navigateToUserProfile: (Int) -> Unit,
+    followType: FollowType,
+    onUserClick: (Int) -> Unit,
     onBackButtonClick: () -> Unit,
-    onRefreshFollowers: suspend () -> Unit,
-    onRefreshFollowings: suspend () -> Unit,
-    viewModel: FollowViewModel,
+    onRefresh: suspend (FollowType) -> Unit,
+    onFollowButtonClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val initialPage = if (isFollowingTab) 1 else 0
-    val pagerState = rememberPagerState(initialPage = initialPage) { 2 }
+    val pagerState = rememberPagerState(initialPage = followType.toPageIndex()) { FollowType.entries.size }
     val coroutineScope = rememberCoroutineScope()
     val refreshState = rememberPullToRefreshState()
 
@@ -91,17 +100,17 @@ private fun FollowScreen(
         }
     }
 
-    val counts by remember(followers.size, following.size) {
-        derivedStateOf { Pair(followers.size, following.size) }
+    val currentType = remember(pagerState.currentPage) {
+        pagerState.currentPage.toFollowType()
+    }
+
+    val counts = remember(followers.size, following.size) {
+        Pair(followers.size, following.size)
     }
 
     LaunchedEffect(refreshState.isRefreshing) {
         if (refreshState.isRefreshing) {
-            if (pagerState.currentPage == 0) {
-                onRefreshFollowers()
-            } else {
-                onRefreshFollowings()
-            }
+            onRefresh(currentType)
             refreshState.endRefresh()
         }
     }
@@ -121,12 +130,12 @@ private fun FollowScreen(
             followingCount = counts.second,
             onFollowerTabClick = {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(0)
+                    pagerState.animateScrollToPage(FollowType.FOLLOWER.toPageIndex())
                 }
             },
             onFollowingTabClick = {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(1)
+                    pagerState.animateScrollToPage(FollowType.FOLLOWING.toPageIndex())
                 }
             },
             selectedTabIndex = pagerState.currentPage
@@ -146,16 +155,19 @@ private fun FollowScreen(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                when (page) {
-                    0 -> FollowerRoute(
-                        navigateToUserProfile = navigateToUserProfile,
-                        viewModel = viewModel
-                    )
-                    1 -> FollowingRoute(
-                        navigateToUserProfile = navigateToUserProfile,
-                        viewModel = viewModel
-                    )
+                val type = page.toFollowType()
+                val users = remember(type, followers, following) {
+                    when (type) {
+                        FollowType.FOLLOWER -> followers
+                        FollowType.FOLLOWING -> following
+                    }
                 }
+                
+                UserListScreen(
+                    users = users,
+                    onUserClick = onUserClick,
+                    onButtonClick = onFollowButtonClick
+                )
             }
 
             PullToRefreshContainer(

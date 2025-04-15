@@ -15,7 +15,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun UserListScreen(
     users: ImmutableList<UserItemUiState>,
     onUserClick: (Int) -> Unit,
-    onFollowClick: (Int) -> Unit,
+    onButtonClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -32,7 +32,7 @@ fun UserListScreen(
                 region = user.region,
                 isFollowing = user.isFollowing,
                 onUserClick = { onUserClick(user.userId) },
-                onFollowClick = { onFollowClick(user.userId) },
+                onFollowClick = { onButtonClick(user.userId) },
                 modifier = Modifier.padding(vertical = 10.dp)
             )
         }

@@ -31,41 +31,44 @@ class FollowViewModel @Inject constructor(
     private val _following = MutableStateFlow<ImmutableList<UserItemUiState>>(persistentListOf())
     val following: StateFlow<ImmutableList<UserItemUiState>> = _following.asStateFlow()
 
-    private val _isFollowingTab = MutableStateFlow(false)
-    val isFollowingTab: StateFlow<Boolean> = _isFollowingTab.asStateFlow()
-
     private val _followType = MutableStateFlow(FollowType.FOLLOWER)
     val followType: StateFlow<FollowType> = _followType.asStateFlow()
 
     private val followingMutex = Mutex()
     private val followersMutex = Mutex()
 
-    init {
-        loadFollowings()
-        loadFollowers()
+    private val followInfo = savedStateHandle.toRoute<Follow>()
+    private val userId = followInfo.userId
 
-        with(savedStateHandle.toRoute<Follow>()) {
-            _followType.value = this.followType
-            _isFollowingTab.value = this.followType == FollowType.FOLLOWING
-        }
+    init {
+        _followType.value = followInfo.followType
+        
+        loadInitialData()
     }
 
-    fun loadFollowers() {
-        viewModelScope.launch {
-            val mockFollowers = (1..50).map { index ->
-                UserItemUiState(
-                    userId = index,
-                    userName = getUserNameByIndex(index),
-                    imageUrl = "https://picsum.photos/${200 + index}",
-                    region = getRegionByIndex(index),
-                    isFollowing = index % 2 == 0
-                )
-            }.toImmutableList()
+    private fun loadInitialData() {
+        loadFollowers(userId)
+        loadFollowings(userId)
+    }
 
+    fun loadFollowers(userId: Int) {
+        viewModelScope.launch {
             followersMutex.withLock {
-                _followers.value = mockFollowers
+                _followers.value = generateMockFollowers(userId)
             }
         }
+    }
+    
+    private fun generateMockFollowers(userId: Int): ImmutableList<UserItemUiState> {
+        return (1..50).map { index ->
+            UserItemUiState(
+                userId = index,
+                userName = getUserNameByIndex(index),
+                imageUrl = "https://picsum.photos/${200 + index}",
+                region = getRegionByIndex(index),
+                isFollowing = index % 2 == 0
+            )
+        }.toImmutableList()
     }
 
     private fun getUserNameByIndex(index: Int): String = when (index % 10) {
@@ -92,46 +95,46 @@ class FollowViewModel @Inject constructor(
         else -> "제주도"
     }
 
-    fun loadFollowings() {
+    fun loadFollowings(userId: Int) {
         viewModelScope.launch {
-            val mockFollowings = listOf(
-                UserItemUiState(
-                    userId = 6,
-                    userName = "맛집헌터",
-                    imageUrl = "https://picsum.photos/205",
-                    region = "경기도",
-                    isFollowing = true
-                )
-            ).toImmutableList()
-
             followingMutex.withLock {
-                _following.value = mockFollowings
+                _following.value = generateMockFollowings(userId)
             }
         }
     }
+    
+    private fun generateMockFollowings(userId: Int): ImmutableList<UserItemUiState> {
+        return listOf(
+            UserItemUiState(
+                userId = 6,
+                userName = "맛집헌터",
+                imageUrl = "https://picsum.photos/205",
+                region = "경기도",
+                isFollowing = true
+            )
+        ).toImmutableList()
+    }
 
     fun refreshFollowers() {
-        viewModelScope.launch {
-            loadFollowers()
-        }
+        loadFollowers(userId)
     }
 
     fun refreshFollowings() {
-        viewModelScope.launch {
-            loadFollowings()
+        loadFollowings(userId)
+    }
+    
+    fun refresh(type: FollowType) {
+        when (type) {
+            FollowType.FOLLOWER -> refreshFollowers()
+            FollowType.FOLLOWING -> refreshFollowings()
         }
     }
 
-    fun toggleFollowForFollower(userId: Int) {
+    fun toggleFollow(userId: Int) {
         viewModelScope.launch {
             followersMutex.withLock {
                 toggleFollow(_followers, userId)
             }
-        }
-    }
-
-    fun toggleFollowForFollowing(userId: Int) {
-        viewModelScope.launch {
             followingMutex.withLock {
                 toggleFollow(_following, userId)
             }

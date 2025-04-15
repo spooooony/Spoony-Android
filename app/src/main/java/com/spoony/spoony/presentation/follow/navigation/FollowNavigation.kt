@@ -17,11 +17,12 @@ private const val LONG_ANIMATION_DURATION = 300
 
 fun NavController.navigateToFollow(
     followType: FollowType,
+    userId: Int,
     navOptions: NavOptions = navOptions {
         launchSingleTop = true
     }
 ) {
-    navigate(Follow(followType), navOptions)
+    navigate(Follow(followType, userId), navOptions)
 }
 
 fun NavGraphBuilder.followNavGraph(
@@ -52,4 +53,7 @@ fun NavGraphBuilder.followNavGraph(
 }
 
 @Serializable
-data class Follow(val followType: FollowType) : Route
+data class Follow(
+    val followType: FollowType,
+    val userId: Int
+) : Route
