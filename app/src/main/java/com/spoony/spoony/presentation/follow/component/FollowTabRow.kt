@@ -35,18 +35,20 @@ import com.spoony.spoony.core.designsystem.theme.gray400
 import com.spoony.spoony.core.designsystem.theme.main400
 import kotlinx.collections.immutable.persistentListOf
 
+private const val TabFadeInAnimationDuration = 150
+private const val TabFadeInAnimationDelay = 100
+private const val TabFadeOutAnimationDuration = 100
+private val FOLLOW_TABS = persistentListOf("팔로워", "팔로잉")
+
 @Composable
 fun FollowTabRow(
     followerCount: Int,
     followingCount: Int,
-    onFollowerTabClick: () -> Unit,
-    onFollowingTabClick: () -> Unit,
+    onTabClick: (Int) -> Unit,
     selectedTabIndex: Int,
     modifier: Modifier = Modifier
 ) {
-    val tabs = remember {
-        persistentListOf("팔로워", "팔로잉")
-    }
+    val tabs = FOLLOW_TABS
 
     Box(modifier = modifier.fillMaxWidth()) {
         TabRow(
@@ -65,7 +67,7 @@ fun FollowTabRow(
             tabs.forEachIndexed { index, title ->
                 Tab(
                     selected = selectedTabIndex == index,
-                    onClick = if (index == 0) onFollowerTabClick else onFollowingTabClick,
+                    onClick = { onTabClick(index) },
                     content = {
                         CustomTabContent(
                             title = title,
@@ -167,10 +169,6 @@ private fun TabTransition(
     )
 }
 
-private const val TabFadeInAnimationDuration = 150
-private const val TabFadeInAnimationDelay = 100
-private const val TabFadeOutAnimationDuration = 100
-
 @Preview(showBackground = true)
 @Composable
 fun FollowTabRowPreview() {
@@ -181,8 +179,7 @@ fun FollowTabRowPreview() {
             FollowTabRow(
                 followerCount = 12,
                 followingCount = 24,
-                onFollowerTabClick = { selectedTab = 0 },
-                onFollowingTabClick = { selectedTab = 1 },
+                onTabClick = { selectedTab = it },
                 selectedTabIndex = selectedTab,
                 modifier = Modifier
             )

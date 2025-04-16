@@ -91,10 +91,6 @@ private fun FollowScreen(
         FollowType.fromPageIndex(pagerState.currentPage)
     }
 
-    val counts = remember(followers.size, following.size) {
-        Pair(followers.size, following.size)
-    }
-
     LaunchedEffect(refreshState.isRefreshing) {
         if (refreshState.isRefreshing) {
             onRefresh(currentType)
@@ -114,16 +110,11 @@ private fun FollowScreen(
         )
 
         FollowTabRow(
-            followerCount = counts.first,
-            followingCount = counts.second,
-            onFollowerTabClick = {
+            followerCount = followers.size,
+            followingCount = following.size,
+            onTabClick = { tabIndex ->
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(FollowType.FOLLOWER.toPageIndex())
-                }
-            },
-            onFollowingTabClick = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(FollowType.FOLLOWING.toPageIndex())
+                    pagerState.animateScrollToPage(tabIndex)
                 }
             },
             selectedTabIndex = pagerState.currentPage
