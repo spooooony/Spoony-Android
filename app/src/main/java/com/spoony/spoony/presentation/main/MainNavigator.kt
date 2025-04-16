@@ -13,7 +13,7 @@ import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
-import com.spoony.spoony.presentation.myPage.navigation.navigateToMyPage
+import com.spoony.spoony.presentation.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
