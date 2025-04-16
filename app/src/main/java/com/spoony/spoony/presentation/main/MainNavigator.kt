@@ -32,12 +32,8 @@ class MainNavigator(
     val startDestination = Map()
 
     val currentTab: MainTab?
-        @Composable get() {
-            val currentRoute = currentDestination?.route
-
-            if (currentRoute?.contains("Follow") == true) return MainTab.MYPAGE
-
-            return MainTab.find { tab -> currentDestination?.hasRoute(tab::class) == true }
+        @Composable get() = MainTab.find { tab ->
+            currentDestination?.hasRoute(tab::class) == true
         }
 
     fun navigate(tab: MainTab) {
@@ -61,13 +57,8 @@ class MainNavigator(
     }
 
     @Composable
-    fun shouldShowBottomBar(): Boolean {
-        val backStackEntry = navController.currentBackStackEntryAsState().value
-        val destination = backStackEntry?.destination
-
-        if (MainTab.contains { destination?.hasRoute(it::class) == true }) return true
-
-        return destination?.route?.contains("Follow") == true
+    fun shouldShowBottomBar() = MainTab.contains {
+        currentDestination?.hasRoute(it::class) == true
     }
 
     fun navigateToReport(
