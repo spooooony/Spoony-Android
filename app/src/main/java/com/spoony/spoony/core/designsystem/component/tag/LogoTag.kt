@@ -32,8 +32,9 @@ import com.spoony.spoony.core.util.extension.spoonyGradient
 @Composable
 fun LogoTag(
     count: Int,
-    tagSize: TagSize = TagSize.Small,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    tagSize: TagSize = TagSize.Small
 ) {
     val spoonTypography = SpoonyAndroidTheme.typography
     val (betweenValues, paddingValues) = remember(tagSize) {
@@ -46,7 +47,7 @@ fun LogoTag(
 
     Row(
         modifier = modifier
-            .rotateClick()
+            .rotateClick(onClick = onClick)
             .clip(RoundedCornerShape(20.dp))
             .spoonyGradient(20.dp)
             .padding(paddingValues),

@@ -42,9 +42,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.chattymin.pebble.graphemeLength
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.util.extension.countGraphemes
 
 @Composable
 fun SpoonyLargeTextField(
@@ -88,10 +88,10 @@ fun SpoonyLargeTextField(
             value = value,
             placeholder = placeholder,
             onValueChanged = { newText ->
-                isError = (newText.countGraphemes() > maxLength || newText.countGraphemes(true) < minLength)
-                isOverflowed = newText.countGraphemes() > maxLength
+                isError = (newText.graphemeLength > maxLength || newText.trim().graphemeLength < minLength)
+                isOverflowed = newText.graphemeLength > maxLength
 
-                if (newText.countGraphemes() <= maxLength) {
+                if (newText.graphemeLength <= maxLength) {
                     onValueChanged(newText)
                 }
             },
@@ -102,7 +102,7 @@ fun SpoonyLargeTextField(
             modifier = modifier,
             onFocusChanged = {
                 isFocused = it
-                if (value.countGraphemes(true) >= minLength) {
+                if (value.trim().graphemeLength >= minLength) {
                     isError = false
                 }
             },
@@ -155,7 +155,7 @@ private fun CustomBasicTextField(
     isAllowSpecialChars: Boolean = false
 ) {
     val focusRequester = remember { FocusRequester() }
-    val counterText = stringResource(R.string.COUNTER_TEXT, value.countGraphemes(), maxLength)
+    val counterText = stringResource(R.string.COUNTER_TEXT, value.graphemeLength, maxLength)
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
