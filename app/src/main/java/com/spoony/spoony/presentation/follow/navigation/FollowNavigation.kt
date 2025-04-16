@@ -8,7 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.spoony.spoony.core.navigation.Route
+import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.follow.FollowRoute
 import com.spoony.spoony.presentation.follow.model.FollowType
 import kotlinx.serialization.Serializable
@@ -56,4 +56,4 @@ fun NavGraphBuilder.followNavGraph(
 data class Follow(
     val followType: FollowType,
     val userId: Int
-) : Route
+) : MainTabRoute
