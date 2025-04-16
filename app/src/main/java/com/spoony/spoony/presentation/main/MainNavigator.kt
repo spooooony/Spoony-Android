@@ -10,6 +10,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
+import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
@@ -84,13 +86,15 @@ class MainNavigator(
             navOptions {
                 popUpTo(NAVIGATION_ROOT) {
                     inclusive = true
-                    saveState = true
                 }
-                restoreState = true
                 launchSingleTop = true
             }
     ) {
         navController.navigateToRegister(navOptions)
+    }
+
+    fun navigateToFollow(followType: FollowType, userId: Int) {
+        navController.navigateToFollow(followType, userId)
     }
 
     fun navigateToMapSearch(navOptions: NavOptions? = null) {
