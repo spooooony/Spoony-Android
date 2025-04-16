@@ -40,13 +40,11 @@ private fun FollowType.toPageIndex(): Int = ordinal
 
 private fun Int.toFollowType(): FollowType = FollowType.entries[Math.floorMod(this, FollowType.entries.size)]
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FollowRoute(
     paddingValues: PaddingValues,
     onBackButtonClick: () -> Unit,
     navigateToUserProfile: (Int) -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: FollowViewModel = hiltViewModel()
 ) {
     val followers by viewModel.followers.collectAsState()
@@ -61,8 +59,7 @@ fun FollowRoute(
         onUserClick = navigateToUserProfile,
         onBackButtonClick = onBackButtonClick,
         onRefresh = viewModel::refresh,
-        onFollowButtonClick = viewModel::toggleFollow,
-        modifier = modifier
+        onFollowButtonClick = viewModel::toggleFollow
     )
 }
 
