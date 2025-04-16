@@ -36,10 +36,6 @@ import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
-private fun FollowType.toPageIndex(): Int = ordinal
-
-private fun Int.toFollowType(): FollowType = FollowType.entries[Math.floorMod(this, FollowType.entries.size)]
-
 @Composable
 fun FollowRoute(
     paddingValues: PaddingValues,
@@ -92,7 +88,7 @@ private fun FollowScreen(
     }
 
     val currentType = remember(pagerState.currentPage) {
-        pagerState.currentPage.toFollowType()
+        FollowType.fromPageIndex(pagerState.currentPage)
     }
 
     val counts = remember(followers.size, following.size) {
@@ -147,7 +143,7 @@ private fun FollowScreen(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                val type = page.toFollowType()
+                val type = FollowType.fromPageIndex(page)
                 val users = remember(type, followers, following) {
                     when (type) {
                         FollowType.FOLLOWER -> followers
