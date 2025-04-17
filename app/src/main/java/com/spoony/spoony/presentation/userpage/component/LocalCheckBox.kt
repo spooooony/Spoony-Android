@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,9 +23,8 @@ fun LocalCheckBox(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val checkBoxIcon = remember {
-        if (isSelected) R.drawable.ic_checkbox_main400 else R.drawable.ic_checkbox_gray400
-    }
+    val checkBoxIcon = if (isSelected) R.drawable.ic_checkbox_main400 else R.drawable.ic_checkbox_gray400
+    
     Row(
         modifier = modifier.clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
