@@ -49,7 +49,7 @@ fun MyPageRoute(
         onLogoClick = { /* 스푼 뽑기 */ },
         onSettingClick = navigateToSettings,
         onFollowClick = navigateToFollow,
-        onProfileEditClick = navigateToProfileEdit,
+        onMainButtonClick = navigateToProfileEdit,
         onEmptyClick = navigateToRegister,
         paddingValues = paddingValues,
         onReviewClick = navigateToReviewDetail
@@ -75,7 +75,7 @@ private fun MyPageScreenEmptyReviewPreview() {
             onLogoClick = {},
             onSettingClick = {},
             onFollowClick = { followType, userId -> },
-            onProfileEditClick = {},
+            onMainButtonClick = {},
             onEmptyClick = {},
             paddingValues = paddingValues,
             onReviewClick = {}

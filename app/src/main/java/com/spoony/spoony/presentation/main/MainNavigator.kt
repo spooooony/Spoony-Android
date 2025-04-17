@@ -19,6 +19,7 @@ import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDeta
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
+import com.spoony.spoony.presentation.userpage.otherpage.navigation.navigateToOtherPage
 
 const val NAVIGATION_ROOT = 0
 
@@ -91,6 +92,12 @@ class MainNavigator(
             }
     ) {
         navController.navigateToRegister(navOptions)
+    }
+
+    fun navigateToOtherPage(
+        userId: Int
+    ){
+        navController.navigateToOtherPage(userId = userId)
     }
 
     fun navigateToFollow(followType: FollowType, userId: Int) {

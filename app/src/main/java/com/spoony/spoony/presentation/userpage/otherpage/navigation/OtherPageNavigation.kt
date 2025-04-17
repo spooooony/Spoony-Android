@@ -1,5 +1,7 @@
 package com.spoony.spoony.presentation.userpage.otherpage.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,28 +12,39 @@ import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.userpage.otherpage.OtherPageRoute
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateToOhterPage(
+private const val LONG_ANIMATION_DURATION = 300
+
+fun NavController.navigateToOtherPage(
     navOptions: NavOptions? = null,
     userId: Int
 ) {
     navigate(OtherPage(userId), navOptions)
 }
 
-fun NavGraphBuilder.OtherPageNavGraph(
+fun NavGraphBuilder.otherPageNavGraph(
     paddingValues: PaddingValues,
-    navigateToSettings: () -> Unit,
+    navigateUp: () -> Unit,
     navigateToFollow: (FollowType, Int) -> Unit,
-    navigateToProfileEdit: () -> Unit,
-    navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit
 ) {
-    composable<OtherPage> {
+    composable<OtherPage>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(LONG_ANIMATION_DURATION)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(LONG_ANIMATION_DURATION)
+            )
+        }
+    ) {
         OtherPageRoute(
             paddingValues = paddingValues,
-            navigateToSettings = navigateToSettings,
+            navigateUp = navigateUp,
             navigateToFollow = navigateToFollow,
-            navigateToProfileEdit = navigateToProfileEdit,
-            navigateToRegister = navigateToRegister,
             navigateToReviewDetail = navigateToReviewDetail
         )
     }
