@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.follow.component
+package com.spoony.spoony.core.designsystem.component.button
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
@@ -47,7 +47,8 @@ private enum class FollowButtonState(
 fun FollowButton(
     isFollowing: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isSmall: Boolean = true
 ) {
     val buttonState = remember(isFollowing) {
         if (isFollowing) FollowButtonState.FOLLOWING else FollowButtonState.FOLLOW
@@ -84,7 +85,10 @@ fun FollowButton(
             text = buttonState.text,
             style = SpoonyAndroidTheme.typography.body2sb,
             color = buttonState.textColor,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+            modifier = Modifier.padding(
+                horizontal = if (isSmall) 14.dp else 24.dp,
+                vertical = 6.dp
+            )
         )
     }
 }

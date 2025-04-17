@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.mypage.component
+package com.spoony.spoony.presentation.userpage.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.spoony.spoony.core.designsystem.component.button.FollowButton
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.black
 import com.spoony.spoony.core.designsystem.theme.gray600
@@ -23,16 +24,18 @@ import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
+import com.spoony.spoony.presentation.userpage.model.UserType
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ProfileIntroSection(
+    userType: UserType,
     region: String,
     nickname: String,
     introduction: String,
-    buttonText: String,
     onButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isFollowing: Boolean = false
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -59,25 +62,49 @@ fun ProfileIntroSection(
             }
         }
 
-        Surface(
-            shape = CircleShape,
-            color = Color.Transparent,
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .spoonyGradient(
-                    cornerRadius = 20.dp,
-                    mainColor = main400,
-                    secondColor = white
+        when (userType) {
+            UserType.MY_PAGE -> {
+                ProfileEditButton(
+                    buttonText = "프로필 수정",
+                    onButtonClick = onButtonClick,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
-                .noRippleClickable(onClick = onButtonClick)
-        ) {
-            Text(
-                text = buttonText,
-                style = SpoonyAndroidTheme.typography.body2sb,
-                color = white,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
-            )
+            }
+            UserType.OTHER_PAGE -> {
+                FollowButton(
+                    isFollowing = isFollowing,
+                    onClick = onButtonClick,
+                    modifier = Modifier.padding(start = 8.dp),
+                    isSmall = false
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun ProfileEditButton(
+    buttonText: String,
+    onButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = CircleShape,
+        color = Color.Transparent,
+        modifier = modifier
+            .spoonyGradient(
+                cornerRadius = 20.dp,
+                mainColor = main400,
+                secondColor = white
+            )
+            .noRippleClickable(onClick = onButtonClick)
+    ) {
+        Text(
+            text = buttonText,
+            style = SpoonyAndroidTheme.typography.body2sb,
+            color = white,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+        )
     }
 }
 
@@ -86,11 +113,27 @@ fun ProfileIntroSection(
 private fun ProfileIntroSectionPreview() {
     SpoonyAndroidTheme {
         ProfileIntroSection(
+            userType = UserType.MY_PAGE,
             region = "서울 마포구 스푼",
             nickname = "슈퍼 순두부",
             introduction = "자기소개 기본멘트.",
-            buttonText = "프로필 수정",
             onButtonClick = {},
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun ProfileIntroSectionOtherPagePreview() {
+    SpoonyAndroidTheme {
+        ProfileIntroSection(
+            userType = UserType.OTHER_PAGE,
+            region = "서울 마포구 스푼",
+            nickname = "슈퍼 순두부",
+            introduction = "자기소개 기본멘트.",
+            onButtonClick = {},
+            isFollowing = false,
             modifier = Modifier.padding(horizontal = 20.dp)
         )
     }
