@@ -33,12 +33,6 @@ fun NavGraphBuilder.otherPageNavGraph(
                 AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(LONG_ANIMATION_DURATION)
             )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(LONG_ANIMATION_DURATION)
-            )
         }
     ) {
         OtherPageRoute(
