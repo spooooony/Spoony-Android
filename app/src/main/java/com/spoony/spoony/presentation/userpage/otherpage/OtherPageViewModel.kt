@@ -35,17 +35,17 @@ class OtherPageViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    
+
     private val _state: MutableStateFlow<OtherPageState> = MutableStateFlow(OtherPageState())
     val state: StateFlow<OtherPageState>
         get() = _state
 
     private val userInfo = savedStateHandle.toRoute<OtherPage>()
-    
+
     init {
         getUserProfile()
     }
-    
+
     fun getUserProfile() {
         viewModelScope.launch {
             val profile = OtherUserProfile(
@@ -62,24 +62,25 @@ class OtherPageViewModel @Inject constructor(
             _state.update { it.copy(userProfile = profile) }
         }
     }
-    
+
     fun toggleFollow() {
         viewModelScope.launch {
-            _state.update { 
+            _state.update {
                 val currentProfile = it.userProfile ?: return@update it
                 it.copy(
                     userProfile = currentProfile.copy(
                         isFollowing = !currentProfile.isFollowing,
-                        followerCount = if (currentProfile.isFollowing) 
-                            currentProfile.followerCount - 1 
-                        else 
+                        followerCount = if (currentProfile.isFollowing) {
+                            currentProfile.followerCount - 1
+                        } else {
                             currentProfile.followerCount + 1
+                        }
                     )
                 )
             }
         }
     }
-    
+
     fun toggleLocalReviewOnly() {
         _state.update { it.copy(isLocalReviewOnly = !it.isLocalReviewOnly) }
     }

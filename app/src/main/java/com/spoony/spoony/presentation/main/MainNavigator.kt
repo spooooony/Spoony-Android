@@ -96,7 +96,7 @@ class MainNavigator(
 
     fun navigateToOtherPage(
         userId: Int
-    ){
+    ) {
         navController.navigateToOtherPage(userId = userId)
     }
 

@@ -35,7 +35,7 @@ fun OtherPageRoute(
         userName = userProfile?.nickname ?: "",
         introduction = userProfile?.introduction ?: "",
         onBackButtonClick = navigateUp,
-        onMenuButtonClick = {/* */},
+        onMenuButtonClick = { /* */ },
         onFollowClick = navigateToFollow,
         onReviewClick = navigateToReviewDetail,
         onMainButtonClick = viewModel::toggleFollow,
