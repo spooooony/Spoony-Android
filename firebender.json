@@ -1,9 +1,0 @@
-{
-  "rules": [
-    "This project is an Android application utilizing Jetpack Compose and MVVM architecture",
-    "All asynchronous tasks must use Kotlin Coroutines and Flow",
-    "Avoid using runBlocking in production code",
-    "Implement dependency injection with Hilt",
-    "Manage UI state within ViewModel using collectAsState() or StateFlow"
-  ]
-}
