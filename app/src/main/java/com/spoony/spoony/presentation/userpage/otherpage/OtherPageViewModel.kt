@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.presentation.userpage.model.UserPageState
+import com.spoony.spoony.presentation.userpage.model.UserType
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.OtherPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -12,23 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class OtherUserProfile(
-    val profileId: Int,
-    val imageUrl: String,
-    val nickname: String,
-    val region: String,
-    val introduction: String,
-    val reviewCount: Int,
-    val followerCount: Int,
-    val followingCount: Int,
-    val isFollowing: Boolean = false
-)
-
-data class OtherPageState(
-    val userProfile: OtherUserProfile? = null,
-    val isLocalReviewOnly: Boolean = false
-)
 
 @HiltViewModel
 class OtherPageViewModel @Inject constructor(
@@ -48,7 +33,7 @@ class OtherPageViewModel @Inject constructor(
 
     fun getUserProfile() {
         viewModelScope.launch {
-            val profile = OtherUserProfile(
+            val profile = UserProfile(
                 profileId = userInfo.userId,
                 imageUrl = "https://avatars.githubusercontent.com/u/52882799?v=4",
                 nickname = "맛잘알 패트릭 ${userInfo.userId}",
@@ -66,14 +51,13 @@ class OtherPageViewModel @Inject constructor(
     fun toggleFollow() {
         viewModelScope.launch {
             _state.update {
-                val currentProfile = it.userProfile ?: return@update it
                 it.copy(
-                    userProfile = currentProfile.copy(
-                        isFollowing = !currentProfile.isFollowing,
-                        followerCount = if (currentProfile.isFollowing) {
-                            currentProfile.followerCount - 1
+                    userProfile = it.userProfile.copy(
+                        isFollowing = !it.userProfile.isFollowing,
+                        followerCount = if (it.userProfile.isFollowing) {
+                            it.userProfile.followerCount - 1
                         } else {
-                            currentProfile.followerCount + 1
+                            it.userProfile.followerCount + 1
                         }
                     )
                 )
@@ -83,5 +67,22 @@ class OtherPageViewModel @Inject constructor(
 
     fun toggleLocalReviewOnly() {
         _state.update { it.copy(isLocalReviewOnly = !it.isLocalReviewOnly) }
+    }
+
+    fun createUserPageState(): UserPageState {
+        val currentState = _state.value
+        return UserPageState(
+            userType = UserType.OTHER_PAGE,
+            profileId = currentState.userProfile.profileId,
+            userImageUrl = currentState.userProfile.imageUrl,
+            reviewCount = currentState.userProfile.reviewCount,
+            followerCount = currentState.userProfile.followerCount,
+            followingCount = currentState.userProfile.followingCount,
+            region = currentState.userProfile.region,
+            userName = currentState.userProfile.nickname,
+            introduction = currentState.userProfile.introduction,
+            isFollowing = currentState.userProfile.isFollowing,
+            isCheckBoxSelected = currentState.isLocalReviewOnly
+        )
     }
 }

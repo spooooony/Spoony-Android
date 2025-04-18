@@ -29,34 +29,17 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
+import com.spoony.spoony.presentation.userpage.model.UserPageEvents
+import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserType
 import com.spoony.spoony.presentation.userpage.mypage.component.MyPageTopAppBar
 
 @Composable
 fun UserPageScreen(
-    userType: UserType,
-    profileId: Int,
-    userImageUrl: String,
-    reviewCount: Int,
-    followerCount: Int,
-    followingCount: Int,
-    region: String,
-    userName: String,
-    introduction: String,
-    onFollowClick: (FollowType, Int) -> Unit,
+    state: UserPageState,
+    events: UserPageEvents,
     paddingValues: PaddingValues,
-    onReviewClick: (Int) -> Unit,
-    onMainButtonClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    onEmptyClick: () -> Unit = {},
-    spoonCount: Int = 0,
-    isCheckBoxSelected: Boolean = true,
-    onSettingClick: () -> Unit = {},
-    onCheckBoxClick: () -> Unit = {},
-    onLogoClick: () -> Unit = {},
-    onBackButtonClick: () -> Unit = {},
-    onMenuButtonClick: () -> Unit = {},
-    isFollowing: Boolean = false
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier
@@ -65,40 +48,40 @@ fun UserPageScreen(
             .padding(paddingValues)
     ) {
         item {
-            when (userType) {
+            when (state.userType) {
                 UserType.MY_PAGE -> MyPageTopAppBar(
-                    spoonCount = spoonCount,
-                    onLogoClick = onLogoClick,
-                    onIconClick = onSettingClick,
+                    spoonCount = state.spoonCount,
+                    onLogoClick = events.onLogoClick,
+                    onIconClick = events.onSettingClick,
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
 
                 UserType.OTHER_PAGE -> BackAndMenuTopAppBar(
-                    onBackButtonClick = onBackButtonClick,
-                    onMenuButtonClick = onMenuButtonClick,
+                    onBackButtonClick = events.onBackButtonClick,
+                    onMenuButtonClick = events.onMenuButtonClick,
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
 
             ProfileHeaderSection(
-                imageUrl = userImageUrl,
-                reviewCount = reviewCount,
-                followerCount = followerCount,
-                followingCount = followingCount,
-                onFollowerClick = { onFollowClick(FollowType.FOLLOWER, profileId) },
-                onFollowingClick = { onFollowClick(FollowType.FOLLOWING, profileId) },
+                imageUrl = state.userImageUrl,
+                reviewCount = state.reviewCount,
+                followerCount = state.followerCount,
+                followingCount = state.followingCount,
+                onFollowerClick = { events.onFollowClick(FollowType.FOLLOWER, state.profileId) },
+                onFollowingClick = { events.onFollowClick(FollowType.FOLLOWING, state.profileId) },
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             ProfileIntroSection(
-                userType = userType,
-                region = region,
-                nickname = userName,
-                introduction = introduction,
-                onButtonClick = onMainButtonClick,
-                isFollowing = isFollowing,
+                userType = state.userType,
+                region = state.region,
+                nickname = state.userName,
+                introduction = state.introduction,
+                onButtonClick = events.onMainButtonClick,
+                isFollowing = state.isFollowing,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
 
@@ -116,25 +99,25 @@ fun UserPageScreen(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ReviewCounter(reviewCount = reviewCount)
+                ReviewCounter(reviewCount = state.reviewCount)
 
-                if (userType == UserType.OTHER_PAGE) {
+                if (state.userType == UserType.OTHER_PAGE) {
                     LocalCheckBox(
-                        isSelected = isCheckBoxSelected,
-                        onClick = onCheckBoxClick
+                        isSelected = state.isCheckBoxSelected,
+                        onClick = events.onCheckBoxClick
                     )
                 }
             }
         }
 
-        when (reviewCount) {
+        when (state.reviewCount) {
             0 -> {
                 item {
                     Spacer(modifier = Modifier.height(54.dp))
-                    when (userType) {
+                    when (state.userType) {
                         UserType.MY_PAGE -> {
                             MapEmptyBottomSheetContent(
-                                onClick = onEmptyClick,
+                                onClick = events.onEmptyClick,
                                 description = "아직 등록한 리뷰가 없어요\n나만의 찐맛집을 공유해 보세요!",
                                 buttonText = "등록하러 가기",
                                 buttonStyle = ButtonStyle.Primary
