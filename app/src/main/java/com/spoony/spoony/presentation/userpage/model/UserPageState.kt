@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.userpage.model
 
 import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.userpage.mypage.MyPageState
 
 data class UserPageState(
     val userType: UserType,
@@ -28,3 +29,18 @@ data class UserPageEvents(
     val onBackButtonClick: () -> Unit = {},
     val onMenuButtonClick: () -> Unit = {}
 )
+
+fun MyPageState.toUserPageState(userType: UserType = UserType.MY_PAGE): UserPageState {
+    return UserPageState(
+        userType = userType,
+        profileId = userProfile.profileId,
+        userImageUrl = userProfile.imageUrl,
+        reviewCount = userProfile.reviewCount,
+        followerCount = userProfile.followerCount,
+        followingCount = userProfile.followingCount,
+        region = userProfile.region,
+        userName = userProfile.nickname,
+        introduction = userProfile.introduction,
+        spoonCount = spoonCount
+    )
+}

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.presentation.userpage.model.UserPageState
-import com.spoony.spoony.presentation.userpage.model.UserType
+import com.spoony.spoony.presentation.userpage.model.toUserPageState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,18 +53,6 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun createUserPageState(): UserPageState {
-        val currentState = _state.value
-        return UserPageState(
-            userType = UserType.MY_PAGE,
-            profileId = currentState.userProfile.profileId,
-            userImageUrl = currentState.userProfile.imageUrl,
-            reviewCount = currentState.userProfile.reviewCount,
-            followerCount = currentState.userProfile.followerCount,
-            followingCount = currentState.userProfile.followingCount,
-            region = currentState.userProfile.region,
-            userName = currentState.userProfile.nickname,
-            introduction = currentState.userProfile.introduction,
-            spoonCount = currentState.spoonCount
-        )
+        return _state.value.toUserPageState()
     }
 }
