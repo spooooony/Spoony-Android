@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.presentation.userpage.model.UserPageState
-import com.spoony.spoony.presentation.userpage.model.toUserPageState
+import com.spoony.spoony.presentation.userpage.model.UserProfile
+import com.spoony.spoony.presentation.userpage.model.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +18,14 @@ class MyPageViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<MyPageState> = MutableStateFlow(MyPageState())
-    val state: StateFlow<MyPageState>
+    private val _state: MutableStateFlow<UserPageState> = MutableStateFlow(
+        UserPageState(
+            userType = UserType.MY_PAGE,
+            profile = UserProfile(),
+            spoonCount = 0
+        )
+    )
+    val state: StateFlow<UserPageState>
         get() = _state
 
     fun getUserProfile() {
@@ -33,7 +40,7 @@ class MyPageViewModel @Inject constructor(
                 followerCount = 150,
                 followingCount = 230
             )
-            _state.update { it.copy(userProfile = profile) }
+            _state.update { it.copy(profile = profile) }
         }
     }
 
@@ -44,9 +51,5 @@ class MyPageViewModel @Inject constructor(
                     _state.update { it.copy(spoonCount = count) }
                 }
         }
-    }
-
-    fun createUserPageState(): UserPageState {
-        return _state.value.toUserPageState()
     }
 }

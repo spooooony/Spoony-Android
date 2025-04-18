@@ -6,7 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.presentation.userpage.model.UserPageState
-import com.spoony.spoony.presentation.userpage.model.toUserPageState
+import com.spoony.spoony.presentation.userpage.model.UserProfile
+import com.spoony.spoony.presentation.userpage.model.UserType
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.OtherPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,11 +22,17 @@ class OtherPageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<OtherPageState> = MutableStateFlow(OtherPageState())
-    val state: StateFlow<OtherPageState>
-        get() = _state
-
     private val userInfo = savedStateHandle.toRoute<OtherPage>()
+
+    private val _state: MutableStateFlow<UserPageState> = MutableStateFlow(
+        UserPageState(
+            userType = UserType.OTHER_PAGE,
+            profile = UserProfile(),
+            isLocalReviewOnly = false
+        )
+    )
+    val state: StateFlow<UserPageState>
+        get() = _state
 
     fun getUserProfile() {
         viewModelScope.launch {
@@ -40,20 +47,21 @@ class OtherPageViewModel @Inject constructor(
                 followingCount = 20,
                 isFollowing = false
             )
-            _state.update { it.copy(userProfile = profile) }
+            _state.update { it.copy(profile = profile) }
         }
     }
 
     fun toggleFollow() {
         viewModelScope.launch {
             _state.update { state ->
+                val currentProfile = state.profile
                 state.copy(
-                    userProfile = state.userProfile.copy(
-                        isFollowing = !state.userProfile.isFollowing,
-                        followerCount = if (state.userProfile.isFollowing) {
-                            state.userProfile.followerCount - 1
+                    profile = currentProfile.copy(
+                        isFollowing = !currentProfile.isFollowing,
+                        followerCount = if (currentProfile.isFollowing) {
+                            currentProfile.followerCount - 1
                         } else {
-                            state.userProfile.followerCount + 1
+                            currentProfile.followerCount + 1
                         }
                     )
                 )
@@ -63,9 +71,5 @@ class OtherPageViewModel @Inject constructor(
 
     fun toggleLocalReviewOnly() {
         _state.update { it.copy(isLocalReviewOnly = !it.isLocalReviewOnly) }
-    }
-
-    fun createUserPageState(): UserPageState {
-        return _state.value.toUserPageState()
     }
 }

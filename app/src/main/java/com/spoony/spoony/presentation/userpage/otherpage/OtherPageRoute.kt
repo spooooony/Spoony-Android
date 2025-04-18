@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,6 +13,7 @@ import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.userpage.component.UserPageScreen
 import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
+import com.spoony.spoony.presentation.userpage.model.UserProfile
 import com.spoony.spoony.presentation.userpage.model.UserType
 
 @Composable
@@ -24,8 +24,7 @@ fun OtherPageRoute(
     navigateToReviewDetail: (Int) -> Unit,
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {
-
-    val viewModelState by viewModel.state.collectAsStateWithLifecycle()
+    val userPageState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
@@ -39,10 +38,6 @@ fun OtherPageRoute(
         onMenuButtonClick = { /* 드롭다운 */ },
         onCheckBoxClick = viewModel::toggleLocalReviewOnly
     )
-
-    val userPageState = remember(viewModelState) {
-        viewModel.createUserPageState()
-    }
 
     UserPageScreen(
         state = userPageState,
@@ -58,16 +53,16 @@ private fun OtherScreenEmptyReviewPreview() {
     SpoonyAndroidTheme {
         val previewState = UserPageState(
             userType = UserType.OTHER_PAGE,
-            profileId = 5,
-            userImageUrl = "",
-            reviewCount = 0,
-            followerCount = 10,
-            followingCount = 20,
-            region = "경기도 스푼",
-            userName = "게토 짱구루",
-            introduction = "문제아지만 세계최강",
-            isFollowing = false,
-            isCheckBoxSelected = false
+            profile = UserProfile(
+                profileId = 5,
+                nickname = "게토 짱구루",
+                region = "경기도 스푼",
+                introduction = "문제아지만 세계최강",
+                followerCount = 10,
+                followingCount = 20,
+                isFollowing = false
+            ),
+            isLocalReviewOnly = false
         )
 
         val previewEvents = UserPageEvents(

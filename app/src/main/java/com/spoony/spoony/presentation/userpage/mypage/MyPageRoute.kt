@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,6 +13,7 @@ import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.userpage.component.UserPageScreen
 import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
+import com.spoony.spoony.presentation.userpage.model.UserProfile
 import com.spoony.spoony.presentation.userpage.model.UserType
 
 @Composable
@@ -26,15 +26,11 @@ fun MyPageRoute(
     navigateToReviewDetail: (Int) -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
-    val viewModelState by viewModel.state.collectAsStateWithLifecycle()
+    val userPageState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
         viewModel.getSpoonCount()
-    }
-
-    val userPageState = remember(viewModelState) {
-        viewModel.createUserPageState()
     }
 
     val userPageEvents = UserPageEvents(
@@ -60,14 +56,14 @@ private fun MyPageScreenEmptyReviewPreview() {
     SpoonyAndroidTheme {
         val previewState = UserPageState(
             userType = UserType.MY_PAGE,
-            profileId = 4,
-            userImageUrl = "",
-            reviewCount = 0,
-            followerCount = 10,
-            followingCount = 20,
-            region = "서울 마포구 스푼",
-            userName = "고졸 사토루",
-            introduction = "두 사람은 문제아지만 최강.",
+            profile = UserProfile(
+                profileId = 4,
+                nickname = "고졸 사토루",
+                region = "서울 마포구 스푼",
+                introduction = "두 사람은 문제아지만 최강.",
+                followerCount = 10,
+                followingCount = 20
+            ),
             spoonCount = 99
         )
 
