@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,13 +32,11 @@ fun SplashRoute(
     val systemUiController = rememberSystemUiController()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    SideEffect {
+    LaunchedEffect(Unit) {
         systemUiController.setNavigationBarColor(
             color = main400
         )
-    }
 
-    LaunchedEffect(true) {
         lifecycleOwner.lifecycleScope.launch {
             delay(1000)
             navigateToSignIn()
