@@ -1,13 +1,13 @@
 package com.spoony.spoony.presentation.auth.signin
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,10 +22,11 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main100
-import com.spoony.spoony.presentation.auth.signin.component.KakaoButton
+import com.spoony.spoony.presentation.auth.signin.component.SocialLoginButton
 
 @Composable
 fun SignInRoute(
+    paddingValues: PaddingValues,
     navigateToMap: () -> Unit,
     navigateToTermsOfService: () -> Unit
 ) {
@@ -38,6 +39,7 @@ fun SignInRoute(
     }
 
     SignInScreen(
+        paddingValues = paddingValues,
         navigateToMap = navigateToMap,
         navigateToTermsOfService = navigateToTermsOfService
     )
@@ -45,46 +47,53 @@ fun SignInRoute(
 
 @Composable
 private fun SignInScreen(
+    paddingValues: PaddingValues,
     navigateToMap: () -> Unit,
     navigateToTermsOfService: () -> Unit
 ) {
-    Image(
-        painter = painterResource(R.drawable.img_login_background),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .fillMaxSize()
-    )
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxHeight()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(top = 144.dp, bottom = 36.dp)
-            .padding(horizontal = 20.dp)
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_spoony_text_logo),
-            contentDescription = null
-        )
-
-        Text(
-            text = "스푼에서 시작되는 찐맛의 여정",
-            style = SpoonyAndroidTheme.typography.body1sb,
-            color = SpoonyAndroidTheme.colors.main400,
+            painter = painterResource(R.drawable.img_login_background),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .padding(top = 10.dp)
+                .fillMaxSize()
         )
 
-        Spacer(
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .weight(1f)
-        )
+                .fillMaxHeight()
+                .padding(paddingValues)
+                .padding(top = 144.dp, bottom = 36.dp)
+                .padding(horizontal = 20.dp)
+        ) {
+            Image(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_spoony_text_logo),
+                contentDescription = null
+            )
 
-        KakaoButton(
-            onClick = navigateToTermsOfService
-        )
+            Text(
+                text = "스푼에서 시작되는 찐맛의 여정",
+                style = SpoonyAndroidTheme.typography.body1sb,
+                color = SpoonyAndroidTheme.colors.main400,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .weight(1f)
+            )
+
+            SocialLoginButton(
+                title = "카카오로 계속하기",
+                icon = ImageVector.vectorResource(R.drawable.ic_kakao_logo_18),
+                backgroundColor = SpoonyAndroidTheme.colors.kakaoYellow,
+                onClick = navigateToTermsOfService
+            )
+        }
     }
 }

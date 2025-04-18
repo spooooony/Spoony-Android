@@ -69,6 +69,7 @@ private fun TermsOfServiceScreen(
             AgreeTermsButton(
                 title = title,
                 onCheckBoxClick = {},
+                isRequired = true,
                 isUnderlined = isUnderlined,
                 modifier = Modifier
                     .padding(bottom = 16.dp)

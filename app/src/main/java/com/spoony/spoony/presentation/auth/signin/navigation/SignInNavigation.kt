@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.auth.signin.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -18,11 +19,13 @@ fun NavController.navigateToSignIn(
 }
 
 fun NavGraphBuilder.signInNavGraph(
+    paddingValues: PaddingValues,
     navigateToMap: () -> Unit,
     navigateToTermsOfService: () -> Unit
 ) {
     composable<SignIn> {
         SignInRoute(
+            paddingValues = paddingValues,
             navigateToMap = navigateToMap,
             navigateToTermsOfService = navigateToTermsOfService
         )

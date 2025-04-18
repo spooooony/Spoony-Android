@@ -107,6 +107,7 @@ fun MainScreen(
                 )
 
                 signInNavGraph(
+                    paddingValues = paddingValues,
                     navigateToMap = navigator::navigateToMap,
                     navigateToTermsOfService = navigator::navigateToTermsOfService
                 )

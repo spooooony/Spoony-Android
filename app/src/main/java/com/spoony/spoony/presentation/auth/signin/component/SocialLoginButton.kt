@@ -10,16 +10,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
-fun KakaoButton(
+fun SocialLoginButton(
+    title: String,
+    icon: ImageVector,
+    backgroundColor: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -28,18 +30,18 @@ fun KakaoButton(
         modifier = modifier
             .noRippleClickable(onClick = onClick)
             .background(
-                color = SpoonyAndroidTheme.colors.kakaoYellow,
+                color = backgroundColor,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(14.dp)
     ) {
         Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_kakao_logo_18),
+            imageVector = icon,
             contentDescription = null
         )
 
         Text(
-            text = "카카오로 계속하기",
+            text = title,
             style = SpoonyAndroidTheme.typography.body1sb,
             color = SpoonyAndroidTheme.colors.gray900,
             textAlign = TextAlign.Center,

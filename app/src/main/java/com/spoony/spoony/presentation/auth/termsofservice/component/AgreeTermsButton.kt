@@ -33,9 +33,9 @@ fun AgreeTermsButton(
     onCheckBoxClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     onTitleClick: () -> Unit = {},
-    isRequired: Boolean = true,
+    isRequired: Boolean = false,
     isChecked: Boolean = false,
-    isUnderlined: Boolean = true
+    isUnderlined: Boolean = false
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
