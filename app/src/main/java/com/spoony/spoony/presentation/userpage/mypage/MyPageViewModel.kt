@@ -21,10 +21,6 @@ class MyPageViewModel @Inject constructor(
     val state: StateFlow<MyPageState>
         get() = _state
 
-    init {
-        getUserProfile()
-    }
-
     fun getUserProfile() {
         viewModelScope.launch {
             val profile = UserProfile(
@@ -40,8 +36,6 @@ class MyPageViewModel @Inject constructor(
             _state.update { it.copy(userProfile = profile) }
         }
     }
-
-    fun getUserReviews() {}
 
     fun getSpoonCount() {
         viewModelScope.launch {

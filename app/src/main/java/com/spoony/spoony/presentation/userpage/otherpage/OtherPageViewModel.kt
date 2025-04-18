@@ -27,10 +27,6 @@ class OtherPageViewModel @Inject constructor(
 
     private val userInfo = savedStateHandle.toRoute<OtherPage>()
 
-    init {
-        getUserProfile()
-    }
-
     fun getUserProfile() {
         viewModelScope.launch {
             val profile = UserProfile(
@@ -50,14 +46,14 @@ class OtherPageViewModel @Inject constructor(
 
     fun toggleFollow() {
         viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    userProfile = it.userProfile.copy(
-                        isFollowing = !it.userProfile.isFollowing,
-                        followerCount = if (it.userProfile.isFollowing) {
-                            it.userProfile.followerCount - 1
+            _state.update { state ->
+                state.copy(
+                    userProfile = state.userProfile.copy(
+                        isFollowing = !state.userProfile.isFollowing,
+                        followerCount = if (state.userProfile.isFollowing) {
+                            state.userProfile.followerCount - 1
                         } else {
-                            it.userProfile.followerCount + 1
+                            state.userProfile.followerCount + 1
                         }
                     )
                 )

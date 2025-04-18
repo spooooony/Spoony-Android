@@ -30,7 +30,6 @@ fun MyPageRoute(
 
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
-        viewModel.getUserReviews()
         viewModel.getSpoonCount()
     }
 

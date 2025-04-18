@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.userpage.otherpage
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,9 +24,11 @@ fun OtherPageRoute(
     navigateToReviewDetail: (Int) -> Unit,
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {
+
     val viewModelState by viewModel.state.collectAsStateWithLifecycle()
-    val userPageState = remember(viewModelState) {
-        viewModel.createUserPageState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserProfile()
     }
 
     val userPageEvents = UserPageEvents(
@@ -36,6 +39,10 @@ fun OtherPageRoute(
         onMenuButtonClick = { /* 드롭다운 */ },
         onCheckBoxClick = viewModel::toggleLocalReviewOnly
     )
+
+    val userPageState = remember(viewModelState) {
+        viewModel.createUserPageState()
+    }
 
     UserPageScreen(
         state = userPageState,
