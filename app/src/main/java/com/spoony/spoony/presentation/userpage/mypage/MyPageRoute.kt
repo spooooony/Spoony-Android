@@ -37,7 +37,7 @@ fun MyPageRoute(
     val userPageState = remember(viewModelState) {
         viewModel.createUserPageState()
     }
-    
+
     val userPageEvents = UserPageEvents(
         onFollowClick = navigateToFollow,
         onReviewClick = navigateToReviewDetail,
@@ -71,7 +71,7 @@ private fun MyPageScreenEmptyReviewPreview() {
             introduction = "두 사람은 문제아지만 최강.",
             spoonCount = 99
         )
-        
+
         val previewEvents = UserPageEvents(
             onFollowClick = { _, _ -> },
             onReviewClick = { },
@@ -80,7 +80,7 @@ private fun MyPageScreenEmptyReviewPreview() {
             onSettingClick = { },
             onLogoClick = { }
         )
-        
+
         UserPageScreen(
             state = previewState,
             events = previewEvents,

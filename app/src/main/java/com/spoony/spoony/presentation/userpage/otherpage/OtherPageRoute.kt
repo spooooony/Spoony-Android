@@ -27,7 +27,7 @@ fun OtherPageRoute(
     val userPageState = remember(viewModelState) {
         viewModel.createUserPageState()
     }
-    
+
     val userPageEvents = UserPageEvents(
         onFollowClick = navigateToFollow,
         onReviewClick = navigateToReviewDetail,
@@ -62,7 +62,7 @@ private fun OtherScreenEmptyReviewPreview() {
             isFollowing = false,
             isCheckBoxSelected = false
         )
-        
+
         val previewEvents = UserPageEvents(
             onFollowClick = { _, _ -> },
             onReviewClick = { },
@@ -71,7 +71,7 @@ private fun OtherScreenEmptyReviewPreview() {
             onMenuButtonClick = { },
             onCheckBoxClick = { }
         )
-        
+
         UserPageScreen(
             state = previewState,
             events = previewEvents,

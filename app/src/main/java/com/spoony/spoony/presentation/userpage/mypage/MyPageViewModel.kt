@@ -21,7 +21,7 @@ class MyPageViewModel @Inject constructor(
     val state: StateFlow<MyPageState>
         get() = _state
 
-    init{
+    init {
         getUserProfile()
     }
 
