@@ -7,7 +7,7 @@ import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.explore.navigation.Explore
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
-import com.spoony.spoony.presentation.myPage.navigation.MyPage
+import com.spoony.spoony.presentation.mypage.navigation.MyPage
 import com.spoony.spoony.presentation.register.navigation.Register
 
 enum class MainTab(

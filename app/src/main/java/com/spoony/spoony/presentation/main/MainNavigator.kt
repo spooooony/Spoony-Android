@@ -12,10 +12,12 @@ import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.auth.signin.navigation.navigateToSignIn
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.navigateToTermsOfService
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
+import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
-import com.spoony.spoony.presentation.myPage.navigation.navigateToMyPage
+import com.spoony.spoony.presentation.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
@@ -111,13 +113,15 @@ class MainNavigator(
             navOptions {
                 popUpTo(NAVIGATION_ROOT) {
                     inclusive = true
-                    saveState = true
                 }
-                restoreState = true
                 launchSingleTop = true
             }
     ) {
         navController.navigateToRegister(navOptions)
+    }
+
+    fun navigateToFollow(followType: FollowType, userId: Int) {
+        navController.navigateToFollow(followType, userId)
     }
 
     fun navigateToMapSearch(navOptions: NavOptions? = null) {

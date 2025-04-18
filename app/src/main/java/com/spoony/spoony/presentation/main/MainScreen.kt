@@ -24,10 +24,11 @@ import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.presentation.auth.signin.navigation.signInNavGraph
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.termsOfServiceNavGraph
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
+import com.spoony.spoony.presentation.follow.navigation.followNavGraph
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
-import com.spoony.spoony.presentation.myPage.navigation.myPageNavGraph
+import com.spoony.spoony.presentation.mypage.navigation.myPageNavGraph
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
@@ -141,7 +142,18 @@ fun MainScreen(
                 )
 
                 myPageNavGraph(
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
+                    navigateToSettings = { },
+                    navigateToFollow = navigator::navigateToFollow,
+                    navigateToProfileEdit = { },
+                    navigateToRegister = navigator::navigateToRegister,
+                    navigateToReviewDetail = { }
+                )
+
+                followNavGraph(
+                    paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
+                    navigateToUserProfile = { }
                 )
 
                 placeDetailNavGraph(
