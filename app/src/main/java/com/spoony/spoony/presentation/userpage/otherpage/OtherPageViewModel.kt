@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.presentation.userpage.model.UserPageState
-import com.spoony.spoony.presentation.userpage.model.UserType
+import com.spoony.spoony.presentation.userpage.model.toUserPageState
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.OtherPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -70,19 +70,6 @@ class OtherPageViewModel @Inject constructor(
     }
 
     fun createUserPageState(): UserPageState {
-        val currentState = _state.value
-        return UserPageState(
-            userType = UserType.OTHER_PAGE,
-            profileId = currentState.userProfile.profileId,
-            userImageUrl = currentState.userProfile.imageUrl,
-            reviewCount = currentState.userProfile.reviewCount,
-            followerCount = currentState.userProfile.followerCount,
-            followingCount = currentState.userProfile.followingCount,
-            region = currentState.userProfile.region,
-            userName = currentState.userProfile.nickname,
-            introduction = currentState.userProfile.introduction,
-            isFollowing = currentState.userProfile.isFollowing,
-            isCheckBoxSelected = currentState.isLocalReviewOnly
-        )
+        return _state.value.toUserPageState()
     }
 }

@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.userpage.model
 
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.userpage.mypage.MyPageState
+import com.spoony.spoony.presentation.userpage.otherpage.OtherPageState
 
 data class UserPageState(
     val userType: UserType,
@@ -42,5 +43,21 @@ fun MyPageState.toUserPageState(userType: UserType = UserType.MY_PAGE): UserPage
         userName = userProfile.nickname,
         introduction = userProfile.introduction,
         spoonCount = spoonCount
+    )
+}
+
+fun OtherPageState.toUserPageState(userType: UserType = UserType.OTHER_PAGE): UserPageState {
+    return UserPageState(
+        userType = userType,
+        profileId = userProfile.profileId,
+        userImageUrl = userProfile.imageUrl,
+        reviewCount = userProfile.reviewCount,
+        followerCount = userProfile.followerCount,
+        followingCount = userProfile.followingCount,
+        region = userProfile.region,
+        userName = userProfile.nickname,
+        introduction = userProfile.introduction,
+        isFollowing = userProfile.isFollowing,
+        isCheckBoxSelected = isLocalReviewOnly
     )
 }
