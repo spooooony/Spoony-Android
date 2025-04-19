@@ -1,0 +1,145 @@
+package com.spoony.spoony.core.designsystem.component.bottomsheet
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
+import com.spoony.spoony.core.designsystem.component.datepicker.SpoonyDatePicker
+import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.theme.main400
+import com.spoony.spoony.core.designsystem.theme.white
+import com.spoony.spoony.core.designsystem.type.ButtonSize
+import com.spoony.spoony.core.designsystem.type.ButtonStyle
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SpoonyDatePickerBottomSheet(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit = {},
+    onDateSelected: (year: Int, month: Int, day: Int) -> Unit = { _, _, _ -> },
+    initialYear: Int = 2000,
+    initialMonth: Int = 1,
+    initialDay: Int = 1
+) {
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    var selectedYear by remember { mutableStateOf(initialYear) }
+    var selectedMonth by remember { mutableStateOf(initialMonth) }
+    var selectedDay by remember { mutableStateOf(initialDay) }
+
+    SpoonyBasicBottomSheet(
+        onDismiss = onDismiss,
+        sheetState = sheetState,
+        modifier = modifier,
+        dragHandle = {
+            TextDragHandle(
+                onClick = onDismiss,
+                text = "생년월일"
+            )
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            Spacer(modifier = Modifier.height(12.dp))
+            SpoonyDatePicker(
+                initialYear = initialYear,
+                initialMonth = initialMonth,
+                initialDay = initialDay,
+                onDateChange = { year, month, day ->
+                    selectedYear = year
+                    selectedMonth = month
+                    selectedDay = day
+                }
+            )
+            SpoonyButton(
+                text = "완료",
+                style = ButtonStyle.Secondary,
+                size = ButtonSize.Xlarge,
+                onClick = {
+                    onDateSelected(selectedYear, selectedMonth, selectedDay)
+                    onDismiss()
+                },
+                enabled = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 12.dp,
+                        bottom = 20.dp,
+                        start = 12.dp,
+                        end = 12.dp
+                    )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SpoonyDatePickerBottomSheetPreview() {
+    SpoonyAndroidTheme {
+        var isBottomSheetVisible by remember { mutableStateOf(false) }
+        var year by remember { mutableStateOf(2000) }
+        var month by remember { mutableStateOf(1) }
+        var day by remember { mutableStateOf(1) }
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "$year. $month. $day",
+                modifier = Modifier.padding(16.dp)
+            )
+
+            Surface(
+                modifier = Modifier,
+                color = main400,
+                contentColor = white,
+                onClick = { isBottomSheetVisible = true }
+            ) {
+                Text(
+                    text = "테스트 버튼",
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            if (isBottomSheetVisible) {
+                SpoonyDatePickerBottomSheet(
+                    onDismiss = { isBottomSheetVisible = false },
+                    initialYear = year,
+                    initialMonth = month,
+                    initialDay = day,
+                    onDateSelected = { selectedYear, selectedMonth, selectedDay ->
+                        year = selectedYear
+                        month = selectedMonth
+                        day = selectedDay
+                    }
+                )
+            }
+        }
+    }
+}
