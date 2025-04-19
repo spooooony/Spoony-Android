@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.userpage.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -35,14 +36,13 @@ fun LocalCheckBox(
             imageVector = ImageVector.vectorResource(id = checkBoxIcon),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(26.dp)
         )
 
         Text(
             text = "로컬리뷰",
             style = SpoonyAndroidTheme.typography.body2b,
             color = main400
-
         )
     }
 }

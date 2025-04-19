@@ -144,7 +144,7 @@ private fun FollowScreen(
 
                 UserListScreen(
                     users = users,
-                    onUserClick = { onUserClick(users[it].userId) },
+                    onUserClick = onUserClick,
                     onButtonClick = onFollowButtonClick
                 )
             }
