@@ -120,6 +120,8 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.pebble)
+
+    implementation(libs.accompanist.systemuicontroller)
 }
 
 ktlint {
