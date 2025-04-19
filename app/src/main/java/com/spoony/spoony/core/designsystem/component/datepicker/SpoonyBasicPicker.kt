@@ -37,6 +37,7 @@ fun SpoonyBasicPicker(
     items: List<String>,
     initialSelectedIndex: Int,
     onSelectedItemChanged: (String) -> Unit,
+    textAlign: TextAlign = TextAlign.Center,
     modifier: Modifier = Modifier,
     visibleItemsCount: Int = 5
 ) {
@@ -102,7 +103,7 @@ fun SpoonyBasicPicker(
                     text = item,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
+                    textAlign = textAlign,
                     style = SpoonyAndroidTheme.typography.body2m,
                     color = if (isSelected) {
                         SpoonyAndroidTheme.colors.gray900

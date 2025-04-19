@@ -52,7 +52,7 @@ fun SpoonyDatePickerBottomSheet(
         sheetState = sheetState,
         modifier = modifier,
         dragHandle = {
-            TextDragHandle(
+            SpoonyTitleDragHandle(
                 onClick = onDismiss,
                 text = "생년월일"
             )

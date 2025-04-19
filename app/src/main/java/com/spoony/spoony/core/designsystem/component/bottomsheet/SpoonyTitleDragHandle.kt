@@ -17,7 +17,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
-fun TextDragHandle(
+fun SpoonyTitleDragHandle(
     onClick: () -> Unit,
     text: String = "지역 선택"
 ) {

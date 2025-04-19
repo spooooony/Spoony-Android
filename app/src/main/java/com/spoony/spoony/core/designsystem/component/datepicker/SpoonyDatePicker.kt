@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import java.util.Calendar
@@ -36,13 +37,13 @@ fun SpoonyDatePicker(
 
     val maxYear = remember { currentYear - 14 }
 
-    val years = remember { (1900..maxYear).map { "$it 년" } }
+    val years = remember { (1900..maxYear).map { "$it  년" } }
 
     val months = remember(selectedYear, maxYear, currentMonth) {
         if (selectedYear < maxYear) {
-            (1..12).map { "$it 월" }
+            (1..12).map { "$it  월" }
         } else {
-            (1..currentMonth).map { "$it 월" }
+            (1..currentMonth).map { "$it  월" }
         }
     }
 
@@ -55,9 +56,9 @@ fun SpoonyDatePicker(
     val days by remember(selectedYear, selectedMonth, maxDaysInMonth, maxYear, currentMonth, currentDay) {
         derivedStateOf {
             if (selectedYear < maxYear || (selectedYear == maxYear && selectedMonth < currentMonth)) {
-                (1..maxDaysInMonth).map { "$it 일" }
+                (1..maxDaysInMonth).map { "$it  일" }
             } else {
-                (1..minOf(currentDay, maxDaysInMonth)).map { "$it 일" }
+                (1..minOf(currentDay, maxDaysInMonth)).map { "$it  일" }
             }
         }
     }
@@ -104,6 +105,7 @@ fun SpoonyDatePicker(
                         selectedDay = currentDay
                     }
                 },
+                textAlign = TextAlign.Right,
                 modifier = Modifier.weight(1f)
             )
 
@@ -128,6 +130,7 @@ fun SpoonyDatePicker(
                     val day = selectedItem.split(" ")[0].toInt()
                     selectedDay = day
                 },
+                textAlign = TextAlign.Left,
                 modifier = Modifier.weight(1f)
             )
         }

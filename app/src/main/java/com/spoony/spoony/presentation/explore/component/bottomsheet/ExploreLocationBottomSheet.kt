@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicBottomSheet
-import com.spoony.spoony.core.designsystem.component.bottomsheet.TextDragHandle
+import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyTitleDragHandle
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
@@ -96,7 +96,7 @@ fun ExploreLocationBottomSheet(
     SpoonyBasicBottomSheet(
         onDismiss = onDismiss,
         sheetState = sheetState,
-        dragHandle = { TextDragHandle(onClick = onDismiss) }
+        dragHandle = { SpoonyTitleDragHandle(onClick = onDismiss) }
     ) {
         Column {
             Row(
