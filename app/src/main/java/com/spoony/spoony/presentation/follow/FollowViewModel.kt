@@ -60,10 +60,10 @@ class FollowViewModel @Inject constructor(
     private fun generateMockFollowers(userId: Int): ImmutableList<UserItemUiState> {
         return (1..50).map { index ->
             UserItemUiState(
-                userId = index,
-                userName = getUserNameByIndex(index),
+                userId = index + userId,
+                userName = getUserNameByIndex(index + userId),
                 imageUrl = "https://picsum.photos/${200 + index}",
-                region = getRegionByIndex(index),
+                region = getRegionByIndex(index + userId),
                 isFollowing = index % 2 == 0
             )
         }.toImmutableList()
@@ -102,15 +102,15 @@ class FollowViewModel @Inject constructor(
     }
 
     private fun generateMockFollowings(userId: Int): ImmutableList<UserItemUiState> {
-        return listOf(
+        return (1..50).map { index ->
             UserItemUiState(
-                userId = 6,
-                userName = "맛집헌터",
-                imageUrl = "https://picsum.photos/205",
-                region = "경기도",
-                isFollowing = true
+                userId = index + userId,
+                userName = getUserNameByIndex(index + userId),
+                imageUrl = "https://picsum.photos/${200 + index}",
+                region = getRegionByIndex(index + userId),
+                isFollowing = index % 2 == 0
             )
-        ).toImmutableList()
+        }.toImmutableList()
     }
 
     fun refreshFollowers() {

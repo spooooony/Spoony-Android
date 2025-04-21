@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.mypage.component
+package com.spoony.spoony.presentation.userpage.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,15 +46,15 @@ fun ProfileHeaderSection(
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.fillMaxWidth()
         ) {
-            NameAndCount(title = "리뷰", count = reviewCount.toString())
+            NameAndCount(title = "리뷰", count = "$reviewCount")
             NameAndCount(
                 title = "팔로워",
-                count = followerCount.toString(),
+                count = "$followerCount",
                 onClick = onFollowerClick
             )
             NameAndCount(
                 title = "팔로잉",
-                count = followingCount.toString(),
+                count = "$followingCount",
                 onClick = onFollowingClick
             )
         }

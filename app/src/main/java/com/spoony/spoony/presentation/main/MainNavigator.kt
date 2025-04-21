@@ -17,11 +17,12 @@ import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
-import com.spoony.spoony.presentation.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.splash.navigation.Splash
+import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
+import com.spoony.spoony.presentation.userpage.otherpage.navigation.navigateToOtherPage
 
 const val NAVIGATION_ROOT = 0
 
@@ -118,6 +119,12 @@ class MainNavigator(
             }
     ) {
         navController.navigateToRegister(navOptions)
+    }
+
+    fun navigateToOtherPage(
+        userId: Int
+    ) {
+        navController.navigateToOtherPage(userId = userId)
     }
 
     fun navigateToFollow(followType: FollowType, userId: Int) {

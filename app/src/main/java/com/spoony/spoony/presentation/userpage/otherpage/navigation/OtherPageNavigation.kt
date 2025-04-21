@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.follow.navigation
+package com.spoony.spoony.presentation.userpage.otherpage.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -7,30 +7,27 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import com.spoony.spoony.core.navigation.Route
-import com.spoony.spoony.presentation.follow.FollowRoute
 import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.userpage.otherpage.OtherPageRoute
 import kotlinx.serialization.Serializable
 
 private const val LONG_ANIMATION_DURATION = 300
 
-fun NavController.navigateToFollow(
-    followType: FollowType,
-    userId: Int,
-    navOptions: NavOptions = navOptions {
-        launchSingleTop = true
-    }
+fun NavController.navigateToOtherPage(
+    navOptions: NavOptions? = null,
+    userId: Int
 ) {
-    navigate(Follow(followType, userId), navOptions)
+    navigate(OtherPage(userId), navOptions)
 }
 
-fun NavGraphBuilder.followNavGraph(
+fun NavGraphBuilder.otherPageNavGraph(
     paddingValues: PaddingValues,
-    navigateToUserProfile: (Int) -> Unit,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    navigateToFollow: (FollowType, Int) -> Unit,
+    navigateToReviewDetail: (Int) -> Unit
 ) {
-    composable<Follow>(
+    composable<OtherPage>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
@@ -38,16 +35,16 @@ fun NavGraphBuilder.followNavGraph(
             )
         }
     ) {
-        FollowRoute(
+        OtherPageRoute(
             paddingValues = paddingValues,
-            navigateToUserProfile = navigateToUserProfile,
-            onBackButtonClick = navigateUp
+            navigateUp = navigateUp,
+            navigateToFollow = navigateToFollow,
+            navigateToReviewDetail = navigateToReviewDetail
         )
     }
 }
 
 @Serializable
-data class Follow(
-    val followType: FollowType,
+data class OtherPage(
     val userId: Int
 ) : Route

@@ -28,11 +28,12 @@ import com.spoony.spoony.presentation.follow.navigation.followNavGraph
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
-import com.spoony.spoony.presentation.mypage.navigation.myPageNavGraph
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
 import com.spoony.spoony.presentation.splash.navigation.splashNavGraph
+import com.spoony.spoony.presentation.userpage.mypage.navigation.myPageNavGraph
+import com.spoony.spoony.presentation.userpage.otherpage.navigation.otherPageNavGraph
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -150,10 +151,17 @@ fun MainScreen(
                     navigateToReviewDetail = { }
                 )
 
+                otherPageNavGraph(
+                    paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
+                    navigateToFollow = navigator::navigateToFollow,
+                    navigateToReviewDetail = { }
+                )
+
                 followNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToUserProfile = { }
+                    navigateToUserProfile = navigator::navigateToOtherPage
                 )
 
                 placeDetailNavGraph(
