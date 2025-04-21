@@ -9,6 +9,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.spoony.spoony.presentation.auth.signin.navigation.navigateToSignIn
+import com.spoony.spoony.presentation.auth.termsofservice.navigation.navigateToTermsOfService
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
@@ -20,6 +22,7 @@ import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.navigateToOtherPage
+import com.spoony.spoony.presentation.splash.navigation.Splash
 
 const val NAVIGATION_ROOT = 0
 
@@ -30,7 +33,7 @@ class MainNavigator(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Map()
+    val startDestination = Splash
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
@@ -60,6 +63,30 @@ class MainNavigator(
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true
+    }
+
+    fun navigateToSignIn(
+        navOptions: NavOptions? = navOptions {
+            popUpTo(NAVIGATION_ROOT) {
+                inclusive = true
+            }
+        }
+    ) {
+        navController.navigateToSignIn(navOptions = navOptions)
+    }
+
+    fun navigateToTermsOfService(navOptions: NavOptions? = null) {
+        navController.navigateToTermsOfService(navOptions = navOptions)
+    }
+
+    fun navigateToMap(
+        navOptions: NavOptions? = navOptions {
+            popUpTo(NAVIGATION_ROOT) {
+                inclusive = true
+            }
+        }
+    ) {
+        navController.navigateToMap(navOptions = navOptions)
     }
 
     fun navigateToReport(

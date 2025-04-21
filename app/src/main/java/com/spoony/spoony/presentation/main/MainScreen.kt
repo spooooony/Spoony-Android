@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -15,10 +16,13 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
+import com.spoony.spoony.presentation.auth.signin.navigation.signInNavGraph
+import com.spoony.spoony.presentation.auth.termsofservice.navigation.termsOfServiceNavGraph
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.follow.navigation.followNavGraph
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
@@ -29,6 +33,7 @@ import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
 import com.spoony.spoony.presentation.userpage.mypage.navigation.myPageNavGraph
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.otherPageNavGraph
+import com.spoony.spoony.presentation.splash.navigation.splashNavGraph
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -77,7 +82,9 @@ fun MainScreen(
                     currentTab = navigator.currentTab,
                     onTabSelected = navigator::navigate
                 )
-            }
+            },
+            modifier = Modifier
+                .fillMaxSize()
         ) { paddingValues ->
             NavHost(
                 enterTransition = {
@@ -95,6 +102,23 @@ fun MainScreen(
                 navController = navigator.navController,
                 startDestination = navigator.startDestination
             ) {
+                splashNavGraph(
+                    navigateToMap = navigator::navigateToMap,
+                    navigateToSignIn = navigator::navigateToSignIn,
+                    paddingValues = paddingValues
+                )
+
+                signInNavGraph(
+                    paddingValues = paddingValues,
+                    navigateToMap = navigator::navigateToMap,
+                    navigateToTermsOfService = navigator::navigateToTermsOfService
+                )
+
+                termsOfServiceNavGraph(
+                    paddingValues = paddingValues,
+                    navigateToMap = navigator::navigateToMap
+                )
+
                 mapNavGraph(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = {
