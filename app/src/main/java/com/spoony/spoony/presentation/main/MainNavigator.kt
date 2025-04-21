@@ -20,9 +20,9 @@ import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSea
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
+import com.spoony.spoony.presentation.splash.navigation.Splash
 import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.navigateToOtherPage
-import com.spoony.spoony.presentation.splash.navigation.Splash
 
 const val NAVIGATION_ROOT = 0
 
