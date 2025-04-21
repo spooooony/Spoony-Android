@@ -57,7 +57,7 @@ fun SpoonyDatePicker(
 
     val days by remember(selectedYear, selectedMonth, CURRENT_MONTH, CURRENT_DAY) {
         derivedStateOf {
-            val daysInMonth = getDaysInMonthList(selectedYear, selectedMonth)
+            val daysInMonth = daysInMonthList(selectedYear, selectedMonth)
 
             if (selectedYear < MAX_YEAR || (selectedYear == MAX_YEAR && selectedMonth < CURRENT_MONTH)) {
                 daysInMonth
@@ -80,7 +80,7 @@ fun SpoonyDatePicker(
     }
 
     LaunchedEffect(selectedYear, selectedMonth) {
-        val daysInMonth = getDaysInMonthList(selectedYear, selectedMonth)
+        val daysInMonth = daysInMonthList(selectedYear, selectedMonth)
         if (selectedDay > daysInMonth.size) {
             selectedDay = daysInMonth.size
         }
@@ -142,24 +142,20 @@ fun SpoonyDatePicker(
     }
 }
 
-private fun getDaysInMonthList(year: Int, month: Int): List<String> =
-    when (month) {
-        2 -> if (isLeapYear(year)) DAYS_29 else DAYS_28
-        4, 6, 9, 11 -> DAYS_30
-        else -> DAYS_31
-    }
+private fun daysInMonthList(year: Int, month: Int): List<String> = when (month) {
+    2 -> if (isLeapYear(year)) DAYS_29 else DAYS_28
+    4, 6, 9, 11 -> DAYS_30
+    else -> DAYS_31
+}
 
-private fun isLeapYear(year: Int): Boolean =
-    year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+private fun isLeapYear(year: Int): Boolean = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 
-private fun isValidDate(year: Int, month: Int, day: Int): Boolean {
-    return when {
-        year < MAX_YEAR -> true
-        year > MAX_YEAR -> false
-        month < CURRENT_MONTH -> true
-        month > CURRENT_MONTH -> false
-        else -> day <= CURRENT_DAY
-    }
+private fun isValidDate(year: Int, month: Int, day: Int): Boolean = when {
+    year < MAX_YEAR -> true
+    year > MAX_YEAR -> false
+    month < CURRENT_MONTH -> true
+    month > CURRENT_MONTH -> false
+    else -> day <= CURRENT_DAY
 }
 
 @Preview
