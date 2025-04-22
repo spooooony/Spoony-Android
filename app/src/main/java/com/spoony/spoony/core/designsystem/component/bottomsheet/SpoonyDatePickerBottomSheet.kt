@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,9 +44,9 @@ fun SpoonyDatePickerBottomSheet(
         skipPartiallyExpanded = true
     )
 
-    var selectedYear by remember { mutableStateOf(initialYear) }
-    var selectedMonth by remember { mutableStateOf(initialMonth) }
-    var selectedDay by remember { mutableStateOf(initialDay) }
+    var selectedYear by remember { mutableIntStateOf(initialYear) }
+    var selectedMonth by remember { mutableIntStateOf(initialMonth) }
+    var selectedDay by remember { mutableIntStateOf(initialDay) }
 
     SpoonyBasicBottomSheet(
         onDismiss = onDismiss,
@@ -101,9 +102,9 @@ fun SpoonyDatePickerBottomSheet(
 private fun SpoonyDatePickerBottomSheetPreview() {
     SpoonyAndroidTheme {
         var isBottomSheetVisible by remember { mutableStateOf(false) }
-        var year by remember { mutableStateOf(2000) }
-        var month by remember { mutableStateOf(1) }
-        var day by remember { mutableStateOf(1) }
+        var year by remember { mutableIntStateOf(2000) }
+        var month by remember { mutableIntStateOf(1) }
+        var day by remember { mutableIntStateOf(1) }
 
         Column(
             modifier = Modifier.fillMaxSize(),

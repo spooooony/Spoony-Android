@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,8 +46,8 @@ fun SpoonyBasicPicker(
     )
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
-    val itemHeightPixels = remember { mutableStateOf(0) }
-    val itemHeightDp = with(LocalDensity.current) { itemHeightPixels.value.toDp() }
+    val itemHeightPixels = remember { mutableIntStateOf(0) }
+    val itemHeightDp = with(LocalDensity.current) { itemHeightPixels.intValue.toDp() }
 
     val visibleItemsMiddle = visibleItemsCount / 2
 
@@ -111,7 +111,7 @@ fun SpoonyBasicPicker(
                         SpoonyAndroidTheme.colors.gray300
                     },
                     modifier = Modifier
-                        .onSizeChanged { size -> itemHeightPixels.value = size.height }
+                        .onSizeChanged { size -> itemHeightPixels.intValue = size.height }
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
                 )
