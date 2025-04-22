@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.designsystem.theme.black
 import com.spoony.spoony.core.designsystem.theme.gray200
 import com.spoony.spoony.core.util.extension.fadingEdge
 
@@ -81,7 +82,7 @@ fun SpoonyBasicPicker(
     val fadingEdgeGradient = remember {
         Brush.verticalGradient(
             0f to gray200,
-            0.5f to Color.Black,
+            0.5f to black,
             1f to gray200
         )
     }
