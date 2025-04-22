@@ -29,13 +29,16 @@ import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpoonyDatePickerBottomSheet(
+    onDismiss: () -> Unit,
+    onDateSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit = {},
-    onDateSelected: (year: Int, month: Int, day: Int) -> Unit = { _, _, _ -> },
     initialYear: Int = 2000,
     initialMonth: Int = 1,
     initialDay: Int = 1
@@ -43,7 +46,7 @@ fun SpoonyDatePickerBottomSheet(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
     var selectedYear by remember { mutableIntStateOf(initialYear) }
     var selectedMonth by remember { mutableIntStateOf(initialMonth) }
     var selectedDay by remember { mutableIntStateOf(initialDay) }
@@ -80,7 +83,12 @@ fun SpoonyDatePickerBottomSheet(
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
                 onClick = {
-                    onDateSelected(selectedYear, selectedMonth, selectedDay)
+                    val calendar = Calendar.getInstance().apply {
+                        set(selectedYear, selectedMonth - 1, selectedDay)
+                    }
+                    val formattedDate = formatter.format(calendar.time)
+
+                    onDateSelected(formattedDate)
                     onDismiss()
                 },
                 enabled = true,
@@ -102,9 +110,7 @@ fun SpoonyDatePickerBottomSheet(
 private fun SpoonyDatePickerBottomSheetPreview() {
     SpoonyAndroidTheme {
         var isBottomSheetVisible by remember { mutableStateOf(false) }
-        var year by remember { mutableIntStateOf(2000) }
-        var month by remember { mutableIntStateOf(1) }
-        var day by remember { mutableIntStateOf(1) }
+        var selectedDate by remember { mutableStateOf("") }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -112,7 +118,7 @@ private fun SpoonyDatePickerBottomSheetPreview() {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "$year. $month. $day",
+                text = selectedDate,
                 modifier = Modifier.padding(16.dp)
             )
 
@@ -131,13 +137,8 @@ private fun SpoonyDatePickerBottomSheetPreview() {
             if (isBottomSheetVisible) {
                 SpoonyDatePickerBottomSheet(
                     onDismiss = { isBottomSheetVisible = false },
-                    initialYear = year,
-                    initialMonth = month,
-                    initialDay = day,
-                    onDateSelected = { selectedYear, selectedMonth, selectedDay ->
-                        year = selectedYear
-                        month = selectedMonth
-                        day = selectedDay
+                    onDateSelected = {
+                        selectedDate = it
                     }
                 )
             }
