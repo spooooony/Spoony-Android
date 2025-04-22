@@ -160,7 +160,7 @@ private fun isValidDate(year: Int, month: Int, day: Int): Boolean = when {
 
 @Preview
 @Composable
-fun SpoonyDatePickerPreview() {
+private fun SpoonyDatePickerPreview() {
     SpoonyAndroidTheme {
         Surface {
             SpoonyDatePicker()

@@ -66,8 +66,7 @@ fun SpoonyBasicPicker(
     LaunchedEffect(Unit) {
         snapshotFlow { listState.isScrollInProgress }
             .distinctUntilChanged()
-            .filter { !it } 
-            .collect {
+            .filter { !it }.collect {
                 val actualIndex = selectedIndex - visibleItemsMiddle
                 if (actualIndex in items.indices) {
                     onSelectedItemChanged(items[actualIndex])
