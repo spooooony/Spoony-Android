@@ -17,6 +17,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,6 +30,8 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.black
 import com.spoony.spoony.core.designsystem.theme.gray200
 import com.spoony.spoony.core.util.extension.fadingEdge
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 @Composable
 fun SpoonyBasicPicker(
@@ -60,11 +63,16 @@ fun SpoonyBasicPicker(
         }
     }
 
-    LaunchedEffect(selectedIndex) {
-        val actualIndex = selectedIndex - visibleItemsMiddle
-        if (actualIndex in items.indices) {
-            onSelectedItemChanged(items[actualIndex])
-        }
+    LaunchedEffect(Unit) {
+        snapshotFlow { listState.isScrollInProgress }
+            .distinctUntilChanged()
+            .filter { !it } 
+            .collect {
+                val actualIndex = selectedIndex - visibleItemsMiddle
+                if (actualIndex in items.indices) {
+                    onSelectedItemChanged(items[actualIndex])
+                }
+            }
     }
 
     LaunchedEffect(Unit) {
