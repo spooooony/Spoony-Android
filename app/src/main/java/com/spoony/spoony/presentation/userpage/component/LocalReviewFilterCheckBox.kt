@@ -18,7 +18,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main400
 
 @Composable
-fun LocalCheckBox(
+fun LocalReviewFilterCheckBox(
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
