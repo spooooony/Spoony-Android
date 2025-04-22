@@ -72,7 +72,7 @@ fun SpoonyBasicPicker(
     LaunchedEffect(Unit) {
         if (items.isNotEmpty() && initialSelectedIndex >= 0) {
             listState.scrollToItem(
-                index = (initialSelectedIndex - visibleItemsCount / 2 + visibleItemsMiddle).coerceAtLeast(0),
+                index = initialSelectedIndex.coerceAtLeast(0),
                 scrollOffset = 0
             )
         }
