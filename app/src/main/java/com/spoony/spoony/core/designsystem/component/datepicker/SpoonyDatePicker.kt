@@ -18,6 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import java.util.Calendar
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 private val CURRENT_CALENDAR = Calendar.getInstance()
 private val CURRENT_YEAR = CURRENT_CALENDAR.get(Calendar.YEAR)
@@ -26,12 +28,12 @@ private val CURRENT_DAY = CURRENT_CALENDAR.get(Calendar.DAY_OF_MONTH)
 private val MAX_YEAR = CURRENT_YEAR - 13
 private const val MIN_YEAR = 1900
 
-private val YEARS = (MIN_YEAR..MAX_YEAR).map { "$it  년" }
-private val ALL_MONTHS = (1..12).map { "$it  월" }
-private val DAYS_28 = (1..28).map { "$it  일" }
-private val DAYS_29 = (1..29).map { "$it  일" }
-private val DAYS_30 = (1..30).map { "$it  일" }
-private val DAYS_31 = (1..31).map { "$it  일" }
+private val YEARS = (MIN_YEAR..MAX_YEAR).map { "$it  년" }.toImmutableList()
+private val ALL_MONTHS = (1..12).map { "$it  월" }.toImmutableList()
+private val DAYS_28 = (1..28).map { "$it  일" }.toImmutableList()
+private val DAYS_29 = (1..29).map { "$it  일" }.toImmutableList()
+private val DAYS_30 = (1..30).map { "$it  일" }.toImmutableList()
+private val DAYS_31 = (1..31).map { "$it  일" }.toImmutableList()
 
 @Composable
 fun SpoonyDatePicker(
@@ -45,24 +47,24 @@ fun SpoonyDatePicker(
     var selectedMonth by remember { mutableIntStateOf(initialMonth) }
     var selectedDay by remember { mutableIntStateOf(initialDay) }
 
-    val months by remember(selectedYear, CURRENT_MONTH) {
+    val months: ImmutableList<String> by remember(selectedYear, CURRENT_MONTH) {
         derivedStateOf {
             if (selectedYear < MAX_YEAR) {
                 ALL_MONTHS
             } else {
-                ALL_MONTHS.take(CURRENT_MONTH)
+                ALL_MONTHS.take(CURRENT_MONTH).toImmutableList()
             }
         }
     }
 
-    val days by remember(selectedYear, selectedMonth, CURRENT_MONTH, CURRENT_DAY) {
+    val days: ImmutableList<String> by remember(selectedYear, selectedMonth, CURRENT_MONTH, CURRENT_DAY) {
         derivedStateOf {
             val daysInMonth = daysInMonthList(selectedYear, selectedMonth)
 
             if (selectedYear < MAX_YEAR || (selectedYear == MAX_YEAR && selectedMonth < CURRENT_MONTH)) {
                 daysInMonth
             } else {
-                daysInMonth.take(CURRENT_DAY)
+                daysInMonth.take(CURRENT_DAY).toImmutableList()
             }
         }
     }
@@ -142,7 +144,7 @@ fun SpoonyDatePicker(
     }
 }
 
-private fun daysInMonthList(year: Int, month: Int): List<String> = when (month) {
+private fun daysInMonthList(year: Int, month: Int): ImmutableList<String> = when (month) {
     2 -> if (isLeapYear(year)) DAYS_29 else DAYS_28
     4, 6, 9, 11 -> DAYS_30
     else -> DAYS_31

@@ -30,12 +30,14 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.black
 import com.spoony.spoony.core.designsystem.theme.gray200
 import com.spoony.spoony.core.util.extension.fadingEdge
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 
 @Composable
 fun SpoonyBasicPicker(
-    items: List<String>,
+    items: ImmutableList<String>,
     initialSelectedIndex: Int,
     onSelectedItemChanged: (String) -> Unit,
     textAlign: TextAlign = TextAlign.Center,
@@ -54,7 +56,7 @@ fun SpoonyBasicPicker(
 
     val paddedItems = remember(items) {
         val paddingCount = visibleItemsCount / 2
-        List(paddingCount) { "" } + items + List(paddingCount) { "" }
+        (List(paddingCount) { "" } + items + List(paddingCount) { "" }).toImmutableList()
     }
 
     val selectedIndex by remember {
