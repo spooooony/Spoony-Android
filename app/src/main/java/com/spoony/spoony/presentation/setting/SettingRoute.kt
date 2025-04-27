@@ -27,7 +27,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
-fun ReportRoute(
+fun SettingRoute(
     paddingValues: PaddingValues,
     navigateUp: () -> Unit,
 ) {
@@ -106,9 +106,9 @@ fun TempItem(
 ) {
     Row(
         modifier = Modifier
+            .clickable(onClick = onClick)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 14.dp)
-            .clickable(onClick = onClick),
+            .padding(horizontal = 20.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -132,7 +132,7 @@ private fun ReportRoutePreview() {
     SpoonyAndroidTheme {
         Scaffold(
             content = { paddingValues ->
-                ReportRoute(
+                SettingRoute(
                     paddingValues = paddingValues,
                     navigateUp = {}
                 )
