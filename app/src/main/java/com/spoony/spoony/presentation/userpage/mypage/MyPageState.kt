@@ -1,11 +1,12 @@
-package com.spoony.spoony.presentation.mypage
+package com.spoony.spoony.presentation.userpage.mypage
 
 data class MyPageState(
-    val userProfile: UserProfile? = null,
+    val userProfile: UserProfile = UserProfile(),
     val spoonCount: Int = 0
 )
 
 data class UserProfile(
+    val profileId: Int = 4,
     val imageUrl: String = "",
     val nickname: String = "",
     val region: String = "",
