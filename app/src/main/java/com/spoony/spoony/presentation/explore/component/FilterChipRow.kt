@@ -122,8 +122,8 @@ fun FilterChipRow(
                     borderRadius = 12.dp,
                     blurRadius = 12.dp,
                     spread = ShadowSpread(
-                        left = 10.dp
-                    )
+                        left = 10f
+                    ).corrected()
                 )
                 .noRippleClickable(onSortFilterClick)
                 .clip(RoundedCornerShape(12.dp))

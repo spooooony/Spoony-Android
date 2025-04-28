@@ -2,6 +2,7 @@ package com.spoony.spoony.core.util.extension
 
 import android.graphics.BlurMaskFilter
 import android.view.HapticFeedbackConstants
+import androidx.annotation.FloatRange
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -236,11 +237,20 @@ fun Modifier.fadingEdge(brush: Brush) = this
     }
 
 data class ShadowSpread(
-    val left: Dp = 0.dp,
-    val top: Dp = 0.dp,
-    val right: Dp = 0.dp,
-    val bottom: Dp = 0.dp
-)
+    @FloatRange(from = 0.0) val left: Float = 0f,
+    @FloatRange(from = 0.0) val top: Float = 0f,
+    @FloatRange(from = 0.0) val right: Float = 0f,
+    @FloatRange(from = 0.0) val bottom: Float = 0f
+) {
+    fun corrected(): ShadowSpread {
+        return ShadowSpread(
+            left = left.coerceAtLeast(0f),
+            top = top.coerceAtLeast(0f),
+            right = right.coerceAtLeast(0f),
+            bottom = bottom.coerceAtLeast(0f)
+        )
+    }
+}
 
 fun Modifier.customShadow(
     color: Color = Color.Black,
@@ -258,10 +268,10 @@ fun Modifier.customShadow(
                     maskFilter = BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL)
                 }
             }
-            val spreadLeftPx = spread.left.toPx()
-            val spreadTopPx = spread.top.toPx()
-            val spreadRightPx = spread.right.toPx()
-            val spreadBottomPx = spread.bottom.toPx()
+            val spreadLeftPx = spread.left.toDp().toPx()
+            val spreadTopPx = spread.top.toDp().toPx()
+            val spreadRightPx = spread.right.toDp().toPx()
+            val spreadBottomPx = spread.bottom.toDp().toPx()
             val offsetXPx = offsetX.toPx()
             val offsetYPx = offsetY.toPx()
             val rectF = android.graphics.RectF(
