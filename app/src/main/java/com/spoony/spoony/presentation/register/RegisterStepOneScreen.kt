@@ -108,6 +108,7 @@ private fun RegisterStepOneScreen(
     onMenuAdd: () -> Unit,
     onSliderPositionChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
+    isCleanerIconVisible: Boolean = true
 ) {
     val focusManager = LocalFocusManager.current
     
@@ -138,7 +139,8 @@ private fun RegisterStepOneScreen(
                 focusManager.clearFocus()
             },
             onPlaceClear = onPlaceClear,
-            onDismissSearchResults = onDismissSearchResults
+            onDismissSearchResults = onDismissSearchResults,
+            isCleanerIconVisible = isCleanerIconVisible
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -185,7 +187,8 @@ private fun PlaceSearchSection(
     onPlaceSelect: (Place) -> Unit,
     onPlaceClear: () -> Unit,
     onDismissSearchResults: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isCleanerIconVisible: Boolean = true
 ) {
     Column(modifier = modifier) {
         Text(
@@ -203,6 +206,7 @@ private fun PlaceSearchSection(
             if (place.placeName.isEmpty()) {
                 SpoonySearchTextField(
                     value = searchQuery,
+                    isCleanerIconVisible = isCleanerIconVisible,
                     onValueChanged = onSearchQueryChange,
                     placeholder = "어떤 장소를 한 입 줄까요?",
                     modifier = Modifier

@@ -31,6 +31,7 @@ fun SpoonySearchTextField(
     modifier: Modifier = Modifier,
     maxLength: Int = Int.MAX_VALUE,
     focusRequester: FocusRequester = FocusRequester(),
+    isCleanerIconVisible: Boolean = true,
     isAllowEmoji: Boolean = false,
     isAllowSpecialChars: Boolean = false
 ) {
@@ -61,7 +62,7 @@ fun SpoonySearchTextField(
             )
         },
         trailingIcon = {
-            if (value.isNotEmpty()) {
+            if (value.isNotEmpty() && isCleanerIconVisible) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_delete_filled_24),
                     contentDescription = null,
