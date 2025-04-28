@@ -9,9 +9,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
-import com.spoony.spoony.presentation.register.RegisterScreen
-import com.spoony.spoony.presentation.register.RegisterStepOneScreen
-import com.spoony.spoony.presentation.register.RegisterStepTwoScreen
+import com.spoony.spoony.presentation.register.RegisterRoute
+import com.spoony.spoony.presentation.register.RegisterStepOneRoute
+import com.spoony.spoony.presentation.register.RegisterStepTwoRoute
 import com.spoony.spoony.presentation.register.RegisterSteps
 import com.spoony.spoony.presentation.register.RegisterViewModel
 import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
@@ -29,7 +29,7 @@ fun NavGraphBuilder.registerNavGraph(
     navigateToExplore: () -> Unit
 ) {
     composable<Register> {
-        RegisterScreen(
+        RegisterRoute(
             paddingValues = paddingValues,
             navigateToExplore = navigateToExplore
         )
@@ -57,11 +57,11 @@ fun NavGraphBuilder.registerGraph(
             )
         }
     ) {
-        RegisterStepOneScreen(
+        RegisterStepOneRoute(
             viewModel = viewModel,
             onNextClick = {
                 navController.navigate(StepTwo)
-                onUpdateProgress(RegisterSteps.FIRST)
+                onUpdateProgress(RegisterSteps.FINAL)
             },
             onInitialProgress = {
                 onUpdateProgress(RegisterSteps.INIT)
@@ -83,11 +83,8 @@ fun NavGraphBuilder.registerGraph(
             )
         }
     ) {
-        RegisterStepTwoScreen(
+        RegisterStepTwoRoute(
             viewModel = viewModel,
-            onStepTwoComplete = {
-                onUpdateProgress(RegisterSteps.FINISH)
-            },
             onRegisterComplete = {
                 onResetRegisterState()
                 navController.popBackStack(StepOne, true)

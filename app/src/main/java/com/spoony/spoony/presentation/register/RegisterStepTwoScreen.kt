@@ -40,16 +40,13 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
-fun RegisterStepTwoScreen(
-    onStepTwoComplete: () -> Unit,
+fun RegisterStepTwoRoute(
     onRegisterComplete: () -> Unit,
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val focusManager = LocalFocusManager.current
     var isDialogVisible by remember { mutableStateOf(false) }
-    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_register_get))
 
     val isNextButtonEnabled = remember(
         state.oneLineReview,
@@ -59,6 +56,39 @@ fun RegisterStepTwoScreen(
     ) {
         viewModel.checkSecondStepValidation() && !state.isLoading
     }
+
+    RegisterStepTwoScreen(
+        state = state,
+        isNextButtonEnabled = isNextButtonEnabled,
+        isDialogVisible = isDialogVisible,
+        onDetailReviewChange = viewModel::updateDetailReview,
+        onPhotosSelected = viewModel::updatePhotos,
+        onOptionalReviewChange = viewModel::updateOptionalReview,
+        onNextClick = {
+            viewModel.registerPost {
+                isDialogVisible = true
+            }
+        },
+        onDialogDismiss = { isDialogVisible = false },
+        onRegisterComplete = onRegisterComplete,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun RegisterStepTwoScreen(
+    state: RegisterState,
+    isNextButtonEnabled: Boolean,
+    isDialogVisible: Boolean,
+    onDetailReviewChange: (String) -> Unit,
+    onPhotosSelected: (List<SelectedPhoto>) -> Unit,
+    onOptionalReviewChange: (String) -> Unit,
+    onNextClick: () -> Unit,
+    onDialogDismiss: () -> Unit,
+    onRegisterComplete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = modifier
@@ -78,7 +108,7 @@ fun RegisterStepTwoScreen(
 
         ReviewSection(
             detailReview = state.detailReview,
-            onDetailReviewChange = viewModel::updateDetailReview
+            onDetailReviewChange = onDetailReviewChange
         )
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -86,14 +116,14 @@ fun RegisterStepTwoScreen(
         PhotoSection(
             selectedPhotos = state.selectedPhotos,
             isPhotoErrorVisible = state.isPhotoErrorVisible,
-            onPhotosSelected = viewModel::updatePhotos
+            onPhotosSelected = onPhotosSelected
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         OptionalReviewSection(
             optionalReview = state.optionalReview,
-            onOptionalReviewChange = viewModel::updateOptionalReview
+            onOptionalReviewChange = onOptionalReviewChange
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -101,12 +131,7 @@ fun RegisterStepTwoScreen(
 
         NextButton(
             enabled = isNextButtonEnabled,
-            onClick = {
-                viewModel.registerPost {
-                    onStepTwoComplete()
-                    isDialogVisible = true
-                }
-            }
+            onClick = onNextClick
         )
     }
 
@@ -123,12 +148,12 @@ fun RegisterStepTwoScreen(
             onDismiss = {},
             onClick = {
                 onRegisterComplete()
-                isDialogVisible = false
+                onDialogDismiss()
             }
         ) {
             LottieAnimation(
                 modifier = Modifier.sizeIn(minHeight = 150.dp),
-                composition = lottieComposition,
+                composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_register_get)).value,
                 iterations = LottieConstants.IterateForever
             )
         }

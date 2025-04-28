@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
@@ -35,7 +36,7 @@ import kotlinx.coroutines.delay
 const val SHOW_REGISTER_SNACKBAR_TIME = 3000L
 
 @Composable
-fun RegisterScreen(
+fun RegisterRoute(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
     navigateToExplore: () -> Unit,
@@ -57,6 +58,33 @@ fun RegisterScreen(
         }
     }
 
+    RegisterScreen(
+        paddingValues = paddingValues,
+        modifier = modifier,
+        state = state,
+        isTooltipVisible = isTooltipVisible,
+        navController = navController,
+        navigateToExplore = navigateToExplore,
+        onUpdateProgress = viewModel::updateStep,
+        onResetRegisterState = viewModel::resetState,
+        hideRegisterSnackBar = viewModel::hideRegisterSnackBar,
+        viewModel = viewModel
+    )
+}
+
+@Composable
+private fun RegisterScreen(
+    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
+    state: RegisterState,
+    isTooltipVisible: Boolean,
+    navController: NavHostController,
+    navigateToExplore: () -> Unit,
+    onUpdateProgress: (RegisterSteps) -> Unit,
+    onResetRegisterState: () -> Unit,
+    hideRegisterSnackBar: () -> Unit,
+    viewModel: RegisterViewModel
+) {
     Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
         Column(
             modifier = modifier
@@ -65,7 +93,7 @@ fun RegisterScreen(
         ) {
             TopLinearProgressBar(
                 currentStep = state.currentStep,
-                totalSteps = 3f,
+                totalSteps = 2f,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 56.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
@@ -79,8 +107,8 @@ fun RegisterScreen(
                 registerGraph(
                     navController = navController,
                     navigateToExplore = navigateToExplore,
-                    onUpdateProgress = viewModel::updateStep,
-                    onResetRegisterState = viewModel::resetState,
+                    onUpdateProgress = onUpdateProgress,
+                    onResetRegisterState = onResetRegisterState,
                     viewModel = viewModel
                 )
             }
@@ -99,7 +127,7 @@ fun RegisterScreen(
             )
             LaunchedEffect(Unit) {
                 delay(SHOW_REGISTER_SNACKBAR_TIME)
-                viewModel.hideRegisterSnackBar()
+                hideRegisterSnackBar()
             }
         }
     }

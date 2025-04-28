@@ -277,6 +277,5 @@ sealed class RegisterSideEffect {
 
 enum class RegisterSteps(val step: Float) {
     INIT(1f),
-    FIRST(2f),
-    FINISH(3f)
+    FINAL(2f),
 }
