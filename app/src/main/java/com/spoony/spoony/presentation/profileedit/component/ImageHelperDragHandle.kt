@@ -33,6 +33,7 @@ fun ImageHelperDragHandle(
             .fillMaxWidth()
             .spoonyGradient(cornerRadius = 0.dp)
             .padding(top = 12.dp, bottom = 24.dp)
+            .padding(horizontal = 22.dp)
     ) {
         Row(
             modifier = Modifier
