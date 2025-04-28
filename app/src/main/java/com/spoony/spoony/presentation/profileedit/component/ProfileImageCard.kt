@@ -73,7 +73,7 @@ fun ProfileImageCard(
 @Preview(showBackground = true)
 @Composable
 private fun ProfileCardPreview() {
-    SpoonyAndroidTheme{
+    SpoonyAndroidTheme {
         ProfileImageCard(
             imageUrl = "",
             name = "Profile Image_1 name",

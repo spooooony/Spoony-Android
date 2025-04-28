@@ -64,7 +64,7 @@ fun ImageHelperDragHandle(
 
         Text(
             text = "내 리뷰가 많이 저장될수록 프로필 이미지가 업그레이드 돼요.\n" +
-                    "좋은 리뷰를 작성하고 다양한 스푼을 획득해 보세요!",
+                "좋은 리뷰를 작성하고 다양한 스푼을 획득해 보세요!",
             style = SpoonyAndroidTheme.typography.body2m,
             color = gray400,
             modifier = Modifier.fillMaxWidth(),
@@ -79,7 +79,7 @@ fun ImageHelperDragHandle(
 private fun ImageHelperDragHandlerPreview() {
     SpoonyAndroidTheme {
         ImageHelperDragHandle(
-            onClick = {},
+            onClick = {}
         )
     }
 }

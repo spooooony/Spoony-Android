@@ -126,9 +126,11 @@ private fun ImageHelperBottomSheetPreview() {
             }
         }
 
-        if (isBottomSheetVisible) ImageHelperBottomSheet(
-            onDismiss = { isBottomSheetVisible = false },
-            profileImageList = profileImageList
-        )
+        if (isBottomSheetVisible) {
+            ImageHelperBottomSheet(
+                onDismiss = { isBottomSheetVisible = false },
+                profileImageList = profileImageList
+            )
+        }
     }
 }
