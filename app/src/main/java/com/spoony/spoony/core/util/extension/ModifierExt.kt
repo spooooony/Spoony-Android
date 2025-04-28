@@ -235,13 +235,20 @@ fun Modifier.fadingEdge(brush: Brush) = this
         drawRect(brush = brush, blendMode = BlendMode.DstIn)
     }
 
+data class ShadowSpread(
+    val left: Dp = 0.dp,
+    val top: Dp = 0.dp,
+    val right: Dp = 0.dp,
+    val bottom: Dp = 0.dp
+)
+
 fun Modifier.customShadow(
     color: Color = Color.Black,
     borderRadius: Dp = 0.dp,
     blurRadius: Dp = 0.dp,
     offsetX: Dp = 0.dp,
     offsetY: Dp = 0.dp,
-    spread: Dp = 0.dp
+    spread: ShadowSpread = ShadowSpread()
 ): Modifier = this.then(
     Modifier.drawBehind {
         drawIntoCanvas { canvas ->
@@ -251,14 +258,17 @@ fun Modifier.customShadow(
                     maskFilter = BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL)
                 }
             }
-            val spreadPx = spread.toPx()
+            val spreadLeftPx = spread.left.toPx()
+            val spreadTopPx = spread.top.toPx()
+            val spreadRightPx = spread.right.toPx()
+            val spreadBottomPx = spread.bottom.toPx()
             val offsetXPx = offsetX.toPx()
             val offsetYPx = offsetY.toPx()
             val rectF = android.graphics.RectF(
-                0f - spreadPx + offsetXPx,
-                0f + offsetYPx,
-                size.width + offsetXPx,
-                size.height + offsetYPx
+                0f - spreadLeftPx + offsetXPx,
+                0f - spreadTopPx + offsetYPx,
+                size.width + spreadRightPx + offsetXPx,
+                size.height + spreadBottomPx + offsetYPx
             )
             canvas.nativeCanvas.drawRoundRect(
                 rectF,

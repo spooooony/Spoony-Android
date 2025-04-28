@@ -31,6 +31,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.ShadowSpread
 import com.spoony.spoony.core.util.extension.customShadow
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.explore.model.FilterOption
@@ -109,7 +110,9 @@ fun FilterChipRow(
                     color = SpoonyAndroidTheme.colors.gray500.copy(alpha = 0.3f),
                     borderRadius = 12.dp,
                     blurRadius = 12.dp,
-                    spread = 10.dp
+                    spread = ShadowSpread(
+                        left = 10.dp
+                    )
                 )
                 .noRippleClickable(onSortFilterClick)
                 .clip(RoundedCornerShape(12.dp))
