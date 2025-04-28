@@ -23,20 +23,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dropdown.IconDropdown
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun ExploreItem(
@@ -175,46 +170,4 @@ private fun ImageGrid(imageList: ImmutableList<String>) {
         }
     }
     Spacer(modifier = Modifier.height(18.dp))
-}
-
-class ImageCountProvider : PreviewParameterProvider<Int> {
-    override val values = sequenceOf(0, 1, 2, 3, 4)
-    override val count: Int get() = values.count()
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewExploreItem(@PreviewParameter(ImageCountProvider::class) imageCount: Int) {
-    val menuItems = persistentListOf("신고하기")
-
-    val imageList = persistentListOf(
-        "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b",
-        "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475083398_17850128934389564_6415536887386537093_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=Szk3zsbpqMsQ7kNvwHtO4rP&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4Nzg5MTYzNjk5NTU5Nw%3D%3D.3-ccb7-5&oh=00_AfGgCfe6_9kAADNzOsrpLSN4TwkVgegKrnEfIyzrfzgwOg&oe=67FA8662&_nc_sid=7a9f4b",
-        "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475027153_17850128172389564_3642654276052745389_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=vZU6plhYL5gQ7kNvwHP_5iA&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4NTYzMzkzNTQzOTc3Nw%3D%3D.3-ccb7-5&oh=00_AfFO-0uu92QzRPrvJeMdiQiPFzYs1_TSUw1tpQm7XwBqcg&oe=67FA7182&_nc_sid=7a9f4b",
-        "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b"
-    ).take(imageCount).toPersistentList()
-
-    SpoonyAndroidTheme {
-        ExploreItem(
-            username = "gambasgirl",
-            placeSpoon = "성북구",
-            review = "이자카야인데 친구랑 가서 안주만 5개 넘게 시킴.. 명성이 자자한 고등어봉 초밥은 꼭 시키세요! 입에 넣자마자 사르르 녹아요.",
-            addMapCount = imageCount * 5,
-            tagText = "카페",
-            date = "약 5시간 전",
-            imageList = imageList,
-            backgroundColor = Color.hexToColor("FFCEC6"),
-            textColor = Color.hexToColor("FF5235"),
-            iconUrl = "https://github.com/user-attachments/assets/67b8de6f-d4e8-4123-bd7d-93623e41ea8c",
-            menuItems = menuItems,
-            onMenuItemClick = { option ->
-                when (option) {
-                    "신고하기" -> {
-                        // Handle report option
-                    }
-                }
-            },
-            modifier = Modifier
-        )
-    }
 }

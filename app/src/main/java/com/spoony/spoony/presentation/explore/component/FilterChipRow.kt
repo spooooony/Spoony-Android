@@ -28,13 +28,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.customShadow
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.explore.model.FilterChipDataProvider
 import com.spoony.spoony.presentation.explore.model.FilterOption
 
 @Composable
@@ -136,18 +134,5 @@ fun FilterChipRow(
                 tint = Color.Unspecified
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun FilterChipRowPreview() {
-    val chipItems = FilterChipDataProvider.getDefaultFilterOptions()
-
-    SpoonyAndroidTheme {
-        FilterChipRow(
-            chipItems = chipItems,
-            onSortFilterClick = {}
-        )
     }
 }
