@@ -36,6 +36,7 @@ import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MIN_D
 import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.PhotoPicker
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
+import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -46,6 +47,7 @@ fun RegisterStepTwoRoute(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val registerType by viewModel.registerType.collectAsStateWithLifecycle()
     var isDialogVisible by remember { mutableStateOf(false) }
 
     val isNextButtonEnabled = remember(
@@ -71,12 +73,14 @@ fun RegisterStepTwoRoute(
         },
         onDialogDismiss = { isDialogVisible = false },
         onRegisterComplete = onRegisterComplete,
-        modifier = modifier
+        modifier = modifier,
+        registerType = registerType
     )
 }
 
 @Composable
 private fun RegisterStepTwoScreen(
+    registerType: RegisterType,
     state: RegisterState,
     isNextButtonEnabled: Boolean,
     isDialogVisible: Boolean,
@@ -131,7 +135,8 @@ private fun RegisterStepTwoScreen(
 
         NextButton(
             enabled = isNextButtonEnabled,
-            onClick = onNextClick
+            onClick = onNextClick,
+            editText = if (registerType == RegisterType.CREATE) "다음" else "리뷰 수정"
         )
     }
 

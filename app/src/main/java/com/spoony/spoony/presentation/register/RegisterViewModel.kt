@@ -1,7 +1,9 @@
 package com.spoony.spoony.presentation.register
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
@@ -9,6 +11,8 @@ import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.Category
 import com.spoony.spoony.presentation.register.model.Place
+import com.spoony.spoony.presentation.register.model.RegisterType
+import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
@@ -25,6 +29,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val repository: RegisterRepository,
     private val tooltipPreferencesRepository: TooltipPreferencesRepository
 ) : ViewModel() {
@@ -36,10 +41,23 @@ class RegisterViewModel @Inject constructor(
         get() = _state.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<RegisterSideEffect>()
-    val sideEffect: SharedFlow<RegisterSideEffect> = _sideEffect.asSharedFlow()
+    val sideEffect: SharedFlow<RegisterSideEffect>
+        get() = _sideEffect.asSharedFlow()
+
+    private val _registerType = MutableStateFlow(RegisterType.CREATE)
+    val registerType: StateFlow<RegisterType>
+        get() = _registerType.asStateFlow()
+
+    private val registerInfo = savedStateHandle.toRoute<Register>()
+    private val postId = registerInfo.postId
+
 
     init {
+        _registerType.value = registerInfo.registerType
         loadCategories()
+        if (_registerType.value == RegisterType.EDIT){
+            //POSTID를 기반으로 GET요청 후에 RegisterState 업데이트 하면 됨
+        }
     }
 
     private fun loadCategories() {

@@ -51,6 +51,7 @@ import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.SearchResultItem
 import com.spoony.spoony.presentation.register.model.Category
 import com.spoony.spoony.presentation.register.model.Place
+import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -61,6 +62,7 @@ fun RegisterStepOneRoute(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val registerType by viewModel.registerType.collectAsStateWithLifecycle()
 
     val isNextButtonEnabled = remember(
         state.selectedPlace,
@@ -89,11 +91,13 @@ fun RegisterStepOneRoute(
         onMenuAdd = viewModel::addMenu,
         onSliderPositionChange = viewModel::updateUserSatisfactionValue,
         modifier = modifier,
+        registerType = registerType
     )
 }
 
 @Composable
 private fun RegisterStepOneScreen(
+    registerType: RegisterType,
     state: RegisterState,
     isNextButtonEnabled: Boolean,
     onNextClick: () -> Unit,
@@ -107,11 +111,11 @@ private fun RegisterStepOneScreen(
     onMenuRemove: (Int) -> Unit,
     onMenuAdd: () -> Unit,
     onSliderPositionChange: (Float) -> Unit,
-    modifier: Modifier = Modifier,
-    isCleanerIconVisible: Boolean = true
+    modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
-    
+    val isCleanerIconVisible = registerType == RegisterType.CREATE
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -188,7 +192,7 @@ private fun PlaceSearchSection(
     onPlaceClear: () -> Unit,
     onDismissSearchResults: () -> Unit,
     modifier: Modifier = Modifier,
-    isCleanerIconVisible: Boolean = true
+    isCleanerIconVisible: Boolean
 ) {
     Column(modifier = modifier) {
         Text(
@@ -206,7 +210,6 @@ private fun PlaceSearchSection(
             if (place.placeName.isEmpty()) {
                 SpoonySearchTextField(
                     value = searchQuery,
-                    isCleanerIconVisible = isCleanerIconVisible,
                     onValueChanged = onSearchQueryChange,
                     placeholder = "어떤 장소를 한 입 줄까요?",
                     modifier = Modifier
@@ -236,7 +239,8 @@ private fun PlaceSearchSection(
                 SearchResultItem(
                     placeName = place.placeName,
                     placeRoadAddress = place.placeRoadAddress,
-                    onDeleteClick = onPlaceClear
+                    onDeleteClick = onPlaceClear,
+                    isCleanerIconVisible = isCleanerIconVisible
                 )
             }
         }

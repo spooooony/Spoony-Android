@@ -148,7 +148,8 @@ fun MainScreen(
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToProfileEdit = { },
                     navigateToRegister = navigator::navigateToRegister,
-                    navigateToReviewDetail = { }
+                    navigateToReviewDetail = { },
+                    navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
                 otherPageNavGraph(

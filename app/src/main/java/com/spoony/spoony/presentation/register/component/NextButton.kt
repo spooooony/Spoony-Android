@@ -22,12 +22,13 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 fun NextButton(
     enabled: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    editText: String = "다음"
 ) {
     var isClicked by remember { mutableStateOf(false) }
 
     SpoonyButton(
-        text = "다음",
+        text = editText,
         size = ButtonSize.Xlarge,
         style = ButtonStyle.Primary,
         modifier = modifier.fillMaxWidth(),

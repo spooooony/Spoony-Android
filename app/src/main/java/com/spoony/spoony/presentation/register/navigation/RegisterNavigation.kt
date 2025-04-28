@@ -14,14 +14,17 @@ import com.spoony.spoony.presentation.register.RegisterStepOneRoute
 import com.spoony.spoony.presentation.register.RegisterStepTwoRoute
 import com.spoony.spoony.presentation.register.RegisterSteps
 import com.spoony.spoony.presentation.register.RegisterViewModel
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
 import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepTwo
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRegister(
+    registerType: RegisterType = RegisterType.CREATE,
+    postId: Int? = null,
     navOptions: NavOptions? = null
 ) {
-    navigate(Register, navOptions)
+    navigate(Register(registerType, postId), navOptions)
 }
 
 fun NavGraphBuilder.registerNavGraph(
@@ -95,4 +98,7 @@ fun NavGraphBuilder.registerGraph(
 }
 
 @Serializable
-data object Register : MainTabRoute
+data class Register(
+    val registerType: RegisterType = RegisterType.CREATE,
+    val postId: Int? = null
+) : MainTabRoute

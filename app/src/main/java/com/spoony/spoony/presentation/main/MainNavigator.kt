@@ -18,6 +18,7 @@ import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.splash.navigation.Splash
@@ -54,7 +55,7 @@ class MainNavigator(
 
         when (tab) {
             MainTab.MAP -> navController.navigateToMap(navOptions = navOptions)
-            MainTab.REGISTER -> navController.navigateToRegister(navOptions)
+            MainTab.REGISTER -> navController.navigateToRegister(navOptions = navOptions)
             MainTab.EXPLORE -> navController.navigateToExplore(navOptions)
             MainTab.MYPAGE -> navController.navigateToMyPage(navOptions)
         }
@@ -118,7 +119,19 @@ class MainNavigator(
                 launchSingleTop = true
             }
     ) {
-        navController.navigateToRegister(navOptions)
+        navController.navigateToRegister(navOptions = navOptions)
+    }
+
+    fun navigateToReviewEdit(
+        postId: Int,
+        registerType: RegisterType,
+        navOptions: NavOptions? = null
+    ) {
+        navController.navigateToRegister(
+            registerType = registerType,
+            postId = postId,
+            navOptions = navOptions
+        )
     }
 
     fun navigateToOtherPage(
