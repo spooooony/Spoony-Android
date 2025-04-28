@@ -40,8 +40,8 @@ import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreLocationBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
-import com.spoony.spoony.presentation.explore.model.FilterChip
 import com.spoony.spoony.presentation.explore.model.FilterChipDataProvider
+import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
@@ -60,10 +60,10 @@ fun ExploreRoute(
 
     val tabList = immutableListOf("전체", "팔로잉")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
-    val chipItems = FilterChipDataProvider.getDefaultFilterChips()
+    val chipItems = FilterChipDataProvider.getDefaultFilterOptions()
 
     with(state) {
-        ExploreScreen2(
+        ExploreScreen(
             tabList = tabList,
             chipItems = chipItems,
             selectedTabIndex = selectedTabIndex,
@@ -77,9 +77,9 @@ fun ExploreRoute(
 }
 
 @Composable
-private fun ExploreScreen2(
+private fun ExploreScreen(
     tabList: List<String>,
-    chipItems: List<FilterChip>,
+    chipItems: List<FilterOption>,
     selectedTabIndex: MutableState<Int>,
     paddingValues: PaddingValues,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -210,172 +210,3 @@ private fun ExploreContent(
         else -> {}
     }
 }
-
-// @Composable
-// private fun ExploreScreen(
-//    paddingValues: PaddingValues,
-//    spoonCount: Int,
-//    selectedCity: String,
-//    selectedCategoryId: Int,
-//    selectedSortingOption: SortingOption,
-//    categoryList: ImmutableList<CategoryEntity>,
-//    feedList: UiState<ImmutableList<FeedModel>>,
-//    onLocationSortingButtonClick: (String) -> Unit,
-//    onSortingButtonClick: (SortingOption) -> Unit,
-//    onFeedItemClick: (Int) -> Unit,
-//    onRegisterButtonClick: () -> Unit,
-//    updateSelectedCategory: (Int) -> Unit
-// ) {
-//    var isLocationBottomSheetVisible by remember { mutableStateOf(false) }
-//    var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
-//
-//    if (isLocationBottomSheetVisible) {
-//        ExploreLocationBottomSheet(
-//            onDismiss = { isLocationBottomSheetVisible = false },
-//            onClick = onLocationSortingButtonClick
-//        )
-//    }
-//
-//    if (isSortingBottomSheetVisible) {
-//        ExploreSortingBottomSheet(
-//            onDismiss = { isSortingBottomSheetVisible = false },
-//            onClick = onSortingButtonClick,
-//            currentSortingOption = selectedSortingOption
-//        )
-//    }
-//
-//    Column(
-//        modifier = Modifier
-//            .padding(bottom = paddingValues.calculateBottomPadding())
-//    ) {
-//        ExploreTopAppBar(
-//            count = spoonCount,
-//            onClick = {
-//                isLocationBottomSheetVisible = true
-//            },
-//            place = selectedCity
-//        )
-//
-//        LazyRow(
-//            contentPadding = PaddingValues(horizontal = 20.dp),
-//            horizontalArrangement = Arrangement.spacedBy(6.dp)
-//        ) {
-//            items(
-//                items = categoryList,
-//                key = { category ->
-//                    category.categoryId
-//                }
-//            ) { category ->
-//                IconChip(
-//                    text = category.categoryName,
-//                    unSelectedIconUrl = category.unSelectedIconUrl ?: "",
-//                    selectedIconUrl = category.iconUrl,
-//                    isSelected = selectedCategoryId == category.categoryId,
-//                    isGradient = true,
-//                    onClick = { updateSelectedCategory(category.categoryId) }
-//                )
-//            }
-//        }
-//
-//        ExploreContent(
-//            feedList = feedList,
-//            selectedSortingOption = selectedSortingOption,
-//            onSortingButtonClick = { isSortingBottomSheetVisible = it },
-//            onFeedItemClick = onFeedItemClick,
-//            onRegisterButtonClick = onRegisterButtonClick
-//        )
-//    }
-// }
-//
-// @Composable
-// private fun ExploreContent(
-//    feedList: UiState<ImmutableList<FeedModel>>,
-//    selectedSortingOption: SortingOption,
-//    onSortingButtonClick: (Boolean) -> Unit,
-//    onFeedItemClick: (Int) -> Unit,
-//    onRegisterButtonClick: () -> Unit
-// ) {
-//    val menuItems = persistentListOf(ExploreDropdownOption.REPORT)
-//    when (feedList) {
-//        is UiState.Empty -> {
-//            ExploreEmptyScreen(
-//                onClick = onRegisterButtonClick,
-//                modifier = Modifier
-//                    .fillMaxSize()
-//            )
-//        }
-//
-//        is UiState.Success -> {
-//            Column {
-//                Box(
-//                    contentAlignment = Alignment.CenterEnd,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .background(SpoonyAndroidTheme.colors.white)
-//                        .padding(vertical = 16.dp, horizontal = 20.dp)
-//                ) {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier
-//                            .noRippleClickable { onSortingButtonClick(true) }
-//                            .padding(4.dp)
-//                    ) {
-//                        Text(
-//                            text = selectedSortingOption.stringValue,
-//                            style = SpoonyAndroidTheme.typography.caption1m,
-//                            color = SpoonyAndroidTheme.colors.gray700,
-//                            modifier = Modifier
-//                                .padding(end = 2.dp)
-//                        )
-//
-//                        Icon(
-//                            imageVector = ImageVector.vectorResource(R.drawable.ic_filter_24),
-//                            contentDescription = null,
-//                            tint = SpoonyAndroidTheme.colors.gray700,
-//                            modifier = Modifier
-//                                .size(16.dp)
-//                        )
-//                    }
-//                }
-//
-//                LazyColumn(
-//                    contentPadding = PaddingValues(bottom = 12.dp),
-//                    verticalArrangement = Arrangement.spacedBy(12.dp)
-//                ) {
-//                    items(
-//                        items = feedList.data,
-//                        key = { feed ->
-//                            feed.feedId
-//                        }
-//                    ) { feed ->
-//                        ExploreItem(
-//                            username = feed.username,
-//                            placeSpoon = feed.userRegion,
-//                            review = feed.title,
-//                            addMapCount = feed.addMapCount,
-//                            iconUrl = feed.categoryEntity.iconUrl,
-//                            tagText = feed.categoryEntity.categoryName,
-//                            textColor = Color.hexToColor(feed.categoryEntity.textColor.toValidHexColor()),
-//                            backgroundColor = Color.hexToColor(feed.categoryEntity.backgroundColor.toValidHexColor()),
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .noRippleClickable { onFeedItemClick(feed.feedId) }
-//                                .padding(horizontal = 20.dp),
-//                            date = "",
-//                            menuItems = menuItems,
-//                            onMenuItemClick = { option ->
-//                                when (option) {
-//                                    ExploreDropdownOption.REPORT -> {
-//                                        // Handle report option
-//                                    }
-//                                }
-//                            }
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//
-//        else -> {}
-//    }
-// }

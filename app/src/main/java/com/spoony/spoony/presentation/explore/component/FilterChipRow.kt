@@ -34,12 +34,12 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.customShadow
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.explore.model.FilterChip
 import com.spoony.spoony.presentation.explore.model.FilterChipDataProvider
+import com.spoony.spoony.presentation.explore.model.FilterOption
 
 @Composable
 fun FilterChipRow(
-    chipItems: List<FilterChip>,
+    chipItems: List<FilterOption>,
     onSortFilterClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp),
@@ -142,7 +142,7 @@ fun FilterChipRow(
 @Preview
 @Composable
 fun FilterChipRowPreview() {
-    val chipItems = FilterChipDataProvider.getDefaultFilterChips()
+    val chipItems = FilterChipDataProvider.getDefaultFilterOptions()
 
     SpoonyAndroidTheme {
         FilterChipRow(
