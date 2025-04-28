@@ -18,6 +18,7 @@ import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
+import com.spoony.spoony.presentation.profileedit.navigation.navigateToProfileEdit
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.splash.navigation.Splash
@@ -129,6 +130,14 @@ class MainNavigator(
 
     fun navigateToFollow(followType: FollowType, userId: Int) {
         navController.navigateToFollow(followType, userId)
+    }
+
+    fun navigateToProfileEdit(
+        navOptions: NavOptions = navOptions {
+            launchSingleTop = true
+        }
+    ) {
+        navController.navigateToProfileEdit(navOptions)
     }
 
     fun navigateToMapSearch(navOptions: NavOptions? = null) {
