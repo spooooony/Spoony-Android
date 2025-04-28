@@ -241,23 +241,12 @@ data class ShadowSpread(
     @FloatRange(from = 0.0) val top: Float = 0f,
     @FloatRange(from = 0.0) val right: Float = 0f,
     @FloatRange(from = 0.0) val bottom: Float = 0f
-) {
-    fun corrected(): ShadowSpread {
-        return ShadowSpread(
-            left = left.coerceAtLeast(0f),
-            top = top.coerceAtLeast(0f),
-            right = right.coerceAtLeast(0f),
-            bottom = bottom.coerceAtLeast(0f)
-        )
-    }
-}
+)
 
-fun Modifier.customShadow(
+fun Modifier.spreadShadow(
     color: Color = Color.Black,
     borderRadius: Dp = 0.dp,
     blurRadius: Dp = 0.dp,
-    offsetX: Dp = 0.dp,
-    offsetY: Dp = 0.dp,
     spread: ShadowSpread = ShadowSpread()
 ): Modifier = this.then(
     Modifier.drawBehind {
@@ -268,17 +257,15 @@ fun Modifier.customShadow(
                     maskFilter = BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL)
                 }
             }
-            val spreadLeftPx = spread.left.toDp().toPx()
-            val spreadTopPx = spread.top.toDp().toPx()
-            val spreadRightPx = spread.right.toDp().toPx()
-            val spreadBottomPx = spread.bottom.toDp().toPx()
-            val offsetXPx = offsetX.toPx()
-            val offsetYPx = offsetY.toPx()
+            val spreadLeftPx = spread.left.coerceAtLeast(0f).toDp().toPx()
+            val spreadTopPx = spread.top.coerceAtLeast(0f).toDp().toPx()
+            val spreadRightPx = spread.right.coerceAtLeast(0f).toDp().toPx()
+            val spreadBottomPx = spread.bottom.coerceAtLeast(0f).toDp().toPx()
             val rectF = android.graphics.RectF(
-                0f - spreadLeftPx + offsetXPx,
-                0f - spreadTopPx + offsetYPx,
-                size.width + spreadRightPx + offsetXPx,
-                size.height + spreadBottomPx + offsetYPx
+                0f - spreadLeftPx,
+                0f - spreadTopPx,
+                size.width + spreadRightPx,
+                size.height + spreadBottomPx
             )
             canvas.nativeCanvas.drawRoundRect(
                 rectF,

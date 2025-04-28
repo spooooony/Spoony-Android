@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.ShadowSpread
-import com.spoony.spoony.core.util.extension.customShadow
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.core.util.extension.spreadShadow
 import com.spoony.spoony.presentation.explore.model.FilterOption
 
 @Composable
@@ -117,13 +117,13 @@ fun FilterChipRow(
                 }
                 .offset { IntOffset((sortFilterWidth / 2).roundToPx(), 0.dp.roundToPx()) }
                 .height(if (lazyRowHeight > 0.dp) lazyRowHeight else 36.dp)
-                .customShadow(
+                .spreadShadow(
                     color = SpoonyAndroidTheme.colors.gray500.copy(alpha = 0.3f),
                     borderRadius = 12.dp,
                     blurRadius = 12.dp,
                     spread = ShadowSpread(
                         left = 10f
-                    ).corrected()
+                    )
                 )
                 .noRippleClickable(onSortFilterClick)
                 .clip(RoundedCornerShape(12.dp))
