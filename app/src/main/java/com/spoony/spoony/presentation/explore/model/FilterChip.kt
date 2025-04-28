@@ -26,12 +26,6 @@ object FilterChipDataProvider {
             isSelected = false
         ),
         FilterChip(
-            sort = "latest",
-            text = "최신순",
-            isSelected = false,
-            rightIconResId = R.drawable.ic_arrow_down_16
-        ),
-        FilterChip(
             sort = "category",
             text = "카테고리",
             isSelected = false,

@@ -1,5 +1,6 @@
 package com.spoony.spoony.core.util.extension
 
+import android.graphics.BlurMaskFilter
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -22,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.CornerRadius
@@ -32,9 +34,13 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -228,3 +234,38 @@ fun Modifier.fadingEdge(brush: Brush) = this
         drawContent()
         drawRect(brush = brush, blendMode = BlendMode.DstIn)
     }
+
+fun Modifier.customShadow(
+    color: Color = Color.Black,
+    borderRadius: Dp = 0.dp,
+    blurRadius: Dp = 0.dp,
+    offsetX: Dp = 0.dp,
+    offsetY: Dp = 0.dp,
+    spread: Dp = 0.dp
+): Modifier = this.then(
+    Modifier.drawBehind {
+        drawIntoCanvas { canvas ->
+            val paint = Paint().asFrameworkPaint().apply {
+                this.color = color.toArgb()
+                if (blurRadius != 0.dp) {
+                    maskFilter = BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL)
+                }
+            }
+            val spreadPx = spread.toPx()
+            val offsetXPx = offsetX.toPx()
+            val offsetYPx = offsetY.toPx()
+            val rectF = android.graphics.RectF(
+                0f - spreadPx + offsetXPx,
+                0f + offsetYPx,
+                size.width + offsetXPx,
+                size.height + offsetYPx
+            )
+            canvas.nativeCanvas.drawRoundRect(
+                rectF,
+                borderRadius.toPx(),
+                borderRadius.toPx(),
+                paint
+            )
+        }
+    }
+)

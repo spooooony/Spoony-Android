@@ -37,6 +37,8 @@ fun FilterChip(
 ) {
     val borderColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray100
     val textColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray600
+    val backgroundColor = if (isSelected) SpoonyAndroidTheme.colors.main0 else SpoonyAndroidTheme.colors.gray0
+    val horizontalPadding = if (leftIcon != null || rightIcon != null) 14.dp else 12.dp
 
     Row(
         modifier = modifier
@@ -48,10 +50,10 @@ fun FilterChip(
                 shape = RoundedCornerShape(12.dp)
             )
             .background(
-                color = SpoonyAndroidTheme.colors.gray0
+                color = backgroundColor
             )
             .padding(
-                horizontal = 14.dp,
+                horizontal = horizontalPadding,
                 vertical = 6.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -88,8 +90,6 @@ class FilterChipPreviewParameterProvider : PreviewParameterProvider<FilterChipPr
         FilterChipPreviewData("필터", false, hasLeftIcon = true),
         FilterChipPreviewData("로컬 리뷰", true),
         FilterChipPreviewData("로컬 리뷰", false),
-        FilterChipPreviewData("최신순", true, hasRightIcon = true),
-        FilterChipPreviewData("최신순", false, hasRightIcon = true),
         FilterChipPreviewData("카테고리", true, hasRightIcon = true),
         FilterChipPreviewData("카테고리", false, hasRightIcon = true),
         FilterChipPreviewData("지역", true, hasRightIcon = true),
