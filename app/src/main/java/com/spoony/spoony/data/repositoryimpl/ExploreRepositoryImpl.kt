@@ -120,7 +120,7 @@ class ExploreRepositoryImpl @Inject constructor(
                 userRegion = "강남구",
                 description = "이 곳의 스테이크는 정말 최고예요! 미디엄 레어로 주문했는데 정말 딱 알맞게 나왔어요. 특히 트러플 소스를 곁들인 감자 퓨레가 환상적이었습니다. 특별한 날에 방문하기 좋은 곳입니다.",
                 photoUrlList = persistentListOf(
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b"
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4"
                 ),
                 menuList = persistentListOf("티본 스테이크", "트러플 감자 퓨레", "레드와인"),
                 placeName = "스테이크 하우스",
@@ -148,8 +148,8 @@ class ExploreRepositoryImpl @Inject constructor(
                 userRegion = "성동구",
                 description = "이곳의 크루아상은 정말 환상적이에요! 겉은 바삭하고 속은 부드러워요. 특히 초코 크루아상이 제일 맛있었어요. 아침에 갓 구운 빵을 먹을 수 있어서 좋았습니다. 커피와 함께 먹으니 더 맛있었어요.",
                 photoUrlList = persistentListOf(
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b",
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475083398_17850128934389564_6415536887386537093_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=Szk3zsbpqMsQ7kNvwHtO4rP&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4Nzg5MTYzNjk5NTU5Nw%3D%3D.3-ccb7-5&oh=00_AfGgCfe6_9kAADNzOsrpLSN4TwkVgegKrnEfIyzrfzgwOg&oe=67FA8662&_nc_sid=7a9f4b"
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4"
                 ),
                 menuList = persistentListOf("초코 크루아상", "플레인 크루아상", "카페라떼"),
                 placeName = "오 봉 빵",
@@ -177,9 +177,9 @@ class ExploreRepositoryImpl @Inject constructor(
                 userRegion = "마포구",
                 description = "이자카야인데 친구랑 가서 안주만 5개 넘게 시킴.. 명성이 자자한 고등어봉 초밥은 꼭 시키세요! 입에 넣자마자 사르르 녹아요. 사케도 종류가 다양해서 좋았어요. 분위기도 좋고 조용히 대화하기 좋아요.",
                 photoUrlList = persistentListOf(
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b",
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475083398_17850128934389564_6415536887386537093_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=Szk3zsbpqMsQ7kNvwHtO4rP&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4Nzg5MTYzNjk5NTU5Nw%3D%3D.3-ccb7-5&oh=00_AfGgCfe6_9kAADNzOsrpLSN4TwkVgegKrnEfIyzrfzgwOg&oe=67FA8662&_nc_sid=7a9f4b",
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475027153_17850128172389564_3642654276052745389_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=vZU6plhYL5gQ7kNvwHP_5iA&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4NTYzMzkzNTQzOTc3Nw%3D%3D.3-ccb7-5&oh=00_AfFO-0uu92QzRPrvJeMdiQiPFzYs1_TSUw1tpQm7XwBqcg&oe=67FA7182&_nc_sid=7a9f4b"
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4"
                 ),
                 menuList = persistentListOf("고등어봉 초밥", "모듬 사시미", "준마이 사케"),
                 placeName = "이자카야 토모",
@@ -207,10 +207,10 @@ class ExploreRepositoryImpl @Inject constructor(
                 userRegion = "종로구",
                 description = "이번 전시회는 정말 눈이 즐거운 시간이었어요. 특히 2층의 미디어 아트 작품이 인상적이었습니다. 입장료도 합리적이고 전시 해설도 좋았어요. 주말에는 사람이 많으니 평일 방문을 추천합니다.",
                 photoUrlList = persistentListOf(
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b",
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475083398_17850128934389564_6415536887386537093_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=Szk3zsbpqMsQ7kNvwHtO4rP&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4Nzg5MTYzNjk5NTU5Nw%3D%3D.3-ccb7-5&oh=00_AfGgCfe6_9kAADNzOsrpLSN4TwkVgegKrnEfIyzrfzgwOg&oe=67FA8662&_nc_sid=7a9f4b",
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b",
-                    "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b"
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
+                    "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4"
                 ),
                 menuList = persistentListOf("입장권", "전시 도록", "기념품"),
                 placeName = "서울 현대 미술관",
