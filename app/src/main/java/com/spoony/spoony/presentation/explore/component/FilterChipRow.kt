@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -28,6 +29,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -41,16 +43,17 @@ fun FilterChipRow(
     chipItems: List<FilterOption>,
     onSortFilterClick: () -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp),
     horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp)
 ) {
     val fontScale = LocalDensity.current.fontScale
     val density = LocalDensity.current
     var lazyRowHeight by remember { mutableStateOf(0.dp) }
-
+    var sortFilterWidth by remember { mutableStateOf(0.dp) }
+    val endPadding = sortFilterWidth / 2 + 5.dp
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .padding(end = 20.dp + sortFilterWidth / 2)
             .wrapContentHeight()
     ) {
         LazyRow(
@@ -61,7 +64,10 @@ fun FilterChipRow(
                         lazyRowHeight = coordinates.size.height.toDp()
                     }
                 },
-            contentPadding = contentPadding,
+            contentPadding = PaddingValues(
+                start = 20.dp,
+                end = endPadding
+            ),
             horizontalArrangement = horizontalArrangement
         ) {
             items(chipItems, key = { it.sort }) { chipItem ->
@@ -104,7 +110,12 @@ fun FilterChipRow(
         Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(end = 16.dp)
+                .onGloballyPositioned { coordinates ->
+                    with(density) {
+                        sortFilterWidth = coordinates.size.width.toDp()
+                    }
+                }
+                .offset { IntOffset((sortFilterWidth / 2).roundToPx(), 0.dp.roundToPx()) }
                 .height(if (lazyRowHeight > 0.dp) lazyRowHeight else 36.dp)
                 .customShadow(
                     color = SpoonyAndroidTheme.colors.gray500.copy(alpha = 0.3f),
