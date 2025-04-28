@@ -39,7 +39,6 @@ import com.spoony.spoony.presentation.explore.component.FilterChipRow
 import com.spoony.spoony.presentation.explore.model.FilterChip
 import com.spoony.spoony.presentation.explore.model.FilterChipDataProvider
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
-import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import okhttp3.internal.immutableListOf
@@ -135,7 +134,9 @@ private fun ExploreContent(
     onPlaceDetailItemClick: (Int) -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>
 ) {
-    val menuItems = persistentListOf(ExploreDropdownOption.REPORT)
+    val menuItems = persistentListOf(
+        "신고하기"
+    )
     when (placeReviewList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
@@ -171,7 +172,7 @@ private fun ExploreContent(
                         onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
                         onMenuItemClick = { option ->
                             when (option) {
-                                ExploreDropdownOption.REPORT -> onReportButtonClick(placeReview.reviewId, placeReview.userId)
+                                "신고하기" -> onReportButtonClick(placeReview.reviewId, placeReview.userId)
                             }
                         },
                         modifier = Modifier

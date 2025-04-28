@@ -28,12 +28,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.dropdown.IconDropdown
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -43,7 +43,7 @@ fun ExploreItem(
     review: String,
     textColor: Color,
     backgroundColor: Color,
-    onMenuItemClick: (ExploreDropdownOption) -> Unit,
+    onMenuItemClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     iconUrl: String? = "",
     tagText: String? = "",
@@ -53,7 +53,7 @@ fun ExploreItem(
     addMapCount: Int? = 0,
     onClick: () -> Unit = {},
     imageList: ImmutableList<String>? = persistentListOf(),
-    menuItems: ImmutableList<ExploreDropdownOption> = persistentListOf(ExploreDropdownOption.REPORT)
+    menuItems: ImmutableList<String> = persistentListOf("신고하기")
 ) {
     Column(
         modifier = modifier
@@ -75,7 +75,7 @@ fun ExploreItem(
                 backgroundColor = backgroundColor
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconDropdownMenu(
+            IconDropdown(
                 menuItems,
                 onMenuItemClick
             )
@@ -185,7 +185,7 @@ class ImageCountProvider : PreviewParameterProvider<Int> {
 @Preview(showBackground = true)
 @Composable
 fun PreviewExploreItem(@PreviewParameter(ImageCountProvider::class) imageCount: Int) {
-    val menuItems = persistentListOf(ExploreDropdownOption.REPORT)
+    val menuItems = persistentListOf("신고하기")
 
     val imageList = persistentListOf(
         "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/475019001_17850129315389564_1569540604557943007_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEyMDB4MTUwMC5zZHIuZjc1NzYxLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_oc=Q6cZ2QEeJaNgrVcYYz_qbLQQ75KFwCaVRf-gG2dloaU2n7fYAVcfCbiBGlF0HmO0KB2B-nM&_nc_ohc=NvtPxJL5iMoQ7kNvwFbs0nm&_nc_gid=KbyEVcCrnElGGFJ9jS9JKw&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU1MzE4OTE1Njk0MTE1MDUzOA%3D%3D.3-ccb7-5&oh=00_AfFyf3zIsjGYahZpFwS0WTtOdSeUjjFj23jiaot6Ydbgug&oe=67FA5D0F&_nc_sid=7a9f4b",
@@ -209,7 +209,7 @@ fun PreviewExploreItem(@PreviewParameter(ImageCountProvider::class) imageCount: 
             menuItems = menuItems,
             onMenuItemClick = { option ->
                 when (option) {
-                    ExploreDropdownOption.REPORT -> {
+                    "신고하기" -> {
                         // Handle report option
                     }
                 }
