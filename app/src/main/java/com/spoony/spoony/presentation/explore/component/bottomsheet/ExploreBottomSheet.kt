@@ -6,12 +6,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
-fun ExploreBottomSheet (
+fun ExploreBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    onDragHandle: () -> Unit,
+    onDragHandle: () -> Unit
 ) {
-
 }
 
 @Preview
@@ -20,7 +19,7 @@ private fun PreviewExploreBottomSheet() {
     SpoonyAndroidTheme {
         ExploreBottomSheet(
             onDismissRequest = { },
-            onDragHandle = { },
+            onDragHandle = { }
         )
     }
 }

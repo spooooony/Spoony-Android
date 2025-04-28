@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,9 +38,12 @@ import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreItem
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
+import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreLocationBottomSheet
+import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
 import com.spoony.spoony.presentation.explore.model.FilterChip
 import com.spoony.spoony.presentation.explore.model.FilterChipDataProvider
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
+import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import okhttp3.internal.immutableListOf
@@ -82,6 +87,25 @@ private fun ExploreScreen2(
     onPlaceDetailItemClick: (Int) -> Unit,
     onReportButtonClick: (postId: Int, userId: Int) -> Unit
 ) {
+    var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
+    var isLocationBottomSheetVisible by remember { mutableStateOf(false) }
+    var selectedSortingOption by remember { mutableStateOf(SortingOption.LATEST) }
+
+    if (isSortingBottomSheetVisible) {
+        ExploreSortingBottomSheet(
+            onDismiss = { isSortingBottomSheetVisible = false },
+            onClick = { selectedSortingOption = it },
+            currentSortingOption = selectedSortingOption
+        )
+    }
+
+    if (isLocationBottomSheetVisible) {
+        ExploreLocationBottomSheet(
+            onDismiss = { isLocationBottomSheetVisible = false },
+            onClick = {}
+        )
+    }
+
     Column(
         modifier = Modifier
             .padding(
@@ -112,7 +136,10 @@ private fun ExploreScreen2(
         }
         Spacer(modifier = Modifier.height(24.dp))
         FilterChipRow(
-            chipItems
+            chipItems,
+            onSortFilterClick = {
+                isSortingBottomSheetVisible = true
+            }
         )
         Spacer(modifier = Modifier.height(24.dp))
         ExploreContent(
