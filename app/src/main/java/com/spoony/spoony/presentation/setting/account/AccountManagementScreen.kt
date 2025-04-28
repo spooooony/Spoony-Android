@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.setting.account
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,6 +74,7 @@ fun AccountManagementScreen() {
             style = SpoonyAndroidTheme.typography.body2m,
             modifier = Modifier
                 .background(white)
+                .clickable { isShowDialog = true }
                 .padding(14.dp)
                 .fillMaxWidth(),
             color = main400,
