@@ -61,7 +61,7 @@ fun SpoonyIconButtonTextField(
             },
             borderColor = borderColor,
             modifier = modifier,
-            imeAction = ImeAction.Done,
+            imeAction = ImeAction.Next,
             onDoneAction = {
                 keyboardController?.hide()
                 focusManager.clearFocus()
