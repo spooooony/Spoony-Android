@@ -58,6 +58,10 @@ fun RegisterRoute(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadState()
+    }
+
     RegisterScreen(
         paddingValues = paddingValues,
         modifier = modifier,

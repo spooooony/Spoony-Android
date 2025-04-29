@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.register
 
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +15,6 @@ import com.spoony.spoony.presentation.register.model.Place
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
@@ -53,10 +54,40 @@ class RegisterViewModel @Inject constructor(
 
 
     init {
-        _registerType.value = registerInfo.registerType
         loadCategories()
-        if (_registerType.value == RegisterType.EDIT){
-            //POSTID를 기반으로 GET요청 후에 RegisterState 업데이트 하면 됨
+    }
+
+    fun loadState() {
+        _registerType.value = registerInfo.registerType
+
+        if (_registerType.value == RegisterType.EDIT) {
+            _state.update { state ->
+                state.copy(
+                    selectedPlace = Place(
+                        placeName = "하쿠텐라멘",
+                        placeAddress = "서울특별시 마포구 연남동 387-6 반지하",
+                        placeRoadAddress = "서울특별시 마포구 동교로 266-12 반지하",
+                        latitude = 37.562848,
+                        longitude = 126.9258353
+                    ),
+                    selectedCategory = Category(
+                        categoryId = 4,
+                        categoryName = "일식",
+                        iconUrlNotSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/japanese_black.png",
+                        iconUrlSelected = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/japanese_white.png"
+                    ),
+                    menuList = persistentListOf("쇼유라멘"),
+                    detailReview = "맛있어요",
+                    optionalReview = "줄이 개길어요",
+                    userSatisfactionValue = 0.8f,
+                    selectedPhotos = persistentListOf(
+                        SelectedPhoto(
+                            uri = "https://avatars.githubusercontent.com/u/160750136?v=4".toUri(),
+                            id = "1"
+                        )
+                    )
+                )
+            }
         }
     }
 

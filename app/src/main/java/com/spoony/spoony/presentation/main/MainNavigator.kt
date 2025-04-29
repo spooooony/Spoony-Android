@@ -30,40 +30,55 @@ const val NAVIGATION_ROOT = 0
 class MainNavigator(
     val navController: NavHostController
 ) {
+    val startDestination = Splash
+
     private val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
-
-    val startDestination = Splash
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
             currentDestination?.hasRoute(tab::class) == true
         }
 
-    fun navigate(tab: MainTab) {
-        val navOptions = navOptions {
-            navController.currentDestination?.route?.let {
-                popUpTo(it) {
-                    inclusive = true
-                    saveState = true
-                }
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-
-        when (tab) {
-            MainTab.MAP -> navController.navigateToMap(navOptions = navOptions)
-            MainTab.REGISTER -> navController.navigateToRegister(navOptions = navOptions)
-            MainTab.EXPLORE -> navController.navigateToExplore(navOptions)
-            MainTab.MYPAGE -> navController.navigateToMyPage(navOptions)
-        }
-    }
-
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true
+    }
+
+    private val mainTabNavOptions = navOptions {
+        navController.currentDestination?.route?.let {
+            popUpTo(it) {
+                inclusive = true
+                saveState = true
+            }
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+
+    private fun MainTab.getNavOptions(): NavOptions = when (this) {
+        MainTab.REGISTER -> navOptions {
+            navController.currentDestination?.route?.let {
+                popUpTo(NAVIGATION_ROOT) {
+                    inclusive = true
+                }
+            }
+            launchSingleTop = true
+        }
+        else -> mainTabNavOptions
+    }
+
+    fun navigate(tab: MainTab) {
+        when (tab) {
+            MainTab.MAP -> navController.navigateToMap(navOptions = tab.getNavOptions())
+            MainTab.EXPLORE -> navController.navigateToExplore(tab.getNavOptions())
+            MainTab.MYPAGE -> navController.navigateToMyPage(tab.getNavOptions())
+            MainTab.REGISTER -> navController.navigateToRegister(
+                registerType = RegisterType.CREATE,
+                navOptions = tab.getNavOptions()
+            )
+        }
     }
 
     fun navigateToSignIn(
