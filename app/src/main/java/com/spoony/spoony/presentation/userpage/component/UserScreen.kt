@@ -42,7 +42,7 @@ fun UserPageScreen(
     events: UserPageEvents,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
-    navigateToEditReview: (Int, RegisterType) -> Unit = { _, _ ->}
+    navigateToEditReview: (Int, RegisterType) -> Unit = { _, _ -> }
 ) {
     LazyColumn(
         modifier = modifier

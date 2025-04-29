@@ -22,7 +22,7 @@ fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToSettings: () -> Unit,
     navigateToFollow: (FollowType, Int) -> Unit,
-    navigateToEditReview:(Int, RegisterType) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
