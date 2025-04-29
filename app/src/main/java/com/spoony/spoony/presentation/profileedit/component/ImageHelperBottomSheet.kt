@@ -55,8 +55,3 @@ fun ImageHelperBottomSheet(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun ImageHelperBottomSheetPreview() {
-}
