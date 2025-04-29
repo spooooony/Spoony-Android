@@ -349,8 +349,8 @@ fun ExploreFilterBottomSheetContent(
             }
         }
 
-        item(key = "age_header") {
-            FilterSectionHeader(title = "연령대")
+        item(key = "age_content") {
+            FilterSectionHeader(title = "정렬")
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
