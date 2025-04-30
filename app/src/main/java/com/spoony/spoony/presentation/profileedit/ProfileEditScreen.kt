@@ -18,7 +18,7 @@ import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.presentation.profileedit.component.ImageHelperBottomSheet
-import com.spoony.spoony.presentation.profileedit.component.ProfileImageModel
+import com.spoony.spoony.presentation.profileedit.model.ProfileImageModel
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
