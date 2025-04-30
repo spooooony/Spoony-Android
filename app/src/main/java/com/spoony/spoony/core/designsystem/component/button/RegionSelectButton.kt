@@ -21,7 +21,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
-fun SelectRegionButton(
+fun RegionSelectButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     region: String = "서울 마포구",
@@ -88,11 +88,11 @@ private fun SelectRegionButtonPreview() {
         Column(
             modifier = Modifier.padding(10.dp)
         ) {
-            SelectRegionButton(
+            RegionSelectButton(
                 onClick = {}
             )
 
-            SelectRegionButton(
+            RegionSelectButton(
                 onClick = {},
                 region = "경기도 의왕시",
                 isSelected = true,

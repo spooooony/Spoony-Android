@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
 @Composable
-fun SelectBirthButton(
+fun BirthSelectButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     year: String = "2000",
@@ -93,11 +93,11 @@ private fun SelectBirthButtonPreview() {
             modifier = Modifier
                 .padding(10.dp)
         ) {
-            SelectBirthButton(
+            BirthSelectButton(
                 onClick = {}
             )
 
-            SelectBirthButton(
+            BirthSelectButton(
                 onClick = {},
                 year = "2001",
                 month = "09",

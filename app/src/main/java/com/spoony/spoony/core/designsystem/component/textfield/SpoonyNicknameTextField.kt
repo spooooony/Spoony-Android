@@ -138,7 +138,7 @@ fun SpoonyNicknameTextField(
                 }
             },
             isAllowEmoji = true,
-            isAllowSpecialChars = true,
+            isAllowSpecialChars = true
         )
 
         Row(
