@@ -11,13 +11,8 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicBottomSheet
+import com.spoony.spoony.presentation.profileedit.model.ProfileImageModel
 import kotlinx.collections.immutable.ImmutableList
-
-data class ProfileImageModel(
-    val imageUrl: String,
-    val name: String,
-    val description: String
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
