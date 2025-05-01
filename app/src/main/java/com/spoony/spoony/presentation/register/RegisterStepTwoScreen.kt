@@ -48,7 +48,6 @@ fun RegisterStepTwoRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val registerType by viewModel.registerType.collectAsStateWithLifecycle()
-    var isDialogVisible by remember { mutableStateOf(false) }
 
     val isNextButtonEnabled = remember(
         state.oneLineReview,
@@ -62,16 +61,10 @@ fun RegisterStepTwoRoute(
     RegisterStepTwoScreen(
         state = state,
         isNextButtonEnabled = isNextButtonEnabled,
-        isDialogVisible = isDialogVisible,
         onDetailReviewChange = viewModel::updateDetailReview,
         onPhotosSelected = viewModel::updatePhotos,
         onOptionalReviewChange = viewModel::updateOptionalReview,
-        onNextClick = {
-            viewModel.registerPost {
-                isDialogVisible = true
-            }
-        },
-        onDialogDismiss = { isDialogVisible = false },
+        onRegisterPost = viewModel::registerPost,
         onRegisterComplete = onRegisterComplete,
         modifier = modifier,
         registerType = registerType
@@ -83,16 +76,15 @@ private fun RegisterStepTwoScreen(
     registerType: RegisterType,
     state: RegisterState,
     isNextButtonEnabled: Boolean,
-    isDialogVisible: Boolean,
     onDetailReviewChange: (String) -> Unit,
-    onPhotosSelected: (List<SelectedPhoto>) -> Unit,
+    onPhotosSelected: (ImmutableList<SelectedPhoto>) -> Unit,
     onOptionalReviewChange: (String) -> Unit,
-    onNextClick: () -> Unit,
-    onDialogDismiss: () -> Unit,
+    onRegisterPost: (onSuccess: () -> Unit) -> Unit,
     onRegisterComplete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
+    var isDialogVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -135,7 +127,11 @@ private fun RegisterStepTwoScreen(
 
         NextButton(
             enabled = isNextButtonEnabled,
-            onClick = onNextClick,
+            onClick = {
+                onRegisterPost {
+                    isDialogVisible = true
+                }
+            },
             editText = if (registerType == RegisterType.CREATE) "다음" else "리뷰 수정"
         )
     }
@@ -153,7 +149,7 @@ private fun RegisterStepTwoScreen(
             onDismiss = {},
             onClick = {
                 onRegisterComplete()
-                onDialogDismiss()
+                isDialogVisible = false
             }
         ) {
             LottieAnimation(
@@ -198,7 +194,7 @@ private fun ReviewSection(
 private fun PhotoSection(
     selectedPhotos: ImmutableList<SelectedPhoto>,
     isPhotoErrorVisible: Boolean,
-    onPhotosSelected: (List<SelectedPhoto>) -> Unit,
+    onPhotosSelected: (ImmutableList<SelectedPhoto>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {

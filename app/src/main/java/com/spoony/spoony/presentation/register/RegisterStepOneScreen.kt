@@ -191,8 +191,8 @@ private fun PlaceSearchSection(
     onPlaceSelect: (Place) -> Unit,
     onPlaceClear: () -> Unit,
     onDismissSearchResults: () -> Unit,
-    modifier: Modifier = Modifier,
-    isCleanerIconVisible: Boolean
+    isCleanerIconVisible: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Text(

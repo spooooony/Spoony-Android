@@ -49,7 +49,7 @@ class RegisterViewModel @Inject constructor(
         get() = _registerType.asStateFlow()
 
     private val registerInfo = savedStateHandle.toRoute<Register>()
-    private val postId = registerInfo.postId // 리뷰 상세 불러오기 용
+    private val postId = registerInfo.postId
 
     init {
         loadCategories()

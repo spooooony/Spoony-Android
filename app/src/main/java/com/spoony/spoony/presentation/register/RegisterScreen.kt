@@ -79,7 +79,6 @@ fun RegisterRoute(
 @Composable
 private fun RegisterScreen(
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier,
     state: RegisterState,
     isTooltipVisible: Boolean,
     navController: NavHostController,
@@ -87,7 +86,8 @@ private fun RegisterScreen(
     onUpdateProgress: (RegisterSteps) -> Unit,
     onResetRegisterState: () -> Unit,
     hideRegisterSnackBar: () -> Unit,
-    viewModel: RegisterViewModel
+    viewModel: RegisterViewModel,
+    modifier: Modifier = Modifier
 ) {
     Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
         Column(
