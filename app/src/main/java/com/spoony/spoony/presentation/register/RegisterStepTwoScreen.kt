@@ -47,7 +47,7 @@ fun RegisterStepTwoRoute(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val registerType by viewModel.registerType.collectAsStateWithLifecycle()
+    val registerType = viewModel.registerType
 
     val isNextButtonEnabled = remember(
         state.oneLineReview,

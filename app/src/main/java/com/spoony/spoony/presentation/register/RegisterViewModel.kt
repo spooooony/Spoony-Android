@@ -44,11 +44,8 @@ class RegisterViewModel @Inject constructor(
     val sideEffect: SharedFlow<RegisterSideEffect>
         get() = _sideEffect.asSharedFlow()
 
-    private val _registerType = MutableStateFlow(RegisterType.CREATE)
-    val registerType: StateFlow<RegisterType>
-        get() = _registerType.asStateFlow()
-
     private val registerInfo = savedStateHandle.toRoute<Register>()
+    val registerType = registerInfo.registerType
     private val postId = registerInfo.postId
 
     init {
@@ -56,9 +53,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun loadState() {
-        _registerType.value = registerInfo.registerType
-
-        if (_registerType.value == RegisterType.EDIT) {
+        if (registerType == RegisterType.EDIT) {
             // TODO: 리뷰 수정에 맞는 GET API
         }
     }
