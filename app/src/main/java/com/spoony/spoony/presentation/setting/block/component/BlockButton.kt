@@ -18,10 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.theme.gray0
-import com.spoony.spoony.core.designsystem.theme.gray100
-import com.spoony.spoony.core.designsystem.theme.gray500
-import com.spoony.spoony.core.designsystem.theme.main200
 import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.util.extension.noRippleClickable
@@ -29,25 +25,34 @@ import com.spoony.spoony.core.util.extension.spoonyGradient
 
 private enum class BlockButtonState(
     val text: String,
-    val textColor: Color,
-    val backgroundColor: Color,
-    val borderColor: Color,
     val useGradient: Boolean
 ) {
     BLOCK(
         text = "차단",
-        textColor = white,
-        backgroundColor = Color.Transparent,
-        borderColor = main200,
         useGradient = true
     ),
     UNBLOCK(
         text = "해제",
-        textColor = gray500,
-        backgroundColor = gray0,
-        borderColor = gray100,
         useGradient = false
     )
+}
+
+@Composable
+private fun BlockButtonState.textColor(): Color = when (this) {
+    BlockButtonState.BLOCK -> SpoonyAndroidTheme.colors.main400
+    BlockButtonState.UNBLOCK -> SpoonyAndroidTheme.colors.gray500
+}
+
+@Composable
+private fun BlockButtonState.backgroundColor(): Color = when (this) {
+    BlockButtonState.BLOCK -> Color.Transparent
+    BlockButtonState.UNBLOCK -> SpoonyAndroidTheme.colors.gray0
+}
+
+@Composable
+private fun BlockButtonState.borderColor(): Color = when (this) {
+    BlockButtonState.BLOCK -> SpoonyAndroidTheme.colors.main200
+    BlockButtonState.UNBLOCK -> SpoonyAndroidTheme.colors.gray100
 }
 
 @Composable
@@ -55,7 +60,6 @@ fun BlockButton(
     isBlocking: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-
     isSmall: Boolean = true
 ) {
     val buttonState = remember(isBlocking) {
@@ -68,7 +72,7 @@ fun BlockButton(
     val buttonModifier = modifier
         .border(
             width = 1.dp,
-            color = buttonState.borderColor,
+            color = buttonState.borderColor(),
             shape = cornerShape
         )
         .then(
@@ -86,13 +90,13 @@ fun BlockButton(
 
     Surface(
         shape = cornerShape,
-        color = buttonState.backgroundColor,
+        color = buttonState.backgroundColor(),
         modifier = buttonModifier
     ) {
         Text(
             text = buttonState.text,
             style = SpoonyAndroidTheme.typography.body2sb,
-            color = buttonState.textColor,
+            color = buttonState.textColor(),
             modifier = Modifier.padding(
                 horizontal = if (isSmall) 14.dp else 24.dp,
                 vertical = 6.dp
