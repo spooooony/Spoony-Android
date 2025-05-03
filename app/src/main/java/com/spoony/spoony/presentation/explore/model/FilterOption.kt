@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.explore.model
 
 import com.spoony.spoony.R
+import kotlinx.collections.immutable.persistentListOf
 
 data class FilterOption(
     val sort: String,
@@ -11,9 +12,9 @@ data class FilterOption(
     val onClick: () -> Unit = {}
 )
 
-object FilterChipDataProvider {
+object FilterChipOptionProvider {
 
-    fun getDefaultFilterOptions() = listOf(
+    fun getDefaultFilterOptions() = persistentListOf(
         FilterOption(
             sort = "filter",
             text = "필터",

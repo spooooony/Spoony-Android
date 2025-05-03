@@ -38,15 +38,12 @@ import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreItem
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
-import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreLocationBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
-import com.spoony.spoony.presentation.explore.model.FilterChipDataProvider
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import okhttp3.internal.immutableListOf
 
 @Composable
 fun ExploreRoute(
@@ -58,14 +55,13 @@ fun ExploreRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val tabList = immutableListOf("전체", "팔로잉")
+    val tabList = persistentListOf("전체", "팔로잉")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
-    val chipItems = FilterChipDataProvider.getDefaultFilterOptions()
 
     with(state) {
         ExploreScreen(
             tabList = tabList,
-            chipItems = chipItems,
+            chipItems = state.chipItems,
             selectedTabIndex = selectedTabIndex,
             paddingValues = paddingValues,
             placeReviewList = placeReviewList,
@@ -78,8 +74,8 @@ fun ExploreRoute(
 
 @Composable
 private fun ExploreScreen(
-    tabList: List<String>,
-    chipItems: List<FilterOption>,
+    tabList: ImmutableList<String>,
+    chipItems: ImmutableList<FilterOption>,
     selectedTabIndex: MutableState<Int>,
     paddingValues: PaddingValues,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -88,7 +84,6 @@ private fun ExploreScreen(
     onReportButtonClick: (postId: Int, userId: Int) -> Unit
 ) {
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
-    var isLocationBottomSheetVisible by remember { mutableStateOf(false) }
     var selectedSortingOption by remember { mutableStateOf(SortingOption.LATEST) }
 
     if (isSortingBottomSheetVisible) {
@@ -96,13 +91,6 @@ private fun ExploreScreen(
             onDismiss = { isSortingBottomSheetVisible = false },
             onClick = { selectedSortingOption = it },
             currentSortingOption = selectedSortingOption
-        )
-    }
-
-    if (isLocationBottomSheetVisible) {
-        ExploreLocationBottomSheet(
-            onDismiss = { isLocationBottomSheetVisible = false },
-            onClick = {}
         )
     }
 
