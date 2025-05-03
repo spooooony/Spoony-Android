@@ -32,15 +32,10 @@ fun RegionSelectButton(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(22.dp),
         modifier = modifier
     ) {
-        Text(
-            text = "나는",
-            style = SpoonyAndroidTheme.typography.body1m,
-            color = SpoonyAndroidTheme.colors.black,
-            modifier = Modifier
-                .padding(end = 22.dp)
-        )
+        BodyText(text = "나는")
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -71,14 +66,21 @@ fun RegionSelectButton(
             )
         }
 
-        Text(
-            text = "스푼",
-            style = SpoonyAndroidTheme.typography.body1m,
-            color = SpoonyAndroidTheme.colors.black,
-            modifier = Modifier
-                .padding(start = 22.dp)
-        )
+        BodyText(text = "스푼")
     }
+}
+
+@Composable
+private fun BodyText(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        style = SpoonyAndroidTheme.typography.body1m,
+        color = SpoonyAndroidTheme.colors.black,
+        modifier = modifier
+    )
 }
 
 @Preview(showBackground = true)
