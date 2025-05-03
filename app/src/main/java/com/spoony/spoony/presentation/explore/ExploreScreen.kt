@@ -90,10 +90,7 @@ private fun ExploreScreen(
 
     Column(
         modifier = Modifier
-            .padding(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding()
-            )
+            .padding(paddingValues)
             .fillMaxSize()
             .background(SpoonyAndroidTheme.colors.white)
     ) {
