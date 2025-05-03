@@ -248,31 +248,40 @@ fun Modifier.spreadShadow(
     borderRadius: Dp = 0.dp,
     blurRadius: Dp = 0.dp,
     spread: ShadowSpread = ShadowSpread()
-): Modifier = this.then(
-    Modifier.drawBehind {
+): Modifier = composed {
+    val paint = remember {
+        Paint().asFrameworkPaint().apply {
+            this.color = color.toArgb()
+        }
+    }
+
+    val (spreadLeftPx, spreadTopPx, spreadRightPx, spreadBottomPx) = with(LocalDensity.current) {
+        with(spread) {
+            listOf(
+                left.coerceAtLeast(0f).dp.toPx(),
+                top.coerceAtLeast(0f).dp.toPx(),
+                right.coerceAtLeast(0f).dp.toPx(),
+                bottom.coerceAtLeast(0f).dp.toPx()
+            )
+        }
+    }
+    val borderRadiusPx = with(LocalDensity.current) { borderRadius.toPx() }
+    val blurRadiusPx = with(LocalDensity.current) { blurRadius.toPx() }
+    drawBehind {
         drawIntoCanvas { canvas ->
-            val paint = Paint().asFrameworkPaint().apply {
-                this.color = color.toArgb()
-                if (blurRadius != 0.dp) {
-                    maskFilter = BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL)
-                }
-            }
-            val spreadLeftPx = spread.left.coerceAtLeast(0f).toDp().toPx()
-            val spreadTopPx = spread.top.coerceAtLeast(0f).toDp().toPx()
-            val spreadRightPx = spread.right.coerceAtLeast(0f).toDp().toPx()
-            val spreadBottomPx = spread.bottom.coerceAtLeast(0f).toDp().toPx()
             val rectF = android.graphics.RectF(
                 0f - spreadLeftPx,
                 0f - spreadTopPx,
                 size.width + spreadRightPx,
                 size.height + spreadBottomPx
             )
+            paint.maskFilter = if (blurRadius != 0.dp) BlurMaskFilter(blurRadiusPx, BlurMaskFilter.Blur.NORMAL) else null
             canvas.nativeCanvas.drawRoundRect(
                 rectF,
-                borderRadius.toPx(),
-                borderRadius.toPx(),
+                borderRadiusPx,
+                borderRadiusPx,
                 paint
             )
         }
     }
-)
+}
