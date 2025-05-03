@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +27,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import timber.log.Timber
 
 enum class NicknameTextFieldState(val text: String) {
     DEFAULT(""),
@@ -44,12 +44,12 @@ fun SpoonyNicknameTextField(
     onValueChanged: (String) -> Unit,
     placeholder: String,
     onDoneAction: () -> Unit,
+    onStateChanged: (NicknameTextFieldState) -> Unit,
     modifier: Modifier = Modifier,
     maxLength: Int = 10,
     minLength: Int = 1,
     state: NicknameTextFieldState = NicknameTextFieldState.DEFAULT
 ) {
-    var currentState by remember { mutableStateOf(state) }
     var isFirstEntry by remember { mutableStateOf(true) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -57,24 +57,20 @@ fun SpoonyNicknameTextField(
     val spoonyColors = SpoonyAndroidTheme.colors
     val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
 
-    val borderColor = remember(currentState) {
-        when (currentState) {
+    val borderColor = remember(state) {
+        when (state) {
             NicknameTextFieldState.DEFAULT -> spoonyColors.gray100
             NicknameTextFieldState.AVAILABLE -> spoonyColors.green400
             else -> spoonyColors.error400
         }
     }
 
-    val textColor = remember(currentState) {
-        when (currentState) {
+    val textColor = remember(state) {
+        when (state) {
             NicknameTextFieldState.DEFAULT -> spoonyColors.gray500
             NicknameTextFieldState.AVAILABLE -> spoonyColors.green400
             else -> spoonyColors.error400
         }
-    }
-
-    LaunchedEffect(state) {
-        currentState = state
     }
 
     Column(
@@ -86,20 +82,22 @@ fun SpoonyNicknameTextField(
             onValueChanged = { newText ->
                 when {
                     newText.containsEmoji() || !SpoonyValidator.isNotContainsSpecialChars(newText) -> {
-                        currentState = NicknameTextFieldState.INVALID_CHARACTERS
+                        onStateChanged(NicknameTextFieldState.INVALID_CHARACTERS)
                     }
 
                     newText.length > maxLength -> {
-                        currentState = NicknameTextFieldState.OVERFLOW_MAX_LENGTH
+                        onStateChanged(NicknameTextFieldState.OVERFLOW_MAX_LENGTH)
                     }
 
                     newText.trim().length < minLength -> {
-                        currentState = NicknameTextFieldState.NICKNAME_REQUIRED
+                        Timber.d("stateChanged minlength $newText")
+                        onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
                         onValueChanged(newText)
                     }
 
                     else -> {
-                        currentState = NicknameTextFieldState.DEFAULT
+                        Timber.d("stateChanged else $newText")
+                        onStateChanged(NicknameTextFieldState.DEFAULT)
                         onValueChanged(newText)
                     }
                 }
@@ -109,10 +107,10 @@ fun SpoonyNicknameTextField(
             imeAction = ImeAction.Done,
             onFocusChanged = {
                 if (isFirstEntry) {
-                    currentState = NicknameTextFieldState.DEFAULT
+                    onStateChanged(NicknameTextFieldState.DEFAULT)
                     isFirstEntry = false
                 } else if (value.trim().length < minLength) {
-                    currentState = NicknameTextFieldState.NICKNAME_REQUIRED
+                    onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
                 } else {
                     onDoneAction()
                 }
@@ -120,7 +118,7 @@ fun SpoonyNicknameTextField(
             onDoneAction = {
                 keyboardController?.hide()
                 focusManager.clearFocus()
-                if (currentState != NicknameTextFieldState.NICKNAME_REQUIRED) onDoneAction()
+                if (state != NicknameTextFieldState.NICKNAME_REQUIRED) onDoneAction()
             },
             singleLine = true,
             trailingIcon = {
@@ -132,7 +130,7 @@ fun SpoonyNicknameTextField(
                         modifier = Modifier
                             .noRippleClickable {
                                 onValueChanged("")
-                                currentState = NicknameTextFieldState.NICKNAME_REQUIRED
+                                onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
                             }
                     )
                 }
@@ -147,10 +145,10 @@ fun SpoonyNicknameTextField(
             modifier = Modifier
                 .padding(top = 8.dp)
         ) {
-            if (currentState != NicknameTextFieldState.DEFAULT) {
+            if (state != NicknameTextFieldState.DEFAULT) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
-                        id = if (currentState == NicknameTextFieldState.AVAILABLE) R.drawable.ic_check_16 else R.drawable.ic_error_24
+                        id = if (state == NicknameTextFieldState.AVAILABLE) R.drawable.ic_check_16 else R.drawable.ic_error_24
                     ),
                     contentDescription = null,
                     tint = textColor,
@@ -159,7 +157,7 @@ fun SpoonyNicknameTextField(
             }
 
             Text(
-                text = currentState.text,
+                text = state.text,
                 style = SpoonyAndroidTheme.typography.caption1m,
                 color = textColor,
                 modifier = Modifier
@@ -184,10 +182,8 @@ private fun SpoonyNicknameTextFieldPreview() {
 
         SpoonyNicknameTextField(
             value = text,
-            onValueChanged = {
-                text = it
-                state = NicknameTextFieldState.DEFAULT
-            },
+            onValueChanged = { text = it },
+            onStateChanged = { state = it },
             placeholder = "플레이스홀더",
             onDoneAction = { state = NicknameTextFieldState.DUPLICATE },
             maxLength = 10,

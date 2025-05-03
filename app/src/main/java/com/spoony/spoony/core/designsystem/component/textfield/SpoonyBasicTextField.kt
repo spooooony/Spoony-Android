@@ -61,9 +61,7 @@ fun SpoonyBasicTextField(
             val isValidInput = (isAllowEmoji || SpoonyValidator.isNotContainsEmoji(newValue)) &&
                 (isAllowSpecialChars || SpoonyValidator.isNotContainsSpecialChars(newValue))
 
-            val filteredValue = if (isValidInput) newValue else value
-
-            onValueChanged(filteredValue)
+            if (isValidInput) onValueChanged(newValue)
         },
 
         modifier = modifier
