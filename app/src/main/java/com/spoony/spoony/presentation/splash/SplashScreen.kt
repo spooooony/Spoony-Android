@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -27,7 +28,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SplashRoute(
     navigateToMap: () -> Unit,
-    navigateToSignIn: () -> Unit
+    navigateToSignIn: () -> Unit,
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -38,8 +40,12 @@ fun SplashRoute(
         )
 
         lifecycleOwner.lifecycleScope.launch {
-            delay(1000)
-            navigateToSignIn()
+            delay(300)
+            if (viewModel.hasAccessToken()) {
+                navigateToMap()
+            } else {
+                navigateToSignIn()
+            }
         }
     }
 
