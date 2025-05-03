@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +24,11 @@ import com.spoony.spoony.presentation.explore.search.type.SearchType
 @Composable
 fun ExploreSearchEmptyScreen(
     searchType: SearchType = SearchType.USER,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
-    val text = if (searchType == SearchType.USER) "닉네임" else "키워드"
+    val text = remember(searchType) {
+        if (searchType == SearchType.USER) "닉네임" else "키워드"
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier

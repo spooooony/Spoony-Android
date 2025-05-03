@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -29,7 +30,9 @@ fun ExploreSearchTopAppbar(
     focusRequester: FocusRequester = FocusRequester(),
     searchType: SearchType = SearchType.USER
 ) {
-    val placeholder = if (searchType == SearchType.USER) "유저 닉네임으로 검색" else "리뷰 키워드으로 검색"
+    val placeholder = remember(searchType) {
+        if (searchType == SearchType.USER) "유저 닉네임으로 검색" else "리뷰 키워드으로 검색"
+    }
     SpoonyBasicTopAppBar(
         modifier = modifier
             .background(SpoonyAndroidTheme.colors.white),
