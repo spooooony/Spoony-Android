@@ -1,5 +1,7 @@
 package com.spoony.spoony.presentation.auth.termsofservice
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
@@ -19,6 +24,40 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.presentation.auth.termsofservice.component.AgreeAllButton
 import com.spoony.spoony.presentation.auth.termsofservice.component.AgreeTermsButton
 import kotlinx.collections.immutable.persistentListOf
+
+private data class SpoonyTerms(
+    val title: String,
+    val link: String,
+    val isRequired: Boolean,
+    val isUnderlined: Boolean
+)
+
+private val termsList = persistentListOf(
+    SpoonyTerms(
+        title = "만 14세 이상입니다.",
+        link = "https://github.com/Hyobeen-Park",
+        isRequired = true,
+        isUnderlined = false
+    ),
+    SpoonyTerms(
+        title = "스푸니 서비스 이용약관",
+        link = "https://github.com/angryPodo",
+        isRequired = true,
+        isUnderlined = true
+    ),
+    SpoonyTerms(
+        title = "개인정보 처리방침",
+        link = "https://github.com/Roel4990",
+        isRequired = true,
+        isUnderlined = true
+    ),
+    SpoonyTerms(
+        title = "위치기반 서비스 이용약관",
+        link = "https://github.com/chattymin",
+        isRequired = true,
+        isUnderlined = true
+    )
+)
 
 @Composable
 fun TermsOfServiceRoute(
@@ -44,6 +83,12 @@ private fun TermsOfServiceScreen(
     paddingValues: PaddingValues,
     navigateToMap: () -> Unit
 ) {
+    val context = LocalContext.current
+    val isChecked = remember { mutableStateListOf(*Array(termsList.size) { false }) }
+    val isRequiredAgreed = termsList
+        .filter { it.isRequired }
+        .all { term -> isChecked[termsList.indexOf(term)] }
+
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -52,7 +97,13 @@ private fun TermsOfServiceScreen(
             .fillMaxSize()
     ) {
         AgreeAllButton(
-            onClick = {}
+            isChecked = isChecked.all { it },
+            onClick = {
+                val newValue = !isChecked.all { it }
+                isChecked.indices.forEach { index ->
+                    isChecked[index] = newValue
+                }
+            }
         )
 
         Spacer(
@@ -60,20 +111,27 @@ private fun TermsOfServiceScreen(
                 .height(34.dp)
         )
 
-        persistentListOf(
-            Pair("만 14세 이상입니다.", false),
-            Pair("스푸니 서비스 이용약관", true),
-            Pair("개인정보 처리 방침", true),
-            Pair("위치기반 서비스 이용약관", true)
-        ).forEach { (title, isUnderlined) ->
-            AgreeTermsButton(
-                title = title,
-                onCheckBoxClick = {},
-                isRequired = true,
-                isUnderlined = isUnderlined,
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-            )
+        termsList.forEachIndexed { index, term ->
+            with(term) {
+                AgreeTermsButton(
+                    title = title,
+                    onCheckBoxClick = {
+                        isChecked[index] = !isChecked[index]
+                    },
+                    onTitleClick = {
+                        if (link.isNotBlank()) {
+                            Intent(Intent.ACTION_VIEW, Uri.parse(link)).apply {
+                                context.startActivity(this)
+                            }
+                        }
+                    },
+                    isRequired = isRequired,
+                    isChecked = isChecked[index],
+                    isUnderlined = isUnderlined,
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                )
+            }
         }
 
         Spacer(
@@ -86,6 +144,7 @@ private fun TermsOfServiceScreen(
             size = ButtonSize.Xlarge,
             style = ButtonStyle.Primary,
             onClick = navigateToMap,
+            enabled = isRequiredAgreed,
             modifier = Modifier
                 .fillMaxWidth()
         )
