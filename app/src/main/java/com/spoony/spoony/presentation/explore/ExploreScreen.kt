@@ -55,12 +55,10 @@ fun ExploreRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val tabList = persistentListOf("전체", "팔로잉")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
 
     with(state) {
         ExploreScreen(
-            tabList = tabList,
             chipItems = state.chipItems,
             selectedTabIndex = selectedTabIndex,
             paddingValues = paddingValues,
@@ -74,7 +72,6 @@ fun ExploreRoute(
 
 @Composable
 private fun ExploreScreen(
-    tabList: ImmutableList<String>,
     chipItems: ImmutableList<FilterOption>,
     selectedTabIndex: MutableState<Int>,
     paddingValues: PaddingValues,
@@ -83,6 +80,7 @@ private fun ExploreScreen(
     onPlaceDetailItemClick: (Int) -> Unit,
     onReportButtonClick: (postId: Int, userId: Int) -> Unit
 ) {
+    val tabList = persistentListOf("전체", "팔로잉")
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var selectedSortingOption by remember { mutableStateOf(SortingOption.LATEST) }
 
