@@ -12,14 +12,14 @@ data class ExploreSearchState(
     val recentUserSearchQueryList: ImmutableList<String> = persistentListOf(),
     val searchType: SearchType = SearchType.USER,
     val userInfoList: UiState<ImmutableList<UserInfo>> = UiState.Loading,
-    val placeReviewInfoList: UiState<ImmutableList<PlaceReviewInfo>> = UiState.Loading,
+    val placeReviewInfoList: UiState<ImmutableList<PlaceReviewInfo>> = UiState.Loading
 )
 
 data class UserInfo(
     val userId: Int = 0,
     val imageUrl: String = "",
     val nickname: String = "",
-    val region: String = "",
+    val region: String = ""
 )
 
 data class PlaceReviewInfo(

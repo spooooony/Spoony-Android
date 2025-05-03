@@ -32,8 +32,8 @@ fun ExploreSearchUserItem(
                 vertical = 8.dp,
                 horizontal = 20.dp
             )
-            .noRippleClickable{ onItemClick(userInfo.userId) },
-        verticalAlignment = Alignment.CenterVertically,
+            .noRippleClickable { onItemClick(userInfo.userId) },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         UrlImage(
             imageUrl = userInfo.imageUrl,

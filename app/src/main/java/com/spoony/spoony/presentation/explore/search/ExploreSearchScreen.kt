@@ -57,7 +57,7 @@ fun ExploreSearchRoute(
         paddingValues = paddingValues,
         searchKeyword = state.searchKeyword,
         searchType = state.searchType,
-        onSwitchType = { searchType -> viewModel.switchType(searchType)},
+        onSwitchType = { searchType -> viewModel.switchType(searchType) },
         onRemoveRecentSearchItem = { keyword -> viewModel.removeRecentSearchItem(keyword) },
         onClearRecentSearchItem = viewModel::clearRecentSearchItem,
         onSearch = { keyword -> viewModel.search(keyword) },
@@ -65,7 +65,7 @@ fun ExploreSearchRoute(
         recentReviewSearchQueryList = state.recentReviewSearchQueryList,
         recentUserSearchQueryList = state.recentUserSearchQueryList,
         userInfoList = state.userInfoList,
-        placeReviewInfoList = state.placeReviewInfoList,
+        placeReviewInfoList = state.placeReviewInfoList
     )
 }
 
@@ -114,7 +114,7 @@ fun ExploreSearchScreen(
                 if (searchText.isNotEmpty()) onSearch(searchText)
             },
             focusRequester = focusRequester,
-            searchType = searchType,
+            searchType = searchType
         )
         TabRow(
             selectedTabIndex = tabRowIndex,
@@ -139,7 +139,7 @@ fun ExploreSearchScreen(
                         tabRowIndex = index
                         onSwitchType(title)
                     },
-                    selectedContentColor = SpoonyAndroidTheme.colors.white,
+                    selectedContentColor = SpoonyAndroidTheme.colors.white
                 ) {
                     Text(
                         text = title.toKoreanText(),
@@ -153,9 +153,9 @@ fun ExploreSearchScreen(
             thickness = Dp.Hairline.plus(6.dp),
             color = SpoonyAndroidTheme.colors.gray100
         )
-        when (tabRowIndex){
+        when (tabRowIndex) {
             0 -> {
-                when  {
+                when {
                     searchKeyword.isBlank() -> {
                         when (recentUserSearchQueryList.isEmpty()) {
                             true -> ExploreSearchRecentEmptyScreen(searchType = searchType)
@@ -198,7 +198,7 @@ fun ExploreSearchScreen(
                 }
             }
             1 -> {
-                when  {
+                when {
                     searchKeyword.isBlank() -> {
                         when (recentReviewSearchQueryList.isEmpty()) {
                             true -> ExploreSearchRecentEmptyScreen(searchType = searchType)
@@ -234,16 +234,16 @@ private fun ExploreSearchRecentContent(
     onClearRecentSearchItem: () -> Unit,
     onItemClick: (String) -> Unit,
     recentQueryList: ImmutableList<String>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
-    Column (
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(
                 horizontal = 20.dp,
                 vertical = 22.dp
-            ),
-    ){
+            )
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -285,7 +285,6 @@ private fun ExploreSearchRecentContent(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun ExploreSearchScreenPreview() {
@@ -301,12 +300,14 @@ private fun ExploreSearchScreenPreview() {
             searchType = searchType,
             onRemoveRecentSearchItem = { removedKeyword ->
                 when (searchType) {
-                    SearchType.USER -> recentUserQueryList = recentUserQueryList
-                        .filterNot { it == removedKeyword }
-                        .toPersistentList()
-                    SearchType.REVIEW -> recentReviewQueryList = recentReviewQueryList
-                        .filterNot { it == removedKeyword }
-                        .toPersistentList()
+                    SearchType.USER ->
+                        recentUserQueryList = recentUserQueryList
+                            .filterNot { it == removedKeyword }
+                            .toPersistentList()
+                    SearchType.REVIEW ->
+                        recentReviewQueryList = recentReviewQueryList
+                            .filterNot { it == removedKeyword }
+                            .toPersistentList()
                 }
             },
             onSwitchType = {
@@ -337,7 +338,6 @@ private fun ExploreSearchScreenPreview() {
                         recentReviewQueryList = updatedList
                     }
                 }
-
             },
             onClearSearchKeyword = {
                 searchKeyword = ""
@@ -366,7 +366,7 @@ private fun ExploreSearchScreenPreview() {
                     )
                 )
             ),
-            placeReviewInfoList = UiState.Success(persistentListOf()),
+            placeReviewInfoList = UiState.Success(persistentListOf())
         )
     }
 }
