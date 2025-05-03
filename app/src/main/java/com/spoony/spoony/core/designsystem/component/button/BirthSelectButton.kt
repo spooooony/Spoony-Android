@@ -1,5 +1,4 @@
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun BirthSelectButton(
@@ -28,7 +28,7 @@ fun BirthSelectButton(
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
-            .clickable(onClick = onClick)
+            .noRippleClickable(onClick = onClick)
     ) {
         DateItem(
             date = year,
