@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,12 +54,9 @@ fun ExploreRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val selectedTabIndex = remember { mutableIntStateOf(0) }
-
     with(state) {
         ExploreScreen(
             chipItems = state.chipItems,
-            selectedTabIndex = selectedTabIndex,
             paddingValues = paddingValues,
             placeReviewList = placeReviewList,
             onRegisterButtonClick = navigateToRegister,
@@ -73,7 +69,6 @@ fun ExploreRoute(
 @Composable
 private fun ExploreScreen(
     chipItems: ImmutableList<FilterOption>,
-    selectedTabIndex: MutableState<Int>,
     paddingValues: PaddingValues,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     onRegisterButtonClick: () -> Unit,
@@ -81,6 +76,7 @@ private fun ExploreScreen(
     onReportButtonClick: (postId: Int, userId: Int) -> Unit
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
+    val selectedTabIndex = remember { mutableIntStateOf(0) }
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var selectedSortingOption by remember { mutableStateOf(SortingOption.LATEST) }
 
