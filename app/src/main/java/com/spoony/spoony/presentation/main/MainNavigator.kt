@@ -76,7 +76,13 @@ class MainNavigator(
         navController.navigateToSignIn(navOptions = navOptions)
     }
 
-    fun navigateToTermsOfService(navOptions: NavOptions? = null) {
+    fun navigateToTermsOfService(
+        navOptions: NavOptions? = navOptions {
+            popUpTo(NAVIGATION_ROOT) {
+                inclusive = true
+            }
+        }
+    ) {
         navController.navigateToTermsOfService(navOptions = navOptions)
     }
 
