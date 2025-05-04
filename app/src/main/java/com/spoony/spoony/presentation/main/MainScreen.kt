@@ -31,6 +31,7 @@ import com.spoony.spoony.presentation.main.component.MainBottomBar
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
+import com.spoony.spoony.presentation.setting.navigation.settingPageNavGraph
 import com.spoony.spoony.presentation.splash.navigation.splashNavGraph
 import com.spoony.spoony.presentation.userpage.mypage.navigation.myPageNavGraph
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.otherPageNavGraph
@@ -144,7 +145,7 @@ fun MainScreen(
 
                 myPageNavGraph(
                     paddingValues = paddingValues,
-                    navigateToSettings = { },
+                    navigateToSettings = navigator::navigateToSettingPage,
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToProfileEdit = { },
                     navigateToRegister = navigator::navigateToRegister,
@@ -193,6 +194,11 @@ fun MainScreen(
                             longitude = longitude
                         )
                     }
+                )
+
+                settingPageNavGraph(
+                    paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp
                 )
             }
         }

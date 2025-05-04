@@ -20,6 +20,7 @@ import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSea
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
+import com.spoony.spoony.presentation.setting.navigation.navigateToSettingPage
 import com.spoony.spoony.presentation.splash.navigation.Splash
 import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.navigateToOtherPage
@@ -159,6 +160,14 @@ class MainNavigator(
             scale = scale,
             latitude = latitude,
             longitude = longitude,
+            navOptions = navOptions
+        )
+    }
+
+    fun navigateToSettingPage(
+        navOptions: NavOptions? = null
+    ) {
+        navController.navigateToSettingPage(
             navOptions = navOptions
         )
     }
