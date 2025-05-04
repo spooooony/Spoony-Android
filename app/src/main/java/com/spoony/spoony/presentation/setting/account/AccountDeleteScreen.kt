@@ -32,7 +32,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import kotlinx.collections.immutable.persistentListOf
 
-private const val Bullet = "\u2022"
+private const val BULLET_POINT = "\u2022"
 
 @Composable
 fun AccountDeleteScreen() {
@@ -41,7 +41,7 @@ fun AccountDeleteScreen() {
         "탈퇴 시 모든 정보가 사라지며, 회원님의 소중한 정보를 되살릴 수 없어요."
     )
 
-    var canDelete by remember { mutableStateOf(false) }
+    var isNoticeAgreed by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -56,7 +56,9 @@ fun AccountDeleteScreen() {
         Spacer(modifier = Modifier.height(10.dp))
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
         ) {
             announcementList.forEach { announcement ->
                 BulletText(
@@ -74,11 +76,13 @@ fun AccountDeleteScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = canDelete,
+                    checked = isNoticeAgreed,
                     onCheckedChange = {
-                        canDelete = it
+                        isNoticeAgreed = it
                     },
-                    modifier = Modifier.size(26.dp).padding(end = 8.dp)
+                    modifier = Modifier
+                        .size(26.dp)
+                        .padding(end = 8.dp)
                 )
                 Text(
                     text = "위 유의사항을 확인했습니다.",
@@ -94,7 +98,7 @@ fun AccountDeleteScreen() {
                 text = "탈퇴하기",
                 size = ButtonSize.Large,
                 style = ButtonStyle.Primary,
-                enabled = canDelete,
+                enabled = isNoticeAgreed,
                 onClick = {},
                 modifier = Modifier.fillMaxWidth()
             )
@@ -105,12 +109,12 @@ fun AccountDeleteScreen() {
 @Composable
 private fun BulletText(
     text: String,
-    modifier: Modifier = Modifier,
     style: TextStyle,
     color: Color,
+    modifier: Modifier = Modifier,
     textAlign: TextAlign = TextAlign.Start
 ) = Text(
-    text = "$Bullet $text",
+    text = "$BULLET_POINT $text",
     style = style,
     color = color,
     textAlign = textAlign,
@@ -119,7 +123,7 @@ private fun BulletText(
 
 @Preview
 @Composable
-fun AccountDeleteScreenPreview() {
+private fun AccountDeleteScreenPreview() {
     SpoonyAndroidTheme {
         AccountDeleteScreen()
     }

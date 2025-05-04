@@ -77,7 +77,7 @@ fun AccountManagementScreen() {
                 .clickable { isShowDialog = true }
                 .padding(14.dp)
                 .fillMaxWidth(),
-            color = main400,
+            color = SpoonyAndroidTheme.colors.main400,
             textAlign = TextAlign.Center
         )
 
@@ -88,7 +88,7 @@ fun AccountManagementScreen() {
                 .background(white)
                 .padding(14.dp)
                 .fillMaxWidth(),
-            color = gray500,
+            color = SpoonyAndroidTheme.colors.gray500,
             textAlign = TextAlign.Center
         )
     }
@@ -96,7 +96,7 @@ fun AccountManagementScreen() {
 
 @Preview
 @Composable
-fun AccountManagementPreview() {
+private fun AccountManagementPreview() {
     SpoonyAndroidTheme {
         AccountManagementScreen()
     }
