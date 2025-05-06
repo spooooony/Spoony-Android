@@ -197,7 +197,6 @@ fun MainScreen(
                 )
 
                 settingPageNavGraph(
-                    paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp
                 )
             }
