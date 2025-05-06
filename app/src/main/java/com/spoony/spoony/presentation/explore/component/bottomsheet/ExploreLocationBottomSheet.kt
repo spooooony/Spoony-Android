@@ -141,7 +141,7 @@ fun ExploreLocationBottomSheet(
                 style = ButtonStyle.Secondary,
                 size = ButtonSize.Xlarge,
                 onClick = {
-                    onClick(currentCity)
+                    onClick("서울 $currentCity")
                     onDismiss()
                 },
                 enabled = currentCity.isNotEmpty(),
