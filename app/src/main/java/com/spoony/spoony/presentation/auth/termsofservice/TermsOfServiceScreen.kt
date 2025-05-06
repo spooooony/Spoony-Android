@@ -1,7 +1,6 @@
 package com.spoony.spoony.presentation.auth.termsofservice
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.white
@@ -27,35 +27,30 @@ import kotlinx.collections.immutable.persistentListOf
 
 private data class SpoonyTerms(
     val title: String,
-    val link: String,
-    val isRequired: Boolean,
-    val isUnderlined: Boolean
+    val link: String?,
+    val isRequired: Boolean
 )
 
 private val termsList = persistentListOf(
     SpoonyTerms(
         title = "만 14세 이상입니다.",
         link = "https://github.com/Hyobeen-Park",
-        isRequired = true,
-        isUnderlined = false
+        isRequired = true
     ),
     SpoonyTerms(
         title = "스푸니 서비스 이용약관",
         link = "https://github.com/angryPodo",
-        isRequired = true,
-        isUnderlined = true
+        isRequired = true
     ),
     SpoonyTerms(
         title = "개인정보 처리방침",
         link = "https://github.com/Roel4990",
-        isRequired = true,
-        isUnderlined = true
+        isRequired = true
     ),
     SpoonyTerms(
         title = "위치기반 서비스 이용약관",
         link = "https://github.com/chattymin",
-        isRequired = true,
-        isUnderlined = true
+        isRequired = true
     )
 )
 
@@ -119,15 +114,15 @@ private fun TermsOfServiceScreen(
                         isChecked[index] = !isChecked[index]
                     },
                     onTitleClick = {
-                        if (link.isNotBlank()) {
-                            Intent(Intent.ACTION_VIEW, Uri.parse(link)).apply {
+                        if (link?.isNotBlank() == true) {
+                            Intent(Intent.ACTION_VIEW, link.toUri()).apply {
                                 context.startActivity(this)
                             }
                         }
                     },
                     isRequired = isRequired,
                     isChecked = isChecked[index],
-                    isUnderlined = isUnderlined,
+                    isUnderlined = link?.isNotBlank() == true,
                     modifier = Modifier
                         .padding(bottom = 16.dp)
                 )

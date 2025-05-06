@@ -15,7 +15,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-private val Context.tokenDataStore: DataStore<Preferences> by preferencesDataStore(name = "token_preferences")
+private const val TOKEN_PREFERENCES = "token_preferences"
+private val Context.tokenDataStore: DataStore<Preferences> by preferencesDataStore(name = TOKEN_PREFERENCES)
 
 @Module
 @InstallIn(SingletonComponent::class)
