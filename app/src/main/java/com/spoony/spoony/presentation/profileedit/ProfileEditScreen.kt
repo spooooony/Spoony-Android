@@ -40,7 +40,7 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
-import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreLocationBottomSheet
+import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyLocationBottomSheet
 import com.spoony.spoony.presentation.profileedit.component.ImageHelperBottomSheet
 import com.spoony.spoony.presentation.profileedit.component.ProfileImageList
 import com.spoony.spoony.presentation.profileedit.model.ProfileImageModel
@@ -229,7 +229,7 @@ fun ProfileEditScreen(
     }
 
     if (isLocationBottomSheetVisible) {
-        ExploreLocationBottomSheet(
+        SpoonyLocationBottomSheet(
             onDismiss = { isLocationBottomSheetVisible = false },
             onClick = { region ->
                 selectedRegion = region
