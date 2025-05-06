@@ -17,6 +17,8 @@ import com.spoony.spoony.presentation.setting.main.SettingMainRoute
 import kotlinx.coroutines.channels.Channel
 import kotlinx.serialization.Serializable
 
+private typealias URL = String
+
 @Composable
 fun SettingRoute(
     navigateUp: () -> Unit,
@@ -24,11 +26,11 @@ fun SettingRoute(
     val settingNavigator: NavHostController = rememberNavController()
     val context = LocalContext.current
 
-    val eventChannel = remember { Channel<String>(Channel.BUFFERED) }
+    val eventChannel = remember { Channel<URL>(Channel.CONFLATED) }
 
     LaunchedEffect(Unit) {
-        for (event in eventChannel) {
-            val intent = Intent(Intent.ACTION_VIEW, event.toUri())
+        for (url in eventChannel) {
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
 
             context.startActivity(intent)
         }

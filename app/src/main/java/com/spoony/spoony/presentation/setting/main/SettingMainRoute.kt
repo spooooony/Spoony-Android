@@ -34,7 +34,7 @@ internal fun SettingMainRoute(
     navigateToSettingRoute: (SettingRoutes) -> Unit,
     navigateToWebView: (String) -> Unit
 ) {
-    val eventChannel = remember { Channel<SettingRoutes>(Channel.BUFFERED) }
+    val eventChannel = remember { Channel<SettingRoutes>(Channel.CONFLATED) }
 
     LaunchedEffect(Unit) {
         for (route in eventChannel) {
