@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePickerBottomSheet
+import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyLocationBottomSheet
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
@@ -40,7 +41,6 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
-import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyLocationBottomSheet
 import com.spoony.spoony.presentation.profileedit.component.ImageHelperBottomSheet
 import com.spoony.spoony.presentation.profileedit.component.ProfileImageList
 import com.spoony.spoony.presentation.profileedit.model.ProfileImageModel
@@ -107,7 +107,7 @@ fun ProfileEditScreen(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_question_24),
                 modifier = Modifier.clickable { isImageBottomSheetVisible = true },
                 tint = Color.Unspecified,
-                contentDescription = null,
+                contentDescription = null
             )
         }
 
@@ -129,15 +129,15 @@ fun ProfileEditScreen(
                 onValueChanged = {
                     nickname = it
                     saveButtonEnabled = if (nicknameState == NicknameTextFieldState.DEFAULT) {
-                        true 
+                        true
                     } else {
                         nicknameState == NicknameTextFieldState.AVAILABLE && it.isNotBlank()
                     }
                 },
-                onStateChanged = { 
+                onStateChanged = {
                     nicknameState = it
                     saveButtonEnabled = if (it == NicknameTextFieldState.DEFAULT) {
-                        true 
+                        true
                     } else {
                         it == NicknameTextFieldState.AVAILABLE && nickname.isNotBlank()
                     }
@@ -146,7 +146,7 @@ fun ProfileEditScreen(
                 onDoneAction = { },
                 maxLength = 10,
                 minLength = 1,
-                state = nicknameState,
+                state = nicknameState
             )
         }
 
@@ -186,7 +186,6 @@ fun ProfileEditScreen(
                 region = selectedRegion,
                 isSelected = isRegionSelected
             )
-
         }
 
         Spacer(modifier = Modifier.height(38.dp))
@@ -198,8 +197,6 @@ fun ProfileEditScreen(
         )
 
         Spacer(modifier = Modifier.height(38.dp))
-
-
     }
 
     if (isImageBottomSheetVisible) {
@@ -225,7 +222,6 @@ fun ProfileEditScreen(
             initialMonth = selectedMonth.toIntOrNull() ?: 1,
             initialDay = selectedDay.toIntOrNull() ?: 1
         )
-
     }
 
     if (isLocationBottomSheetVisible) {
@@ -237,7 +233,6 @@ fun ProfileEditScreen(
             }
         )
     }
-
 }
 
 @Composable

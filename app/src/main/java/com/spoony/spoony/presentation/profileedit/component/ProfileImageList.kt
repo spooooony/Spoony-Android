@@ -49,7 +49,7 @@ fun ProfileImageList(
                 imageUrl = profileImage.imageUrl,
                 isUnLocked = profileImage.isUnLocked,
                 isSelected = profileImage.imageLevel == selectedLevel,
-                onClick = { 
+                onClick = {
                     if (profileImage.isUnLocked) {
                         onSelectLevel(profileImage.imageLevel)
                     }
