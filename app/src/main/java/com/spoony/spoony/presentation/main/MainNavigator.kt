@@ -19,6 +19,7 @@ import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
 import com.spoony.spoony.presentation.profileedit.navigation.navigateToProfileEdit
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.splash.navigation.Splash
@@ -30,40 +31,50 @@ const val NAVIGATION_ROOT = 0
 class MainNavigator(
     val navController: NavHostController
 ) {
+    val startDestination = Splash
+
     private val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
-
-    val startDestination = Splash
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
             currentDestination?.hasRoute(tab::class) == true
         }
 
-    fun navigate(tab: MainTab) {
-        val navOptions = navOptions {
-            navController.currentDestination?.route?.let {
-                popUpTo(it) {
-                    inclusive = true
-                    saveState = true
-                }
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-
-        when (tab) {
-            MainTab.MAP -> navController.navigateToMap(navOptions = navOptions)
-            MainTab.REGISTER -> navController.navigateToRegister(navOptions)
-            MainTab.EXPLORE -> navController.navigateToExplore(navOptions)
-            MainTab.MYPAGE -> navController.navigateToMyPage(navOptions)
-        }
-    }
-
     @Composable
     fun shouldShowBottomBar() = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true
+    }
+
+    private val mainTabNavOptions = navOptions {
+        navController.currentDestination?.route?.let {
+            popUpTo(it) {
+                inclusive = true
+                saveState = true
+            }
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+
+    private fun MainTab.getNavOptions(): NavOptions = when (this) {
+        MainTab.REGISTER -> navOptions {
+            launchSingleTop = true
+        }
+        else -> mainTabNavOptions
+    }
+
+    fun navigate(tab: MainTab) {
+        when (tab) {
+            MainTab.MAP -> navController.navigateToMap(navOptions = tab.getNavOptions())
+            MainTab.EXPLORE -> navController.navigateToExplore(tab.getNavOptions())
+            MainTab.MYPAGE -> navController.navigateToMyPage(tab.getNavOptions())
+            MainTab.REGISTER -> navController.navigateToRegister(
+                registerType = RegisterType.CREATE,
+                navOptions = tab.getNavOptions()
+            )
+        }
     }
 
     fun navigateToSignIn(
@@ -111,15 +122,25 @@ class MainNavigator(
     }
 
     fun navigateToRegister(
-        navOptions: NavOptions =
-            navOptions {
-                popUpTo(NAVIGATION_ROOT) {
-                    inclusive = true
-                }
-                launchSingleTop = true
-            }
+        navOptions: NavOptions = navOptions {
+            launchSingleTop = true
+        }
     ) {
-        navController.navigateToRegister(navOptions)
+        navController.navigateToRegister(navOptions = navOptions)
+    }
+
+    fun navigateToReviewEdit(
+        postId: Int,
+        registerType: RegisterType,
+        navOptions: NavOptions = navOptions {
+            launchSingleTop = true
+        }
+    ) {
+        navController.navigateToRegister(
+            registerType = registerType,
+            postId = postId,
+            navOptions = navOptions
+        )
     }
 
     fun navigateToOtherPage(
