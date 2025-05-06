@@ -25,6 +25,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.register.component.RegisterTooltip
@@ -39,6 +40,7 @@ const val SHOW_REGISTER_SNACKBAR_TIME = 3000L
 fun RegisterRoute(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
+    navigateUp: () -> Unit,
     navigateToExplore: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
@@ -64,15 +66,16 @@ fun RegisterRoute(
 
     RegisterScreen(
         paddingValues = paddingValues,
-        modifier = modifier,
         state = state,
         isTooltipVisible = isTooltipVisible,
         navController = navController,
+        onBackButtonClick = navigateUp,
         navigateToExplore = navigateToExplore,
         onUpdateProgress = viewModel::updateStep,
         onResetRegisterState = viewModel::resetState,
         hideRegisterSnackBar = viewModel::hideRegisterSnackBar,
-        viewModel = viewModel
+        viewModel = viewModel,
+        modifier = modifier
     )
 }
 
@@ -82,6 +85,7 @@ private fun RegisterScreen(
     state: RegisterState,
     isTooltipVisible: Boolean,
     navController: NavHostController,
+    onBackButtonClick: () -> Unit,
     navigateToExplore: () -> Unit,
     onUpdateProgress: (RegisterSteps) -> Unit,
     onResetRegisterState: () -> Unit,
@@ -95,17 +99,22 @@ private fun RegisterScreen(
                 .fillMaxSize()
                 .background(SpoonyAndroidTheme.colors.white)
         ) {
+            TitleTopAppBar(
+                onBackButtonClick = onBackButtonClick
+            )
+
             TopLinearProgressBar(
                 currentStep = state.currentStep,
                 totalSteps = 2f,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 56.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 10.dp)
             )
 
             NavHost(
                 navController = navController,
-                startDestination = RegisterRoute.StepOne,
+                startDestination = RegisterRoute.Start,
                 modifier = Modifier.weight(1f)
             ) {
                 registerGraph(

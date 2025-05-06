@@ -140,6 +140,7 @@ fun MainScreen(
 
                 registerNavGraph(
                     paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
                     navigateToExplore = navigator::navigateToExplore
                 )
 

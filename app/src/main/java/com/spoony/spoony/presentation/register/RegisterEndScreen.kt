@@ -41,7 +41,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
-fun RegisterStepTwoRoute(
+fun RegisterEndRoute(
     onRegisterComplete: () -> Unit,
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
@@ -58,7 +58,8 @@ fun RegisterStepTwoRoute(
         viewModel.checkSecondStepValidation() && !state.isLoading
     }
 
-    RegisterStepTwoScreen(
+    RegisterEndScreen(
+        registerType = registerType,
         state = state,
         isNextButtonEnabled = isNextButtonEnabled,
         onDetailReviewChange = viewModel::updateDetailReview,
@@ -66,13 +67,12 @@ fun RegisterStepTwoRoute(
         onOptionalReviewChange = viewModel::updateOptionalReview,
         onRegisterPost = viewModel::registerPost,
         onRegisterComplete = onRegisterComplete,
-        modifier = modifier,
-        registerType = registerType
+        modifier = modifier
     )
 }
 
 @Composable
-private fun RegisterStepTwoScreen(
+private fun RegisterEndScreen(
     registerType: RegisterType,
     state: RegisterState,
     isNextButtonEnabled: Boolean,

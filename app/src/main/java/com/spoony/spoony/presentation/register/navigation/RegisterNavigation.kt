@@ -9,14 +9,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
+import com.spoony.spoony.presentation.register.RegisterEndRoute
 import com.spoony.spoony.presentation.register.RegisterRoute
-import com.spoony.spoony.presentation.register.RegisterStepOneRoute
-import com.spoony.spoony.presentation.register.RegisterStepTwoRoute
+import com.spoony.spoony.presentation.register.RegisterStartRoute
 import com.spoony.spoony.presentation.register.RegisterSteps
 import com.spoony.spoony.presentation.register.RegisterViewModel
 import com.spoony.spoony.presentation.register.model.RegisterType
-import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
-import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepTwo
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.End
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.Start
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRegister(
@@ -29,11 +29,13 @@ fun NavController.navigateToRegister(
 
 fun NavGraphBuilder.registerNavGraph(
     paddingValues: PaddingValues,
+    navigateUp: () -> Unit,
     navigateToExplore: () -> Unit
 ) {
     composable<Register> {
         RegisterRoute(
             paddingValues = paddingValues,
+            navigateUp = navigateUp,
             navigateToExplore = navigateToExplore
         )
     }
@@ -46,7 +48,7 @@ fun NavGraphBuilder.registerGraph(
     viewModel: RegisterViewModel,
     onResetRegisterState: () -> Unit
 ) {
-    composable<StepOne>(
+    composable<Start>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
@@ -60,10 +62,10 @@ fun NavGraphBuilder.registerGraph(
             )
         }
     ) {
-        RegisterStepOneRoute(
+        RegisterStartRoute(
             viewModel = viewModel,
             onNextClick = {
-                navController.navigate(StepTwo)
+                navController.navigate(End)
                 onUpdateProgress(RegisterSteps.FINAL)
             },
             onInitialProgress = {
@@ -72,7 +74,7 @@ fun NavGraphBuilder.registerGraph(
         )
     }
 
-    composable<StepTwo>(
+    composable<End>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
@@ -86,11 +88,11 @@ fun NavGraphBuilder.registerGraph(
             )
         }
     ) {
-        RegisterStepTwoRoute(
+        RegisterEndRoute(
             viewModel = viewModel,
             onRegisterComplete = {
                 onResetRegisterState()
-                navController.popBackStack(StepOne, true)
+                navController.popBackStack(Start, true)
                 navigateToExplore()
             }
         )

@@ -18,8 +18,8 @@ import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
-import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.profileedit.navigation.navigateToProfileEdit
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.splash.navigation.Splash
@@ -60,11 +60,6 @@ class MainNavigator(
 
     private fun MainTab.getNavOptions(): NavOptions = when (this) {
         MainTab.REGISTER -> navOptions {
-            navController.currentDestination?.route?.let {
-                popUpTo(NAVIGATION_ROOT) {
-                    inclusive = true
-                }
-            }
             launchSingleTop = true
         }
         else -> mainTabNavOptions
@@ -127,13 +122,9 @@ class MainNavigator(
     }
 
     fun navigateToRegister(
-        navOptions: NavOptions =
-            navOptions {
-                popUpTo(NAVIGATION_ROOT) {
-                    inclusive = true
-                }
-                launchSingleTop = true
-            }
+        navOptions: NavOptions = navOptions {
+            launchSingleTop = true
+        }
     ) {
         navController.navigateToRegister(navOptions = navOptions)
     }
@@ -141,7 +132,9 @@ class MainNavigator(
     fun navigateToReviewEdit(
         postId: Int,
         registerType: RegisterType,
-        navOptions: NavOptions? = null
+        navOptions: NavOptions = navOptions {
+            launchSingleTop = true
+        }
     ) {
         navController.navigateToRegister(
             registerType = registerType,

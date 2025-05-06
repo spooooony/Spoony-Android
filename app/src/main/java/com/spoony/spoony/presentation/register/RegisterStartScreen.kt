@@ -55,7 +55,7 @@ import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun RegisterStepOneRoute(
+fun RegisterStartRoute(
     onNextClick: () -> Unit,
     onInitialProgress: () -> Unit,
     viewModel: RegisterViewModel,
@@ -76,7 +76,7 @@ fun RegisterStepOneRoute(
         onInitialProgress()
     }
 
-    RegisterStepOneScreen(
+    RegisterStartScreen(
         state = state,
         isNextButtonEnabled = isNextButtonEnabled,
         onNextClick = onNextClick,
@@ -96,7 +96,7 @@ fun RegisterStepOneRoute(
 }
 
 @Composable
-private fun RegisterStepOneScreen(
+private fun RegisterStartScreen(
     registerType: RegisterType,
     state: RegisterState,
     isNextButtonEnabled: Boolean,
