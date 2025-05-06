@@ -61,9 +61,9 @@ private fun MyPageScreenEmptyReviewPreview() {
             userType = UserType.MY_PAGE,
             profile = UserProfile(
                 profileId = 4,
-                nickname = "고졸 사토루",
-                region = "서울 마포구 스푼",
-                introduction = "두 사람은 문제아지만 최강.",
+                nickname = "톳시",
+                region = "에도 막부",
+                introduction = "오타쿠의 패왕",
                 followerCount = 10,
                 followingCount = 20
             ),
