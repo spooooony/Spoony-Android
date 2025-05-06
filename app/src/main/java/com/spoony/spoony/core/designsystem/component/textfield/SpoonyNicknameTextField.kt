@@ -57,19 +57,11 @@ fun SpoonyNicknameTextField(
     val spoonyColors = SpoonyAndroidTheme.colors
     val counterText = stringResource(R.string.COUNTER_TEXT, value.length, maxLength)
 
-    val borderColor = remember(state) {
+    val (borderColor, textColor) = remember(state) {
         when (state) {
-            NicknameTextFieldState.DEFAULT -> spoonyColors.gray100
-            NicknameTextFieldState.AVAILABLE -> spoonyColors.green400
-            else -> spoonyColors.error400
-        }
-    }
-
-    val textColor = remember(state) {
-        when (state) {
-            NicknameTextFieldState.DEFAULT -> spoonyColors.gray500
-            NicknameTextFieldState.AVAILABLE -> spoonyColors.green400
-            else -> spoonyColors.error400
+            NicknameTextFieldState.DEFAULT -> spoonyColors.gray100 to spoonyColors.gray500
+            NicknameTextFieldState.AVAILABLE -> spoonyColors.green400 to spoonyColors.green400
+            else -> spoonyColors.error400 to spoonyColors.error400
         }
     }
 
