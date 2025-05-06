@@ -1,7 +1,9 @@
 package com.spoony.spoony.presentation.register
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
@@ -9,6 +11,8 @@ import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.Category
 import com.spoony.spoony.presentation.register.model.Place
+import com.spoony.spoony.presentation.register.model.RegisterType
+import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
@@ -25,6 +29,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val repository: RegisterRepository,
     private val tooltipPreferencesRepository: TooltipPreferencesRepository
 ) : ViewModel() {
@@ -36,10 +41,21 @@ class RegisterViewModel @Inject constructor(
         get() = _state.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<RegisterSideEffect>()
-    val sideEffect: SharedFlow<RegisterSideEffect> = _sideEffect.asSharedFlow()
+    val sideEffect: SharedFlow<RegisterSideEffect>
+        get() = _sideEffect.asSharedFlow()
+
+    private val registerInfo = savedStateHandle.toRoute<Register>()
+    val registerType = registerInfo.registerType
+    private val postId = registerInfo.postId
 
     init {
         loadCategories()
+    }
+
+    fun loadState() {
+        if (registerType == RegisterType.EDIT) {
+            // TODO: 리뷰 수정에 맞는 GET API
+        }
     }
 
     private fun loadCategories() {
@@ -277,6 +293,5 @@ sealed class RegisterSideEffect {
 
 enum class RegisterSteps(val step: Float) {
     INIT(1f),
-    FIRST(2f),
-    FINISH(3f)
+    FINAL(2f)
 }

@@ -32,6 +32,7 @@ fun SearchResultItem(
     placeName: String,
     placeRoadAddress: String,
     onDeleteClick: () -> Unit,
+    isCleanerIconVisible: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -81,11 +82,13 @@ fun SearchResultItem(
             }
         }
 
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_delete_filled_24),
-            contentDescription = null,
-            tint = SpoonyAndroidTheme.colors.gray400,
-            modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
-        )
+        if (isCleanerIconVisible) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_delete_filled_24),
+                contentDescription = null,
+                tint = SpoonyAndroidTheme.colors.gray400,
+                modifier = Modifier.noRippleClickable(onClick = onDeleteClick)
+            )
+        }
     }
 }
