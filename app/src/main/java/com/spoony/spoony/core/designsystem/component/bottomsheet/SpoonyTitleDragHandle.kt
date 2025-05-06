@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore.component.bottomsheet
+package com.spoony.spoony.core.designsystem.component.bottomsheet
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +17,9 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
-fun ExploreLocationDragHandle(
-    onClick: () -> Unit
+fun SpoonyTitleDragHandle(
+    onClick: () -> Unit,
+    text: String = "지역 선택"
 ) {
     Box(
         contentAlignment = Alignment.CenterEnd,
@@ -26,7 +27,7 @@ fun ExploreLocationDragHandle(
             .padding(top = 12.dp)
     ) {
         Text(
-            text = "지역 선택",
+            text = text,
             style = SpoonyAndroidTheme.typography.body1b,
             color = SpoonyAndroidTheme.colors.gray900,
             textAlign = TextAlign.Center,

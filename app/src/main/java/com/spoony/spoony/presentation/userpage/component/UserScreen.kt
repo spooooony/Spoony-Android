@@ -102,7 +102,7 @@ fun UserPageScreen(
                 ReviewCounter(reviewCount = state.reviewCount)
 
                 if (state.userType == UserType.OTHER_PAGE) {
-                    LocalCheckBox(
+                    LocalReviewFilterCheckBox(
                         isSelected = state.isCheckBoxSelected,
                         onClick = events.onCheckBoxClick
                     )
