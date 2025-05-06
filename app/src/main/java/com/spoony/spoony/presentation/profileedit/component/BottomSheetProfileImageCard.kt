@@ -30,7 +30,7 @@ private data class TextInfo(
 )
 
 @Composable
-fun ProfileImageCard(
+fun BottomSheetProfileImageCard(
     imageUrl: String,
     name: String,
     description: String,
@@ -72,9 +72,9 @@ fun ProfileImageCard(
 
 @Preview(showBackground = true)
 @Composable
-private fun ProfileCardPreview() {
+private fun BottomSheetProfileImageCardPreview() {
     SpoonyAndroidTheme {
-        ProfileImageCard(
+        BottomSheetProfileImageCard(
             imageUrl = "",
             name = "Profile Image_1 name",
             description = "Basic Spoon. Welcome to the Spoony!"
