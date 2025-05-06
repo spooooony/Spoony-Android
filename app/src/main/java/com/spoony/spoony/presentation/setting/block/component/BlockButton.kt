@@ -39,7 +39,7 @@ private enum class BlockButtonState(
 
 @Composable
 private fun BlockButtonState.textColor(): Color = when (this) {
-    BlockButtonState.BLOCK -> SpoonyAndroidTheme.colors.main400
+    BlockButtonState.BLOCK -> SpoonyAndroidTheme.colors.white
     BlockButtonState.UNBLOCK -> SpoonyAndroidTheme.colors.gray500
 }
 

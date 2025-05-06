@@ -22,12 +22,14 @@ import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
-import com.spoony.spoony.core.designsystem.theme.gray500
-import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
+import com.spoony.spoony.presentation.setting.SettingRoutes
 
 @Composable
-fun AccountManagementScreen() {
+internal fun AccountManagementScreen(
+    navigateUp: () -> Unit,
+    navigateToDeleteAccount: (SettingRoutes) -> Unit
+) {
     var isShowDialog by remember { mutableStateOf(false) }
 
     if (isShowDialog) {
@@ -49,7 +51,7 @@ fun AccountManagementScreen() {
     ) {
         TitleTopAppBar(
             title = "계정 관리",
-            onBackButtonClick = {},
+            onBackButtonClick = navigateUp,
         )
 
         Row(
@@ -86,6 +88,7 @@ fun AccountManagementScreen() {
             style = SpoonyAndroidTheme.typography.body2m,
             modifier = Modifier
                 .background(white)
+                .clickable { navigateToDeleteAccount(SettingRoutes.AccountDelete) }
                 .padding(14.dp)
                 .fillMaxWidth(),
             color = SpoonyAndroidTheme.colors.gray500,
@@ -98,6 +101,9 @@ fun AccountManagementScreen() {
 @Composable
 private fun AccountManagementPreview() {
     SpoonyAndroidTheme {
-        AccountManagementScreen()
+        AccountManagementScreen(
+            navigateUp = { },
+            navigateToDeleteAccount = { }
+        )
     }
 }

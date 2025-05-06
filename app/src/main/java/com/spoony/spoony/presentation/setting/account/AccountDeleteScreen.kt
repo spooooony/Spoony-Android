@@ -35,11 +35,15 @@ import kotlinx.collections.immutable.persistentListOf
 private const val BULLET_POINT = "\u2022"
 
 @Composable
-fun AccountDeleteScreen() {
-    val announcementList = persistentListOf(
-        "회원 탈퇴 시, 즉시 탈퇴 처리되며 서비스 이용이 불가해요.",
-        "탈퇴 시 모든 정보가 사라지며, 회원님의 소중한 정보를 되살릴 수 없어요."
-    )
+fun AccountDeleteScreen(
+    navigateUp: () -> Unit
+) {
+    val announcementList = remember {
+        persistentListOf(
+            "회원 탈퇴 시, 즉시 탈퇴 처리되며 서비스 이용이 불가해요.",
+            "탈퇴 시 모든 정보가 사라지며, 회원님의 소중한 정보를 되살릴 수 없어요."
+        )
+    }
 
     var isNoticeAgreed by remember { mutableStateOf(false) }
 
@@ -50,7 +54,7 @@ fun AccountDeleteScreen() {
     ) {
         TitleTopAppBar(
             title = "회원탈퇴",
-            onBackButtonClick = {},
+            onBackButtonClick = navigateUp,
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -125,6 +129,8 @@ private fun BulletText(
 @Composable
 private fun AccountDeleteScreenPreview() {
     SpoonyAndroidTheme {
-        AccountDeleteScreen()
+        AccountDeleteScreen(
+            navigateUp = {}
+        )
     }
 }
