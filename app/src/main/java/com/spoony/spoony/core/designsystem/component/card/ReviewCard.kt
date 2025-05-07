@@ -23,9 +23,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dropdown.IconDropdown
@@ -179,51 +176,4 @@ private fun ImageGrid(
         }
     }
     Spacer(modifier = Modifier.height(18.dp))
-}
-
-private class ReviewImageCountProvider : PreviewParameterProvider<Int> {
-    override val values = sequenceOf(0, 1, 2, 3)
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ReviewCardPreview(
-    @PreviewParameter(ReviewImageCountProvider::class) imageCount: Int
-) {
-    val imageList = when (imageCount) {
-        0 -> persistentListOf()
-        else -> persistentListOf<String>().builder().apply {
-            repeat(imageCount) {
-                add("https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4")
-            }
-        }.build()
-    }
-
-    val suffix = when (imageCount) {
-        0 -> "이미지 없음"
-        1 -> "이미지 1개"
-        2 -> "이미지 2개"
-        else -> "이미지 3개"
-    }
-
-    SpoonyAndroidTheme {
-        ReviewCard(
-            reviewId = 1,
-            review = "이 식당은 정말 맛있어요! 특히 파스타와 샐러드가 맛있고, 직원들도 친절해요. ($suffix)",
-            onMenuItemClick = {},
-            category = ReviewCardCategory(
-                text = "양식",
-                iconUrl = "https://github.com/user-attachments/assets/67b8de6f-d4e8-4123-bd7d-93623e41ea8c",
-                backgroundColor = SpoonyAndroidTheme.colors.main100,
-                textColor = SpoonyAndroidTheme.colors.main500
-            ),
-            date = "약 5시간 전",
-            username = "스푼이",
-            userRegion = "서울 성북구",
-            addMapCount = 5,
-            imageList = imageList,
-            modifier = Modifier.fillMaxWidth(),
-            menuItems = persistentListOf("수정하기", "삭제하기")
-        )
-    }
 }
