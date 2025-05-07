@@ -32,7 +32,7 @@ enum class MainTab(
         selectedIconResource = R.drawable.ic_register_main400_24,
         unselectedIconResource = R.drawable.ic_register_gray400_24,
         label = "등록",
-        route = Register
+        route = Register()
     ),
     MYPAGE(
         selectedIconResource = R.drawable.ic_mypage_main400_24,

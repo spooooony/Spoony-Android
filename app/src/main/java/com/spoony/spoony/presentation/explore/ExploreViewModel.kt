@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
     private val exploreRepository: ExploreRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreState> = MutableStateFlow(ExploreState())
     val state: StateFlow<ExploreState>
@@ -30,7 +32,7 @@ class ExploreViewModel @Inject constructor(
 
     private fun getCategoryList() {
         viewModelScope.launch {
-            exploreRepository.getCategoryList()
+            categoryRepository.getCategories()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(

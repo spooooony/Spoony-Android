@@ -9,28 +9,33 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
-import com.spoony.spoony.presentation.register.RegisterScreen
-import com.spoony.spoony.presentation.register.RegisterStepOneScreen
-import com.spoony.spoony.presentation.register.RegisterStepTwoScreen
+import com.spoony.spoony.presentation.register.RegisterEndRoute
+import com.spoony.spoony.presentation.register.RegisterRoute
+import com.spoony.spoony.presentation.register.RegisterStartRoute
 import com.spoony.spoony.presentation.register.RegisterSteps
 import com.spoony.spoony.presentation.register.RegisterViewModel
-import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepOne
-import com.spoony.spoony.presentation.register.navigation.RegisterRoute.StepTwo
+import com.spoony.spoony.presentation.register.model.RegisterType
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.End
+import com.spoony.spoony.presentation.register.navigation.RegisterRoute.Start
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRegister(
+    registerType: RegisterType = RegisterType.CREATE,
+    postId: Int? = null,
     navOptions: NavOptions? = null
 ) {
-    navigate(Register, navOptions)
+    navigate(Register(registerType, postId), navOptions)
 }
 
 fun NavGraphBuilder.registerNavGraph(
     paddingValues: PaddingValues,
+    navigateUp: () -> Unit,
     navigateToExplore: () -> Unit
 ) {
     composable<Register> {
-        RegisterScreen(
+        RegisterRoute(
             paddingValues = paddingValues,
+            navigateUp = navigateUp,
             navigateToExplore = navigateToExplore
         )
     }
@@ -43,7 +48,7 @@ fun NavGraphBuilder.registerGraph(
     viewModel: RegisterViewModel,
     onResetRegisterState: () -> Unit
 ) {
-    composable<StepOne>(
+    composable<Start>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
@@ -57,11 +62,11 @@ fun NavGraphBuilder.registerGraph(
             )
         }
     ) {
-        RegisterStepOneScreen(
+        RegisterStartRoute(
             viewModel = viewModel,
             onNextClick = {
-                navController.navigate(StepTwo)
-                onUpdateProgress(RegisterSteps.FIRST)
+                navController.navigate(End)
+                onUpdateProgress(RegisterSteps.FINAL)
             },
             onInitialProgress = {
                 onUpdateProgress(RegisterSteps.INIT)
@@ -69,7 +74,7 @@ fun NavGraphBuilder.registerGraph(
         )
     }
 
-    composable<StepTwo>(
+    composable<End>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
@@ -83,14 +88,11 @@ fun NavGraphBuilder.registerGraph(
             )
         }
     ) {
-        RegisterStepTwoScreen(
+        RegisterEndRoute(
             viewModel = viewModel,
-            onStepTwoComplete = {
-                onUpdateProgress(RegisterSteps.FINISH)
-            },
             onRegisterComplete = {
                 onResetRegisterState()
-                navController.popBackStack(StepOne, true)
+                navController.popBackStack(Start, true)
                 navigateToExplore()
             }
         )
@@ -98,4 +100,7 @@ fun NavGraphBuilder.registerGraph(
 }
 
 @Serializable
-data object Register : MainTabRoute
+data class Register(
+    val registerType: RegisterType = RegisterType.CREATE,
+    val postId: Int? = null
+) : MainTabRoute

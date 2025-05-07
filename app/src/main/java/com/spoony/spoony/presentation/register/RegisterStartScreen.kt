@@ -51,17 +51,18 @@ import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.SearchResultItem
 import com.spoony.spoony.presentation.register.model.Category
 import com.spoony.spoony.presentation.register.model.Place
+import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun RegisterStepOneScreen(
+fun RegisterStartRoute(
     onNextClick: () -> Unit,
     onInitialProgress: () -> Unit,
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val focusManager = LocalFocusManager.current
+    val registerType = viewModel.registerType
 
     val isNextButtonEnabled = remember(
         state.selectedPlace,
@@ -74,6 +75,46 @@ fun RegisterStepOneScreen(
     LaunchedEffect(Unit) {
         onInitialProgress()
     }
+
+    RegisterStartScreen(
+        state = state,
+        isNextButtonEnabled = isNextButtonEnabled,
+        onNextClick = onNextClick,
+        onSearchQueryChange = viewModel::updateSearchQuery,
+        onSearchAction = viewModel::searchPlace,
+        onPlaceSelect = viewModel::selectPlace,
+        onPlaceClear = viewModel::clearSelectedPlace,
+        onDismissSearchResults = viewModel::clearSearchResults,
+        onSelectCategory = viewModel::selectCategory,
+        onMenuUpdate = viewModel::updateMenu,
+        onMenuRemove = viewModel::removeMenu,
+        onMenuAdd = viewModel::addMenu,
+        onSliderPositionChange = viewModel::updateUserSatisfactionValue,
+        modifier = modifier,
+        registerType = registerType
+    )
+}
+
+@Composable
+private fun RegisterStartScreen(
+    registerType: RegisterType,
+    state: RegisterState,
+    isNextButtonEnabled: Boolean,
+    onNextClick: () -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchAction: (String) -> Unit,
+    onPlaceSelect: (Place) -> Unit,
+    onPlaceClear: () -> Unit,
+    onDismissSearchResults: () -> Unit,
+    onSelectCategory: (Category) -> Unit,
+    onMenuUpdate: (Int, String) -> Unit,
+    onMenuRemove: (Int) -> Unit,
+    onMenuAdd: () -> Unit,
+    onSliderPositionChange: (Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val focusManager = LocalFocusManager.current
+    val isCleanerIconVisible = registerType == RegisterType.CREATE
 
     Column(
         modifier = modifier
@@ -95,14 +136,15 @@ fun RegisterStepOneScreen(
             place = state.selectedPlace,
             searchQuery = state.searchQuery,
             searchResults = state.searchResults,
-            onSearchQueryChange = viewModel::updateSearchQuery,
-            onSearchAction = viewModel::searchPlace,
+            onSearchQueryChange = onSearchQueryChange,
+            onSearchAction = onSearchAction,
             onPlaceSelect = { place ->
-                viewModel.selectPlace(place)
+                onPlaceSelect(place)
                 focusManager.clearFocus()
             },
-            onPlaceClear = viewModel::clearSelectedPlace,
-            onDismissSearchResults = viewModel::clearSearchResults
+            onPlaceClear = onPlaceClear,
+            onDismissSearchResults = onDismissSearchResults,
+            isCleanerIconVisible = isCleanerIconVisible
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -110,23 +152,23 @@ fun RegisterStepOneScreen(
         CategorySection(
             categories = state.categories,
             selectedCategory = state.selectedCategory,
-            onSelectCategory = viewModel::selectCategory
+            onSelectCategory = onSelectCategory
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         MenuSection(
             menuList = state.menuList,
-            onMenuUpdate = viewModel::updateMenu,
-            onMenuRemove = viewModel::removeMenu,
-            onMenuAdd = viewModel::addMenu
+            onMenuUpdate = onMenuUpdate,
+            onMenuRemove = onMenuRemove,
+            onMenuAdd = onMenuAdd
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         SliderSection(
             sliderPosition = state.userSatisfactionValue,
-            onSliderPositionChange = viewModel::updateUserSatisfactionValue
+            onSliderPositionChange = onSliderPositionChange
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -149,6 +191,7 @@ private fun PlaceSearchSection(
     onPlaceSelect: (Place) -> Unit,
     onPlaceClear: () -> Unit,
     onDismissSearchResults: () -> Unit,
+    isCleanerIconVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -196,7 +239,8 @@ private fun PlaceSearchSection(
                 SearchResultItem(
                     placeName = place.placeName,
                     placeRoadAddress = place.placeRoadAddress,
-                    onDeleteClick = onPlaceClear
+                    onDeleteClick = onPlaceClear,
+                    isCleanerIconVisible = isCleanerIconVisible
                 )
             }
         }
