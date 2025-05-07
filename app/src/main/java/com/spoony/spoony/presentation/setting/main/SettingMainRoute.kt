@@ -26,7 +26,8 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.setting.SettingRoutes
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 @Composable
 internal fun SettingMainRoute(
@@ -34,10 +35,15 @@ internal fun SettingMainRoute(
     navigateToSettingRoute: (SettingRoutes) -> Unit,
     navigateToWebView: (String) -> Unit
 ) {
-    val eventChannel = remember { Channel<SettingRoutes>(Channel.CONFLATED) }
+    val eventFlow = remember {
+        MutableSharedFlow<SettingRoutes>(
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
+        )
+    }
 
     LaunchedEffect(Unit) {
-        for (route in eventChannel) {
+        eventFlow.collect { route ->
             when (route) {
                 is SettingRoutes.Web -> navigateToWebView(route.url)
                 else -> navigateToSettingRoute(route)
@@ -59,7 +65,7 @@ internal fun SettingMainRoute(
             items = persistentListOf(
                 SettingItem("계정 관리", SettingRoutes.AccountManagement),
             ),
-            onClick = eventChannel::trySend
+            onClick = eventFlow::tryEmit
         )
 
         SettingSection(
@@ -71,7 +77,7 @@ internal fun SettingMainRoute(
                 SettingItem("위치기반서비스 이용약관", SettingRoutes.Web("https://github.com/Roel4990")),
                 SettingItem("1:1 문의", SettingRoutes.Web("https://github.com/chattymin")),
             ),
-            onClick = eventChannel::trySend
+            onClick = eventFlow::tryEmit
         )
     }
 }

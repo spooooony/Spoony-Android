@@ -14,7 +14,8 @@ import com.spoony.spoony.presentation.setting.account.AccountDeleteScreen
 import com.spoony.spoony.presentation.setting.account.AccountManagementScreen
 import com.spoony.spoony.presentation.setting.block.BlockUserScreen
 import com.spoony.spoony.presentation.setting.main.SettingMainRoute
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.serialization.Serializable
 
 private typealias URL = String
@@ -26,12 +27,16 @@ fun SettingRoute(
     val settingNavigator: NavHostController = rememberNavController()
     val context = LocalContext.current
 
-    val eventChannel = remember { Channel<URL>(Channel.CONFLATED) }
+    val eventFlow = remember {
+        MutableSharedFlow<URL>(
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
+        )
+    }
 
     LaunchedEffect(Unit) {
-        for (url in eventChannel) {
+        eventFlow.collect { url ->
             val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-
             context.startActivity(intent)
         }
     }
@@ -44,7 +49,7 @@ fun SettingRoute(
             SettingMainRoute(
                 navigateUp = navigateUp,
                 navigateToSettingRoute = settingNavigator::navigate,
-                navigateToWebView = eventChannel::trySend
+                navigateToWebView = eventFlow::tryEmit
             )
         }
 
