@@ -31,6 +31,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dropdown.IconDropdown
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
+import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import kotlinx.collections.immutable.ImmutableList
@@ -40,17 +41,14 @@ import kotlinx.collections.immutable.persistentListOf
 fun ReviewCard(
     reviewId: Int,
     review: String,
-    textColor: Color,
-    backgroundColor: Color,
+    category: ReviewCardCategory,
     username: String,
     userRegion: String,
-    iconUrl: String,
-    tagText: String,
     date: String,
     onMenuItemClick: (String) -> Unit,
     menuItems: ImmutableList<String>,
     modifier: Modifier = Modifier,
-    addMapCount: Int? = 0,
+    addMapCount: Int = 0,
     onClick: (Int) -> Unit = {},
     imageList: ImmutableList<String> = persistentListOf()
 ) {
@@ -68,10 +66,10 @@ fun ReviewCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconTag(
-                text = tagText,
-                iconUrl = iconUrl,
-                textColor = textColor,
-                backgroundColor = backgroundColor
+                text = category.text,
+                iconUrl = category.iconUrl,
+                textColor = category.textColor,
+                backgroundColor = category.backgroundColor
             )
             Spacer(modifier = Modifier.weight(1f))
             IconDropdown(
@@ -104,18 +102,25 @@ fun ReviewCard(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(SpoonyAndroidTheme.colors.white)
+                .background(
+                    SpoonyAndroidTheme.colors.white,
+                    RoundedCornerShape(8.dp)
+                )
                 .padding(8.dp)
         )
         Spacer(modifier = Modifier.height(18.dp))
         ImageGrid(imageList = imageList)
 
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_add_map_main400_24),
@@ -124,14 +129,12 @@ fun ReviewCard(
                     modifier = Modifier
                         .size(16.dp)
                 )
-                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "${addMapCount}명이 지도에 저장했어요!",
                     style = SpoonyAndroidTheme.typography.caption2b,
                     color = SpoonyAndroidTheme.colors.main400
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = date,
                 style = SpoonyAndroidTheme.typography.caption2m,
@@ -142,7 +145,10 @@ fun ReviewCard(
 }
 
 @Composable
-private fun ImageGrid(imageList: ImmutableList<String>) {
+private fun ImageGrid(
+    imageList: ImmutableList<String>,
+    modifier: Modifier = Modifier
+) {
     if (imageList.isEmpty()) return
     val imageRadius = when (imageList.size) {
         1 -> 10.dp
@@ -150,15 +156,15 @@ private fun ImageGrid(imageList: ImmutableList<String>) {
         else -> 6.dp
     }
 
-    val arrangement = when (imageList.size) {
+    val imageArrangement = when (imageList.size) {
         1 -> Arrangement.Center
         2 -> Arrangement.spacedBy(9.dp)
-        else -> Arrangement.spacedBy(7.dp)
+        else -> Arrangement.spacedBy(5.dp)
     }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = arrangement
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = imageArrangement
     ) {
         imageList.take(3).forEachIndexed { index, imageUrl ->
             UrlImage(
@@ -204,12 +210,14 @@ private fun ReviewCardPreview(
         ReviewCard(
             reviewId = 1,
             review = "이 식당은 정말 맛있어요! 특히 파스타와 샐러드가 맛있고, 직원들도 친절해요. ($suffix)",
-            textColor = SpoonyAndroidTheme.colors.main500,
-            backgroundColor = SpoonyAndroidTheme.colors.main100,
             onMenuItemClick = {},
-            iconUrl = "https://github.com/user-attachments/assets/67b8de6f-d4e8-4123-bd7d-93623e41ea8c",
-            tagText = "양식",
-            date = "2023.10.15",
+            category = ReviewCardCategory(
+                text = "양식",
+                iconUrl = "https://github.com/user-attachments/assets/67b8de6f-d4e8-4123-bd7d-93623e41ea8c",
+                backgroundColor = SpoonyAndroidTheme.colors.main100,
+                textColor = SpoonyAndroidTheme.colors.main500
+            ),
+            date = "약 5시간 전",
             username = "스푼이",
             userRegion = "서울 성북구",
             addMapCount = 5,
