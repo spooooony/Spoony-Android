@@ -48,11 +48,13 @@ fun FilterChipRow(
     val density = LocalDensity.current
     var lazyRowHeight by remember { mutableStateOf(0.dp) }
     var sortFilterWidth by remember { mutableStateOf(0.dp) }
-    val endPadding = sortFilterWidth / 2 + 5.dp
+    val rightOverflowPadding = sortFilterWidth / 2
+    val rightMargin = 20.dp
+    val lazyRowEndPadding = rightOverflowPadding + 5.dp
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(end = 20.dp + sortFilterWidth / 2)
+            .padding(end = rightMargin + rightOverflowPadding)
             .wrapContentHeight()
     ) {
         LazyRow(
@@ -65,7 +67,7 @@ fun FilterChipRow(
                 },
             contentPadding = PaddingValues(
                 start = 20.dp,
-                end = endPadding
+                end = lazyRowEndPadding
             ),
             horizontalArrangement = horizontalArrangement
         ) {
