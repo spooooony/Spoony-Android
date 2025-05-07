@@ -1,5 +1,9 @@
 package com.spoony.spoony.presentation.explore.model
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+
 data class ExploreFilter(
     val id: Int,
     val type: String,
@@ -9,15 +13,15 @@ data class ExploreFilter(
 )
 
 object ExploreFilterDataProvider {
-    fun getDefaultPropertyFilter() = listOf(
+    fun getDefaultPropertyFilter() = persistentListOf(
         ExploreFilter(
             id = 1,
             name = "로컬 리뷰",
             type = "property"
         )
     )
-    fun getDefaultCategoryFilter(): List<ExploreFilter> {
-        val categoryData = listOf(
+    fun getDefaultCategoryFilter(): ImmutableList<ExploreFilter> {
+        val categoryData = persistentListOf(
             Triple(2, "한식", "korean"),
             Triple(3, "일식", "japanese"),
             Triple(4, "중식", "chinese"),
@@ -35,10 +39,10 @@ object ExploreFilterDataProvider {
                 selectedIconUrl = "",
                 unSelectedIconUrl = ""
             )
-        }
+        }.toImmutableList()
     }
-    fun getDefaultRegionFilter(): List<ExploreFilter> {
-        val regionData = listOf(
+    fun getDefaultRegionFilter(): ImmutableList<ExploreFilter> {
+        val regionData = persistentListOf(
             Pair(9, "강남구"),
             Pair(10, "강동구"),
             Pair(11, "강북구"),
@@ -72,10 +76,10 @@ object ExploreFilterDataProvider {
                 name = name,
                 type = "region"
             )
-        }
+        }.toImmutableList()
     }
-    fun getDefaultAgeFilter(): List<ExploreFilter> {
-        val ageData = listOf(
+    fun getDefaultAgeFilter(): ImmutableList<ExploreFilter> {
+        val ageData = persistentListOf(
             Pair(34, "10대"),
             Pair(35, "20대"),
             Pair(36, "30대"),
@@ -88,6 +92,6 @@ object ExploreFilterDataProvider {
                 name = name,
                 type = "age"
             )
-        }
+        }.toImmutableList()
     }
 }
