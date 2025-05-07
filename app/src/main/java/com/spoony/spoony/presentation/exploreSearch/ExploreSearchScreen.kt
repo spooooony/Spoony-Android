@@ -57,10 +57,10 @@ fun ExploreSearchRoute(
         paddingValues = paddingValues,
         searchKeyword = state.searchKeyword,
         searchType = state.searchType,
-        onSwitchType = { searchType -> viewModel.switchType(searchType) },
-        onRemoveRecentSearchItem = { keyword -> viewModel.removeRecentSearchItem(keyword) },
+        onSwitchType = viewModel::switchType,
+        onRemoveRecentSearchItem = viewModel::removeRecentSearchItem,
         onClearRecentSearchItem = viewModel::clearRecentSearchItem,
-        onSearch = { keyword -> viewModel.search(keyword) },
+        onSearch = viewModel::search,
         onClearSearchKeyword = viewModel::clearSearchKeyword,
         recentReviewSearchQueryList = state.recentReviewSearchQueryList,
         recentUserSearchQueryList = state.recentUserSearchQueryList,
@@ -70,7 +70,7 @@ fun ExploreSearchRoute(
 }
 
 @Composable
-fun ExploreSearchScreen(
+private fun ExploreSearchScreen(
     paddingValues: PaddingValues,
     searchKeyword: String,
     searchType: SearchType,
@@ -110,8 +110,8 @@ fun ExploreSearchScreen(
             },
             onBackButtonClick = {},
             onSearchAction = {
-                searchText = searchText.trim()
-                if (searchText.isNotEmpty()) onSearch(searchText)
+                if (searchText.isBlank()) return@ExploreSearchTopAppbar
+                onSearch(searchText.trim())
             },
             focusRequester = focusRequester,
             searchType = searchType
