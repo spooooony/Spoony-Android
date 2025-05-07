@@ -135,11 +135,11 @@ private fun ExploreScreen(
 
 @Composable
 private fun ExploreContent(
-    modifier: Modifier = Modifier,
     onRegisterButtonClick: () -> Unit,
     onReportButtonClick: (postId: Int, userId: Int) -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
-    placeReviewList: UiState<ImmutableList<PlaceReviewModel>>
+    placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
+    modifier: Modifier = Modifier
 ) {
     val menuItems = persistentListOf(
         "신고하기"
@@ -190,6 +190,7 @@ private fun ExploreContent(
                 }
             }
         }
+        is UiState.Failure -> {}
         else -> {}
     }
 }

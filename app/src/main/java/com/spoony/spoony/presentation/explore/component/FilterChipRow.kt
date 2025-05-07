@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -130,9 +129,9 @@ fun FilterChipRow(
                     )
                 )
                 .noRippleClickable(onSortFilterClick)
-                .clip(RoundedCornerShape(12.dp))
                 .background(
-                    color = SpoonyAndroidTheme.colors.gray0
+                    color = SpoonyAndroidTheme.colors.gray0,
+                    shape = RoundedCornerShape(12.dp)
                 )
                 .border(
                     width = 1.dp,
