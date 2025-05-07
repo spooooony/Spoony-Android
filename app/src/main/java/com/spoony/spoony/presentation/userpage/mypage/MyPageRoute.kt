@@ -10,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.userpage.component.UserPageScreen
 import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
@@ -21,6 +22,7 @@ fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToSettings: () -> Unit,
     navigateToFollow: (FollowType, Int) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
@@ -45,7 +47,8 @@ fun MyPageRoute(
     UserPageScreen(
         state = userPageState,
         events = userPageEvents,
-        paddingValues = paddingValues
+        paddingValues = paddingValues,
+        navigateToEditReview = navigateToEditReview
     )
 }
 
@@ -58,9 +61,9 @@ private fun MyPageScreenEmptyReviewPreview() {
             userType = UserType.MY_PAGE,
             profile = UserProfile(
                 profileId = 4,
-                nickname = "고졸 사토루",
-                region = "서울 마포구 스푼",
-                introduction = "두 사람은 문제아지만 최강.",
+                nickname = "톳시",
+                region = "에도 막부",
+                introduction = "오타쿠의 패왕",
                 followerCount = 10,
                 followingCount = 20
             ),
