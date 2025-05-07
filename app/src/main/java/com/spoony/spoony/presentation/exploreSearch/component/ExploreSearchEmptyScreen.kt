@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore.search.component
+package com.spoony.spoony.presentation.exploreSearch.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,15 +19,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.presentation.explore.search.type.SearchType
+import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 
 @Composable
-fun ExploreSearchRecentEmptyScreen(
+fun ExploreSearchEmptyScreen(
     searchType: SearchType = SearchType.USER,
     modifier: Modifier = Modifier
 ) {
     val text = remember(searchType) {
-        if (searchType == SearchType.USER) "팔로우 하고 싶은 유저" else "원하는 키워드"
+        if (searchType == SearchType.USER) "닉네임" else "키워드"
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,7 +44,14 @@ fun ExploreSearchRecentEmptyScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "${text}를 검색해 보세요",
+            text = "검색된 결과가 없어요",
+            style = SpoonyAndroidTheme.typography.body2sb,
+            color = SpoonyAndroidTheme.colors.black,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "정확한 ${text}을 입력해 보세요",
             style = SpoonyAndroidTheme.typography.body2m,
             color = SpoonyAndroidTheme.colors.gray500,
             textAlign = TextAlign.Center

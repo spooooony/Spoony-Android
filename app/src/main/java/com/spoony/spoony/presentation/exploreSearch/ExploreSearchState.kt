@@ -1,8 +1,8 @@
-package com.spoony.spoony.presentation.explore.search
+package com.spoony.spoony.presentation.exploreSearch
 
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.entity.CategoryEntity
-import com.spoony.spoony.presentation.explore.search.type.SearchType
+import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

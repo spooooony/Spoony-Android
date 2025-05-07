@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore.search.component
+package com.spoony.spoony.presentation.exploreSearch.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,7 +18,7 @@ import com.spoony.spoony.core.designsystem.component.textfield.SpoonySearchTextF
 import com.spoony.spoony.core.designsystem.component.topappbar.SpoonyBasicTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.explore.search.type.SearchType
+import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 
 @Composable
 fun ExploreSearchTopAppbar(

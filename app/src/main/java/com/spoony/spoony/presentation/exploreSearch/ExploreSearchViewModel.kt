@@ -1,8 +1,8 @@
-package com.spoony.spoony.presentation.explore.search
+package com.spoony.spoony.presentation.exploreSearch
 
 import androidx.lifecycle.ViewModel
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.presentation.explore.search.type.SearchType
+import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
@@ -38,9 +38,8 @@ class ExploreSearchViewModel @Inject constructor() : ViewModel() {
     }
 
     fun search(keyword: String) {
-        val type = _state.value.searchType
         val keywordTrim = keyword.trim()
-        when (type) {
+        when (_state.value.searchType) {
             SearchType.USER -> {
                 val updatedList = (listOf(keywordTrim) + _state.value.recentUserSearchQueryList.filterNot { it == keyword })
                     .take(6)
@@ -68,8 +67,7 @@ class ExploreSearchViewModel @Inject constructor() : ViewModel() {
     }
 
     fun removeRecentSearchItem(keyword: String) {
-        val type = _state.value.searchType
-        when (type) {
+        when (_state.value.searchType) {
             SearchType.USER -> {
                 val updatedList = _state.value.recentUserSearchQueryList.filterNot { it == keyword }.toPersistentList()
                 _state.update {
@@ -90,8 +88,7 @@ class ExploreSearchViewModel @Inject constructor() : ViewModel() {
     }
 
     fun clearRecentSearchItem() {
-        val type = _state.value.searchType
-        when (type) {
+        when (_state.value.searchType) {
             SearchType.USER -> {
                 _state.update {
                     it.copy(

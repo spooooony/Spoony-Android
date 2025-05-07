@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore.search
+package com.spoony.spoony.presentation.exploreSearch
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,13 +35,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.explore.search.component.ExploreSearchEmptyScreen
-import com.spoony.spoony.presentation.explore.search.component.ExploreSearchRecentEmptyScreen
-import com.spoony.spoony.presentation.explore.search.component.ExploreSearchRecentItem
-import com.spoony.spoony.presentation.explore.search.component.ExploreSearchTopAppbar
-import com.spoony.spoony.presentation.explore.search.component.ExploreSearchUserItem
-import com.spoony.spoony.presentation.explore.search.type.SearchType
-import com.spoony.spoony.presentation.explore.search.type.toKoreanText
+import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchEmptyScreen
+import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchRecentEmptyScreen
+import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchRecentItem
+import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchTopAppbar
+import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchUserItem
+import com.spoony.spoony.presentation.exploreSearch.type.SearchType
+import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -214,7 +214,7 @@ fun ExploreSearchScreen(
                     else -> {
                         when (placeReviewInfoList) {
                             is UiState.Success -> {
-                                // 탑색 뷰 컴포넌트 머지 후 구현 예정
+                                // TODO: 탐색 뷰 컴포넌트 머지 후 구현 예정
                             }
                             is UiState.Empty -> {
                                 ExploreSearchEmptyScreen(searchType = searchType)
@@ -332,7 +332,7 @@ private fun ExploreSearchScreenPreview() {
                     }
                     SearchType.REVIEW -> {
                         searchKeyword = keywordTrim
-                        val updatedList = (listOf(keywordTrim) + recentUserQueryList.filterNot { it == keyword })
+                        val updatedList = (listOf(keywordTrim) + recentReviewQueryList.filterNot { it == keyword })
                             .take(6)
                             .toPersistentList()
                         recentReviewQueryList = updatedList

@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore.search.component
+package com.spoony.spoony.presentation.exploreSearch.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -25,9 +25,7 @@ fun ExploreSearchRecentItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .noRippleClickable {
-                onItemClick(searchKeyword)
-            },
+            .noRippleClickable { onItemClick(searchKeyword) },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore.search.component
+package com.spoony.spoony.presentation.exploreSearch.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.explore.search.UserInfo
+import com.spoony.spoony.presentation.exploreSearch.UserInfo
 
 @Composable
 fun ExploreSearchUserItem(

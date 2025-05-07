@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.explore.search.type
+package com.spoony.spoony.presentation.exploreSearch.type
 
 enum class SearchType {
     USER,
