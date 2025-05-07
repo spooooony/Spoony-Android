@@ -32,8 +32,8 @@ object ExploreFilterDataProvider {
                 id = id,
                 name = name,
                 type = "category",
-                selectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/${icon}_white.png",
-                unSelectedIconUrl = "https://spoony-storage.s3.ap-northeast-2.amazonaws.com/category/icons/${icon}_black.png"
+                selectedIconUrl = "",
+                unSelectedIconUrl = ""
             )
         }
     }
