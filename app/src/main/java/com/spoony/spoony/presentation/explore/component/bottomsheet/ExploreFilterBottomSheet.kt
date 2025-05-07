@@ -235,7 +235,7 @@ private fun ExploreFilterBottomSheetTabRow(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ExploreFilterBottomSheetContent(
+private fun ExploreFilterBottomSheetContent(
     tabIndex: Int,
     onFilterSelected: (Int) -> Unit,
     propertyItems: ImmutableList<ExploreFilter>,
@@ -352,7 +352,7 @@ fun ExploreFilterBottomSheetContent(
 }
 
 @Composable
-fun FilterSectionHeader(
+private fun FilterSectionHeader(
     title: String
 ) {
     Text(
