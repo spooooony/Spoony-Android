@@ -397,10 +397,9 @@ private fun ExploreFilterBottomSheetPreview() {
     }
 
     val toggleFilter: (Int) -> Unit = { id ->
-        if (filterIdsBackup.contains(id)) {
-            filterIdsBackup.remove(id)
-        } else {
-            filterIdsBackup.add(id)
+        when (filterIdsBackup.contains(id)) {
+            true -> filterIdsBackup.remove(id)
+            false -> filterIdsBackup.add(id)
         }
     }
 
