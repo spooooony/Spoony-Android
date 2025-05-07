@@ -103,31 +103,35 @@ class ExploreViewModel @Inject constructor(
 
     private fun getAllFeedList() {
         viewModelScope.launch {
-            exploreRepository.getAllFeedList()
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            placeReviewList =
-                            if (response.isEmpty()) {
-                                UiState.Empty
-                            } else {
-                                UiState.Success(
-                                    response.map { placeReview ->
-                                        placeReview.toModel()
-                                    }.toImmutableList()
-                                )
-                            }
-                        )
+            try {
+                exploreRepository.getAllFeedList()
+                    .onSuccess { response ->
+                        _state.update {
+                            it.copy(
+                                placeReviewList =
+                                if (response.isEmpty()) {
+                                    UiState.Empty
+                                } else {
+                                    UiState.Success(
+                                        response.map { placeReview ->
+                                            placeReview.toModel()
+                                        }.toImmutableList()
+                                    )
+                                }
+                            )
+                        }
                     }
-                }
-                .onFailure {
-                    _state.update {
-                        it.copy(
-                            placeReviewList = UiState.Failure("피드 목록 조회 실패")
-                        )
+                    .onFailure {
+                        _state.update {
+                            it.copy(
+                                placeReviewList = UiState.Failure("피드 목록 조회 실패")
+                            )
+                        }
+                        _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                     }
-                    _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
-                }
+            } catch (e: Exception) {
+                _sideEffect.send(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+            }
         }
     }
 
