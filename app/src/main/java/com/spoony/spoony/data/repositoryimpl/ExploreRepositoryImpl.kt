@@ -2,6 +2,7 @@ package com.spoony.spoony.data.repositoryimpl
 
 import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
+import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.FeedEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import com.spoony.spoony.domain.repository.ExploreRepository

@@ -29,12 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
-import com.spoony.spoony.presentation.explore.component.ExploreItem
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
@@ -163,17 +164,20 @@ private fun ExploreContent(
                         placeReview.reviewId
                     }
                 ) { placeReview ->
-                    ExploreItem(
+                    ReviewCard(
+                        reviewId = placeReview.reviewId,
                         username = placeReview.userName,
-                        placeSpoon = placeReview.placeAddress,
+                        userRegion = placeReview.placeAddress,
                         review = placeReview.description,
                         addMapCount = placeReview.addMapCount,
                         date = placeReview.createdAt,
                         imageList = placeReview.photoUrlList,
-                        backgroundColor = Color.hexToColor(placeReview.category?.backgroundColor.toValidHexColor()),
-                        textColor = Color.hexToColor(placeReview.category?.textColor.toValidHexColor()),
-                        tagText = placeReview.category?.categoryName,
-                        iconUrl = placeReview.category?.iconUrl,
+                        category = ReviewCardCategory(
+                            text = placeReview.category.categoryName,
+                            iconUrl = placeReview.category.iconUrl,
+                            backgroundColor = Color.hexToColor(placeReview.category.backgroundColor.toValidHexColor()),
+                            textColor = Color.hexToColor(placeReview.category.textColor.toValidHexColor())
+                        ),
                         menuItems = menuItems,
                         onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
                         onMenuItemClick = { option ->

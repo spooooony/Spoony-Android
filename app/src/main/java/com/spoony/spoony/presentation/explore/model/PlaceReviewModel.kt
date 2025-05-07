@@ -9,27 +9,34 @@ import kotlinx.collections.immutable.toImmutableList
 data class PlaceReviewModel(
     val reviewId: Int,
     val userId: Int,
-    val userName: String? = null,
-    val userRegion: String? = null,
+    val userName: String,
+    val userRegion: String,
     val description: String,
-    val photoUrlList: ImmutableList<String>? = persistentListOf(),
-    val placeName: String? = null,
-    val placeAddress: String? = null,
-    val category: CategoryEntity? = null,
-    val addMapCount: Int? = null,
-    val createdAt: String? = null
+    val photoUrlList: ImmutableList<String> = persistentListOf(),
+    val placeName: String,
+    val placeAddress: String,
+    val category: CategoryEntity,
+    val addMapCount: Int,
+    val createdAt: String
 )
 
 fun PlaceReviewEntity.toModel(): PlaceReviewModel = PlaceReviewModel(
     reviewId = this.reviewId,
     userId = this.userId,
-    userName = this.userName,
-    userRegion = this.userRegion,
+    userName = this.userName ?: "",
+    userRegion = this.userRegion ?: "",
     description = this.description,
-    photoUrlList = this.photoUrlList?.toImmutableList(),
-    placeName = this.placeName,
-    placeAddress = this.placeAddress,
-    category = this.category,
-    addMapCount = this.addMapCount,
-    createdAt = this.createdAt
+    photoUrlList = this.photoUrlList?.toImmutableList() ?: persistentListOf(),
+    placeName = this.placeName ?: "",
+    placeAddress = this.placeAddress ?: "",
+    category = this.category ?: CategoryEntity(
+        categoryId = 0,
+        categoryName = "",
+        iconUrl = "",
+        unSelectedIconUrl = "",
+        textColor = "",
+        backgroundColor = ""
+    ),
+    addMapCount = this.addMapCount ?: 0,
+    createdAt = this.createdAt ?: ""
 )
