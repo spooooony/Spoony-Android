@@ -28,8 +28,8 @@ class ExploreViewModel @Inject constructor(
     val state: StateFlow<ExploreState>
         get() = _state
 
-    private val _snackbarEvent = Channel<String>(Channel.CONFLATED)
-    val snackbarEvent = _snackbarEvent.receiveAsFlow()
+    private val _sideEffect = Channel<ExploreSideEffect>(Channel.BUFFERED)
+    val sideEffect = _sideEffect.receiveAsFlow()
 
     init {
         getAllFeedList()
@@ -126,7 +126,7 @@ class ExploreViewModel @Inject constructor(
                             placeReviewList = UiState.Failure("피드 목록 조회 실패")
                         )
                     }
-                    _snackbarEvent.send("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                    _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
     }
@@ -154,4 +154,8 @@ class ExploreViewModel @Inject constructor(
             )
         }
     }
+}
+
+sealed class ExploreSideEffect {
+    data class ShowSnackbar(val message: String) : ExploreSideEffect()
 }

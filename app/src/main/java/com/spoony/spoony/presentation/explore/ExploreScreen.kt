@@ -28,7 +28,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
@@ -57,11 +59,16 @@ fun ExploreRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val showSnackbar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val showSnackBar = LocalSnackBarTrigger.current
 
-    LaunchedEffect(true) {
-        viewModel.snackbarEvent.collect { message ->
-            showSnackbar(message)
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is ExploreSideEffect.ShowSnackbar -> {
+                    showSnackBar(effect.message)
+                }
+            }
         }
     }
 
