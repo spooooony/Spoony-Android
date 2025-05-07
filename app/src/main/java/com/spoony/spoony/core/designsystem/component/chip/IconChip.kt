@@ -26,8 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.theme.black
-import com.spoony.spoony.core.designsystem.theme.gray500
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
 
@@ -41,8 +39,8 @@ fun IconChip(
     textStyle: TextStyle = SpoonyAndroidTheme.typography.body2sb,
     defaultBorderColor: Color = SpoonyAndroidTheme.colors.gray100,
     selectedBorderColor: Color = SpoonyAndroidTheme.colors.gray100,
-    secondColor: Color = gray500,
-    mainColor: Color = black,
+    secondColor: Color = SpoonyAndroidTheme.colors.gray500,
+    mainColor: Color = SpoonyAndroidTheme.colors.black,
     isSelected: Boolean = false,
     isGradient: Boolean = false
 ) {
