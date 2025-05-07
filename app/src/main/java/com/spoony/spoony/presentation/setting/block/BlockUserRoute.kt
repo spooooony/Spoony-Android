@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,28 +27,30 @@ import kotlinx.collections.immutable.persistentListOf
 fun BlockUserScreen(
     navigateUp: () -> Unit,
 ) {
-    var blockUserList = remember {
-        persistentListOf(
-            BlockUserState(
-                userId = 1,
-                imageUrl = "https://example.com/image.jpg",
-                userName = "User1",
-                region = "Region1",
-                isBlocking = true,
-            ),
-            BlockUserState(
-                userId = 2,
-                imageUrl = "https://example.com/image.jpg",
-                userName = "User2",
-                region = "Region2",
-                isBlocking = false,
-            ),
-            BlockUserState(
-                userId = 3,
-                imageUrl = "https://example.com/image.jpg",
-                userName = "User3",
-                region = "Region3",
-                isBlocking = true,
+    var blockUserList by remember {
+        mutableStateOf(
+            persistentListOf(
+                BlockUserState(
+                    userId = 1,
+                    imageUrl = "https://example.com/image.jpg",
+                    userName = "User1",
+                    region = "Region1",
+                    isBlocking = true,
+                ),
+                BlockUserState(
+                    userId = 2,
+                    imageUrl = "https://example.com/image.jpg",
+                    userName = "User2",
+                    region = "Region2",
+                    isBlocking = false,
+                ),
+                BlockUserState(
+                    userId = 3,
+                    imageUrl = "https://example.com/image.jpg",
+                    userName = "User3",
+                    region = "Region3",
+                    isBlocking = true,
+                )
             )
         )
     }
