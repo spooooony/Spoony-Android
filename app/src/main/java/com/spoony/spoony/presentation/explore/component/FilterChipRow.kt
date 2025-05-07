@@ -74,37 +74,41 @@ fun FilterChipRow(
                     text = chipItem.text,
                     isSelected = chipItem.isSelected,
                     onClick = chipItem.onClick,
-                    leftIcon = if (chipItem.leftIconResId != null) {
-                        {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(chipItem.leftIconResId),
-                                contentDescription = null,
-                                tint = if (chipItem.isSelected) {
-                                    SpoonyAndroidTheme.colors.main400
-                                } else {
-                                    SpoonyAndroidTheme.colors.gray400
-                                },
-                                modifier = Modifier.size(16.dp)
-                            )
+                    leftIcon = with(chipItem) {
+                        if (leftIconResId != null) {
+                            {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(leftIconResId),
+                                    contentDescription = null,
+                                    tint = if (isSelected) {
+                                        SpoonyAndroidTheme.colors.main400
+                                    } else {
+                                        SpoonyAndroidTheme.colors.gray400
+                                    },
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        } else {
+                            null
                         }
-                    } else {
-                        null
                     },
-                    rightIcon = if (chipItem.rightIconResId != null) {
-                        {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(chipItem.rightIconResId),
-                                contentDescription = null,
-                                tint = if (chipItem.isSelected) {
-                                    SpoonyAndroidTheme.colors.main400
-                                } else {
-                                    SpoonyAndroidTheme.colors.gray400
-                                },
-                                modifier = Modifier.size(16.dp)
-                            )
+                    rightIcon = with(chipItem) {
+                        if (rightIconResId != null) {
+                            {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(rightIconResId),
+                                    contentDescription = null,
+                                    tint = if (isSelected) {
+                                        SpoonyAndroidTheme.colors.main400
+                                    } else {
+                                        SpoonyAndroidTheme.colors.gray400
+                                    },
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        } else {
+                            null
                         }
-                    } else {
-                        null
                     }
                 )
             }
