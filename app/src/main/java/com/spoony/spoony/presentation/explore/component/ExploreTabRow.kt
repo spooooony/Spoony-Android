@@ -33,12 +33,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ExploreTabRow(
     modifier: Modifier = Modifier,
     selectedTabIndex: MutableState<Int>,
-    tabList: List<String> = listOf("전체", "팔로잉")
+    tabList: ImmutableList<String> = persistentListOf("전체", "팔로잉")
 ) {
     var startX by remember { mutableStateOf(0.dp) }
     val tabWidths = remember { mutableListOf<Float>() }
