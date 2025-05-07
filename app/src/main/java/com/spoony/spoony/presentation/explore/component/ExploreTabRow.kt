@@ -121,18 +121,18 @@ fun ExploreTabRow(
 
 @Composable
 private fun ExploreTab(
-    modifier: Modifier = Modifier,
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
     onStartXChange: (Float) -> Unit,
-    onWidthChange: (Float) -> Unit
+    onWidthChange: (Float) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var startX by remember { mutableFloatStateOf(0f) }
 
     Surface(
         modifier = modifier
-            .noRippleClickable { onClick() },
+            .noRippleClickable(onClick = onClick),
         color = Color.Transparent
     ) {
         Column(
