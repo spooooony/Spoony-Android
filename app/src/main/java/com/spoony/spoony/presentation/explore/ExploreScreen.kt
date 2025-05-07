@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
@@ -54,6 +56,14 @@ fun ExploreRoute(
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val showSnackbar = LocalSnackBarTrigger.current
+
+    LaunchedEffect(true) {
+        viewModel.snackbarEvent.collect { message ->
+            showSnackbar(message)
+        }
+    }
 
     with(state) {
         ExploreScreen(
@@ -190,7 +200,6 @@ private fun ExploreContent(
                 }
             }
         }
-        is UiState.Failure -> {}
         else -> {}
     }
 }

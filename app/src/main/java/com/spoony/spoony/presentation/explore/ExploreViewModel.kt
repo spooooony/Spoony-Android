@@ -11,8 +11,10 @@ import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,6 +27,9 @@ class ExploreViewModel @Inject constructor(
     private var _state: MutableStateFlow<ExploreState> = MutableStateFlow(ExploreState())
     val state: StateFlow<ExploreState>
         get() = _state
+
+    private val _snackbarEvent = Channel<String>(Channel.CONFLATED)
+    val snackbarEvent = _snackbarEvent.receiveAsFlow()
 
     init {
         getAllFeedList()
@@ -96,7 +101,7 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun getAllFeedList() {
+    private fun getAllFeedList() {
         viewModelScope.launch {
             exploreRepository.getAllFeedList()
                 .onSuccess { response ->
@@ -121,6 +126,7 @@ class ExploreViewModel @Inject constructor(
                             placeReviewList = UiState.Failure("피드 목록 조회 실패")
                         )
                     }
+                    _snackbarEvent.send("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                 }
         }
     }
