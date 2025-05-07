@@ -104,9 +104,7 @@ fun ExploreFilterBottomSheet(
             Spacer(modifier = Modifier.height(16.dp))
             ExploreFilterBottomSheetHeader(
                 onDismiss = handleDismiss,
-                onFilterReset = {
-                    onFilterReset()
-                }
+                onFilterReset = onFilterReset
             )
             Spacer(modifier = Modifier.height(19.dp))
             ExploreFilterBottomSheetContent(
@@ -146,8 +144,7 @@ private fun ExploreFilterBottomSheetHeader(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -155,19 +152,20 @@ private fun ExploreFilterBottomSheetHeader(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(14.dp))
             Text(
                 text = "필터",
+                modifier = Modifier.padding(start = 14.dp, end = 5.dp),
                 style = SpoonyAndroidTheme.typography.body1b,
                 color = SpoonyAndroidTheme.colors.gray900
             )
-            Spacer(modifier = Modifier.width(13.dp))
             Text(
                 text = "필터 초기화",
                 style = SpoonyAndroidTheme.typography.caption1m,
                 color = SpoonyAndroidTheme.colors.gray400,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.noRippleClickable(onClick = onFilterReset)
+                modifier = Modifier
+                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .noRippleClickable(onClick = onFilterReset)
             )
         }
         Icon(
