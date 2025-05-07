@@ -201,8 +201,7 @@ private fun ExploreContent(
                             when (option) {
                                 "신고하기" -> onReportButtonClick(placeReview.reviewId, placeReview.userId)
                             }
-                        },
-                        modifier = Modifier
+                        }
                     )
                 }
             }
