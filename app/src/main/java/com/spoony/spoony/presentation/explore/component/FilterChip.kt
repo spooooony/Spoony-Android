@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
@@ -26,22 +28,39 @@ fun FilterChip(
     rightIcon: @Composable (() -> Unit)? = null,
     isSelected: Boolean = false
 ) {
-    val borderColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray100
-    val textColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray600
-    val backgroundColor = if (isSelected) SpoonyAndroidTheme.colors.main0 else SpoonyAndroidTheme.colors.gray0
-    val horizontalPadding = if (leftIcon != null || rightIcon != null) 14.dp else 12.dp
+    val spoonyAndroidThemeColors = SpoonyAndroidTheme.colors
+    val borderColor by remember {
+        derivedStateOf {
+            if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray100
+        }
+    }
+    val textColor by remember {
+        derivedStateOf {
+            if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray600
+        }
+    }
+    val backgroundColor by remember {
+        derivedStateOf {
+            if (isSelected) spoonyAndroidThemeColors.main0 else spoonyAndroidThemeColors.gray0
+        }
+    }
+    val horizontalPadding by remember {
+        derivedStateOf {
+            if (leftIcon != null || rightIcon != null) 14.dp else 12.dp
+        }
+    }
 
     Row(
         modifier = modifier
             .noRippleClickable(onClick)
-            .clip(RoundedCornerShape(12.dp))
             .border(
                 width = 1.dp,
                 color = borderColor,
                 shape = RoundedCornerShape(12.dp)
             )
             .background(
-                color = backgroundColor
+                color = backgroundColor,
+                shape = RoundedCornerShape(12.dp)
             )
             .padding(
                 horizontal = horizontalPadding,
@@ -50,8 +69,8 @@ fun FilterChip(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        if (leftIcon != null) {
-            leftIcon()
+        leftIcon?.let {
+            it()
             Spacer(modifier = Modifier.width(4.dp))
         }
         Text(
@@ -59,9 +78,9 @@ fun FilterChip(
             color = textColor,
             style = SpoonyAndroidTheme.typography.body2sb
         )
-        if (rightIcon != null) {
+        rightIcon?.let {
             Spacer(modifier = Modifier.width(2.dp))
-            rightIcon()
+            it()
         }
     }
 }

@@ -75,10 +75,10 @@ fun FilterChipRow(
                     text = chipItem.text,
                     isSelected = chipItem.isSelected,
                     onClick = chipItem.onClick,
-                    leftIcon = {
-                        chipItem.leftIconResId?.let {
+                    leftIcon = if (chipItem.leftIconResId != null) {
+                        {
                             Icon(
-                                imageVector = ImageVector.vectorResource(it),
+                                imageVector = ImageVector.vectorResource(chipItem.leftIconResId),
                                 contentDescription = null,
                                 tint = if (chipItem.isSelected) {
                                     SpoonyAndroidTheme.colors.main400
@@ -88,11 +88,13 @@ fun FilterChipRow(
                                 modifier = Modifier.size(16.dp)
                             )
                         }
+                    } else {
+                        null
                     },
-                    rightIcon = {
-                        chipItem.rightIconResId?.let {
+                    rightIcon = if (chipItem.rightIconResId != null) {
+                        {
                             Icon(
-                                imageVector = ImageVector.vectorResource(it),
+                                imageVector = ImageVector.vectorResource(chipItem.rightIconResId),
                                 contentDescription = null,
                                 tint = if (chipItem.isSelected) {
                                     SpoonyAndroidTheme.colors.main400
@@ -102,6 +104,8 @@ fun FilterChipRow(
                                 modifier = Modifier.size(16.dp)
                             )
                         }
+                    } else {
+                        null
                     }
                 )
             }
