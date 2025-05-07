@@ -38,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,6 +57,7 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.explore.component.ExploreFilterChip
 import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.ExploreFilterDataProvider
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
@@ -67,12 +67,12 @@ fun ExploreFilterBottomSheet(
     onDismiss: () -> Unit,
     onFilterReset: () -> Unit,
     onSave: () -> Unit,
-    propertyItems: MutableList<ExploreFilter>,
-    categoryItems: MutableList<ExploreFilter>,
-    regionItems: MutableList<ExploreFilter>,
-    ageItems: MutableList<ExploreFilter>,
+    propertyItems: ImmutableList<ExploreFilter>,
+    onToggleFilter: (Int) -> Unit,
+    categoryItems: ImmutableList<ExploreFilter>,
+    regionItems: ImmutableList<ExploreFilter>,
+    ageItems: ImmutableList<ExploreFilter>,
     selectedState: SnapshotStateMap<Int, Boolean>,
-    filterIds: MutableList<Int>,
     modifier: Modifier = Modifier,
     tabIndex: Int = 0
 ) {
@@ -107,12 +107,7 @@ fun ExploreFilterBottomSheet(
             Spacer(modifier = Modifier.height(19.dp))
             ExploreFilterBottomSheetContent(
                 tabIndex = tabIndex,
-                onFilterSelected = { id ->
-                    when (filterIds.contains(id)) {
-                        true -> filterIds.remove(id)
-                        else -> filterIds.add(id)
-                    }
-                },
+                onFilterSelected = onToggleFilter,
                 selectedState = selectedState,
                 propertyItems = propertyItems,
                 categoryItems = categoryItems,
@@ -245,10 +240,10 @@ private fun ExploreFilterBottomSheetTabRow(
 fun ExploreFilterBottomSheetContent(
     tabIndex: Int,
     onFilterSelected: (Int) -> Unit,
-    propertyItems: MutableList<ExploreFilter>,
-    categoryItems: MutableList<ExploreFilter>,
-    regionItems: MutableList<ExploreFilter>,
-    ageItems: MutableList<ExploreFilter>,
+    propertyItems: ImmutableList<ExploreFilter>,
+    categoryItems: ImmutableList<ExploreFilter>,
+    regionItems: ImmutableList<ExploreFilter>,
+    ageItems: ImmutableList<ExploreFilter>,
     selectedState: SnapshotStateMap<Int, Boolean>
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
@@ -377,7 +372,7 @@ fun FilterSectionHeader(
 private fun ExploreFilterBottomSheetPreview() {
     var isDialogVisible by remember { mutableStateOf(false) }
     val filterIds = remember { mutableStateListOf<Int>() }
-    val filterIdsBackup = remember { filterIds.toMutableStateList() }
+    val filterIdsBackup = remember { mutableStateListOf<Int>() }
 
     val propertyItems = remember { ExploreFilterDataProvider.getDefaultPropertyFilter() }
     val regionItems = remember { ExploreFilterDataProvider.getDefaultRegionFilter() }
@@ -386,7 +381,7 @@ private fun ExploreFilterBottomSheetPreview() {
     val selectedState = remember { mutableStateMapOf<Int, Boolean>() }
     val allFilters = propertyItems + categoryItems + regionItems + ageItems
     allFilters.forEach { filter ->
-        selectedState[filter.id] = filter.id in filterIdsBackup
+        selectedState[filter.id] = filter.id in filterIds
     }
 
     /**
@@ -405,6 +400,14 @@ private fun ExploreFilterBottomSheetPreview() {
         filterIdsBackup.addAll(filterIds)
         allFilters.forEach { filter ->
             selectedState[filter.id] = filter.id in filterIds
+        }
+    }
+
+    val toggleFilter: (Int) -> Unit = { id ->
+        if (filterIdsBackup.contains(id)) {
+            filterIdsBackup.remove(id) // 새 리스트 반환
+        } else {
+            filterIdsBackup.add(id) // 새 리스트 반환
         }
     }
 
@@ -427,12 +430,12 @@ private fun ExploreFilterBottomSheetPreview() {
                 },
                 onFilterReset = resetFilters,
                 onSave = saveChanges,
-                propertyItems = propertyItems.toMutableStateList(),
-                regionItems = regionItems.toMutableStateList(),
-                ageItems = ageItems.toMutableStateList(),
-                categoryItems = categoryItems.toMutableStateList(),
-                selectedState = selectedState,
-                filterIds = filterIdsBackup
+                onToggleFilter = toggleFilter,
+                propertyItems = propertyItems,
+                regionItems = regionItems,
+                ageItems = ageItems,
+                categoryItems = categoryItems,
+                selectedState = selectedState
             )
         }
         Column(
