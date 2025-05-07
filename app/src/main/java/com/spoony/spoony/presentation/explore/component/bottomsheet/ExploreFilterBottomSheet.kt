@@ -58,10 +58,8 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.explore.component.ExploreFilterChip
 import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.ExploreFilterDataProvider
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,9 +73,9 @@ fun ExploreFilterBottomSheet(
     ageItems: MutableList<ExploreFilter>,
     selectedState: SnapshotStateMap<Int, Boolean>,
     filterIds: MutableList<Int>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tabIndex: Int = 0
 ) {
-    val tabIndex by remember { mutableIntStateOf(0) }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
@@ -186,9 +184,9 @@ private fun ExploreFilterBottomSheetHeader(
 @Composable
 private fun ExploreFilterBottomSheetTabRow(
     onTabSelected: (Int) -> Unit,
-    tabIndex: Int = 0,
-    tabs: ImmutableList<String> = persistentListOf("속성", "카테고리", "지역", "연령대")
+    tabIndex: Int = 0
 ) {
+    val tabs = remember { persistentListOf("속성", "카테고리", "지역", "연령대") }
     var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
     TabRow(
         selectedTabIndex = selectedTabIndex,
@@ -256,18 +254,8 @@ fun ExploreFilterBottomSheetContent(
     var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val propertySectionIndex = 0
-    val categorySectionIndex = 1
-    val regionSectionIndex = 2
-    val ageSectionIndex = 3
     LaunchedEffect(selectedTabIndex) {
-        val targetIndex = when (selectedTabIndex) {
-            0 -> propertySectionIndex
-            1 -> categorySectionIndex
-            2 -> regionSectionIndex
-            3 -> ageSectionIndex
-            else -> 0
-        }
+        val targetIndex = selectedTabIndex.coerceIn(0, 3)
 
         coroutineScope.launch {
             lazyListState.animateScrollToItem(targetIndex)
@@ -290,7 +278,7 @@ fun ExploreFilterBottomSheetContent(
             ),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        item(key = "property_content") {
+        item(key = "property") {
             FilterSectionHeader(title = "속성")
             propertyItems.forEach { item ->
                 ExploreFilterChip(
@@ -304,7 +292,7 @@ fun ExploreFilterBottomSheetContent(
             }
         }
 
-        item(key = "category_content") {
+        item(key = "category") {
             FilterSectionHeader(title = "카테고리")
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -327,7 +315,7 @@ fun ExploreFilterBottomSheetContent(
             }
         }
 
-        item(key = "region_content") {
+        item(key = "region") {
             FilterSectionHeader(title = "지역")
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -347,7 +335,7 @@ fun ExploreFilterBottomSheetContent(
             }
         }
 
-        item(key = "age_content") {
+        item(key = "age") {
             FilterSectionHeader(title = "연령대")
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -366,7 +354,7 @@ fun ExploreFilterBottomSheetContent(
                 }
             }
         }
-        item(key = "bottom_spacer") { Spacer(modifier = Modifier.height(85.dp)) }
+        item { Spacer(modifier = Modifier.height(85.dp)) }
     }
 }
 
@@ -382,33 +370,6 @@ fun FilterSectionHeader(
             .fillMaxWidth()
             .padding(bottom = 12.dp)
     )
-}
-
-/**
- *  Summarize selected filters by their type and name
- *  output example:
- *  {
- *      "property" : "로컬 리뷰",
- *      "region" : "강남구 외 2개",
- *      "age" : "20대",
- *      "category" : "한식 외 1개"
- *  }
- */
-private fun summarizeFilters(
-    filterIds: List<Int>,
-    allFilters: List<ExploreFilter>
-): Map<String, String> {
-    val sortedFilterIds = filterIds.sorted()
-    val selectedFilters = sortedFilterIds.mapNotNull { id -> allFilters.find { it.id == id } }
-    val groupedByType = selectedFilters.groupBy { it.type }
-
-    return groupedByType.mapValues { (_, filters) ->
-        if (filters.size == 1) {
-            filters.first().name
-        } else {
-            "${filters.first().name} 외 ${filters.size - 1}개"
-        }
-    }
 }
 
 @Preview(showBackground = true)
@@ -434,11 +395,6 @@ private fun ExploreFilterBottomSheetPreview() {
     val saveChanges: () -> Unit = {
         filterIds.clear()
         filterIds.addAll(filterIdsBackup)
-        val summary = summarizeFilters(filterIds, allFilters)
-
-        summary.forEach { (type, text) ->
-            Timber.tag("ExploreFilterBottomSheet").d("$type : $text")
-        }
     }
 
     /**
