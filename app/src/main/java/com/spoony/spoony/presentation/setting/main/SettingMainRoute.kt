@@ -96,7 +96,7 @@ private fun SettingSection(
     Column {
         DividerTitle(title = title)
         items.forEach { item ->
-            TempItem(
+            SettingItem(
                 title = item.title,
                 onClick = {
                     onClick(item.url)
@@ -109,9 +109,10 @@ private fun SettingSection(
 @Composable
 private fun DividerTitle(
     title: String,
+    modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Text(
             text = title,
@@ -126,12 +127,13 @@ private fun DividerTitle(
 }
 
 @Composable
-private fun TempItem(
+private fun SettingItem(
     title: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 14.dp),
