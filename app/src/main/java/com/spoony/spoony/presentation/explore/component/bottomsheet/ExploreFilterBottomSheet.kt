@@ -266,14 +266,14 @@ fun ExploreFilterBottomSheetContent(
         state = lazyListState,
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 340.dp, max = 340.dp)
+            .height(340.dp)
             .padding(
                 vertical = 18.dp,
                 horizontal = 12.dp
             ),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        item(key = "property") {
+        item {
             FilterSectionHeader(title = "속성")
             propertyItems.forEach { item ->
                 ExploreFilterChip(
@@ -287,7 +287,7 @@ fun ExploreFilterBottomSheetContent(
             }
         }
 
-        item(key = "category") {
+        item {
             FilterSectionHeader(title = "카테고리")
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -310,7 +310,7 @@ fun ExploreFilterBottomSheetContent(
             }
         }
 
-        item(key = "region") {
+        item {
             FilterSectionHeader(title = "지역")
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -330,7 +330,7 @@ fun ExploreFilterBottomSheetContent(
             }
         }
 
-        item(key = "age") {
+        item {
             FilterSectionHeader(title = "연령대")
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -384,17 +384,11 @@ private fun ExploreFilterBottomSheetPreview() {
         selectedState[filter.id] = filter.id in filterIds
     }
 
-    /**
-     * Save changes to filterIdsBackup and show the summary of selected filters
-     */
     val saveChanges: () -> Unit = {
         filterIds.clear()
         filterIds.addAll(filterIdsBackup)
     }
 
-    /**
-     * Return changes to filterIdsBackup and update the selected state
-     */
     val returnChanges: () -> Unit = {
         filterIdsBackup.clear()
         filterIdsBackup.addAll(filterIds)
@@ -405,15 +399,12 @@ private fun ExploreFilterBottomSheetPreview() {
 
     val toggleFilter: (Int) -> Unit = { id ->
         if (filterIdsBackup.contains(id)) {
-            filterIdsBackup.remove(id) // 새 리스트 반환
+            filterIdsBackup.remove(id)
         } else {
-            filterIdsBackup.add(id) // 새 리스트 반환
+            filterIdsBackup.add(id)
         }
     }
 
-    /**
-     * Reset all filters and update the selected state
-     */
     val resetFilters: () -> Unit = {
         filterIdsBackup.clear()
         allFilters.forEach { filter ->
