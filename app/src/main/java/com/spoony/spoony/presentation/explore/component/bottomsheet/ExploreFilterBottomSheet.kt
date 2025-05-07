@@ -96,7 +96,6 @@ fun ExploreFilterBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             ExploreFilterBottomSheetHeader(
