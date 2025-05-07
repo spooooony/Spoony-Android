@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class RegisterRoute : Route {
     @Serializable
-    data object StepOne : RegisterRoute()
+    data object Start : RegisterRoute()
 
     @Serializable
-    data object StepTwo : RegisterRoute()
+    data object End : RegisterRoute()
 }
