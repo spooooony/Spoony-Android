@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,9 +25,16 @@ fun ExploreFilterChip(
     modifier: Modifier = Modifier,
     textStyle: TextStyle = SpoonyAndroidTheme.typography.caption1m
 ) {
-    val borderColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray100
-    val textColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray500
-    val backgroundColor = if (isSelected) SpoonyAndroidTheme.colors.main0 else SpoonyAndroidTheme.colors.gray0
+    val spoonyColor = SpoonyAndroidTheme.colors
+    val borderColor = remember(isSelected) {
+        if (isSelected) spoonyColor.main400 else spoonyColor.gray100
+    }
+    val textColor = remember(isSelected) {
+        if (isSelected) spoonyColor.main400 else spoonyColor.gray500
+    }
+    val backgroundColor = remember(isSelected) {
+        if (isSelected) spoonyColor.main0 else spoonyColor.gray0
+    }
     Row(
         modifier = modifier
             .noRippleClickable(onClick)
