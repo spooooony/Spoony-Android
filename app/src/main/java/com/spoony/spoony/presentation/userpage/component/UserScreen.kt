@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +30,7 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserType
@@ -39,7 +41,8 @@ fun UserPageScreen(
     state: UserPageState,
     events: UserPageEvents,
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToEditReview: (Int, RegisterType) -> Unit = { _, _ -> }
 ) {
     LazyColumn(
         modifier = modifier
@@ -107,6 +110,13 @@ fun UserPageScreen(
                         onClick = events.onCheckBoxClick
                     )
                 }
+            }
+
+            Button(
+                modifier = Modifier,
+                onClick = { navigateToEditReview(0, RegisterType.EDIT) }
+            ) {
+                Text(text = "Edit Review")
             }
         }
 

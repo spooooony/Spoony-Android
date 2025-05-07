@@ -36,20 +36,18 @@ import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MIN_D
 import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.PhotoPicker
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
+import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
-fun RegisterStepTwoScreen(
-    onStepTwoComplete: () -> Unit,
+fun RegisterEndRoute(
     onRegisterComplete: () -> Unit,
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val focusManager = LocalFocusManager.current
-    var isDialogVisible by remember { mutableStateOf(false) }
-    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_register_get))
+    val registerType = viewModel.registerType
 
     val isNextButtonEnabled = remember(
         state.oneLineReview,
@@ -59,6 +57,34 @@ fun RegisterStepTwoScreen(
     ) {
         viewModel.checkSecondStepValidation() && !state.isLoading
     }
+
+    RegisterEndScreen(
+        registerType = registerType,
+        state = state,
+        isNextButtonEnabled = isNextButtonEnabled,
+        onDetailReviewChange = viewModel::updateDetailReview,
+        onPhotosSelected = viewModel::updatePhotos,
+        onOptionalReviewChange = viewModel::updateOptionalReview,
+        onRegisterPost = viewModel::registerPost,
+        onRegisterComplete = onRegisterComplete,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun RegisterEndScreen(
+    registerType: RegisterType,
+    state: RegisterState,
+    isNextButtonEnabled: Boolean,
+    onDetailReviewChange: (String) -> Unit,
+    onPhotosSelected: (ImmutableList<SelectedPhoto>) -> Unit,
+    onOptionalReviewChange: (String) -> Unit,
+    onRegisterPost: (onSuccess: () -> Unit) -> Unit,
+    onRegisterComplete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val focusManager = LocalFocusManager.current
+    var isDialogVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -78,7 +104,7 @@ fun RegisterStepTwoScreen(
 
         ReviewSection(
             detailReview = state.detailReview,
-            onDetailReviewChange = viewModel::updateDetailReview
+            onDetailReviewChange = onDetailReviewChange
         )
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -86,14 +112,14 @@ fun RegisterStepTwoScreen(
         PhotoSection(
             selectedPhotos = state.selectedPhotos,
             isPhotoErrorVisible = state.isPhotoErrorVisible,
-            onPhotosSelected = viewModel::updatePhotos
+            onPhotosSelected = onPhotosSelected
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         OptionalReviewSection(
             optionalReview = state.optionalReview,
-            onOptionalReviewChange = viewModel::updateOptionalReview
+            onOptionalReviewChange = onOptionalReviewChange
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -102,11 +128,11 @@ fun RegisterStepTwoScreen(
         NextButton(
             enabled = isNextButtonEnabled,
             onClick = {
-                viewModel.registerPost {
-                    onStepTwoComplete()
+                onRegisterPost {
                     isDialogVisible = true
                 }
-            }
+            },
+            editText = if (registerType == RegisterType.CREATE) "다음" else "리뷰 수정"
         )
     }
 
@@ -128,7 +154,7 @@ fun RegisterStepTwoScreen(
         ) {
             LottieAnimation(
                 modifier = Modifier.sizeIn(minHeight = 150.dp),
-                composition = lottieComposition,
+                composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_register_get)).value,
                 iterations = LottieConstants.IterateForever
             )
         }
@@ -168,7 +194,7 @@ private fun ReviewSection(
 private fun PhotoSection(
     selectedPhotos: ImmutableList<SelectedPhoto>,
     isPhotoErrorVisible: Boolean,
-    onPhotosSelected: (List<SelectedPhoto>) -> Unit,
+    onPhotosSelected: (ImmutableList<SelectedPhoto>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {

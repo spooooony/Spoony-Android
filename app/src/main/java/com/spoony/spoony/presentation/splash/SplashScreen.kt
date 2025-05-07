@@ -15,30 +15,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.lifecycleScope
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main400
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun SplashRoute(
     navigateToMap: () -> Unit,
-    navigateToSignIn: () -> Unit
+    navigateToSignIn: () -> Unit,
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(Unit) {
         systemUiController.setNavigationBarColor(
             color = main400
         )
 
-        lifecycleOwner.lifecycleScope.launch {
-            delay(1000)
+        if (viewModel.hasAccessToken()) {
+            navigateToMap()
+        } else {
             navigateToSignIn()
         }
     }

@@ -146,6 +146,7 @@ fun MainScreen(
 
                 registerNavGraph(
                     paddingValues = paddingValues,
+                    navigateUp = navigator::navigateUp,
                     navigateToExplore = navigator::navigateToExplore
                 )
 
@@ -155,7 +156,8 @@ fun MainScreen(
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToProfileEdit = navigator::navigateToProfileEdit,
                     navigateToRegister = navigator::navigateToRegister,
-                    navigateToReviewDetail = { }
+                    navigateToReviewDetail = { },
+                    navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
                 profileEditGraph(

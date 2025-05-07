@@ -10,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.userpage.component.UserPageScreen
 import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
@@ -21,6 +22,7 @@ fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToSettings: () -> Unit,
     navigateToFollow: (FollowType, Int) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
@@ -45,7 +47,8 @@ fun MyPageRoute(
     UserPageScreen(
         state = userPageState,
         events = userPageEvents,
-        paddingValues = paddingValues
+        paddingValues = paddingValues,
+        navigateToEditReview = navigateToEditReview
     )
 }
 
