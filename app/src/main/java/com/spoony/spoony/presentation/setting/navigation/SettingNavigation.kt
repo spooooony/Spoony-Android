@@ -15,7 +15,7 @@ fun NavController.navigateToSettingPage(
 }
 
 fun NavGraphBuilder.settingPageNavGraph(
-    navigateUp: () -> Unit,
+    navigateUp: () -> Unit
 ) {
     composable<SettingPage> {
         SettingRoute(

@@ -57,13 +57,13 @@ internal fun SettingMainRoute(
     ) {
         TitleTopAppBar(
             title = "설정",
-            onBackButtonClick = navigateUp,
+            onBackButtonClick = navigateUp
         )
 
         SettingSection(
             title = "계정",
             items = persistentListOf(
-                SettingItem("계정 관리", SettingRoutes.AccountManagement),
+                SettingItem("계정 관리", SettingRoutes.AccountManagement)
             ),
             onClick = eventFlow::tryEmit
         )
@@ -75,7 +75,7 @@ internal fun SettingMainRoute(
                 SettingItem("서비스 이용약관", SettingRoutes.Web("https://github.com/Hyobeen-Park")),
                 SettingItem("개인정보 처리 방침", SettingRoutes.Web("https://github.com/angryPodo")),
                 SettingItem("위치기반서비스 이용약관", SettingRoutes.Web("https://github.com/Roel4990")),
-                SettingItem("1:1 문의", SettingRoutes.Web("https://github.com/chattymin")),
+                SettingItem("1:1 문의", SettingRoutes.Web("https://github.com/chattymin"))
             ),
             onClick = eventFlow::tryEmit
         )
@@ -149,7 +149,7 @@ private fun SettingItem(
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right_24),
             tint = SpoonyAndroidTheme.colors.gray700,
-            contentDescription = null,
+            contentDescription = null
         )
     }
 }

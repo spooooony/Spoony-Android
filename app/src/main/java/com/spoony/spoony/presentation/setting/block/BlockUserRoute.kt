@@ -25,7 +25,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BlockUserScreen(
-    navigateUp: () -> Unit,
+    navigateUp: () -> Unit
 ) {
     var blockUserList by remember {
         mutableStateOf(
@@ -35,21 +35,21 @@ fun BlockUserScreen(
                     imageUrl = "https://example.com/image.jpg",
                     userName = "User1",
                     region = "Region1",
-                    isBlocking = true,
+                    isBlocking = true
                 ),
                 BlockUserState(
                     userId = 2,
                     imageUrl = "https://example.com/image.jpg",
                     userName = "User2",
                     region = "Region2",
-                    isBlocking = false,
+                    isBlocking = false
                 ),
                 BlockUserState(
                     userId = 3,
                     imageUrl = "https://example.com/image.jpg",
                     userName = "User3",
                     region = "Region3",
-                    isBlocking = true,
+                    isBlocking = true
                 )
             )
         )
@@ -62,18 +62,18 @@ fun BlockUserScreen(
     ) {
         TitleTopAppBar(
             title = "차단한 유저",
-            onBackButtonClick = navigateUp,
+            onBackButtonClick = navigateUp
         )
 
         HorizontalDivider(
             thickness = 10.dp,
-            color = SpoonyAndroidTheme.colors.gray0,
+            color = SpoonyAndroidTheme.colors.gray0
         )
 
         LazyColumn {
             itemsIndexed(
                 items = blockUserList,
-                key = { _, item -> item.userId },
+                key = { _, item -> item.userId }
             ) { index, user ->
                 BlockUserItem(
                     imageUrl = user.imageUrl,
@@ -89,7 +89,7 @@ fun BlockUserScreen(
                 )
                 HorizontalDivider(
                     thickness = 2.dp,
-                    color = SpoonyAndroidTheme.colors.gray0,
+                    color = SpoonyAndroidTheme.colors.gray0
                 )
             }
         }

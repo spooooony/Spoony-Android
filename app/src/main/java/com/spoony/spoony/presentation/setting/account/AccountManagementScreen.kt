@@ -47,11 +47,11 @@ internal fun AccountManagementScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(gray0),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         TitleTopAppBar(
             title = "계정 관리",
-            onBackButtonClick = navigateUp,
+            onBackButtonClick = navigateUp
         )
 
         Row(
@@ -59,7 +59,7 @@ internal fun AccountManagementScreen(
                 .background(white)
                 .padding(vertical = 14.dp, horizontal = 20.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = "간편 로그인",

@@ -22,7 +22,7 @@ private typealias URL = String
 
 @Composable
 fun SettingRoute(
-    navigateUp: () -> Unit,
+    navigateUp: () -> Unit
 ) {
     val settingNavigator: NavHostController = rememberNavController()
     val context = LocalContext.current

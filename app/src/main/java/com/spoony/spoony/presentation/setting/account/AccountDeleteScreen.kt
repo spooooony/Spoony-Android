@@ -50,11 +50,11 @@ fun AccountDeleteScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(white),
+            .background(white)
     ) {
         TitleTopAppBar(
             title = "회원탈퇴",
-            onBackButtonClick = navigateUp,
+            onBackButtonClick = navigateUp
         )
 
         Spacer(modifier = Modifier.height(10.dp))
