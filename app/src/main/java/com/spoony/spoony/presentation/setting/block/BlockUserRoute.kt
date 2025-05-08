@@ -2,7 +2,6 @@ package com.spoony.spoony.presentation.setting.block
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,7 +25,6 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BlockUserScreen(
-    paddingValues: PaddingValues,
     navigateUp: () -> Unit,
 ) {
     var blockUserList by remember {
@@ -61,7 +59,6 @@ fun BlockUserScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(white)
-            .padding(paddingValues)
     ) {
         TitleTopAppBar(
             title = "차단한 유저",
@@ -76,7 +73,7 @@ fun BlockUserScreen(
         LazyColumn {
             itemsIndexed(
                 items = blockUserList,
-                key = { index, item -> item.userId },
+                key = { _, item -> item.userId },
             ) { index, user ->
                 BlockUserItem(
                     imageUrl = user.imageUrl,
@@ -104,7 +101,6 @@ fun BlockUserScreen(
 private fun BlockUserRoutePreview() {
     SpoonyAndroidTheme {
         BlockUserScreen(
-            paddingValues = PaddingValues(0.dp),
             navigateUp = {}
         )
     }
