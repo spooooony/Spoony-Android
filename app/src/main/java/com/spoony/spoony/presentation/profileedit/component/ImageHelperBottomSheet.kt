@@ -39,7 +39,7 @@ fun ImageHelperBottomSheet(
         ) {
             profileImageList.forEach { model ->
                 key(model.imageUrl) {
-                    ProfileImageCard(
+                    BottomSheetProfileImageCard(
                         imageUrl = model.imageUrl,
                         name = model.name,
                         description = model.description
