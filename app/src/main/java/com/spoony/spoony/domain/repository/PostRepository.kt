@@ -1,10 +1,10 @@
 package com.spoony.spoony.domain.repository
 
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
-import com.spoony.spoony.domain.entity.PostEntity
+import com.spoony.spoony.domain.entity.PlaceReviewEntity
 
 interface PostRepository {
-    suspend fun getPost(postId: Int): Result<PostEntity>
+    suspend fun getPost(postId: Int): Result<PlaceReviewEntity>
 
     suspend fun postScoopPost(postId: Int): Result<Boolean>
 

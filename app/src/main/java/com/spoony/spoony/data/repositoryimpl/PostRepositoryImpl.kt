@@ -3,14 +3,14 @@ package com.spoony.spoony.data.repositoryimpl
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
-import com.spoony.spoony.domain.entity.PostEntity
+import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import com.spoony.spoony.domain.repository.PostRepository
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
     private val postRemoteDataSource: PostRemoteDataSource
 ) : PostRepository {
-    override suspend fun getPost(postId: Int): Result<PostEntity> =
+    override suspend fun getPost(postId: Int): Result<PlaceReviewEntity> =
         runCatching {
             postRemoteDataSource.getPostData(postId).data!!.toDomain()
         }
