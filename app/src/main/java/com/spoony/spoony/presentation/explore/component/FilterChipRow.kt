@@ -36,10 +36,11 @@ import com.spoony.spoony.core.util.extension.ShadowSpread
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spreadShadow
 import com.spoony.spoony.presentation.explore.model.FilterOption
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun FilterChipRow(
-    chipItems: List<FilterOption>,
+    chipItems: ImmutableList<FilterOption>,
     onSortFilterClick: () -> Unit,
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp)
