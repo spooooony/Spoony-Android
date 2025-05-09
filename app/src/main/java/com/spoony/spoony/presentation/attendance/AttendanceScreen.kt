@@ -41,6 +41,7 @@ import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.TagSize
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.constants.BULLET_POINT
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.attendance.component.SpoonInfoBottomSheet
 import com.spoony.spoony.presentation.attendance.model.SpoonDrawModel
@@ -50,7 +51,6 @@ import java.util.Locale
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-private const val BULLET_POINT = "\u2022"
 private val daysList = persistentListOf("월", "화", "수", "목", "금", "토", "일")
 
 @Composable
