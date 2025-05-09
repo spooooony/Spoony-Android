@@ -22,7 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,6 +42,7 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.TagSize
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.presentation.attendance.component.SpoonInfoBottomSheet
 import com.spoony.spoony.presentation.attendance.model.SpoonDrawModel
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -86,8 +89,15 @@ private fun AttendanceScreen(
     weeklyDate: String,
     spoonDrawList: ImmutableList<SpoonDrawModel>,
     onBackButtonClick: () -> Unit
-
 ) {
+    var bottomSheetVisibility by remember { mutableStateOf(false) }
+
+    if (bottomSheetVisibility) {
+        SpoonInfoBottomSheet(
+            onDismiss = { bottomSheetVisibility = false }
+        )
+    }
+
     Column(
         modifier = Modifier
             .padding(bottom = paddingValues.calculateBottomPadding())
@@ -107,7 +117,7 @@ private fun AttendanceScreen(
 
         TitleSection(
             weeklyDate = weeklyDate,
-            onIconClick = {}
+            onIconClick = { bottomSheetVisibility = true }
         )
 
         Spacer(modifier = Modifier.weight(1f))
