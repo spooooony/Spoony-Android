@@ -22,6 +22,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.launch
 
 private val CITY_LIST = persistentListOf(
     "서울",
@@ -93,6 +95,7 @@ fun SpoonyRegionBottomSheet(
     onClick: (RegionModel) -> Unit
 ) {
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
@@ -100,6 +103,13 @@ fun SpoonyRegionBottomSheet(
     var selectedCity by remember { mutableStateOf("서울") }
     var selectedRegion by remember { mutableStateOf(RegionModel(-1, "")) }
     var columnHeight by remember { mutableIntStateOf(0) }
+
+    val handleOnDismiss: () -> Unit = {
+        coroutineScope.launch {
+            sheetState.hide()
+            onDismiss()
+        }
+    }
 
     LaunchedEffect(selectedCity) {
         selectedRegion = RegionModel(-1, "")
@@ -112,9 +122,9 @@ fun SpoonyRegionBottomSheet(
     )
 
     SpoonyBasicBottomSheet(
-        onDismiss = onDismiss,
+        onDismiss = handleOnDismiss,
         sheetState = sheetState,
-        dragHandle = { SpoonyTitleDragHandle(onClick = onDismiss) }
+        dragHandle = { SpoonyTitleDragHandle(onClick = handleOnDismiss) }
     ) {
         Column {
             Row(
@@ -182,7 +192,7 @@ fun SpoonyRegionBottomSheet(
                 size = ButtonSize.Xlarge,
                 onClick = {
                     onClick(selectedRegion)
-                    onDismiss()
+                    handleOnDismiss()
                 },
                 enabled = selectedRegion.regionId != -1,
                 modifier = Modifier
