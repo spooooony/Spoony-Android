@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,35 +30,32 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.designsystem.component.button.FollowButton
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
-import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.formatToYearMonthDay
-import com.spoony.spoony.core.util.extension.hexToColor
-import com.spoony.spoony.core.util.extension.toValidHexColor
-import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.main.SHOW_SNACKBAR_TIMEMILLIS
+import com.spoony.spoony.presentation.placeDetail.component.DisappointItem
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailBottomBar
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailImageLazyRow
+import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailSliderSection
 import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
-import com.spoony.spoony.presentation.placeDetail.model.PostModel
+import com.spoony.spoony.presentation.placeDetail.model.PlaceDetailModel
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -102,7 +100,7 @@ fun PlaceDetailRoute(
         else -> 0
     }
 
-    val postId = (state.postId as? UiState.Success)?.data ?: return
+    val postId = (state.reviewId as? UiState.Success)?.data ?: return
 
     val context = LocalContext.current
 
@@ -128,12 +126,12 @@ fun PlaceDetailRoute(
         )
     }
 
-    when (state.postModel) {
+    when (state.placeDetailModel) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
-            with(state.postModel as UiState.Success<PostModel>) {
+            with(state.placeDetailModel as UiState.Success<PlaceDetailModel>) {
                 val dropDownMenuList = when (data.isMine) {
                     true -> persistentListOf()
                     false -> persistentListOf(DropdownOption.REPORT)
@@ -156,11 +154,7 @@ fun PlaceDetailRoute(
                             modifier = Modifier
                                 .navigationBarsPadding(),
                             addMapCount = state.addMapCount,
-                            isScooped = state.isScooped || data.isMine,
                             isAddMap = state.isAddMap,
-                            onScoopButtonClick = {
-                                scoopDialogVisibility = true
-                            },
                             onSearchMapClick = {
                                 searchPlaceNaverMap(
                                     latitude = data.latitude,
@@ -176,15 +170,18 @@ fun PlaceDetailRoute(
                     content = { paddingValues ->
                         PlaceDetailScreen(
                             paddingValues = paddingValues,
-                            menuList = data.menuList.toImmutableList(),
-                            title = data.title,
+                            menuList = data.menuList,
                             description = data.description,
+                            value = data.value,
+                            cons = data.cons,
+                            onScoopButtonClick = {
+                                scoopDialogVisibility = true
+                            },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
-                            photoUrlList = data.photoUrlList.toImmutableList(),
-                            category = data.category,
-                            date = data.date.formatToYearMonthDay(),
+                            photoUrlList = data.photoUrlList,
+                            date = data.createdAt.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,
                             placeName = data.placeName,
                             isScooped = state.isScooped || data.isMine,
@@ -202,14 +199,15 @@ fun PlaceDetailRoute(
 private fun PlaceDetailScreen(
     paddingValues: PaddingValues,
     menuList: ImmutableList<String>,
-    title: String,
     description: String,
+    value: Double,
+    cons: String,
+    onScoopButtonClick: () -> Unit,
     userProfileUrl: String,
     userName: String,
     userRegion: String,
     photoUrlList: ImmutableList<String>,
-    category: CategoryEntity,
-    date: String?,
+    date: String,
     placeAddress: String,
     placeName: String,
     isScooped: Boolean,
@@ -226,83 +224,79 @@ private fun PlaceDetailScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    vertical = 8.dp,
-                    horizontal = 20.dp
-                ),
+                .padding(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             UserProfileInfo(
                 imageUrl = userProfileUrl,
                 name = userName,
-                location = "서울시 $userRegion 수저",
-                modifier = Modifier.weight(1f)
+                location = "서울시 $userRegion 수저"
             )
-            if (dropdownMenuList.isNotEmpty()) {
-                IconDropdownMenu(
-                    menuItems = dropdownMenuList,
-                    onMenuItemClick = { menu ->
-                        when (menu) {
-                            DropdownOption.REPORT.name -> {
-                                onReportButtonClick()
-                            }
-                        }
-                    }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                FollowButton(
+                    isFollowing = false,
+                    onClick = { }
                 )
+                if (dropdownMenuList.isNotEmpty()) {
+                    IconDropdownMenu(
+                        menuItems = dropdownMenuList,
+                        onMenuItemClick = { menu ->
+                            when (menu) {
+                                DropdownOption.REPORT.name -> {
+                                    onReportButtonClick()
+                                }
+                            }
+                        },
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
         PlaceDetailImageLazyRow(
-            imageList = photoUrlList,
-            isBlurred = !isScooped
+            imageList = photoUrlList
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            IconTag(
-                text = category.categoryName,
-                backgroundColor = Color.hexToColor(category.backgroundColor.toValidHexColor()),
-                textColor = Color.hexToColor(category.textColor.toValidHexColor()),
-                iconUrl = category.iconUrl
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = title,
-                style = SpoonyAndroidTheme.typography.title2,
-                color = SpoonyAndroidTheme.colors.black
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = date ?: "",
-                style = SpoonyAndroidTheme.typography.caption1m,
-                color = SpoonyAndroidTheme.colors.gray400
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
+        Column(
+            modifier = Modifier.padding(horizontal = 20.dp)
+        ) {
             Text(
                 text = description,
                 style = SpoonyAndroidTheme.typography.body2m,
                 color = SpoonyAndroidTheme.colors.gray900
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
+            Spacer(modifier = Modifier.height(15.dp))
+            Text(
+                text = date,
+                style = SpoonyAndroidTheme.typography.caption1m,
+                color = SpoonyAndroidTheme.colors.gray400
+            )
+            Spacer(modifier = Modifier.height(18.dp))
             StoreInfo(
-                isBlurred = !isScooped,
                 menuList = menuList,
                 locationSubTitle = placeName,
                 location = placeAddress
             )
+            Spacer(modifier = Modifier.height(18.dp))
+            PlaceDetailSliderSection(
+                sliderPosition = value.toFloat()
+            )
+            Spacer(modifier = Modifier.height(18.dp))
+            DisappointItem(
+                cons = cons,
+                onScoopButtonClick = onScoopButtonClick,
+                isBlurred = !isScooped
+            )
         }
-        Spacer(modifier = Modifier.height(27.dp))
+        Spacer(modifier = Modifier.height(45.dp))
     }
 }
 
