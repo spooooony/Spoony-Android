@@ -184,7 +184,7 @@ private fun ExploreContent(
                     ReviewCard(
                         reviewId = placeReview.reviewId,
                         username = placeReview.userName,
-                        userRegion = placeReview.placeAddress,
+                        userRegion = placeReview.userRegion,
                         review = placeReview.description,
                         addMapCount = placeReview.addMapCount,
                         date = placeReview.createdAt,

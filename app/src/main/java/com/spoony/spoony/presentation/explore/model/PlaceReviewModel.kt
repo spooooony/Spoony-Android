@@ -13,8 +13,6 @@ data class PlaceReviewModel(
     val userRegion: String,
     val description: String,
     val photoUrlList: ImmutableList<String> = persistentListOf(),
-    val placeName: String,
-    val placeAddress: String,
     val category: CategoryEntity,
     val addMapCount: Int,
     val createdAt: String
@@ -27,8 +25,6 @@ fun PlaceReviewEntity.toModel(): PlaceReviewModel = PlaceReviewModel(
     userRegion = this.userRegion ?: "",
     description = this.description,
     photoUrlList = this.photoUrlList?.toImmutableList() ?: persistentListOf(),
-    placeName = this.placeName ?: "",
-    placeAddress = this.placeAddress ?: "",
     category = this.category ?: CategoryEntity(
         categoryId = 0,
         categoryName = "",
