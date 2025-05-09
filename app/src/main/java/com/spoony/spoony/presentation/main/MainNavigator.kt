@@ -48,32 +48,29 @@ class MainNavigator(
         currentDestination?.hasRoute(it::class) == true
     }
 
-    private val mainTabNavOptions = navOptions {
-        navController.currentDestination?.route?.let {
-            popUpTo(it) {
-                inclusive = true
-                saveState = true
+    fun navigate(tab: MainTab) {
+        val mainTabNavOptions = navOptions {
+            navController.currentDestination?.route?.let {
+                popUpTo(it) {
+                    inclusive = true
+                    saveState = true
+                }
             }
+            launchSingleTop = true
+            restoreState = true
         }
-        launchSingleTop = true
-        restoreState = true
-    }
 
-    private fun MainTab.getNavOptions(): NavOptions = when (this) {
-        MainTab.REGISTER -> navOptions {
+        val registerNavOptions =  navOptions {
             launchSingleTop = true
         }
-        else -> mainTabNavOptions
-    }
 
-    fun navigate(tab: MainTab) {
         when (tab) {
-            MainTab.MAP -> navController.navigateToMap(navOptions = tab.getNavOptions())
-            MainTab.EXPLORE -> navController.navigateToExplore(tab.getNavOptions())
-            MainTab.MYPAGE -> navController.navigateToMyPage(tab.getNavOptions())
+            MainTab.MAP -> navController.navigateToMap(navOptions = mainTabNavOptions)
+            MainTab.EXPLORE -> navController.navigateToExplore(mainTabNavOptions)
+            MainTab.MYPAGE -> navController.navigateToMyPage(mainTabNavOptions)
             MainTab.REGISTER -> navController.navigateToRegister(
                 registerType = RegisterType.CREATE,
-                navOptions = tab.getNavOptions()
+                navOptions = registerNavOptions
             )
         }
     }

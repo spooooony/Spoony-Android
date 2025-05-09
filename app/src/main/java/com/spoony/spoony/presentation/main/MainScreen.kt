@@ -151,7 +151,7 @@ fun MainScreen(
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToProfileEdit = navigator::navigateToProfileEdit,
                     navigateToRegister = navigator::navigateToRegister,
-                    navigateToReviewDetail = { },
+                    navigateToReviewDetail = navigator::navigateToPlaceDetail,
                     navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
@@ -163,7 +163,8 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
                     navigateToFollow = navigator::navigateToFollow,
-                    navigateToReviewDetail = { }
+                    navigateToReviewDetail = navigator::navigateToPlaceDetail,
+                    navigateToReviewReport = navigator::navigateToReport
                 )
 
                 followNavGraph(

@@ -13,19 +13,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.topappbar.BackAndMenuTopAppBar
+import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
+import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.presentation.follow.model.FollowType
@@ -35,15 +43,17 @@ import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserType
 import com.spoony.spoony.presentation.userpage.mypage.component.MyPageTopAppBar
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun UserPageScreen(
     state: UserPageState,
     events: UserPageEvents,
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier,
-    navigateToEditReview: (Int, RegisterType) -> Unit = { _, _ -> }
+    modifier: Modifier = Modifier
 ) {
+    var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -99,7 +109,9 @@ fun UserPageScreen(
             Spacer(modifier = Modifier.height(19.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 ReviewCounter(reviewCount = state.reviewCount)
@@ -112,12 +124,7 @@ fun UserPageScreen(
                 }
             }
 
-            Button(
-                modifier = Modifier,
-                onClick = { navigateToEditReview(0, RegisterType.EDIT) }
-            ) {
-                Text(text = "Edit Review")
-            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         when (state.reviewCount) {
@@ -160,7 +167,57 @@ fun UserPageScreen(
             }
 
             else -> {
-                // TODO: 실제 리뷰 데이터로 교체 필요
+                items(
+                    items = state.reviews,
+                    key = { review -> review.reviewId }
+                ) { review ->
+                    val menuItems = when (state.userType) {
+                        UserType.MY_PAGE -> persistentListOf("수정하기", "삭제하기")
+                        UserType.OTHER_PAGE -> persistentListOf("신고하기")
+                    }
+
+                    ReviewCard(
+                        reviewId = review.reviewId,
+                        review = review.content,
+                        category = review.category ?: ReviewCardCategory(
+                            text = "맛집",
+                            iconUrl = "",
+                            textColor = main400,
+                            backgroundColor = SpoonyAndroidTheme.colors.main100
+                        ),
+                        username = review.username,
+                        userRegion = review.userRegion,
+                        date = review.date,
+                        onMenuItemClick = { menuItem ->
+                            when (menuItem) {
+                                "수정하기" -> events.onEditReviewClick(review.reviewId, RegisterType.EDIT)
+
+                                "삭제하기" -> { isReviewDeleteDialogVisible = true }
+
+                                "신고하기" -> events.onReportReviewClick(review.reviewId, state.profileId)
+                            }
+                        },
+                        menuItems = menuItems,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                        addMapCount = review.addMapCount,
+                        onClick = { events.onReviewClick(review.reviewId) },
+                        imageList = review.imageList
+                    )
+
+                    if (isReviewDeleteDialogVisible) {
+                        TwoButtonDialog(
+                            message = "정말로 리뷰를 삭제할까요?",
+                            negativeText = "아니요",
+                            positiveText = "네",
+                            onClickNegative = { isReviewDeleteDialogVisible = false },
+                            onClickPositive = {
+                                events.onDeleteReviewClick(review.reviewId)
+                                isReviewDeleteDialogVisible = false
+                            },
+                            onDismiss = { },
+                        )
+                    }
+                }
             }
         }
     }

@@ -22,6 +22,7 @@ fun OtherPageRoute(
     navigateUp: () -> Unit,
     navigateToFollow: (FollowType, Int) -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
+    navigateToReviewReport: (Int , Int) -> Unit,
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
@@ -36,7 +37,8 @@ fun OtherPageRoute(
         onMainButtonClick = viewModel::toggleFollow,
         onBackButtonClick = navigateUp,
         onMenuButtonClick = { /* 드롭다운 */ },
-        onCheckBoxClick = viewModel::toggleLocalReviewOnly
+        onReportReviewClick = navigateToReviewReport,
+        onCheckBoxClick = viewModel::toggleLocalReviewOnly,
     )
 
     UserPageScreen(
@@ -71,7 +73,8 @@ private fun OtherScreenEmptyReviewPreview() {
             onMainButtonClick = { },
             onBackButtonClick = { },
             onMenuButtonClick = { },
-            onCheckBoxClick = { }
+            onCheckBoxClick = { },
+            onEditReviewClick = { _, _ -> }
         )
 
         UserPageScreen(

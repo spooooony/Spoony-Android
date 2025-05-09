@@ -41,14 +41,15 @@ fun MyPageRoute(
         onMainButtonClick = navigateToProfileEdit,
         onEmptyClick = navigateToRegister,
         onSettingClick = navigateToSettings,
-        onLogoClick = { /* 스푼 뽑기 */ }
+        onLogoClick = { /* 스푼 뽑기 */ },
+        onEditReviewClick = navigateToEditReview,
+        onDeleteReviewClick = { /* 리뷰 삭제 넣을거임 */ },
     )
 
     UserPageScreen(
         state = userPageState,
         events = userPageEvents,
-        paddingValues = paddingValues,
-        navigateToEditReview = navigateToEditReview
+        paddingValues = paddingValues
     )
 }
 
