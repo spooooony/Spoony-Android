@@ -37,7 +37,7 @@ fun TitleButtonDialog(
     buttonText: String,
     onDismiss: () -> Unit,
     onButtonClick: () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     Dialog(
         onDismissRequest = { },
