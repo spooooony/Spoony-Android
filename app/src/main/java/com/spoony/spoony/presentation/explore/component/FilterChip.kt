@@ -29,25 +29,17 @@ fun FilterChip(
     isSelected: Boolean = false
 ) {
     val spoonyAndroidThemeColors = SpoonyAndroidTheme.colors
-    val borderColor by remember {
-        derivedStateOf {
-            if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray100
-        }
+    val borderColor = remember(isSelected) {
+        if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray100
     }
-    val textColor by remember {
-        derivedStateOf {
-            if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray600
-        }
+    val textColor = remember(isSelected) {
+        if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray600
     }
-    val backgroundColor by remember {
-        derivedStateOf {
-            if (isSelected) spoonyAndroidThemeColors.main0 else spoonyAndroidThemeColors.gray0
-        }
+    val backgroundColor = remember(isSelected) {
+        if (isSelected) spoonyAndroidThemeColors.main0 else spoonyAndroidThemeColors.gray0
     }
-    val horizontalPadding by remember {
-        derivedStateOf {
-            if (leftIcon != null || rightIcon != null) 14.dp else 12.dp
-        }
+    val horizontalPadding = remember(leftIcon, rightIcon) {
+        if (leftIcon != null || rightIcon != null) 14.dp else 12.dp
     }
 
     Row(
