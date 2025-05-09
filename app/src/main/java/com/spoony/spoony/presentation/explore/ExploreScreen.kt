@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.R
-import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyLocationBottomSheet
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
@@ -109,13 +108,6 @@ private fun ExploreScreen(
 ) {
     var isLocationBottomSheetVisible by remember { mutableStateOf(false) }
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
-
-    if (isLocationBottomSheetVisible) {
-        SpoonyLocationBottomSheet(
-            onDismiss = { isLocationBottomSheetVisible = false },
-            onClick = onLocationSortingButtonClick
-        )
-    }
 
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
