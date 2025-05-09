@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
+import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.white
@@ -44,7 +45,6 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.constants.BULLET_POINT
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.attendance.component.SpoonInfoBottomSheet
-import com.spoony.spoony.presentation.attendance.model.SpoonDrawModel
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale

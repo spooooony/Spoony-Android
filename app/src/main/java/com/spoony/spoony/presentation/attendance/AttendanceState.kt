@@ -1,7 +1,7 @@
 package com.spoony.spoony.presentation.attendance
 
+import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.presentation.attendance.model.SpoonDrawModel
 import kotlinx.collections.immutable.ImmutableList
 
 data class AttendanceState(

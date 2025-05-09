@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import kotlinx.coroutines.delay
 
@@ -27,11 +28,11 @@ private enum class SpoonDrawDialogState {
 @Composable
 fun SpoonDrawDialog(
     onDismiss: () -> Unit,
-    onSpoonDrawButtonClick: () -> Triple<String, Int, String>,
+    onSpoonDrawButtonClick: () -> SpoonDrawModel,
     onConfirmButtonClick: () -> Unit
 ) {
     var dialogState by remember { mutableStateOf(SpoonDrawDialogState.DRAW) }
-    var drawResult by remember { mutableStateOf(Triple("", -1, "")) }
+    var drawResult by remember { mutableStateOf(SpoonDrawModel()) }
 
     LaunchedEffect(dialogState) {
         if (dialogState == SpoonDrawDialogState.LOADING) {
@@ -76,8 +77,8 @@ fun SpoonDrawDialog(
 
         SpoonDrawDialogState.RESULT -> {
             TitleButtonDialog(
-                title = "${drawResult.first} 획득",
-                description = "축하해요!\n총 ${drawResult.second}개의 스푼을 적립했어요.",
+                title = "${drawResult.spoonName} 획득",
+                description = "축하해요!\n총 ${drawResult.spoonAmount}개의 스푼을 적립했어요.",
                 buttonText = "확인",
                 onButtonClick = onConfirmButtonClick,
                 onDismiss = onDismiss
@@ -99,7 +100,16 @@ private fun SpoonDrawDialogPreview() {
     SpoonyAndroidTheme {
         SpoonDrawDialog(
             onDismiss = {},
-            onSpoonDrawButtonClick = { Triple("일회용 스푼", 1, "") },
+            onSpoonDrawButtonClick = {
+                SpoonDrawModel(
+                    drawId = 1,
+                    spoonTypeId = 1,
+                    spoonName = "다이아스푼",
+                    spoonAmount = 4,
+                    spoonImage = "",
+                    localDate = ""
+                )
+            },
             onConfirmButtonClick = {}
         )
     }

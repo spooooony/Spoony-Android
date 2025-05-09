@@ -1,8 +1,8 @@
 package com.spoony.spoony.presentation.attendance
 
 import androidx.lifecycle.ViewModel
+import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.presentation.attendance.model.SpoonDrawModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
