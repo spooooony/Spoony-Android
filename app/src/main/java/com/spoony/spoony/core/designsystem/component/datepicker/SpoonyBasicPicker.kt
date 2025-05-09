@@ -82,6 +82,9 @@ fun SpoonyBasicPicker(
                 index = initialSelectedIndex.coerceAtLeast(0),
                 scrollOffset = 0
             )
+            if (initialSelectedIndex in items.indices) {
+                onSelectedItemChanged(items[initialSelectedIndex])
+            }
         }
     }
 
