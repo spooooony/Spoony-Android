@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,6 +31,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,11 +47,19 @@ fun SpoonInfoBottomSheet(
         persistentListOf("일회용 티스푼", "은스푼", "황금 스푼", "다이아스푼")
     }
 
+    val coroutineScope = rememberCoroutineScope()
+    val handleDismissRequest: () -> Unit = {
+        coroutineScope.launch {
+            sheetState.hide()
+            onDismiss()
+        }
+    }
+
     SpoonyBasicBottomSheet(
-        onDismiss = onDismiss,
+        onDismiss = handleDismissRequest,
         modifier = modifier,
         sheetState = sheetState,
-        dragHandle = { SpoonInfoHeader(onClick = onDismiss) }
+        dragHandle = { SpoonInfoHeader(onClick = handleDismissRequest) }
     ) {
         Column(
             modifier = Modifier
