@@ -9,6 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.spoony.spoony.presentation.attendance.navigation.navigateToAttendance
 import com.spoony.spoony.presentation.auth.signin.navigation.navigateToSignIn
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.navigateToTermsOfService
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
@@ -204,6 +205,14 @@ class MainNavigator(
         navOptions: NavOptions? = null
     ) {
         navController.navigateToSettingPage(
+            navOptions = navOptions
+        )
+    }
+
+    fun navigateToAttendance(
+        navOptions: NavOptions? = null
+    ) {
+        navController.navigateToAttendance(
             navOptions = navOptions
         )
     }
