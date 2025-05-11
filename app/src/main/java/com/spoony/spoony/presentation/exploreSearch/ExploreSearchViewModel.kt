@@ -18,7 +18,7 @@ class ExploreSearchViewModel @Inject constructor() : ViewModel() {
     val state: StateFlow<ExploreSearchState>
         get() = _state.asStateFlow()
 
-    fun switchType(
+    fun switchSearchType(
         searchType: SearchType
     ) {
         _state.update {

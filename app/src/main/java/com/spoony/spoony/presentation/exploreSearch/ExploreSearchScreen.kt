@@ -57,7 +57,7 @@ fun ExploreSearchRoute(
         paddingValues = paddingValues,
         searchKeyword = state.searchKeyword,
         searchType = state.searchType,
-        onSwitchType = viewModel::switchType,
+        onSwitchType = viewModel::switchSearchType,
         onRemoveRecentSearchItem = viewModel::removeRecentSearchItem,
         onClearRecentSearchItem = viewModel::clearRecentSearchItem,
         onSearch = viewModel::search,
