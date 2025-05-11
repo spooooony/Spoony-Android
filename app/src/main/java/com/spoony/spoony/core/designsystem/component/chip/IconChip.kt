@@ -21,12 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.designsystem.theme.black
-import com.spoony.spoony.core.designsystem.theme.gray500
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
 
@@ -37,10 +36,11 @@ fun IconChip(
     unSelectedIconUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    textStyle: TextStyle = SpoonyAndroidTheme.typography.body2sb,
     defaultBorderColor: Color = SpoonyAndroidTheme.colors.gray100,
     selectedBorderColor: Color = SpoonyAndroidTheme.colors.gray100,
-    secondColor: Color = gray500,
-    mainColor: Color = black,
+    secondColor: Color = SpoonyAndroidTheme.colors.gray500,
+    mainColor: Color = SpoonyAndroidTheme.colors.black,
     isSelected: Boolean = false,
     isGradient: Boolean = false
 ) {
@@ -79,7 +79,7 @@ fun IconChip(
         Text(
             text = text,
             color = if (isSelected) SpoonyAndroidTheme.colors.white else SpoonyAndroidTheme.colors.gray600,
-            style = SpoonyAndroidTheme.typography.body2sb
+            style = textStyle
         )
     }
 }

@@ -11,14 +11,16 @@ data class GetPostResponseDto(
     val userId: Int,
     @SerialName("photoUrlList")
     val photoUrlList: List<String>,
-    @SerialName("title")
-    val title: String,
     @SerialName("date")
     val date: String,
     @SerialName("menuList")
     val menuList: List<String>,
     @SerialName("description")
     val description: String,
+    @SerialName("value")
+    val value: Double,
+    @SerialName("cons")
+    val cons: String,
     @SerialName("placeName")
     val placeName: String,
     @SerialName("placeAddress")
