@@ -105,7 +105,11 @@ fun NavGraphBuilder.onboardingGraph(
 //        }
     ) {
         OnboardingStepThreeRoute(
-
+            viewModel = viewModel,
+            onNextButtonClick = {
+                onUpdateSteps(OnboardingSteps.END)
+                navController.navigate(End)
+            }
         )
     }
 
