@@ -100,8 +100,6 @@ fun PlaceDetailRoute(
         else -> 0
     }
 
-    val postId = (state.reviewId as? UiState.Success)?.data ?: return
-
     val context = LocalContext.current
 
     val userProfile = when (state.userEntity) {
@@ -114,23 +112,23 @@ fun PlaceDetailRoute(
         )
     }
 
-    if (scoopDialogVisibility) {
-        ScoopDialog(
-            onClickPositive = {
-                viewModel.useSpoon(postId)
-                scoopDialogVisibility = false
-            },
-            onClickNegative = {
-                scoopDialogVisibility = false
-            }
-        )
-    }
-
     when (state.placeDetailModel) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
+            val postId = (state.reviewId as? UiState.Success)?.data ?: return
+            if (scoopDialogVisibility) {
+                ScoopDialog(
+                    onClickPositive = {
+                        viewModel.useSpoon(postId)
+                        scoopDialogVisibility = false
+                    },
+                    onClickNegative = {
+                        scoopDialogVisibility = false
+                    }
+                )
+            }
             with(state.placeDetailModel as UiState.Success<PlaceDetailModel>) {
                 val dropDownMenuList = when (data.isMine) {
                     true -> persistentListOf()
