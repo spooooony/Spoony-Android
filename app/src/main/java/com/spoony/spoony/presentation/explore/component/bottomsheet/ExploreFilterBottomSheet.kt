@@ -186,6 +186,7 @@ private fun ExploreFilterBottomSheetContent(
     selectedState: SnapshotStateMap<Int, Boolean>
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
+    val tabs = remember { persistentListOf("속성", "카테고리", "지역", "연령대") }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(selectedTabIndex) {
@@ -196,6 +197,7 @@ private fun ExploreFilterBottomSheetContent(
         }
     }
     ExploreFilterBottomSheetTabRow(
+        tabs = tabs,
         tabIndex = selectedTabIndex,
         onTabSelected = { index ->
             selectedTabIndex = index
@@ -294,10 +296,10 @@ private fun ExploreFilterBottomSheetContent(
 
 @Composable
 private fun ExploreFilterBottomSheetTabRow(
+    tabs: ImmutableList<String>,
     onTabSelected: (Int) -> Unit,
     tabIndex: Int = 0
 ) {
-    val tabs = remember { persistentListOf("속성", "카테고리", "지역", "연령대") }
     var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
     TabRow(
         selectedTabIndex = selectedTabIndex,
