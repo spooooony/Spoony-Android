@@ -169,6 +169,7 @@ private fun ExploreContent(
                     .fillMaxSize()
             )
         }
+
         is UiState.Success -> {
             LazyColumn(
                 modifier = modifier,
@@ -206,6 +207,7 @@ private fun ExploreContent(
                 }
             }
         }
+
         else -> {}
     }
 }
