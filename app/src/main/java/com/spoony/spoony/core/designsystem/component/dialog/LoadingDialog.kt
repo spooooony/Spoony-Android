@@ -40,9 +40,7 @@ fun LoadingDialog(
                     shape = RoundedCornerShape(16.dp)
                 )
                 .clip(shape = RoundedCornerShape(16.dp))
-                .padding(
-                    top = 24.dp
-                )
+                .padding(top = 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

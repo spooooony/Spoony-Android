@@ -79,6 +79,7 @@ fun AttendanceRoute(
         weeklyDate = state.weeklyStartDate,
         spoonDrawList = (state.spoonDrawList as? UiState.Success<ImmutableList<SpoonDrawModel>>)?.data
             ?: persistentListOf(),
+        spoonCount = 100,
         onBackButtonClick = navigateUp
     )
 }
@@ -88,6 +89,7 @@ private fun AttendanceScreen(
     paddingValues: PaddingValues,
     weeklyDate: String,
     spoonDrawList: ImmutableList<SpoonDrawModel>,
+    spoonCount: Int,
     onBackButtonClick: () -> Unit
 ) {
     var bottomSheetVisibility by remember { mutableStateOf(false) }
@@ -103,7 +105,7 @@ private fun AttendanceScreen(
             .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TagTopAppBar(
-            count = 11,
+            count = spoonCount,
             tagSize = TagSize.Small,
             showBackButton = true,
             onBackButtonClick = onBackButtonClick
