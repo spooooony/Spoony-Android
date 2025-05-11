@@ -10,6 +10,8 @@ data class PlaceReviewEntity(
     val userName: String? = null,
     val userRegion: String? = null,
     val description: String,
+    val value: Double? = 0.5,
+    val cons: String? = null,
     val photoUrlList: List<String>? = listOf(),
     val menuList: List<String>? = listOf(),
     val placeName: String? = null,

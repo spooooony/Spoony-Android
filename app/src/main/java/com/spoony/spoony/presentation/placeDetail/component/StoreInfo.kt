@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -36,19 +35,11 @@ fun StoreInfo(
     menuList: ImmutableList<String>,
     locationSubTitle: String,
     location: String,
-    isBlurred: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .then(
-                if (isBlurred) {
-                    Modifier.blur(16.dp)
-                } else {
-                    Modifier
-                }
-            )
     ) {
         StoreInfoItem(
             title = stringResource(id = R.string.place_detail_store_info_menu_title),
@@ -158,15 +149,6 @@ private fun StoreInfoPreview() {
             StoreInfo(
                 modifier = Modifier
                     .padding(horizontal = 20.dp),
-                isBlurred = true,
-                menuList = menuList,
-                locationSubTitle = "어키",
-                location = "서울 마포구 연희로11가길 39"
-            )
-            StoreInfo(
-                modifier = Modifier
-                    .padding(horizontal = 20.dp),
-                isBlurred = false,
                 menuList = menuList,
                 locationSubTitle = "어키",
                 location = "서울 마포구 연희로11가길 39"

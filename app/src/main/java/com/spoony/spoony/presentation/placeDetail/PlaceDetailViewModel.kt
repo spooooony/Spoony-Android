@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.UserRepository
@@ -38,7 +39,7 @@ class PlaceDetailViewModel @Inject constructor(
     init {
         val postArgs = savedStateHandle.toRoute<PlaceDetail>()
         _state.value = _state.value.copy(
-            postId = UiState.Success(data = postArgs.postId)
+            reviewId = UiState.Success(data = postArgs.postId)
         )
         getPost(postArgs.postId)
         getUserSpoonCount()
@@ -46,21 +47,18 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getUserInfo(userId: Int) {
         viewModelScope.launch {
-            userRepository.getUserInfoById(userId)
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            userEntity = UiState.Success(response)
+            _state.update {
+                it.copy(
+                    userEntity = UiState.Success(
+                        UserEntity(
+                            userId = 1,
+                            userName = "안세홍",
+                            userProfileUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
+                            userRegion = "성북구"
                         )
-                    }
-                }
-                .onFailure {
-                    _state.update {
-                        it.copy(
-                            userEntity = UiState.Failure("사용자 정보 조회 실패")
-                        )
-                    }
-                }
+                    )
+                )
+            }
         }
     }
 
@@ -71,19 +69,19 @@ class PlaceDetailViewModel @Inject constructor(
                     getUserInfo(response.userId)
                     _state.update {
                         it.copy(
-                            postModel = UiState.Success(
+                            placeDetailModel = UiState.Success(
                                 response.toModel()
                             ),
-                            isScooped = response.isScooped,
-                            isAddMap = response.isAddMap,
-                            addMapCount = response.addMapCount
+                            isScooped = response.isScooped ?: false,
+                            isAddMap = response.isAddMap ?: false,
+                            addMapCount = response.addMapCount ?: 0
                         )
                     }
                 }
                 .onFailure {
                     _state.update {
                         it.copy(
-                            postModel = UiState.Failure("게시물 조회 실패")
+                            placeDetailModel = UiState.Failure("게시물 조회 실패")
                         )
                     }
                 }
