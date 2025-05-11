@@ -53,7 +53,7 @@ fun DisappointItem(
             Text(
                 text = cons,
                 style = SpoonyAndroidTheme.typography.body2m,
-                color = SpoonyAndroidTheme.colors.black,
+                color = SpoonyAndroidTheme.colors.gray900,
                 minLines = 2,
                 modifier = Modifier
                     .fillMaxWidth()
