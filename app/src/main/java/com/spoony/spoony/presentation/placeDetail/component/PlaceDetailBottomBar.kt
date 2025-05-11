@@ -32,12 +32,10 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 @Composable
 fun PlaceDetailBottomBar(
     addMapCount: Int,
-    onScoopButtonClick: () -> Unit,
     onSearchMapClick: () -> Unit,
     onAddMapButtonClick: () -> Unit,
     onDeletePinMapButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isScooped: Boolean = false,
     isAddMap: Boolean = false
 ) {
     Row(
@@ -51,62 +49,44 @@ fun PlaceDetailBottomBar(
             .height(IntrinsicSize.Max),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isScooped) {
-            SpoonyButton(
-                text = "길찾기",
-                onClick = onSearchMapClick,
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Medium,
-                modifier = Modifier.weight(1f)
+        SpoonyButton(
+            text = "길찾기",
+            onClick = onSearchMapClick,
+            style = ButtonStyle.Secondary,
+            size = ButtonSize.Medium,
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.width(15.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .sizeIn(minWidth = 56.dp)
+                .noRippleClickable(
+                    if (isAddMap) {
+                        onDeletePinMapButtonClick
+                    } else {
+                        onAddMapButtonClick
+                    }
+                ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = if (isAddMap) R.drawable.ic_add_map_main400_24 else R.drawable.ic_add_map_gray400_24),
+                modifier = Modifier
+                    .size(32.dp),
+                contentDescription = null,
+                tint = Color.Unspecified
             )
 
-            Spacer(modifier = Modifier.width(15.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .sizeIn(minWidth = 56.dp)
-                    .noRippleClickable(
-                        if (isAddMap) {
-                            onDeletePinMapButtonClick
-                        } else {
-                            onAddMapButtonClick
-                        }
-                    ),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = if (isAddMap) R.drawable.ic_add_map_main400_24 else R.drawable.ic_add_map_gray400_24),
-                    modifier = Modifier
-                        .size(32.dp),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = addMapCount.toString(),
-                    style = SpoonyAndroidTheme.typography.caption1m,
-                    color = if (isAddMap) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray800
-                )
-            }
-        } else {
-            SpoonyButton(
-                text = "떠먹기",
-                style = ButtonStyle.Secondary,
-                size = ButtonSize.Medium,
-                onClick = onScoopButtonClick,
-                modifier = Modifier.weight(1f),
-                icon = {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_button_spoon_32),
-                        modifier = Modifier.size(32.dp),
-                        contentDescription = null,
-                        tint = Color.Unspecified
-                    )
-                }
+            Text(
+                text = addMapCount.toString(),
+                style = SpoonyAndroidTheme.typography.caption1m,
+                color = if (isAddMap) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray800
             )
         }
     }

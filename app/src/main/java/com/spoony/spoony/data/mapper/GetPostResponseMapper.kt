@@ -3,17 +3,18 @@ package com.spoony.spoony.data.mapper
 import com.spoony.spoony.data.dto.response.CategoryColorResponse
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
 import com.spoony.spoony.domain.entity.CategoryEntity
-import com.spoony.spoony.domain.entity.PostEntity
+import com.spoony.spoony.domain.entity.PlaceReviewEntity
 
 fun GetPostResponseDto.toDomain() =
-    PostEntity(
-        postId = this.postId,
+    PlaceReviewEntity(
+        reviewId = this.postId,
         userId = this.userId,
         photoUrlList = this.photoUrlList,
-        title = this.title,
-        date = this.date,
+        createdAt = this.date,
         menuList = this.menuList,
         description = this.description,
+        value = this.value,
+        cons = this.cons,
         placeName = this.placeName,
         placeAddress = this.placeAddress,
         latitude = this.latitude,
