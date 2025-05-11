@@ -85,7 +85,7 @@ fun ReviewCard(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "$userRegion 스푼",
+                text = "서울 $userRegion 스푼",
                 style = SpoonyAndroidTheme.typography.caption2m,
                 color = SpoonyAndroidTheme.colors.gray500
             )

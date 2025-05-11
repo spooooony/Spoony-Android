@@ -31,7 +31,7 @@ fun ExploreSortingBottomSheet(
     currentSortingOption: SortingOption = SortingOption.LATEST
 ) {
     val sheetState = rememberModalBottomSheetState(
-        confirmValueChange = { false }
+        confirmValueChange = { true }
     )
 
     SpoonyBasicBottomSheet(

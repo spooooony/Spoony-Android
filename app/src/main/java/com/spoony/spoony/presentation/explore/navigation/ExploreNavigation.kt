@@ -18,12 +18,14 @@ fun NavController.navigateToExplore(
 fun NavGraphBuilder.exploreNavGraph(
     paddingValues: PaddingValues,
     navigateToPlaceDetail: (Int) -> Unit,
+    navigateToReport: (postId: Int, userId: Int) -> Unit,
     navigateToRegister: () -> Unit
 ) {
     composable<Explore> {
         ExploreRoute(
             paddingValues = paddingValues,
             navigateToPlaceDetail = navigateToPlaceDetail,
+            navigateToReport = navigateToReport,
             navigateToRegister = navigateToRegister
         )
     }
