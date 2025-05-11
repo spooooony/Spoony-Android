@@ -136,7 +136,13 @@ fun MainScreen(
                 exploreNavGraph(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
-                    navigateToRegister = navigator::navigateToRegister
+                    navigateToRegister = navigator::navigateToRegister,
+                    navigateToReport = { postId, userId ->
+                        navigator.navigateToReport(
+                            postId = postId,
+                            userId = userId
+                        )
+                    }
                 )
 
                 registerNavGraph(
