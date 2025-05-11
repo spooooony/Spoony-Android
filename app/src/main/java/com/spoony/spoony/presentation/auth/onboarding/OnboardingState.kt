@@ -6,13 +6,13 @@ enum class OnboardingSteps(val step: Float) {
     ONE(1f),
     TWO(2f),
     THREE(3f),
-    FINAL(0f)
+    END(0f)
 }
 
 data class OnboardingState(
     val nickname: String = "",
     val birth: String = "",
-    val region: RegionModel = RegionModel(-1, ""),
+    val region: RegionModel = RegionModel(-1, "마포구"),
     val introduction: String = "",
-    val currentStep: Float = 1f,
+    val currentStep: Float = 1f
 )
