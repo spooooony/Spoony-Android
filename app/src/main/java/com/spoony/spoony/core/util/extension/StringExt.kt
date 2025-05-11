@@ -2,7 +2,6 @@ package com.spoony.spoony.core.util.extension
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.Locale
 
 fun String?.toValidHexColor(): String =
@@ -14,8 +13,6 @@ fun String.formatToYearMonthDay(): String {
         val outputFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.getDefault())
         val dateTime = LocalDateTime.parse(this, inputFormatter)
         dateTime.format(outputFormatter)
-    } catch (e: DateTimeParseException) {
-        ""
     } catch (e: Exception) {
         ""
     }
