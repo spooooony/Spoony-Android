@@ -60,7 +60,7 @@ class MainNavigator(
             restoreState = true
         }
 
-        val registerNavOptions =  navOptions {
+        val registerNavOptions = navOptions {
             launchSingleTop = true
         }
 

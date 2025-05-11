@@ -59,7 +59,7 @@ class MyPageViewModel @Inject constructor(
                 }
         }
     }
-    
+
     private fun getUserReviews() {
         viewModelScope.launch {
             val mockReviews = persistentListOf(
@@ -84,7 +84,7 @@ class MyPageViewModel @Inject constructor(
                 ),
                 ReviewData(
                     reviewId = 2,
-                    content = "오오타쿠 라멘은 정말 일본 현지의 맛을 그대로 재현했어요. 특히 돈코츠 라멘은 국물이 진하고 면발이 쫄깃해서 좋았습니다.",
+                    content = "라멘은 정말 일본 현지의 맛을 그대로 재현했어요. 특히 돈코츠 라멘은 국물이 진하고 면발이 쫄깃해서 좋았습니다.",
                     category = ReviewCardCategory(
                         text = "라멘",
                         iconUrl = "",
@@ -100,7 +100,7 @@ class MyPageViewModel @Inject constructor(
                     )
                 )
             )
-            
+
             _state.update { it.copy(reviews = mockReviews) }
         }
     }

@@ -170,7 +170,8 @@ fun MainScreen(
                     navigateUp = navigator::navigateUp,
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToReviewDetail = navigator::navigateToPlaceDetail,
-                    navigateToReviewReport = navigator::navigateToReport
+                    navigateToReviewReport = navigator::navigateToReport,
+                    navigateToUserReport = { /* TODO: 이거 세홍쌤 신고 스크린과 싱크 필요 */ }
                 )
 
                 followNavGraph(

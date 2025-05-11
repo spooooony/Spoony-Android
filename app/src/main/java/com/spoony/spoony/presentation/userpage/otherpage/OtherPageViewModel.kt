@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.main100
 import com.spoony.spoony.core.designsystem.theme.main400
+import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.presentation.userpage.model.ReviewData
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserProfile
@@ -34,7 +34,7 @@ class OtherPageViewModel @Inject constructor(
         UserPageState(
             userType = UserType.OTHER_PAGE,
             profile = UserProfile(),
-            isLocalReviewOnly = true,
+            isLocalReviewOnly = true
         )
     )
     val state: StateFlow<UserPageState>
@@ -78,6 +78,18 @@ class OtherPageViewModel @Inject constructor(
 
     fun toggleLocalReviewOnly() {
         _state.update { it.copy(isLocalReviewOnly = !it.isLocalReviewOnly) }
+    }
+
+    fun blockUser(userId: Int) {
+        viewModelScope.launch {
+            _state.update { state ->
+                state.copy(
+                    profile = state.profile.copy(
+                        isBlocked = true
+                    )
+                )
+            }
+        }
     }
 
     private fun getUserReviews() {

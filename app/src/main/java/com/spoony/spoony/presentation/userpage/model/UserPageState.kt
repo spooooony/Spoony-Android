@@ -15,7 +15,8 @@ data class UserProfile(
     val reviewCount: Int = 0,
     val followerCount: Int = 0,
     val followingCount: Int = 0,
-    val isFollowing: Boolean = false
+    val isFollowing: Boolean = false,
+    val isBlocked: Boolean = false
 )
 
 data class ReviewData(
@@ -46,19 +47,26 @@ data class UserPageState(
     val introduction get() = profile.introduction
     val isFollowing get() = profile.isFollowing
     val isCheckBoxSelected get() = isLocalReviewOnly
+    val isBlocked get() = profile.isBlocked
 }
 
 data class UserPageEvents(
+    // 공통
     val onFollowClick: (FollowType, Int) -> Unit,
-    val onReviewClick: (Int) -> Unit,
     val onMainButtonClick: () -> Unit,
-    val onEmptyClick: () -> Unit = {},
-    val onSettingClick: () -> Unit = {},
-    val onCheckBoxClick: () -> Unit = {},
-    val onLogoClick: () -> Unit = {},
-    val onBackButtonClick: () -> Unit = {},
-    val onMenuButtonClick: () -> Unit = {},
+    val onReviewClick: (Int) -> Unit,
+
+    // 마이페이지
     val onDeleteReviewClick: (Int) -> Unit = {},
-    val onReportReviewClick: (Int, Int) -> Unit = {_, _ ->},
-    val onEditReviewClick: (Int, RegisterType) -> Unit = { _, _ -> }
+    val onEditReviewClick: (Int, RegisterType) -> Unit = { _, _ -> },
+    val onEmptyClick: () -> Unit = {},
+    val onLogoClick: () -> Unit = {},
+    val onSettingClick: () -> Unit = {},
+
+    // 유저페이지
+    val onBackButtonClick: () -> Unit = {},
+    val onCheckBoxClick: () -> Unit = {},
+    val onReportReviewClick: (Int, Int) -> Unit = { _, _ -> },
+    val onReportUserClick: (Int) -> Unit = {},
+    val onUserBlockClick: (Int) -> Unit = {}
 )

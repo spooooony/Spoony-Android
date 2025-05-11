@@ -21,10 +21,10 @@ import com.spoony.spoony.presentation.userpage.model.UserType
 fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToSettings: () -> Unit,
-    navigateToFollow: (FollowType, Int) -> Unit,
-    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
+    navigateToFollow: (FollowType, Int) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
@@ -36,14 +36,14 @@ fun MyPageRoute(
     }
 
     val userPageEvents = UserPageEvents(
-        onFollowClick = navigateToFollow,
-        onReviewClick = navigateToReviewDetail,
+        onSettingClick = navigateToSettings,
         onMainButtonClick = navigateToProfileEdit,
         onEmptyClick = navigateToRegister,
-        onSettingClick = navigateToSettings,
-        onLogoClick = { /* 스푼 뽑기 */ },
+        onFollowClick = navigateToFollow,
+        onReviewClick = navigateToReviewDetail,
         onEditReviewClick = navigateToEditReview,
         onDeleteReviewClick = { /* 리뷰 삭제 넣을거임 */ },
+        onLogoClick = { /* 스푰 뽑기 */ }
     )
 
     UserPageScreen(

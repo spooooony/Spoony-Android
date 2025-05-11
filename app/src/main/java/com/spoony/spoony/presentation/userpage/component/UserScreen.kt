@@ -53,6 +53,8 @@ fun UserPageScreen(
     modifier: Modifier = Modifier
 ) {
     var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
+    var isUserBlockDialogVisible by remember { mutableStateOf(false) }
+    val topBarMenuItemList = persistentListOf("차단하기", "신고하기")
 
     LazyColumn(
         modifier = modifier
@@ -70,8 +72,17 @@ fun UserPageScreen(
                 )
 
                 UserType.OTHER_PAGE -> BackAndMenuTopAppBar(
+                    menuItemList = topBarMenuItemList,
                     onBackButtonClick = events.onBackButtonClick,
-                    onMenuButtonClick = events.onMenuButtonClick,
+                    onMenuButtonClick = { menuItem ->
+                        when (menuItem) {
+                            "차단하기" -> {
+                                isUserBlockDialogVisible = true
+                            }
+
+                            "신고하기" -> events.onReportUserClick(state.profileId)
+                        }
+                    },
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
@@ -125,49 +136,69 @@ fun UserPageScreen(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+
+            if (isUserBlockDialogVisible) {
+                TwoButtonDialog(
+                    message = "${state.userName} 님을\n차단하시겠습니까?",
+                    negativeText = "아니요",
+                    positiveText = "네",
+                    onClickNegative = { isUserBlockDialogVisible = false },
+                    onClickPositive = {
+                        events.onUserBlockClick(state.profileId)
+                        isUserBlockDialogVisible = false
+                    },
+                    onDismiss = { }
+                )
+            }
         }
 
-        when (state.reviewCount) {
-            0 -> {
-                item {
-                    Spacer(modifier = Modifier.height(54.dp))
-                    when (state.userType) {
-                        UserType.MY_PAGE -> {
-                            MapEmptyBottomSheetContent(
-                                onClick = events.onEmptyClick,
-                                description = "아직 등록한 리뷰가 없어요\n나만의 찐맛집을 공유해 보세요!",
-                                buttonText = "등록하러 가기",
-                                buttonStyle = ButtonStyle.Primary
-                            )
-                        }
-                        UserType.OTHER_PAGE -> {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = modifier
-                                    .padding(vertical = 24.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.img_empty_home),
-                                    modifier = Modifier.size(100.dp),
-                                    contentDescription = null
-                                )
-                                Text(
-                                    text = "아직 등록된 로컬리뷰가 없어요.",
-                                    style = SpoonyAndroidTheme.typography.body2m,
-                                    color = SpoonyAndroidTheme.colors.gray500,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .padding(vertical = 16.dp)
-                                )
-                            }
-                        }
-                    }
+        if (state.isBlocked) {
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = modifier
+                        .padding(vertical = 24.dp)
+                        .fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.img_empty_home),
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(bottom = 16.dp),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "차단된 사용자예요.",
+                        style = SpoonyAndroidTheme.typography.body2b,
+                        color = SpoonyAndroidTheme.colors.gray500,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "지금은 프로필을 볼 수 없지만, \n" +
+                            "원하시면 차단을 해제할 수 있어요.",
+                        style = SpoonyAndroidTheme.typography.body2m,
+                        color = SpoonyAndroidTheme.colors.gray500,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
+        } else {
+            when (state.reviewCount) {
+                0 -> item {
+                    Spacer(modifier = Modifier.height(54.dp))
+                    when (state.userType) {
+                        UserType.MY_PAGE -> MapEmptyBottomSheetContent(
+                            onClick = events.onEmptyClick,
+                            description = "아직 등록한 리뷰가 없어요\n나만의 찐맛집을 공유해 보세요!",
+                            buttonText = "등록하러 가기",
+                            buttonStyle = ButtonStyle.Primary
+                        )
 
-            else -> {
-                items(
+                        UserType.OTHER_PAGE -> EmptyContent("아직 등록한 로컬리뷰가 없어요")
+                    }
+                }
+
+                else -> items(
                     items = state.reviews,
                     key = { review -> review.reviewId }
                 ) { review ->
@@ -192,7 +223,9 @@ fun UserPageScreen(
                             when (menuItem) {
                                 "수정하기" -> events.onEditReviewClick(review.reviewId, RegisterType.EDIT)
 
-                                "삭제하기" -> { isReviewDeleteDialogVisible = true }
+                                "삭제하기" -> {
+                                    isReviewDeleteDialogVisible = true
+                                }
 
                                 "신고하기" -> events.onReportReviewClick(review.reviewId, state.profileId)
                             }
@@ -214,11 +247,38 @@ fun UserPageScreen(
                                 events.onDeleteReviewClick(review.reviewId)
                                 isReviewDeleteDialogVisible = false
                             },
-                            onDismiss = { },
+                            onDismiss = { }
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun EmptyContent(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .padding(vertical = 24.dp)
+            .fillMaxWidth()
+    ) {
+        Image(
+            painter = painterResource(R.drawable.img_empty_home),
+            modifier = Modifier.size(100.dp),
+            contentDescription = null
+        )
+        Text(
+            text = text,
+            style = SpoonyAndroidTheme.typography.body2m,
+            color = SpoonyAndroidTheme.colors.gray500,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+        )
     }
 }
