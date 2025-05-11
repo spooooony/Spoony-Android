@@ -86,7 +86,6 @@ fun DisappointItem(
                         icon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.ic_button_spoon_32),
-                                modifier = Modifier.size(32.dp),
                                 contentDescription = null,
                                 tint = Color.Unspecified
                             )
