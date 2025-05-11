@@ -38,6 +38,7 @@ import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
@@ -52,6 +53,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun ExploreRoute(
     paddingValues: PaddingValues,
+    navigateToExploreSearch: () -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReport: (postId: Int, userId: Int) -> Unit,
@@ -76,6 +78,7 @@ fun ExploreRoute(
         ExploreScreen(
             chipItems = state.chipItems,
             paddingValues = paddingValues,
+            onClickSearch = navigateToExploreSearch,
             placeReviewList = placeReviewList,
             onRegisterButtonClick = navigateToRegister,
             onPlaceDetailItemClick = navigateToPlaceDetail,
@@ -88,6 +91,7 @@ fun ExploreRoute(
 private fun ExploreScreen(
     chipItems: ImmutableList<FilterOption>,
     paddingValues: PaddingValues,
+    onClickSearch: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     onRegisterButtonClick: () -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
@@ -126,7 +130,9 @@ private fun ExploreScreen(
             )
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier
+                    .size(20.dp)
+                    .noRippleClickable(onClickSearch),
                 contentDescription = null,
                 tint = Color.Unspecified
             )

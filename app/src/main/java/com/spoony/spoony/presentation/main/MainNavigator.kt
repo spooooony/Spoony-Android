@@ -12,6 +12,7 @@ import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.auth.signin.navigation.navigateToSignIn
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.navigateToTermsOfService
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
+import com.spoony.spoony.presentation.exploreSearch.navigation.navigateToExploreSearch
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
@@ -177,6 +178,15 @@ class MainNavigator(
         navOptions: NavOptions? = null
     ) {
         navController.navigateToPlaceDetail(postId = postId)
+    }
+
+    fun navigateToExploreSearch(
+        navOptions: NavOptions? = navOptions {
+            launchSingleTop = true
+            restoreState = true
+        }
+    ) {
+        navController.navigateToExploreSearch(navOptions)
     }
 
     fun navigateToLocationMap(

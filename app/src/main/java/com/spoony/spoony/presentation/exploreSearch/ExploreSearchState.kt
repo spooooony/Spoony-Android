@@ -1,7 +1,7 @@
 package com.spoony.spoony.presentation.exploreSearch
 
+import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -16,22 +16,21 @@ data class ExploreSearchState(
 )
 
 data class UserInfo(
-    val userId: Int = 0,
-    val imageUrl: String = "",
-    val nickname: String = "",
-    val region: String = ""
+    val userId: Int,
+    val imageUrl: String,
+    val nickname: String,
+    val region: String
 )
 
 data class PlaceReviewInfo(
-    val reviewId: Int = 0,
-    val userId: Int = 0,
-    val userName: String? = null,
-    val userRegion: String? = null,
+    val reviewId: Int,
+    val userId: Int,
+    val userName: String,
+    val userRegion: String,
     val description: String,
-    val photoUrlList: ImmutableList<String>? = persistentListOf(),
-    val placeName: String? = null,
-    val placeAddress: String? = null,
-    val category: CategoryEntity? = null,
-    val addMapCount: Int? = null,
-    val createdAt: String? = null
+    val isMine: Boolean,
+    val photoUrlList: ImmutableList<String>,
+    val category: ReviewCardCategory,
+    val addMapCount: Int,
+    val date: String
 )

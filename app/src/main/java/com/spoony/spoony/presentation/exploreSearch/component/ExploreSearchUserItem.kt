@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.exploreSearch.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,11 +29,12 @@ fun ExploreSearchUserItem(
 ) {
     Row(
         modifier = modifier
+            .fillMaxWidth()
+            .noRippleClickable { onItemClick(userInfo.userId) }
             .padding(
                 vertical = 8.dp,
                 horizontal = 20.dp
-            )
-            .noRippleClickable { onItemClick(userInfo.userId) },
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         UrlImage(

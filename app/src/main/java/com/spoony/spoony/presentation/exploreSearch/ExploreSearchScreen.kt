@@ -23,15 +23,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
@@ -44,11 +46,14 @@ import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun ExploreSearchRoute(
     paddingValues: PaddingValues,
+    navigateToUserProfile: (Int) -> Unit,
+    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToPlaceDetail: (Int) -> Unit,
+    navigateUp: () -> Unit,
     viewModel: ExploreSearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -57,6 +62,10 @@ fun ExploreSearchRoute(
         paddingValues = paddingValues,
         searchKeyword = state.searchKeyword,
         searchType = state.searchType,
+        onReviewReportButtonClick = navigateToReport,
+        onUserButtonClick = navigateToUserProfile,
+        onPlaceDetailButtonClick = navigateToPlaceDetail,
+        onBackButtonClick = navigateUp,
         onSwitchType = viewModel::switchSearchType,
         onRemoveRecentSearchItem = viewModel::removeRecentSearchItem,
         onClearRecentSearchItem = viewModel::clearRecentSearchItem,
@@ -74,6 +83,10 @@ private fun ExploreSearchScreen(
     paddingValues: PaddingValues,
     searchKeyword: String,
     searchType: SearchType,
+    onReviewReportButtonClick: (postId: Int, userId: Int) -> Unit,
+    onUserButtonClick: (Int) -> Unit,
+    onPlaceDetailButtonClick: (Int) -> Unit,
+    onBackButtonClick: () -> Unit,
     onRemoveRecentSearchItem: (String) -> Unit,
     onSwitchType: (SearchType) -> Unit,
     onClearRecentSearchItem: () -> Unit,
@@ -85,15 +98,11 @@ private fun ExploreSearchScreen(
     placeReviewInfoList: UiState<ImmutableList<PlaceReviewInfo>>
 ) {
     val focusRequester = remember { FocusRequester() }
-    var tabRowIndex by remember { mutableIntStateOf(0) }
+    var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabItems = persistentListOf(SearchType.USER, SearchType.REVIEW)
-    var searchText by remember { mutableStateOf("") }
+    var searchText by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
-    }
-
-    LaunchedEffect(tabRowIndex) {
-        searchText = ""
     }
 
     LaunchedEffect(searchText) {
@@ -102,13 +111,18 @@ private fun ExploreSearchScreen(
         }
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .padding(
+                bottom = paddingValues.calculateBottomPadding()
+            )
+    ) {
         ExploreSearchTopAppbar(
             value = searchText,
             onValueChanged = {
                 searchText = it
             },
-            onBackButtonClick = {},
+            onBackButtonClick = onBackButtonClick,
             onSearchAction = {
                 if (searchText.isBlank()) return@ExploreSearchTopAppbar
                 onSearch(searchText.trim())
@@ -137,6 +151,7 @@ private fun ExploreSearchScreen(
                         .padding(top = 4.dp, bottom = 9.dp),
                     onClick = {
                         tabRowIndex = index
+                        searchText = ""
                         onSwitchType(title)
                     },
                     selectedContentColor = SpoonyAndroidTheme.colors.white
@@ -176,6 +191,7 @@ private fun ExploreSearchScreen(
                             is UiState.Success -> {
                                 LazyColumn(
                                     modifier = Modifier
+                                        .fillMaxWidth()
                                         .padding(horizontal = 20.dp),
                                     contentPadding = PaddingValues(vertical = 30.dp)
                                 ) {
@@ -183,7 +199,7 @@ private fun ExploreSearchScreen(
                                         items = userInfoList.data
                                     ) { userInfo ->
                                         ExploreSearchUserItem(
-                                            onItemClick = {},
+                                            onItemClick = onUserButtonClick,
                                             userInfo = userInfo
                                         )
                                     }
@@ -214,7 +230,56 @@ private fun ExploreSearchScreen(
                     else -> {
                         when (placeReviewInfoList) {
                             is UiState.Success -> {
-                                // TODO: 탐색 뷰 컴포넌트 머지 후 구현 예정
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            horizontal = 20.dp,
+                                            vertical = 24.dp
+                                        ),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    items(
+                                        items = placeReviewInfoList.data
+                                    ) { placeReviewInfo ->
+                                        val menuList = remember {
+                                            if (placeReviewInfo.isMine) {
+                                                persistentListOf(
+                                                    "수정하기",
+                                                    "삭제하기"
+                                                )
+                                            } else {
+                                                persistentListOf(
+                                                    "신고하기"
+                                                )
+                                            }
+                                        }
+                                        ReviewCard(
+                                            reviewId = placeReviewInfo.reviewId,
+                                            review = placeReviewInfo.description,
+                                            onMenuItemClick = {
+                                                when (it) {
+                                                    "신고하기" -> onReviewReportButtonClick(placeReviewInfo.reviewId, placeReviewInfo.userId)
+                                                    "수정하기" -> {}
+                                                    "삭제하기" -> {}
+                                                }
+                                            },
+                                            date = placeReviewInfo.date,
+                                            username = placeReviewInfo.userName,
+                                            userRegion = placeReviewInfo.userRegion,
+                                            addMapCount = placeReviewInfo.addMapCount,
+                                            imageList = placeReviewInfo.photoUrlList,
+                                            menuItems = menuList,
+                                            onClick = onPlaceDetailButtonClick,
+                                            category = ReviewCardCategory(
+                                                text = placeReviewInfo.category.text,
+                                                iconUrl = placeReviewInfo.category.iconUrl,
+                                                textColor = placeReviewInfo.category.textColor,
+                                                backgroundColor = placeReviewInfo.category.backgroundColor
+                                            )
+                                        )
+                                    }
+                                }
                             }
                             is UiState.Empty -> {
                                 ExploreSearchEmptyScreen(searchType = searchType)
@@ -282,91 +347,5 @@ private fun ExploreSearchRecentContent(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ExploreSearchScreenPreview() {
-    val paddingValues = PaddingValues(0.dp)
-    SpoonyAndroidTheme {
-        var searchKeyword by remember { mutableStateOf("") }
-        var recentUserQueryList by remember { mutableStateOf(persistentListOf<String>()) }
-        var recentReviewQueryList by remember { mutableStateOf(persistentListOf<String>()) }
-        var searchType by remember { mutableStateOf(SearchType.USER) }
-        ExploreSearchScreen(
-            paddingValues = paddingValues,
-            searchKeyword = searchKeyword,
-            searchType = searchType,
-            onRemoveRecentSearchItem = { removedKeyword ->
-                when (searchType) {
-                    SearchType.USER ->
-                        recentUserQueryList = recentUserQueryList
-                            .filterNot { it == removedKeyword }
-                            .toPersistentList()
-                    SearchType.REVIEW ->
-                        recentReviewQueryList = recentReviewQueryList
-                            .filterNot { it == removedKeyword }
-                            .toPersistentList()
-                }
-            },
-            onSwitchType = {
-                searchType = it
-                searchKeyword = ""
-            },
-            onClearRecentSearchItem = {
-                when (searchType) {
-                    SearchType.USER -> recentUserQueryList = persistentListOf()
-                    SearchType.REVIEW -> recentReviewQueryList = persistentListOf()
-                }
-            },
-            onSearch = { keyword ->
-                val keywordTrim = keyword.trim()
-                when (searchType) {
-                    SearchType.USER -> {
-                        searchKeyword = keywordTrim
-                        val updatedList = (listOf(keywordTrim) + recentUserQueryList.filterNot { it == keyword })
-                            .take(6)
-                            .toPersistentList()
-                        recentUserQueryList = updatedList
-                    }
-                    SearchType.REVIEW -> {
-                        searchKeyword = keywordTrim
-                        val updatedList = (listOf(keywordTrim) + recentReviewQueryList.filterNot { it == keyword })
-                            .take(6)
-                            .toPersistentList()
-                        recentReviewQueryList = updatedList
-                    }
-                }
-            },
-            onClearSearchKeyword = {
-                searchKeyword = ""
-            },
-            recentReviewSearchQueryList = recentReviewQueryList,
-            recentUserSearchQueryList = recentUserQueryList,
-            userInfoList = UiState.Success(
-                persistentListOf(
-                    UserInfo(
-                        userId = 1,
-                        nickname = "크리스탈에메랄드수정",
-                        imageUrl = "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
-                        region = "서울 성북구"
-                    ),
-                    UserInfo(
-                        userId = 2,
-                        nickname = "크리스탈에메랄드수정",
-                        imageUrl = "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
-                        region = "서울 성북구"
-                    ),
-                    UserInfo(
-                        userId = 3,
-                        nickname = "크리스탈에메랄드수정",
-                        imageUrl = "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
-                        region = "서울 성북구"
-                    )
-                )
-            ),
-            placeReviewInfoList = UiState.Success(persistentListOf())
-        )
     }
 }
