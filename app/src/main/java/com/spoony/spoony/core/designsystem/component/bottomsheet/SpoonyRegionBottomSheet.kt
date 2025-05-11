@@ -142,7 +142,7 @@ fun SpoonyRegionBottomSheet(
                                 .background(if (city == selectedCity) SpoonyAndroidTheme.colors.white else SpoonyAndroidTheme.colors.gray0)
                                 .border(1.dp, color = SpoonyAndroidTheme.colors.gray0)
                                 .onGloballyPositioned {
-                                    if(columnHeight == 0) {
+                                    if (columnHeight == 0) {
                                         columnHeight = it.size.height
                                     }
                                 }

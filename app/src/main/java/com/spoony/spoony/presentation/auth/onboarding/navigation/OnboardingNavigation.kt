@@ -127,7 +127,10 @@ fun NavGraphBuilder.onboardingGraph(
 //            )
 //        }
     ) {
-        OnboardingEndRoute()
+        OnboardingEndRoute(
+            viewModel = viewModel,
+            navigateToMap = navigateToMap
+        )
     }
 }
 
