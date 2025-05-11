@@ -184,6 +184,7 @@ fun PlaceDetailRoute(
                             date = data.createdAt.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,
                             placeName = data.placeName,
+                            isMine = data.isMine,
                             isScooped = state.isScooped || data.isMine,
                             dropdownMenuList = dropDownMenuList,
                             onReportButtonClick = { navigateToReport(postId, userProfile.userId) }
@@ -210,6 +211,7 @@ private fun PlaceDetailScreen(
     date: String,
     placeAddress: String,
     placeName: String,
+    isMine: Boolean,
     isScooped: Boolean,
     dropdownMenuList: ImmutableList<DropdownOption>,
     onReportButtonClick: () -> Unit
@@ -237,10 +239,12 @@ private fun PlaceDetailScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                FollowButton(
-                    isFollowing = false,
-                    onClick = { }
-                )
+                if (!isMine) {
+                    FollowButton(
+                        isFollowing = false,
+                        onClick = { }
+                    )
+                }
                 if (dropdownMenuList.isNotEmpty()) {
                     IconDropdownMenu(
                         menuItems = dropdownMenuList,
