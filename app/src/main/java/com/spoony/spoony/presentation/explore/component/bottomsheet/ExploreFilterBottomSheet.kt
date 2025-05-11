@@ -174,65 +174,6 @@ private fun ExploreFilterBottomSheetHeader(
     }
 }
 
-@Composable
-private fun ExploreFilterBottomSheetTabRow(
-    onTabSelected: (Int) -> Unit,
-    tabIndex: Int = 0
-) {
-    val tabs = remember { persistentListOf("속성", "카테고리", "지역", "연령대") }
-    var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
-    TabRow(
-        selectedTabIndex = selectedTabIndex,
-        containerColor = SpoonyAndroidTheme.colors.white,
-        contentColor = SpoonyAndroidTheme.colors.main400,
-        indicator = { tabPositions ->
-            if (tabPositions.isNotEmpty() && selectedTabIndex < tabPositions.size) {
-                val tabPosition = tabPositions[selectedTabIndex]
-                val tabWidth = tabPosition.right - tabPosition.left
-                val indicatorOffset by animateDpAsState(
-                    targetValue = tabPosition.left + (tabWidth - 50.dp) / 2,
-                    label = "TabIndicatorOffset"
-                )
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .wrapContentSize(Alignment.BottomStart)
-                        .offset(x = indicatorOffset)
-                        .width(50.dp)
-                        .height(2.dp)
-                        .background(color = SpoonyAndroidTheme.colors.main400)
-                )
-            }
-        },
-        divider = {
-            HorizontalDivider(
-                color = SpoonyAndroidTheme.colors.gray200,
-                thickness = 1.dp
-            )
-        }
-    ) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                content = {
-                    Text(
-                        text = title,
-                        style = SpoonyAndroidTheme.typography.body2b,
-                        color = if (selectedTabIndex == index) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray400
-                    )
-                },
-                selected = selectedTabIndex == index,
-                onClick = {
-                    selectedTabIndex = index
-                    onTabSelected(index)
-                },
-                selectedContentColor = Color.White,
-                modifier = Modifier
-                    .padding(bottom = 7.dp)
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ExploreFilterBottomSheetContent(
@@ -348,6 +289,65 @@ private fun ExploreFilterBottomSheetContent(
             }
         }
         item { Spacer(modifier = Modifier.height(85.dp)) }
+    }
+}
+
+@Composable
+private fun ExploreFilterBottomSheetTabRow(
+    onTabSelected: (Int) -> Unit,
+    tabIndex: Int = 0
+) {
+    val tabs = remember { persistentListOf("속성", "카테고리", "지역", "연령대") }
+    var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        containerColor = SpoonyAndroidTheme.colors.white,
+        contentColor = SpoonyAndroidTheme.colors.main400,
+        indicator = { tabPositions ->
+            if (tabPositions.isNotEmpty() && selectedTabIndex < tabPositions.size) {
+                val tabPosition = tabPositions[selectedTabIndex]
+                val tabWidth = tabPosition.right - tabPosition.left
+                val indicatorOffset by animateDpAsState(
+                    targetValue = tabPosition.left + (tabWidth - 50.dp) / 2,
+                    label = "TabIndicatorOffset"
+                )
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .wrapContentSize(Alignment.BottomStart)
+                        .offset(x = indicatorOffset)
+                        .width(50.dp)
+                        .height(2.dp)
+                        .background(color = SpoonyAndroidTheme.colors.main400)
+                )
+            }
+        },
+        divider = {
+            HorizontalDivider(
+                color = SpoonyAndroidTheme.colors.gray200,
+                thickness = 1.dp
+            )
+        }
+    ) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                content = {
+                    Text(
+                        text = title,
+                        style = SpoonyAndroidTheme.typography.body2b,
+                        color = if (selectedTabIndex == index) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray400
+                    )
+                },
+                selected = selectedTabIndex == index,
+                onClick = {
+                    selectedTabIndex = index
+                    onTabSelected(index)
+                },
+                selectedContentColor = Color.White,
+                modifier = Modifier
+                    .padding(bottom = 7.dp)
+            )
+        }
     }
 }
 
