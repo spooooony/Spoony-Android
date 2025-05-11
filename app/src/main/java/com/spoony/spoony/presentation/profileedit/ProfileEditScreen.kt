@@ -29,7 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePickerBottomSheet
-import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyLocationBottomSheet
+import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBottomSheet
+import com.spoony.spoony.core.designsystem.component.bottomsheet.regionList
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
@@ -225,10 +226,11 @@ fun ProfileEditScreen(
     }
 
     if (isLocationBottomSheetVisible) {
-        SpoonyLocationBottomSheet(
+        SpoonyRegionBottomSheet(
+            regionList = regionList,
             onDismiss = { isLocationBottomSheetVisible = false },
             onClick = { region ->
-                selectedRegion = region
+                selectedRegion = "서울 ${region.regionName}"
                 isRegionSelected = true
             }
         )
