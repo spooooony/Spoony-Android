@@ -35,7 +35,8 @@ fun ProfileIntroSection(
     introduction: String,
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isFollowing: Boolean = false
+    isFollowing: Boolean = false,
+    isBlocked: Boolean = false
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -75,7 +76,8 @@ fun ProfileIntroSection(
                     isFollowing = isFollowing,
                     onClick = onButtonClick,
                     modifier = Modifier.padding(start = 8.dp),
-                    isSmall = false
+                    isSmall = false,
+                    isBlocked = isBlocked
                 )
             }
         }

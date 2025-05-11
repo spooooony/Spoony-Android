@@ -106,6 +106,7 @@ fun UserPageScreen(
                 introduction = state.introduction,
                 onButtonClick = events.onMainButtonClick,
                 isFollowing = state.isFollowing,
+                isBlocked = state.isBlocked,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
 

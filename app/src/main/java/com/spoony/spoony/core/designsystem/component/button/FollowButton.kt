@@ -40,18 +40,29 @@ private enum class FollowButtonState(
         textColor = gray500,
         backgroundColor = gray0,
         useGradient = false
+    ),
+    UNBLOCK(
+        text = "차단 해제",
+        textColor = white,
+        backgroundColor = Color.Transparent,
+        useGradient = true
     )
 }
 
 @Composable
 fun FollowButton(
     isFollowing: Boolean,
+    isBlocked: Boolean = false,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isSmall: Boolean = true
 ) {
-    val buttonState = remember(isFollowing) {
-        if (isFollowing) FollowButtonState.FOLLOWING else FollowButtonState.FOLLOW
+    val buttonState = remember(isFollowing, isBlocked) {
+        when {
+            isBlocked -> FollowButtonState.UNBLOCK
+            isFollowing -> FollowButtonState.FOLLOWING
+            else -> FollowButtonState.FOLLOW
+        }
     }
 
     val cornerRadius = 12.dp

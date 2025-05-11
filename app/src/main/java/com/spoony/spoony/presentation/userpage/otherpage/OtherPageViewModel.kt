@@ -62,16 +62,24 @@ class OtherPageViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { state ->
                 val currentProfile = state.profile
-                state.copy(
-                    profile = currentProfile.copy(
-                        isFollowing = !currentProfile.isFollowing,
-                        followerCount = if (currentProfile.isFollowing) {
-                            currentProfile.followerCount - 1
-                        } else {
-                            currentProfile.followerCount + 1
-                        }
+
+                when {
+                    currentProfile.isBlocked -> state.copy(
+                        profile = currentProfile.copy(
+                            isBlocked = false
+                        )
                     )
-                )
+                    else -> state.copy(
+                        profile = currentProfile.copy(
+                            isFollowing = !currentProfile.isFollowing,
+                            followerCount = if (currentProfile.isFollowing) {
+                                currentProfile.followerCount - 1
+                            } else {
+                                currentProfile.followerCount + 1
+                            }
+                        )
+                    )
+                }
             }
         }
     }
@@ -83,9 +91,10 @@ class OtherPageViewModel @Inject constructor(
     fun blockUser(userId: Int) {
         viewModelScope.launch {
             _state.update { state ->
+                val currentProfile = state.profile
                 state.copy(
-                    profile = state.profile.copy(
-                        isBlocked = true
+                    profile = currentProfile.copy(
+                        isBlocked = !currentProfile.isBlocked
                     )
                 )
             }
