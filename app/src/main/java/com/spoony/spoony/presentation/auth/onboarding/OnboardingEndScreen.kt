@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -31,6 +33,10 @@ fun OnboardingEndRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.updateCurrentStep(OnboardingSteps.END)
+    }
+
     OnboardingEndScreen(
         nickname = state.nickname,
         onButtonClick = navigateToMap
@@ -43,10 +49,11 @@ private fun OnboardingEndScreen(
     onButtonClick: () -> Unit
 ) {
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp)
-            .padding(top = 56.dp, bottom = 20.dp)
+            .padding(bottom = 20.dp)
     ) {
         Text(
             text = buildAnnotatedString {

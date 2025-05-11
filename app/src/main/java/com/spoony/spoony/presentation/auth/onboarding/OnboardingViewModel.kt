@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.auth.onboarding
 
 import androidx.lifecycle.ViewModel
+import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.model.RegionModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,9 +16,38 @@ class OnboardingViewModel @Inject constructor() : ViewModel() {
     val state: StateFlow<OnboardingState>
         get() = _state.asStateFlow()
 
+    fun skipStep() {
+        when (_state.value.currentStep) {
+            OnboardingSteps.TWO -> {
+                _state.update {
+                    it.copy(
+                        birth = "",
+                        region = RegionModel(-1, "마포구")
+                    )
+                }
+            }
+
+            OnboardingSteps.THREE -> {
+                _state.update {
+                    it.copy(
+                        introduction = ""
+                    )
+                }
+            }
+
+            else -> {}
+        }
+    }
+
     fun updateNickname(nickname: String) {
         _state.update {
             it.copy(nickname = nickname)
+        }
+    }
+
+    fun updateNicknameState(state: NicknameTextFieldState) {
+        _state.update {
+            it.copy(nicknameState = state)
         }
     }
 
@@ -41,7 +71,7 @@ class OnboardingViewModel @Inject constructor() : ViewModel() {
 
     fun updateCurrentStep(step: OnboardingSteps) {
         _state.update {
-            it.copy(currentStep = step.step)
+            it.copy(currentStep = step)
         }
     }
 }

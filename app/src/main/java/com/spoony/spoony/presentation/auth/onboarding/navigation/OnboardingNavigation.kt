@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.auth.onboarding.OnBoardingStepOneRoute
 import com.spoony.spoony.presentation.auth.onboarding.OnboardingEndRoute
@@ -61,8 +62,12 @@ fun NavGraphBuilder.onboardingGraph(
         OnBoardingStepOneRoute(
             viewModel = viewModel,
             onNextButtonClick = {
-                onUpdateSteps(OnboardingSteps.TWO)
-                navController.navigate(StepTwo)
+                navController.navigate(
+                    route = StepTwo,
+                    navOptions = navOptions {
+                        restoreState = true
+                    }
+                )
             }
         )
     }
@@ -84,7 +89,6 @@ fun NavGraphBuilder.onboardingGraph(
         OnboardingStepTwoRoute(
             viewModel = viewModel,
             onNextButtonClick = {
-                onUpdateSteps(OnboardingSteps.THREE)
                 navController.navigate(StepThree)
             }
         )
@@ -108,7 +112,14 @@ fun NavGraphBuilder.onboardingGraph(
             viewModel = viewModel,
             onNextButtonClick = {
                 onUpdateSteps(OnboardingSteps.END)
-                navController.navigate(End)
+                navController.navigate(
+                    route = End,
+                    navOptions = navOptions {
+                        popUpTo<StepOne> {
+                            inclusive = true
+                        }
+                    }
+                )
             }
         )
     }

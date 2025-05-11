@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,6 +19,10 @@ fun OnboardingStepThreeRoute(
     onNextButtonClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.updateCurrentStep(OnboardingSteps.THREE)
+    }
 
     OnboardingStepThreeScreen(
         introduction = state.introduction,

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,9 +30,20 @@ fun OnboardingStepTwoRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    var isButtonEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.updateCurrentStep(OnboardingSteps.TWO)
+    }
+
+    LaunchedEffect(state.birth, state.region) {
+        isButtonEnabled = state.birth != "" || state.region.regionId != -1
+    }
+
     OnboardingStepTwoScreen(
         birth = state.birth.split("-"),
         region = state.region,
+        isButtonEnabled = isButtonEnabled,
         onUpdateBirth = viewModel::updateBirth,
         onUpdateRegion = viewModel::updateRegion,
         onNextButtonClick = onNextButtonClick
@@ -42,15 +54,13 @@ fun OnboardingStepTwoRoute(
 private fun OnboardingStepTwoScreen(
     birth: List<String>,
     region: RegionModel,
+    isButtonEnabled: Boolean,
     onUpdateBirth: (String) -> Unit,
     onUpdateRegion: (RegionModel) -> Unit,
     onNextButtonClick: () -> Unit
 ) {
     var birthBottomSheetVisibility by remember { mutableStateOf(false) }
     var regionBottomSheetVisibility by remember { mutableStateOf(false) }
-
-    var isBirthSelected by remember { mutableStateOf(false) }
-    var isRegionSelected by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(55.dp),
@@ -67,7 +77,7 @@ private fun OnboardingStepTwoScreen(
                 year = birth.getOrNull(0)?.takeIf { it.isNotBlank() } ?: "2000",
                 month = birth.getOrNull(1) ?: "01",
                 day = birth.getOrNull(2) ?: "01",
-                isBirthSelected = isBirthSelected
+                isBirthSelected = birth.getOrNull(0) != ""
             )
         }
 
@@ -77,7 +87,7 @@ private fun OnboardingStepTwoScreen(
                     regionBottomSheetVisibility = true
                 },
                 region = "서울 ${region.regionName}",
-                isSelected = isRegionSelected
+                isSelected = region.regionId != -1
             )
         }
 
@@ -85,7 +95,7 @@ private fun OnboardingStepTwoScreen(
 
         OnBoardingButton(
             onClick = onNextButtonClick,
-            enabled = isBirthSelected || isRegionSelected
+            enabled = isButtonEnabled
         )
     }
 
@@ -94,7 +104,7 @@ private fun OnboardingStepTwoScreen(
             onDismiss = { birthBottomSheetVisibility = false },
             onDateSelected = {
                 onUpdateBirth(it)
-                isBirthSelected = true
+//                isBirthSelected = true
             },
             initialYear = birth.getOrNull(0)?.toIntOrNull() ?: 2000,
             initialMonth = birth.getOrNull(1)?.toIntOrNull() ?: 1,
@@ -108,7 +118,7 @@ private fun OnboardingStepTwoScreen(
             onDismiss = { regionBottomSheetVisibility = false },
             onClick = {
                 onUpdateRegion(it)
-                isRegionSelected = true
+//                isRegionSelected = true
             }
         )
     }
