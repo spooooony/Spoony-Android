@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,13 +16,17 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -34,11 +39,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -51,9 +59,11 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
+import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
 import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
+import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.state.UiState
@@ -168,6 +178,7 @@ private fun MapScreen(
     moveCamera: (Double, Double) -> Unit
 ) {
     val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
+    val density = LocalDensity.current
 
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
@@ -178,6 +189,8 @@ private fun MapScreen(
         }
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
+
+    val gpsIconOffset = with(density) { 35.dp.toPx() }
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -267,6 +280,7 @@ private fun MapScreen(
                 }
             }
         }
+
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
@@ -304,57 +318,79 @@ private fun MapScreen(
                         }
                     },
                     sheetContent = {
-                        if (placeList.isEmpty()) {
-                            MapEmptyBottomSheetContent(
-                                onClick = onExploreButtonClick,
-                                modifier = Modifier
-                                    .padding(bottom = paddingValues.calculateBottomPadding())
-                            )
-                        } else {
-                            LazyColumn(
-                                contentPadding = PaddingValues(
-                                    top = 6.dp,
-                                    bottom = paddingValues.calculateBottomPadding()
-                                ),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(bottom = paddingValues.calculateBottomPadding())
-                            ) {
-                                items(
-                                    items = placeList,
-                                    key = { it.placeId }
-                                ) { addedPlace ->
-                                    with(addedPlace) {
-                                        MapListItem(
-                                            placeName = placeName,
-                                            address = placeAddress,
-                                            review = "",
-                                            imageUrl = photoUrl,
-                                            categoryIconUrl = categoryInfo.iconUrl,
-                                            categoryName = categoryInfo.categoryName,
-                                            textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
-                                            backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
-                                            onClick = {
-                                                onPlaceItemClick(placeId)
-                                                moveCamera(addedPlace.latitude, addedPlace.longitude)
-                                                isMarkerSelected = true
-                                                selectedMarkerId = placeId
-                                            }
+                        Box {
+                            if (placeList.isEmpty()) {
+                                MapEmptyBottomSheetContent(
+                                    onClick = onExploreButtonClick,
+                                    modifier = Modifier
+                                        .padding(bottom = paddingValues.calculateBottomPadding())
+                                )
+                            } else {
+                                LazyColumn(
+                                    contentPadding = PaddingValues(
+                                        top = 6.dp,
+                                        bottom = paddingValues.calculateBottomPadding()
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(bottom = paddingValues.calculateBottomPadding())
+                                ) {
+                                    items(
+                                        items = placeList,
+                                        key = { it.placeId }
+                                    ) { addedPlace ->
+                                        with(addedPlace) {
+                                            MapListItem(
+                                                placeName = placeName,
+                                                address = placeAddress,
+                                                review = "",
+                                                imageUrl = photoUrl,
+                                                categoryIconUrl = categoryInfo.iconUrl,
+                                                categoryName = categoryInfo.categoryName,
+                                                textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
+                                                backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
+                                                onClick = {
+                                                    onPlaceItemClick(placeId)
+                                                    moveCamera(addedPlace.latitude, addedPlace.longitude)
+                                                    isMarkerSelected = true
+                                                    selectedMarkerId = placeId
+                                                }
+                                            )
+                                        }
+                                    }
+                                    item {
+                                        Spacer(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
                                         )
                                     }
-                                }
-                                item {
-                                    Spacer(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                    )
                                 }
                             }
                         }
                     },
-                    sheetSwipeEnabled = placeList.isNotEmpty()
+                    sheetSwipeEnabled = placeList.isEmpty()
                 ) {}
             }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(end = 20.dp)
+                .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
+                .zIndex(1f)
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_gps_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(44.dp)
+                    .background(
+                        color = SpoonyAndroidTheme.colors.white,
+                        shape = CircleShape
+                    )
+                    .padding(10.dp)
+            )
         }
     }
 }
