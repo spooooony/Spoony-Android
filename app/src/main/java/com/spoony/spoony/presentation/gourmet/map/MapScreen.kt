@@ -212,8 +212,8 @@ private fun MapScreen(
             cameraPositionState = cameraPositionState,
             uiSettings = MapUiSettings(
                 isZoomControlEnabled = false,
-                logoGravity = Gravity.TOP or Gravity.START,
-                logoMargin = PaddingValues(start = 20.dp, top = 80.dp)
+                logoGravity = Gravity.TOP or Gravity.END,
+                logoMargin = PaddingValues(end = 20.dp, top = 135.dp)
             ),
             onMapClick = { _, _ ->
                 if (isMarkerSelected) {
@@ -391,7 +391,6 @@ private fun MapScreen(
                 ) {}
             }
         }
-
 
         Box(
             modifier = Modifier
