@@ -1,6 +1,9 @@
 package com.spoony.spoony.presentation.gourmet.map
 
+import android.Manifest
 import android.view.Gravity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.slideInVertically
@@ -43,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
@@ -69,6 +73,7 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
@@ -88,6 +93,7 @@ import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import timber.log.Timber
 
 private const val DEFAULT_ZOOM = 14.0
 
@@ -193,6 +199,19 @@ private fun MapScreen(
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
 
+    val locationPermissionRequest = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+
+        if (fineGranted || coarseGranted) {
+            Timber.d("권한 허용됨")
+        } else {
+            Timber.d("권한 거부됨")
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -277,31 +296,6 @@ private fun MapScreen(
                         addMapCount = zzimCount
                     )
                 }
-            }
-        }
-
-        AnimatedVisibility(
-            visible = sheetState.currentValue != AdvancedSheetState.Expanded,
-            enter = slideInVertically(initialOffsetY = { it }),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(end = 20.dp)
-                    .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_gps_24),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(44.dp)
-                        .background(
-                            color = SpoonyAndroidTheme.colors.white,
-                            shape = CircleShape
-                        )
-                        .padding(10.dp)
-                )
             }
         }
 
@@ -414,6 +408,39 @@ private fun MapScreen(
                     },
                     sheetSwipeEnabled = placeList.isNotEmpty()
                 ) {}
+            }
+        }
+
+        AnimatedVisibility(
+            visible = sheetState.currentValue != AdvancedSheetState.Expanded,
+            enter = slideInVertically(initialOffsetY = { it }),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(end = 20.dp)
+                    .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
+                    .noRippleClickable {
+                        locationPermissionRequest.launch(
+                            arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                            )
+                        )
+                    }
+                    .size(44.dp)
+                    .background(
+                        color = SpoonyAndroidTheme.colors.white,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_gps_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
             }
         }
     }
