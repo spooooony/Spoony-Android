@@ -25,7 +25,6 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun MapTopAppBar(
-    spoonCount: Int,
     onSearchClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -34,12 +33,6 @@ fun MapTopAppBar(
         modifier = modifier
             .padding(vertical = 6.dp, horizontal = 20.dp)
     ) {
-        LogoTag(
-            count = spoonCount,
-            tagSize = TagSize.Large,
-            modifier = Modifier
-                .padding(end = 11.dp)
-        )
         Row(
             modifier = Modifier
                 .noRippleClickable(onClick = onSearchClick)

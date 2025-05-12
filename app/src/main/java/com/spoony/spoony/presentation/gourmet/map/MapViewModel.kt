@@ -133,19 +133,6 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun getSpoonCount() {
-        viewModelScope.launch {
-            authRepository.getSpoonCount()
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            spoonCount = response
-                        )
-                    }
-                }
-        }
-    }
-
     fun updateLocationModel(locationModel: LocationModel) {
         _state.update {
             it.copy(

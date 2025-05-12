@@ -113,7 +113,6 @@ fun MapRoute(
         LaunchedEffect(placeId) {
             if (placeId == null) {
                 viewModel.getAddedPlaceList()
-                viewModel.getSpoonCount()
             } else {
                 viewModel.getAddedPlaceListByLocation(locationId = placeId)
             }
@@ -137,7 +136,6 @@ fun MapRoute(
         cameraPositionState = cameraPositionState,
         userName = (state.userName as? UiState.Success<String>)?.data ?: "",
         placeCount = state.placeCount,
-        spoonCount = state.spoonCount,
         placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<AddedPlaceEntity>>)?.data ?: persistentListOf(),
         placeCardList = (state.placeCardInfo as? UiState.Success<ImmutableList<AddedMapPostEntity>>)?.data ?: persistentListOf(),
         locationInfo = state.locationModel,
@@ -166,7 +164,6 @@ private fun MapScreen(
     cameraPositionState: CameraPositionState,
     userName: String,
     placeCount: Int,
-    spoonCount: Int,
     locationInfo: LocationModel,
     placeList: ImmutableList<AddedPlaceEntity>,
     placeCardList: ImmutableList<AddedMapPostEntity>,
@@ -288,7 +285,6 @@ private fun MapScreen(
         ) {
             if (locationInfo.placeId == null) {
                 MapTopAppBar(
-                    spoonCount = spoonCount,
                     onSearchClick = navigateToMapSearch,
                     modifier = Modifier
                         .padding(top = paddingValues.calculateTopPadding())
@@ -372,6 +368,7 @@ private fun MapScreen(
                 ) {}
             }
         }
+
 
         Box(
             modifier = Modifier
