@@ -47,7 +47,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -189,7 +188,7 @@ private fun MapScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
-    val gpsIconOffset = with(density) { 35.dp.toPx() }
+    val gpsIconOffset = with(density) { 75.dp.toPx() }
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -213,7 +212,8 @@ private fun MapScreen(
             uiSettings = MapUiSettings(
                 isZoomControlEnabled = false,
                 logoGravity = Gravity.TOP or Gravity.END,
-                logoMargin = PaddingValues(end = 20.dp, top = 135.dp)
+                logoMargin = PaddingValues(end = 20.dp, top = 135.dp),
+                isCompassEnabled = false
             ),
             onMapClick = { _, _ ->
                 if (isMarkerSelected) {
@@ -277,6 +277,31 @@ private fun MapScreen(
                         addMapCount = zzimCount
                     )
                 }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = sheetState.currentValue != AdvancedSheetState.Expanded,
+            enter = slideInVertically(initialOffsetY = { it }),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(end = 20.dp)
+                    .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_gps_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(44.dp)
+                        .background(
+                            color = SpoonyAndroidTheme.colors.white,
+                            shape = CircleShape
+                        )
+                        .padding(10.dp)
+                )
             }
         }
 
@@ -390,26 +415,6 @@ private fun MapScreen(
                     sheetSwipeEnabled = placeList.isNotEmpty()
                 ) {}
             }
-        }
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(end = 20.dp)
-                .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
-                .zIndex(1f)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_gps_24),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(44.dp)
-                    .background(
-                        color = SpoonyAndroidTheme.colors.white,
-                        shape = CircleShape
-                    )
-                    .padding(10.dp)
-            )
         }
     }
 }
