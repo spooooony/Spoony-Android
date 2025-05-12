@@ -34,7 +34,7 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 fun LocationPermissionDialog(
     onDismiss: () -> Unit,
     onPositiveButtonClick: () -> Unit,
-    onNegativeButtonClick: () -> Unit,
+    onNegativeButtonClick: () -> Unit
 ) {
     Dialog(
         onDismissRequest = { },

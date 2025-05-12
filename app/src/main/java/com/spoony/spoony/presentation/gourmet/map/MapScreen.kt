@@ -59,9 +59,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -138,17 +135,18 @@ fun MapRoute(
         val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
         val shouldShowRequestPermissionCoarse = ActivityCompat.shouldShowRequestPermissionRationale(
-            context as Activity, Manifest.permission.ACCESS_COARSE_LOCATION
+            context as Activity,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
         val shouldShowRequestPermissionFine = ActivityCompat.shouldShowRequestPermissionRationale(
-            context as Activity, Manifest.permission.ACCESS_FINE_LOCATION
+            context as Activity,
+            Manifest.permission.ACCESS_FINE_LOCATION
         )
-        if(!fineGranted && !coarseGranted && !shouldShowRequestPermissionCoarse && !shouldShowRequestPermissionFine) {
+        if (!fineGranted && !coarseGranted && !shouldShowRequestPermissionCoarse && !shouldShowRequestPermissionFine) {
             // 권한 없고 시스템 다이얼로그 2회 모두 보여준 경우
             permissionDenied = true
         }
     }
-
 
     SideEffect {
         systemUiController.setNavigationBarColor(
