@@ -2,7 +2,10 @@ package com.spoony.spoony.presentation.gourmet.map
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.view.Gravity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +15,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,6 +59,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -70,7 +75,6 @@ import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
-import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
@@ -81,12 +85,14 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.COLLAPSED_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.MIN_PARTIALLY_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.dragHandleHeight
+import com.spoony.spoony.presentation.gourmet.map.component.LocationPermissionDialog
 import com.spoony.spoony.presentation.gourmet.map.component.MapPlaceDetailCard
 import com.spoony.spoony.presentation.gourmet.map.component.MapTopAppBar
 import com.spoony.spoony.presentation.gourmet.map.component.SpoonyMapMarker
@@ -117,6 +123,33 @@ fun MapRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    val locationPermissions = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+    val fusedLocationProviderClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+    var isPermissionDialogVisible by remember { mutableStateOf(false) }
+    var permissionDenied by remember { mutableStateOf(false) }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+
+        val shouldShowRequestPermissionCoarse = ActivityCompat.shouldShowRequestPermissionRationale(
+            context as Activity, Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        val shouldShowRequestPermissionFine = ActivityCompat.shouldShowRequestPermissionRationale(
+            context as Activity, Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        if(!fineGranted && !coarseGranted && !shouldShowRequestPermissionCoarse && !shouldShowRequestPermissionFine) {
+            // 권한 없고 시스템 다이얼로그 2회 모두 보여준 경우
+            permissionDenied = true
+        }
+    }
+
+
     SideEffect {
         systemUiController.setNavigationBarColor(
             color = white
@@ -143,38 +176,24 @@ fun MapRoute(
         )
     }
 
-    val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    CalculateDefaultHeight()
 
-    var hasPermission by remember {
-        mutableStateOf(
-            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    if (isPermissionDialogVisible) {
+        LocationPermissionDialog(
+            onDismiss = { isPermissionDialogVisible = false },
+            onPositiveButtonClick = {
+                isPermissionDialogVisible = false
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:" + context.packageName)
+                    addCategory(Intent.CATEGORY_DEFAULT)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+                    context.startActivity(this)
+                }
+            },
+            onNegativeButtonClick = { isPermissionDialogVisible = false }
         )
     }
-
-    val locationPermissionRequest = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-        onResult = {
-            hasPermission = ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-
-            if (!hasPermission) {
-                val shouldShowRequestPermissionFine = ActivityCompat.shouldShowRequestPermissionRationale(
-                    context as Activity,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                val shouldShowRequestPermissionCOARSE = ActivityCompat.shouldShowRequestPermissionRationale(
-                    context as Activity,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-
-                if (!shouldShowRequestPermissionFine && !shouldShowRequestPermissionCOARSE) {
-                }
-            }
-        }
-    )
-
-    CalculateDefaultHeight()
 
     MapScreen(
         paddingValues = paddingValues,
@@ -200,7 +219,9 @@ fun MapRoute(
             )
         },
         onGpsButtonClick = {
-            if (hasPermission) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            ) {
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
                         cameraPositionState.move(
@@ -214,12 +235,11 @@ fun MapRoute(
                     }
                 }
             } else {
-                locationPermissionRequest.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
+                locationPermissionLauncher.launch(locationPermissions)
+
+                if (permissionDenied) {
+                    isPermissionDialogVisible = true
+                }
             }
         }
     )
@@ -276,7 +296,6 @@ private fun MapScreen(
                         label = ""
                     ).value
                 ),
-            locationSource = rememberFusedLocationSource(),
             cameraPositionState = cameraPositionState,
             uiSettings = MapUiSettings(
                 isZoomControlEnabled = false,
@@ -474,7 +493,7 @@ private fun MapScreen(
                 modifier = Modifier
                     .padding(end = 20.dp)
                     .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
-                    .clickable(onClick = onGpsButtonClick)
+                    .noRippleClickable(onClick = onGpsButtonClick)
                     .size(44.dp)
                     .background(
                         color = SpoonyAndroidTheme.colors.white,
