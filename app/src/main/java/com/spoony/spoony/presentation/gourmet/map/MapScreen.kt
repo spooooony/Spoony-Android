@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -62,6 +63,7 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
+import com.spoony.spoony.core.designsystem.component.chip.IconChip
 import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
@@ -296,6 +298,27 @@ private fun MapScreen(
                 )
             }
 
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+            ) {
+                items(6) { index ->
+                    IconChip(
+                        text = "전체",
+                        selectedIconUrl = "https://avatars.githubusercontent.com/u/200387868?s=48&v=4",
+                        unSelectedIconUrl = "https://avatars.githubusercontent.com/u/200387868?s=48&v=4",
+                        onClick = { },
+                        isSelected = index == 0,
+                        isGradient = true,
+                        secondColor = SpoonyAndroidTheme.colors.white,
+                        mainColor = SpoonyAndroidTheme.colors.main400,
+                        selectedBorderColor = SpoonyAndroidTheme.colors.main200
+                    )
+                }
+            }
+
             AnimatedVisibility(
                 visible = !isMarkerSelected,
                 enter = slideInVertically(initialOffsetY = { it }),
@@ -364,7 +387,7 @@ private fun MapScreen(
                             }
                         }
                     },
-                    sheetSwipeEnabled = placeList.isEmpty()
+                    sheetSwipeEnabled = placeList.isNotEmpty()
                 ) {}
             }
         }
