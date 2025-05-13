@@ -137,10 +137,10 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateToRegister = navigator::navigateToRegister,
-                    navigateToReport = { postId, userId ->
+                    navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
-                            postId = postId,
-                            userId = userId
+                            reportTargetId = reportTargetId,
+                            type = type
                         )
                     }
                 )
@@ -181,10 +181,10 @@ fun MainScreen(
                 placeDetailNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToReport = { postId, userId ->
+                    navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
-                            postId = postId,
-                            userId = userId
+                            reportTargetId = reportTargetId,
+                            type = type
                         )
                     }
                 )
