@@ -19,10 +19,11 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 fun ExploreSearchRecentItem(
     onItemClick: (String) -> Unit,
     onRemoveRecentSearchItem: (String) -> Unit,
-    searchKeyword: String
+    searchKeyword: String,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .noRippleClickable { onItemClick(searchKeyword) },
