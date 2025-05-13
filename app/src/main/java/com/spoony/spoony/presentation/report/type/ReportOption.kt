@@ -8,29 +8,36 @@ enum class ReportOption(
     val text: String,
     val code: String
 ) {
+    // REPORT(POST)
     ADVERTISEMENT("영리 목적/ 홍보성 후기", "ADVERTISEMENT"),
     INSULT("욕설/ 인신 공격", "INSULT"),
-    DEFAMATION_COPYRIGHT_INFRINGEMENT("명예 훼손 및 저작권 침해", "DEFAMATION_COPYRIGHT_INFRINGEMENT"),
-    ILLEGAL_INFO("불법정보", "ILLEGAL_INFO"),
-    PERSONAL_INFO("개인 정보 노출", "PERSONAL_INFO"),
+    REPUTATION_AND_COPYRIGHT_VIOLATION("명예 훼손 및 저작권 침해", "REPUTATION_AND_COPYRIGHT_VIOLATION"),
     DUPLICATE("도배", "DUPLICATE"),
+
+    // REPORT(USER)
+    PROMOTIONAL_CONTENT("영리 목적/ 홍보성 후기", "PROMOTIONAL_CONTENT"),
+    PROFANITY_OR_ATTACK("욕설/ 인신 공격", "PROFANITY_OR_ATTACK"),
+    ILLEGAL_INFORMATION("불법정보", "ILLEGAL_INFORMATION"),
+    PERSONAL_INFORMATION_EXPOSURE("개인 정보 노출", "PERSONAL_INFORMATION_EXPOSURE"),
+    SPAM("도배", "SPAM"),
+
     OTHER("기타", "OTHER");
 }
 object ReportOptionSelector {
     fun getOptionsForType(reportType: ReportType): ImmutableList<ReportOption> {
         return when (reportType) {
             ReportType.POST -> persistentListOf(
-                ReportOption.ADVERTISEMENT,
-                ReportOption.INSULT,
-                ReportOption.ILLEGAL_INFO,
-                ReportOption.PERSONAL_INFO,
-                ReportOption.DUPLICATE,
+                ReportOption.PROMOTIONAL_CONTENT,
+                ReportOption.PROFANITY_OR_ATTACK,
+                ReportOption.ILLEGAL_INFORMATION,
+                ReportOption.PERSONAL_INFORMATION_EXPOSURE,
+                ReportOption.SPAM,
                 ReportOption.OTHER
             )
             ReportType.USER -> persistentListOf(
                 ReportOption.ADVERTISEMENT,
                 ReportOption.INSULT,
-                ReportOption.DEFAMATION_COPYRIGHT_INFRINGEMENT,
+                ReportOption.REPUTATION_AND_COPYRIGHT_VIOLATION,
                 ReportOption.DUPLICATE,
                 ReportOption.OTHER
             )
