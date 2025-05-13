@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.exploreSearch.ExploreSearchRoute
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToExploreSearch(
@@ -18,7 +19,7 @@ fun NavController.navigateToExploreSearch(
 fun NavGraphBuilder.exploreSearchNavGraph(
     paddingValues: PaddingValues,
     navigateToUserProfile: (Int) -> Unit,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateUp: () -> Unit
 ) {

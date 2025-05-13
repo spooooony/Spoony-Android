@@ -151,10 +151,10 @@ fun MainScreen(
                 exploreSearchNavGraph(
                     paddingValues = paddingValues,
                     navigateToUserProfile = navigator::navigateToOtherPage,
-                    navigateToReport = { postId, userId ->
+                    navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
-                            postId = postId,
-                            userId = userId
+                            reportTargetId = reportTargetId,
+                            type = type
                         )
                     },
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
