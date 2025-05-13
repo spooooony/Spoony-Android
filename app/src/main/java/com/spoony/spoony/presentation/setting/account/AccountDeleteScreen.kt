@@ -30,9 +30,8 @@ import com.spoony.spoony.core.designsystem.theme.gray700
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.core.util.constants.BULLET_POINT
 import kotlinx.collections.immutable.persistentListOf
-
-private const val BULLET_POINT = "\u2022"
 
 @Composable
 fun AccountDeleteScreen(
