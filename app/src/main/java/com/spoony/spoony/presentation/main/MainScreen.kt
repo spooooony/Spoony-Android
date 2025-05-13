@@ -25,6 +25,7 @@ import com.spoony.spoony.presentation.attendance.navigation.attendanceNavGraph
 import com.spoony.spoony.presentation.auth.signin.navigation.signInNavGraph
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.termsOfServiceNavGraph
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
+import com.spoony.spoony.presentation.exploreSearch.navigation.exploreSearchNavGraph
 import com.spoony.spoony.presentation.follow.navigation.followNavGraph
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGraph
@@ -138,12 +139,26 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateToRegister = navigator::navigateToRegister,
+                    navigateToExploreSearch = navigator::navigateToExploreSearch,
                     navigateToReport = { postId, userId ->
                         navigator.navigateToReport(
                             postId = postId,
                             userId = userId
                         )
                     }
+                )
+
+                exploreSearchNavGraph(
+                    paddingValues = paddingValues,
+                    navigateToUserProfile = navigator::navigateToOtherPage,
+                    navigateToReport = { postId, userId ->
+                        navigator.navigateToReport(
+                            postId = postId,
+                            userId = userId
+                        )
+                    },
+                    navigateToPlaceDetail = navigator::navigateToPlaceDetail,
+                    navigateUp = navigator::navigateUp
                 )
 
                 registerNavGraph(
