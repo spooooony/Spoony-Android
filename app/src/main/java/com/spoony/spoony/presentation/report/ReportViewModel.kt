@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.spoony.spoony.domain.repository.ReportRepository
 import com.spoony.spoony.presentation.report.navigation.Report
 import com.spoony.spoony.presentation.report.type.ReportOption
+import com.spoony.spoony.presentation.report.type.ReportOptionSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,6 +31,17 @@ class ReportViewModel @Inject constructor(
     val sideEffect: SharedFlow<ReportSideEffect>
         get() = _sideEffect
 
+    init {
+        val reportArgs = savedStateHandle.toRoute<Report>()
+        _state.update { currentState ->
+            currentState.copy(
+                reportType = reportArgs.type,
+                reportOptions = ReportOptionSelector.getOptionsForType(reportArgs.type),
+                selectedReportOption = ReportOptionSelector.getOptionsForType(reportArgs.type).first(),
+                targetText = if (reportArgs.type == ReportType.POST) "후기" else "유저"
+            )
+        }
+    }
     fun updateSelectedReportOption(newOption: ReportOption) {
         _state.update {
             it.copy(selectedReportOption = newOption)
@@ -50,20 +62,28 @@ class ReportViewModel @Inject constructor(
         return input.length in minLength..maxLength
     }
 
-    fun reportPost(reportType: String, reportDetail: String) {
+    fun report(reportType: String, reportDetail: String) {
         val reportArgs = savedStateHandle.toRoute<Report>()
         with(reportArgs) {
-            when (postId > 0 && userId > 0) {
-                true -> {
+            when (_state.value.reportType) {
+                ReportType.POST -> {
                     viewModelScope.launch {
-                        reportRepository.postReportPost(postId = postId, userId = userId, reportType = reportType, reportDetail = reportDetail)
+                        reportRepository.postReport(postId = reportTargetId, reportType = reportType, reportDetail = reportDetail)
                             .onSuccess {
                                 _sideEffect.emit(ReportSideEffect.ShowDialog)
                             }
                             .onFailure(Timber::e)
                     }
                 }
-                false -> Timber.e("postId or userId is not exist")
+                ReportType.USER -> {
+                    viewModelScope.launch {
+                        reportRepository.userReport(userTargetId = reportTargetId, userReportType = reportType, reportDetail = reportDetail)
+                            .onSuccess {
+                                _sideEffect.emit(ReportSideEffect.ShowDialog)
+                            }
+                            .onFailure(Timber::e)
+                    }
+                }
             }
         }
     }

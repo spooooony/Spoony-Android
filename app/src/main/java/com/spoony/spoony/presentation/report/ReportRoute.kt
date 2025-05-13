@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,7 +50,6 @@ import com.spoony.spoony.presentation.report.component.ReportCompleteDialog
 import com.spoony.spoony.presentation.report.component.ReportRadioButton
 import com.spoony.spoony.presentation.report.type.ReportOption
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ReportRoute(
@@ -71,7 +69,6 @@ fun ReportRoute(
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
             when (effect) {
                 is ReportSideEffect.ShowDialog -> {
-                    // 키보드 존재한다면 닫기
                     keyboardController?.hide()
                     reportSuccessDialogVisibility = true
                 }
@@ -84,10 +81,11 @@ fun ReportRoute(
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext,
+        targetText = state.targetText,
         reportButtonEnabled = state.reportButtonEnabled,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
-        onReportClick = { viewModel.reportPost(state.selectedReportOption.code, state.reportContext) },
+        onReportClick = { viewModel.report(state.selectedReportOption.code, state.reportContext) },
         onBackButtonClick = navigateUp
     )
 
@@ -107,6 +105,7 @@ private fun ReportScreen(
     reportOptions: ImmutableList<ReportOption>,
     selectedReportOption: ReportOption,
     reportContext: String,
+    targetText: String,
     reportButtonEnabled: Boolean,
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
@@ -150,7 +149,7 @@ private fun ReportScreen(
             Spacer(modifier = Modifier.height(31.dp))
 
             Text(
-                text = "후기를 신고하는 이유가 무엇인가요?",
+                text = "${targetText}를 신고하는 이유가 무엇인가요?",
                 color = SpoonyAndroidTheme.colors.black,
                 style = SpoonyAndroidTheme.typography.body1sb
             )
@@ -223,31 +222,5 @@ private fun ReportScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
         }
-    }
-}
-
-@Preview
-@Composable
-private fun ReportScreenPreview() {
-    var selectedReportOption by remember { mutableStateOf(ReportOption.ADVERTISEMENT) }
-
-    var reportContext by remember { mutableStateOf("") }
-
-    SpoonyAndroidTheme {
-        ReportScreen(
-            reportOptions = ReportOption.entries.toImmutableList(),
-            selectedReportOption = selectedReportOption,
-            reportContext = reportContext,
-            onReportOptionSelected = {
-                selectedReportOption = it
-            },
-            onContextChanged = {
-                reportContext = it
-            },
-            onBackButtonClick = {},
-            paddingValues = PaddingValues(),
-            reportButtonEnabled = false,
-            onReportClick = {}
-        )
     }
 }
