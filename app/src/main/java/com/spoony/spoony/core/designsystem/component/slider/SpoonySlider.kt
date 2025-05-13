@@ -58,7 +58,7 @@ fun SpoonySlider(
             if (hapticEnabled && hapticStep > 0) {
                 val currentStep = (newValue / hapticStep).toInt()
                 val previousStep = (previousValue / hapticStep).toInt()
-                if (currentStep != previousStep) view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                if (currentStep != previousStep) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             }
             previousValue = newValue
         },
