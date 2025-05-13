@@ -52,9 +52,9 @@ private enum class FollowButtonState(
 @Composable
 fun FollowButton(
     isFollowing: Boolean,
-    isBlocked: Boolean = false,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isBlocked: Boolean = false,
     isSmall: Boolean = true
 ) {
     val buttonState = remember(isFollowing, isBlocked) {
