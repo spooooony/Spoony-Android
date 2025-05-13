@@ -9,7 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -37,7 +38,7 @@ fun ExploreSearchRecentItem(
             color = SpoonyAndroidTheme.colors.gray700
         )
         Icon(
-            painter = painterResource(id = R.drawable.ic_close_24),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_close_24),
             contentDescription = null,
             tint = SpoonyAndroidTheme.colors.gray400,
             modifier = Modifier.noRippleClickable {
