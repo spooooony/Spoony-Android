@@ -14,7 +14,6 @@ import com.spoony.spoony.core.designsystem.component.dropdown.IconDropdown
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BackAndMenuTopAppBar(
@@ -42,7 +41,7 @@ fun BackAndMenuTopAppBar(
         actions = {
             if (menuItemList != null) {
                 IconDropdown(
-                    menuItems = persistentListOf("차단하기", "신고하기"),
+                    menuItems = menuItemList,
                     onMenuItemClick = onMenuButtonClick
                 )
             }

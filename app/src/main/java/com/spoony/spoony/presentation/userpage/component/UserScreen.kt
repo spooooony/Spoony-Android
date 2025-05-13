@@ -234,7 +234,7 @@ fun UserPageScreen(
                         menuItems = menuItems,
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                         addMapCount = review.addMapCount,
-                        onClick = { events.onReviewClick(review.reviewId) },
+                        onClick = events.onReviewClick,
                         imageList = review.imageList
                     )
 
