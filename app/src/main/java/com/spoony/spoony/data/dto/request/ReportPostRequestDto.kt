@@ -7,8 +7,6 @@ import kotlinx.serialization.Serializable
 data class ReportPostRequestDto(
     @SerialName("postId")
     val postId: Int,
-    @SerialName("userId")
-    val userId: Int,
     @SerialName("reportType")
     val reportType: String,
     @SerialName("reportDetail")
