@@ -23,8 +23,8 @@ import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 
 @Composable
 fun ExploreSearchRecentEmptyScreen(
-    searchType: SearchType = SearchType.USER,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchType: SearchType = SearchType.USER
 ) {
     val text = remember(searchType) {
         if (searchType == SearchType.USER) "팔로우 하고 싶은 유저" else "원하는 키워드"
