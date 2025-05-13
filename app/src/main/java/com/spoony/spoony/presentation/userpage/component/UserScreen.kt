@@ -195,7 +195,7 @@ fun UserPageScreen(
                             buttonStyle = ButtonStyle.Primary
                         )
 
-                        UserType.OTHER_PAGE -> EmptyContent("아직 등록한 로컬리뷰가 없어요")
+                        UserType.OTHER_PAGE -> EmptyContent("아직 등록된 로컬리뷰가 없어요")
                     }
                 }
 
