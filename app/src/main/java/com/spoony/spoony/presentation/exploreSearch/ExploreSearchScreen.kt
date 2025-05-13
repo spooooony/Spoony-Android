@@ -102,7 +102,9 @@ private fun ExploreSearchScreen(
     val tabItems = persistentListOf(SearchType.USER, SearchType.REVIEW)
     var searchText by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+        if (searchKeyword.isEmpty()) {
+            focusRequester.requestFocus()
+        }
     }
 
     LaunchedEffect(searchText) {
@@ -124,8 +126,7 @@ private fun ExploreSearchScreen(
             },
             onBackButtonClick = onBackButtonClick,
             onSearchAction = {
-                if (searchText.isBlank()) return@ExploreSearchTopAppbar
-                onSearch(searchText.trim())
+                onSearch(searchText)
             },
             focusRequester = focusRequester,
             searchType = searchType
@@ -151,7 +152,6 @@ private fun ExploreSearchScreen(
                         .padding(top = 4.dp, bottom = 9.dp),
                     onClick = {
                         tabRowIndex = index
-                        searchText = ""
                         onSwitchType(title)
                     },
                     selectedContentColor = SpoonyAndroidTheme.colors.white
@@ -171,7 +171,7 @@ private fun ExploreSearchScreen(
         when (tabRowIndex) {
             0 -> {
                 when {
-                    searchKeyword.isBlank() -> {
+                    searchKeyword.isBlank() && searchText.isBlank() -> {
                         when (recentUserSearchQueryList.isEmpty()) {
                             true -> ExploreSearchRecentEmptyScreen(searchType = searchType)
                             else ->
@@ -186,6 +186,7 @@ private fun ExploreSearchScreen(
                                 )
                         }
                     }
+                    searchKeyword.isBlank() && searchText.isNotBlank() -> {}
                     else -> {
                         when (userInfoList) {
                             is UiState.Success -> {
@@ -215,7 +216,7 @@ private fun ExploreSearchScreen(
             }
             1 -> {
                 when {
-                    searchKeyword.isBlank() -> {
+                    searchKeyword.isBlank() && searchText.isBlank() -> {
                         when (recentReviewSearchQueryList.isEmpty()) {
                             true -> ExploreSearchRecentEmptyScreen(searchType = searchType)
                             else ->
@@ -227,6 +228,7 @@ private fun ExploreSearchScreen(
                                 )
                         }
                     }
+                    searchKeyword.isBlank() && searchText.isNotBlank() -> {}
                     else -> {
                         when (placeReviewInfoList) {
                             is UiState.Success -> {
