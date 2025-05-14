@@ -51,9 +51,7 @@ import com.spoony.spoony.presentation.explore.component.ExploreFilterChip
 import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.FilterType
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +59,7 @@ import kotlinx.coroutines.launch
 fun ExploreFilterBottomSheet(
     onDismiss: () -> Unit,
     onFilterReset: () -> Unit,
-    onSave: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
+    onSave: () -> Unit,
     propertyItems: ImmutableList<ExploreFilter>,
     onToggleFilter: (Int, FilterType) -> Unit,
     categoryItems: ImmutableList<ExploreFilter>,
@@ -118,7 +116,7 @@ fun ExploreFilterBottomSheet(
                 text = "필터 적용하기",
                 onClick = {
                     handleDismiss()
-                    onSave(propertySelectedState.toPersistentMap(), categorySelectedState.toPersistentMap(), regionSelectedState.toPersistentMap(), ageSelectedState.toPersistentMap())
+                    onSave()
                 },
                 style = ButtonStyle.Primary,
                 size = ButtonSize.Xlarge,

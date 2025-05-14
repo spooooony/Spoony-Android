@@ -54,6 +54,7 @@ import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentMap
 
 @Composable
 fun ExploreRoute(
@@ -150,7 +151,7 @@ private fun ExploreScreen(
                 isFilterBottomSheetVisible = false
             },
             onFilterReset = onResetExploreFilterButtonClick,
-            onSave = onFilterApplyButtonClick,
+            onSave = { onFilterApplyButtonClick(propertySelectedStateCopy.toPersistentMap(), categorySelectedStateCopy.toPersistentMap(), regionSelectedStateCopy.toPersistentMap(), ageSelectedStateCopy.toPersistentMap()) },
             onToggleFilter = { id, type ->
                 when (type) {
                     FilterType.LOCAL_REVIEW -> {
