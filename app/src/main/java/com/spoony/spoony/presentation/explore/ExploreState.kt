@@ -4,7 +4,6 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.ExploreFilterDataProvider
-import com.spoony.spoony.presentation.explore.model.FeedModel
 import com.spoony.spoony.presentation.explore.model.FilterChipOptionProvider
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
@@ -14,24 +13,36 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 
 data class ExploreState(
-    val spoonCount: UiState<Int> = UiState.Loading,
-    val selectedCity: String = "마포구",
     val selectedCategoryId: Int = 1,
     val selectedSortingOption: SortingOption = SortingOption.LATEST,
     val chipItems: ImmutableList<FilterOption> = FilterChipOptionProvider.getDefaultFilterOptions(),
     val categoryList: UiState<ImmutableList<CategoryEntity>> = UiState.Loading,
-    val feedList: UiState<ImmutableList<FeedModel>> = UiState.Loading,
     val placeReviewList: UiState<ImmutableList<PlaceReviewModel>> = UiState.Loading,
+    val filterSelectionState: ExploreFilterState = ExploreFilterState(
+        properties = persistentMapOf(),
+        categories = persistentMapOf(),
+        regions = persistentMapOf(),
+        ages = persistentMapOf()
+    ),
+    val exploreFilterItems: ExploreFilterItems = ExploreFilterItems(
+        properties = ExploreFilterDataProvider.getDefaultPropertyFilter(),
+        categories = ExploreFilterDataProvider.getDefaultCategoryFilter(),
+        regions = ExploreFilterDataProvider.getDefaultRegionFilter(),
+        ages = ExploreFilterDataProvider.getDefaultAgeFilter()
+    )
 
-    val propertyItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultPropertyFilter(),
-    val propertySelectedState: PersistentMap<Int, Boolean> = persistentMapOf(),
+)
 
-    val regionItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultRegionFilter(),
-    val regionSelectedState: PersistentMap<Int, Boolean> = persistentMapOf(),
+data class ExploreFilterState(
+    val properties: PersistentMap<Int, Boolean>,
+    val categories: PersistentMap<Int, Boolean>,
+    val regions: PersistentMap<Int, Boolean>,
+    val ages: PersistentMap<Int, Boolean>
+)
 
-    val ageItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultAgeFilter(),
-    val ageSelectedState: PersistentMap<Int, Boolean> = persistentMapOf(),
-
-    val categoryItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultCategoryFilter(),
-    val categorySelectedState: PersistentMap<Int, Boolean> = persistentMapOf()
+data class ExploreFilterItems(
+    val properties: ImmutableList<ExploreFilter>,
+    val categories: ImmutableList<ExploreFilter>,
+    val regions: ImmutableList<ExploreFilter>,
+    val ages: ImmutableList<ExploreFilter>
 )
