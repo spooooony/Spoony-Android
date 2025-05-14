@@ -18,6 +18,7 @@ data class ExploreState(
     val chipItems: ImmutableList<FilterOption> = FilterChipOptionProvider.getDefaultFilterOptions(),
     val categoryList: UiState<ImmutableList<CategoryEntity>> = UiState.Loading,
     val placeReviewList: UiState<ImmutableList<PlaceReviewModel>> = UiState.Loading,
+    val exploreType: ExploreType = ExploreType.ALL,
     val filterSelectionState: ExploreFilterState = ExploreFilterState(
         properties = persistentMapOf(),
         categories = persistentMapOf(),
@@ -30,7 +31,6 @@ data class ExploreState(
         regions = ExploreFilterDataProvider.getDefaultRegionFilter(),
         ages = ExploreFilterDataProvider.getDefaultAgeFilter()
     )
-
 )
 
 data class ExploreFilterState(
@@ -46,3 +46,7 @@ data class ExploreFilterItems(
     val regions: ImmutableList<ExploreFilter>,
     val ages: ImmutableList<ExploreFilter>
 )
+
+enum class ExploreType {
+    ALL, FOLLOWING
+}

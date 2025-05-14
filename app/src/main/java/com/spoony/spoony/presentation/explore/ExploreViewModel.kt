@@ -218,6 +218,16 @@ class ExploreViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateExploreType(exploreType: ExploreType) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    exploreType = exploreType
+                )
+            }
+        }
+    }
 }
 
 sealed class ExploreSideEffect {

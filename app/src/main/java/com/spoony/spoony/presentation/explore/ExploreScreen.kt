@@ -91,6 +91,7 @@ fun ExploreRoute(
             onResetExploreFilterButtonClick = viewModel::resetExploreFilter,
             onLocalReviewButtonClick = viewModel::localReviewToggle,
             onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
+            onTabChange = viewModel::updateExploreType,
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
@@ -101,7 +102,8 @@ fun ExploreRoute(
             propertySelectedState = filterSelectionState.properties,
             regionSelectedState = filterSelectionState.regions,
             ageSelectedState = filterSelectionState.ages,
-            categorySelectedState = filterSelectionState.categories
+            categorySelectedState = filterSelectionState.categories,
+            exploreType = exploreType
         )
     }
 }
@@ -117,6 +119,7 @@ private fun ExploreScreen(
     onResetExploreFilterButtonClick: () -> Unit,
     onLocalReviewButtonClick: () -> Unit,
     onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
+    onTabChange: (ExploreType) -> Unit,
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -127,8 +130,8 @@ private fun ExploreScreen(
     propertySelectedState: PersistentMap<Int, Boolean>,
     regionSelectedState: PersistentMap<Int, Boolean>,
     ageSelectedState: PersistentMap<Int, Boolean>,
-    categorySelectedState: PersistentMap<Int, Boolean>
-
+    categorySelectedState: PersistentMap<Int, Boolean>,
+    exploreType: ExploreType
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
@@ -181,21 +184,14 @@ private fun ExploreScreen(
                 )
             },
             onToggleFilter = { id, type ->
-                when (type) {
-                    FilterType.LOCAL_REVIEW -> {
-                        propertyState[id] = !(propertyState[id] ?: false)
-                    }
-                    FilterType.CATEGORY -> {
-                        categoryState[id] = !(categoryState[id] ?: false)
-                    }
-                    FilterType.REGION -> {
-                        regionState[id] = !(regionState[id] ?: false)
-                    }
-                    FilterType.AGE -> {
-                        ageState[id] = !(ageState[id] ?: false)
-                    }
-                    else -> {}
+                val stateMap = when (type) {
+                    FilterType.LOCAL_REVIEW -> propertyState
+                    FilterType.CATEGORY -> categoryState
+                    FilterType.REGION -> regionState
+                    FilterType.AGE -> ageState
+                    else -> null
                 }
+                stateMap?.let { it[id] = !(it[id] ?: false) }
             },
             propertyItems = propertyItems,
             regionItems = regionItems,
@@ -224,8 +220,9 @@ private fun ExploreScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ExploreTabRow(
-                selectedTabIndex = selectedTabIndex,
-                tabList = tabList
+                onTabChange = onTabChange,
+                tabList = tabList,
+                selectedTabIndex = selectedTabIndex
             )
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
@@ -237,37 +234,26 @@ private fun ExploreScreen(
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
-        FilterChipRow(
-            chipItems,
-            onFilterClick = { sort ->
-                when (sort) {
-                    FilterType.FILTER -> {
-                        exploreFilterBottomSheetTabIndex = 0
-                        isFilterBottomSheetVisible = true
-                    }
-                    FilterType.LOCAL_REVIEW -> {
-                        onLocalReviewButtonClick()
-                        propertyState[1] = !(propertyState[1] ?: false)
-                    }
-                    FilterType.CATEGORY -> {
-                        exploreFilterBottomSheetTabIndex = 1
-                        isFilterBottomSheetVisible = true
-                    }
-                    FilterType.REGION -> {
-                        exploreFilterBottomSheetTabIndex = 2
-                        isFilterBottomSheetVisible = true
-                    }
-                    FilterType.AGE -> {
-                        exploreFilterBottomSheetTabIndex = 3
-                        isFilterBottomSheetVisible = true
-                    }
+        if (exploreType == ExploreType.ALL) {
+            FilterChipRow(
+                chipItems,
+                onFilterClick = { filterType ->
+                    handleFilterClick(
+                        filterType = filterType,
+                        onLocalReviewButtonClick = onLocalReviewButtonClick,
+                        propertyState = propertyState,
+                        updateBottomSheetState = { index, isVisible ->
+                            exploreFilterBottomSheetTabIndex = index
+                            isFilterBottomSheetVisible = isVisible
+                        }
+                    )
+                },
+                onSortFilterClick = {
+                    isSortingBottomSheetVisible = true
                 }
-            },
-            onSortFilterClick = {
-                isSortingBottomSheetVisible = true
-            }
-        )
-        Spacer(modifier = Modifier.height(24.dp))
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
         ExploreContent(
             modifier = Modifier
                 .padding(horizontal = 20.dp),
@@ -276,6 +262,24 @@ private fun ExploreScreen(
             onPlaceDetailItemClick = onPlaceDetailItemClick,
             onReportButtonClick = onReportButtonClick
         )
+    }
+}
+
+private fun handleFilterClick(
+    filterType: FilterType,
+    onLocalReviewButtonClick: () -> Unit,
+    propertyState: MutableMap<Int, Boolean>,
+    updateBottomSheetState: (Int, Boolean) -> Unit
+) {
+    when (filterType) {
+        FilterType.FILTER -> updateBottomSheetState(0, true)
+        FilterType.LOCAL_REVIEW -> {
+            onLocalReviewButtonClick()
+            propertyState[1] = !(propertyState[1] ?: false)
+        }
+        FilterType.CATEGORY -> updateBottomSheetState(1, true)
+        FilterType.REGION -> updateBottomSheetState(2, true)
+        FilterType.AGE -> updateBottomSheetState(3, true)
     }
 }
 
