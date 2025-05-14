@@ -42,6 +42,7 @@ import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchRecen
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchRecentItem
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchTopAppbar
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchUserItem
+import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchPlaceReviewModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
 import kotlinx.collections.immutable.ImmutableList
@@ -95,7 +96,7 @@ private fun ExploreSearchScreen(
     recentReviewSearchQueryList: ImmutableList<String>,
     recentUserSearchQueryList: ImmutableList<String>,
     userInfoList: UiState<ImmutableList<UserInfo>>,
-    placeReviewInfoList: UiState<ImmutableList<PlaceReviewInfo>>
+    placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>
 ) {
     val focusRequester = remember { FocusRequester() }
     var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -266,7 +267,7 @@ private fun ExploreSearchScreen(
                                                     "삭제하기" -> {}
                                                 }
                                             },
-                                            date = placeReviewInfo.date,
+                                            date = placeReviewInfo.createdAt,
                                             username = placeReviewInfo.userName,
                                             userRegion = placeReviewInfo.userRegion,
                                             addMapCount = placeReviewInfo.addMapCount,

@@ -11,4 +11,8 @@ interface ExploreRepository {
     ): Result<List<FeedEntity>>
 
     suspend fun getAllFeedList(): Result<List<PlaceReviewEntity>>
+
+    suspend fun getPlaceReviewSearchByKeyword(
+        query: String
+    ): Result<List<PlaceReviewEntity>>
 }

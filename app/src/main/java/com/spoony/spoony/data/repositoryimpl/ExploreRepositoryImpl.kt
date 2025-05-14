@@ -173,4 +173,10 @@ class ExploreRepositoryImpl @Inject constructor(
             )
         )
     )
+
+    override suspend fun getPlaceReviewSearchByKeyword(query: String): Result<List<PlaceReviewEntity>> = runCatching {
+        exploreRemoteDataSource.getPlaceReviewSearchByKeyword(
+            query = query
+        ).data!!.postSearchResultList.map { it.toDomain() }
+    }
 }
