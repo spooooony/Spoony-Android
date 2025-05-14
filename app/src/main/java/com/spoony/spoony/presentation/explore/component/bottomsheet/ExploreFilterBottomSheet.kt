@@ -114,10 +114,7 @@ fun ExploreFilterBottomSheet(
             )
             SpoonyButton(
                 text = "필터 적용하기",
-                onClick = {
-                    handleDismiss()
-                    onSave()
-                },
+                onClick = onSave,
                 style = ButtonStyle.Primary,
                 size = ButtonSize.Xlarge,
                 modifier = Modifier
