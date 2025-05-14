@@ -4,6 +4,14 @@ import android.graphics.Color.parseColor
 import androidx.compose.ui.graphics.Color
 
 fun Color.Companion.hexToColor(hex: String): Color {
-    val colorInt = parseColor("#$hex")
-    return Color(colorInt)
+    return try {
+        if (hex.isEmpty()) {
+            Unspecified
+        } else {
+            val colorInt = parseColor("#$hex")
+            Color(colorInt)
+        }
+    } catch (e: Exception) {
+        Unspecified
+    }
 }
