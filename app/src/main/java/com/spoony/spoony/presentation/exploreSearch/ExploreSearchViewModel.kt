@@ -25,27 +25,6 @@ class ExploreSearchViewModel @Inject constructor(
     val state: StateFlow<ExploreSearchState>
         get() = _state.asStateFlow()
 
-    private val userInfoDummyList = persistentListOf(
-        UserInfo(
-            userId = 1,
-            imageUrl = "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
-            nickname = "맛있는여행자",
-            region = "강남구"
-        ),
-        UserInfo(
-            userId = 2,
-            imageUrl = "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
-            nickname = "먹방킹",
-            region = "마포구"
-        ),
-        UserInfo(
-            userId = 3,
-            imageUrl = "https://github.com/user-attachments/assets/e25de1b2-a2df-465b-a4ff-c6ff8d85b5b4",
-            nickname = "푸드헌터",
-            region = "해운대구"
-        )
-    )
-
     fun switchSearchType(
         searchType: SearchType
     ) {
@@ -74,13 +53,22 @@ class ExploreSearchViewModel @Inject constructor(
                     val updatedList = (listOf(keywordTrim) + _state.value.recentUserSearchQueryList.filterNot { it == keyword })
                         .take(6)
                         .toPersistentList()
-                    _state.update {
-                        it.copy(
-                            searchKeyword = keywordTrim,
-                            recentUserSearchQueryList = updatedList,
-                            userInfoList = UiState.Success(userInfoDummyList)
-                        )
-                    }
+
+                    exploreRepository.getUserListSearchByKeyword(keywordTrim)
+                        .onSuccess { response ->
+                            _state.update {
+                                it.copy(
+                                    searchKeyword = keywordTrim,
+                                    recentUserSearchQueryList = updatedList,
+                                    userInfoList = UiState.Success(
+                                        response.map { userEntity ->
+                                            userEntity.toModel()
+                                        }.toPersistentList()
+                                    )
+                                )
+                            }
+                        }
+                        .onFailure(Timber::e)
                 }
 
                 SearchType.REVIEW -> {

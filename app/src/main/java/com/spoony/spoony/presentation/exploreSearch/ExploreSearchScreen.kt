@@ -43,6 +43,7 @@ import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchRecen
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchTopAppbar
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchUserItem
 import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchPlaceReviewModel
+import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
 import kotlinx.collections.immutable.ImmutableList
@@ -95,7 +96,7 @@ private fun ExploreSearchScreen(
     onClearSearchKeyword: () -> Unit,
     recentReviewSearchQueryList: ImmutableList<String>,
     recentUserSearchQueryList: ImmutableList<String>,
-    userInfoList: UiState<ImmutableList<UserInfo>>,
+    userInfoList: UiState<ImmutableList<ExploreSearchUserModel>>,
     placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -152,8 +153,10 @@ private fun ExploreSearchScreen(
                     modifier = Modifier
                         .padding(top = 4.dp, bottom = 9.dp),
                     onClick = {
-                        tabRowIndex = index
-                        onSwitchType(title)
+                        if (tabRowIndex != index) {
+                            tabRowIndex = index
+                            onSwitchType(title)
+                        }
                     },
                     selectedContentColor = SpoonyAndroidTheme.colors.white
                 ) {
