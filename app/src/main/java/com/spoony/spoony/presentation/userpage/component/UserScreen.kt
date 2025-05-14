@@ -39,6 +39,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.register.model.RegisterType
+import com.spoony.spoony.presentation.report.ReportType
 import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserType
@@ -228,7 +229,7 @@ fun UserPageScreen(
                                     isReviewDeleteDialogVisible = true
                                 }
 
-                                "신고하기" -> events.onReportReviewClick(review.reviewId, state.profileId)
+                                "신고하기" -> events.onReportReviewClick(review.reviewId, ReportType.POST)
                             }
                         },
                         menuItems = menuItems,

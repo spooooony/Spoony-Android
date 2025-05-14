@@ -10,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.report.ReportType
 import com.spoony.spoony.presentation.userpage.component.UserPageScreen
 import com.spoony.spoony.presentation.userpage.model.UserPageEvents
 import com.spoony.spoony.presentation.userpage.model.UserPageState
@@ -23,7 +24,7 @@ fun OtherPageRoute(
     navigateToFollow: (FollowType, Int) -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
     navigateToUserReport: (Int) -> Unit,
-    navigateToReviewReport: (Int, Int) -> Unit,
+    navigateToReviewReport: (Int, ReportType) -> Unit,
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {
     val userPageState by viewModel.state.collectAsStateWithLifecycle()

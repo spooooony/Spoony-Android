@@ -9,6 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.follow.model.FollowType
+import com.spoony.spoony.presentation.report.ReportType
 import com.spoony.spoony.presentation.userpage.otherpage.OtherPageRoute
 import kotlinx.serialization.Serializable
 
@@ -27,7 +28,7 @@ fun NavGraphBuilder.otherPageNavGraph(
     navigateToFollow: (FollowType, Int) -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
     navigateToUserReport: (Int) -> Unit,
-    navigateToReviewReport: (Int, Int) -> Unit
+    navigateToReviewReport: (Int, ReportType) -> Unit
 ) {
     composable<OtherPage>(
         enterTransition = {
