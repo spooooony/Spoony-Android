@@ -23,7 +23,7 @@ fun OtherPageRoute(
     navigateUp: () -> Unit,
     navigateToFollow: (FollowType, Int) -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
-    navigateToUserReport: (Int) -> Unit,
+    navigateToUserReport: (Int, ReportType) -> Unit,
     navigateToReviewReport: (Int, ReportType) -> Unit,
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {

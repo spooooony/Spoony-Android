@@ -81,7 +81,7 @@ fun UserPageScreen(
                                 isUserBlockDialogVisible = true
                             }
 
-                            "신고하기" -> events.onReportUserClick(state.profileId)
+                            "신고하기" -> events.onReportUserClick(state.profileId, ReportType.USER)
                         }
                     },
                     modifier = Modifier.padding(horizontal = 20.dp)

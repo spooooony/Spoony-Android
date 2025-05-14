@@ -68,6 +68,6 @@ data class UserPageEvents(
     val onBackButtonClick: () -> Unit = {},
     val onCheckBoxClick: () -> Unit = {},
     val onReportReviewClick: (Int, ReportType) -> Unit = { _, _ -> },
-    val onReportUserClick: (Int) -> Unit = {},
+    val onReportUserClick: (Int, ReportType) -> Unit = { _, _ -> },
     val onUserBlockClick: (Int) -> Unit = {}
 )
