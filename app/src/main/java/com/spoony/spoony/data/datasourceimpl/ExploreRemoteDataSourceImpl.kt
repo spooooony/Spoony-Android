@@ -4,6 +4,7 @@ import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
 import com.spoony.spoony.data.dto.response.FeedsResponseDto
 import com.spoony.spoony.data.dto.response.PlaceReviewListResponseDto
+import com.spoony.spoony.data.dto.response.UserListSearchResponseDto
 import com.spoony.spoony.data.service.ExploreService
 import javax.inject.Inject
 
@@ -21,6 +22,10 @@ class ExploreRemoteDataSourceImpl @Inject constructor(
     )
 
     override suspend fun getPlaceReviewSearchByKeyword(query: String): BaseResponse<PlaceReviewListResponseDto> = exploreService.getPlaceReviewSearchByKeyword(
+        query = query
+    )
+
+    override suspend fun getUserListSearchByKeyword(query: String): BaseResponse<UserListSearchResponseDto> = exploreService.getUserListSearchByKeyword(
         query = query
     )
 }
