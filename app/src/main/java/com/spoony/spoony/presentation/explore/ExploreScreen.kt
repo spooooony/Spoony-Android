@@ -90,16 +90,18 @@ fun ExploreRoute(
             onFilterApplyButtonClick = viewModel::applyExploreFilter,
             onResetExploreFilterButtonClick = viewModel::resetExploreFilter,
             onLocalReviewButtonClick = viewModel::localReviewToggle,
+            onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
+            selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
-            propertyItems = propertyItems,
-            regionItems = regionItems,
-            ageItems = ageItems,
-            categoryItems = categoryItems,
-            propertySelectedState = propertySelectedState,
-            regionSelectedState = regionSelectedState,
-            ageSelectedState = ageSelectedState,
-            categorySelectedState = categorySelectedState
+            propertyItems = exploreFilterItems.properties,
+            regionItems = exploreFilterItems.regions,
+            ageItems = exploreFilterItems.ages,
+            categoryItems = exploreFilterItems.categories,
+            propertySelectedState = filterSelectionState.properties,
+            regionSelectedState = filterSelectionState.regions,
+            ageSelectedState = filterSelectionState.ages,
+            categorySelectedState = filterSelectionState.categories
         )
     }
 }
@@ -114,6 +116,8 @@ private fun ExploreScreen(
     onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
     onResetExploreFilterButtonClick: () -> Unit,
     onLocalReviewButtonClick: () -> Unit,
+    onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
+    selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     propertyItems: ImmutableList<ExploreFilter>,
@@ -130,20 +134,36 @@ private fun ExploreScreen(
     val selectedTabIndex = remember { mutableIntStateOf(0) }
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
-    var selectedSortingOption by remember { mutableStateOf(SortingOption.LATEST) }
     var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
 
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = { selectedSortingOption = it },
+            onClick = onSelectSortingOptionButtonClick,
             currentSortingOption = selectedSortingOption
         )
     }
-    val propertySelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(propertySelectedState) } }
-    val regionSelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(regionSelectedState) } }
-    val ageSelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(ageSelectedState) } }
-    val categorySelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(categorySelectedState) } }
+
+    val propertyState = remember(isFilterBottomSheetVisible, propertySelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(propertySelectedState)
+        }
+    }
+    val categoryState = remember(isFilterBottomSheetVisible, categorySelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(categorySelectedState)
+        }
+    }
+    val regionState = remember(isFilterBottomSheetVisible, regionSelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(regionSelectedState)
+        }
+    }
+    val ageState = remember(isFilterBottomSheetVisible, ageSelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(ageSelectedState)
+        }
+    }
 
     if (isFilterBottomSheetVisible) {
         ExploreFilterBottomSheet(
@@ -151,20 +171,28 @@ private fun ExploreScreen(
                 isFilterBottomSheetVisible = false
             },
             onFilterReset = onResetExploreFilterButtonClick,
-            onSave = { onFilterApplyButtonClick(propertySelectedStateCopy.toPersistentMap(), categorySelectedStateCopy.toPersistentMap(), regionSelectedStateCopy.toPersistentMap(), ageSelectedStateCopy.toPersistentMap()) },
+            onSave = {
+                isFilterBottomSheetVisible = false
+                onFilterApplyButtonClick(
+                    propertyState.toPersistentMap(),
+                    categoryState.toPersistentMap(),
+                    regionState.toPersistentMap(),
+                    ageState.toPersistentMap()
+                )
+            },
             onToggleFilter = { id, type ->
                 when (type) {
                     FilterType.LOCAL_REVIEW -> {
-                        propertySelectedStateCopy[id] = !(propertySelectedStateCopy[id] ?: false)
+                        propertyState[id] = !(propertyState[id] ?: false)
                     }
                     FilterType.CATEGORY -> {
-                        categorySelectedStateCopy[id] = !(categorySelectedStateCopy[id] ?: false)
+                        categoryState[id] = !(categoryState[id] ?: false)
                     }
                     FilterType.REGION -> {
-                        regionSelectedStateCopy[id] = !(regionSelectedStateCopy[id] ?: false)
+                        regionState[id] = !(regionState[id] ?: false)
                     }
                     FilterType.AGE -> {
-                        ageSelectedStateCopy[id] = !(ageSelectedStateCopy[id] ?: false)
+                        ageState[id] = !(ageState[id] ?: false)
                     }
                     else -> {}
                 }
@@ -173,10 +201,10 @@ private fun ExploreScreen(
             regionItems = regionItems,
             ageItems = ageItems,
             categoryItems = categoryItems,
-            propertySelectedState = propertySelectedStateCopy,
-            regionSelectedState = regionSelectedStateCopy,
-            ageSelectedState = ageSelectedStateCopy,
-            categorySelectedState = categorySelectedStateCopy,
+            propertySelectedState = propertyState,
+            regionSelectedState = regionState,
+            ageSelectedState = ageState,
+            categorySelectedState = categoryState,
             tabIndex = exploreFilterBottomSheetTabIndex
         )
     }
@@ -219,7 +247,7 @@ private fun ExploreScreen(
                     }
                     FilterType.LOCAL_REVIEW -> {
                         onLocalReviewButtonClick()
-                        propertySelectedStateCopy[1] = !(propertySelectedStateCopy[1] ?: false)
+                        propertyState[1] = !(propertyState[1] ?: false)
                     }
                     FilterType.CATEGORY -> {
                         exploreFilterBottomSheetTabIndex = 1
