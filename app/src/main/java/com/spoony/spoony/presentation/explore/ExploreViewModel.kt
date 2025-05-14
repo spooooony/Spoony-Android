@@ -10,6 +10,8 @@ import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -98,6 +100,39 @@ class ExploreViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun localReviewToggle() {
+        _state.update {
+            it.copy(
+                propertySelectedState = _state.value.propertySelectedState.put(
+                    1,
+                    !(_state.value.propertySelectedState[1] ?: false)
+                )
+            )
+        }
+    }
+
+    fun applyExploreFilter(propertySelectedState: PersistentMap<Int, Boolean>, categorySelectedState: PersistentMap<Int, Boolean>, regionSelectedState: PersistentMap<Int, Boolean>, ageSelectedState: PersistentMap<Int, Boolean>) {
+        _state.update {
+            it.copy(
+                propertySelectedState = propertySelectedState,
+                categorySelectedState = categorySelectedState,
+                regionSelectedState = regionSelectedState,
+                ageSelectedState = ageSelectedState
+            )
+        }
+    }
+
+    fun resetExploreFilter() {
+        _state.update {
+            it.copy(
+                propertySelectedState = persistentMapOf(),
+                categorySelectedState = persistentMapOf(),
+                regionSelectedState = persistentMapOf(),
+                ageSelectedState = persistentMapOf()
+            )
         }
     }
 
