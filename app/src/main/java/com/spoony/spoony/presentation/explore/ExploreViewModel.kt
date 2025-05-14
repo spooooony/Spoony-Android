@@ -62,10 +62,21 @@ class ExploreViewModel @Inject constructor(
         val chipItems = _state.value.chipItems
         val currentFilterState = _state.value.filterSelectionState
         val propertySelectedState = currentFilterState.properties
-        val isSelected = !(propertySelectedState[1] ?: false)
+        val categorySelectedState = currentFilterState.categories
+        val regionSelectedState = currentFilterState.regions
+        val ageSelectedState = currentFilterState.ages
+        val isLocalReviewSelected = !(propertySelectedState[1] ?: false)
+
         val updatedFilterOptions = chipItems.map { option ->
             when (option.sort) {
                 FilterType.LOCAL_REVIEW -> {
+                    option.copy(isSelected = isLocalReviewSelected)
+                }
+                FilterType.FILTER -> {
+                    val isSelected = isLocalReviewSelected ||
+                        categorySelectedState.any { (_, selected) -> selected } ||
+                        regionSelectedState.any { (_, selected) -> selected } ||
+                        ageSelectedState.any { (_, selected) -> selected }
                     option.copy(isSelected = isSelected)
                 }
                 else -> option
@@ -74,7 +85,7 @@ class ExploreViewModel @Inject constructor(
         _state.update {
             it.copy(
                 filterSelectionState = currentFilterState.copy(
-                    properties = propertySelectedState.put(1, isSelected)
+                    properties = propertySelectedState.put(1, isLocalReviewSelected)
                 ),
                 chipItems = updatedFilterOptions
             )
