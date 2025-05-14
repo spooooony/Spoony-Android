@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,11 +44,15 @@ import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
+import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreFilterBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
+import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.FilterOption
+import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
@@ -76,37 +81,102 @@ fun ExploreRoute(
 
     with(state) {
         ExploreScreen(
-            chipItems = state.chipItems,
             paddingValues = paddingValues,
             onClickSearch = navigateToExploreSearch,
-            placeReviewList = placeReviewList,
             onRegisterButtonClick = navigateToRegister,
             onPlaceDetailItemClick = navigateToPlaceDetail,
-            onReportButtonClick = navigateToReport
+            onReportButtonClick = navigateToReport,
+            onFilterApplyButtonClick = viewModel::applyExploreFilter,
+            onResetExploreFilterButtonClick = viewModel::resetExploreFilter,
+            onLocalReviewButtonClick = viewModel::localReviewToggle,
+            chipItems = chipItems,
+            placeReviewList = placeReviewList,
+            propertyItems = propertyItems,
+            regionItems = regionItems,
+            ageItems = ageItems,
+            categoryItems = categoryItems,
+            propertySelectedState = propertySelectedState,
+            regionSelectedState = regionSelectedState,
+            ageSelectedState = ageSelectedState,
+            categorySelectedState = categorySelectedState
         )
     }
 }
 
 @Composable
 private fun ExploreScreen(
-    chipItems: ImmutableList<FilterOption>,
     paddingValues: PaddingValues,
     onClickSearch: () -> Unit,
-    placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     onRegisterButtonClick: () -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
-    onReportButtonClick: (postId: Int, userId: Int) -> Unit
+    onReportButtonClick: (postId: Int, userId: Int) -> Unit,
+    onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
+    onResetExploreFilterButtonClick: () -> Unit,
+    onLocalReviewButtonClick: () -> Unit,
+    chipItems: ImmutableList<FilterOption>,
+    placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
+    propertyItems: ImmutableList<ExploreFilter>,
+    regionItems: ImmutableList<ExploreFilter>,
+    ageItems: ImmutableList<ExploreFilter>,
+    categoryItems: ImmutableList<ExploreFilter>,
+    propertySelectedState: PersistentMap<Int, Boolean>,
+    regionSelectedState: PersistentMap<Int, Boolean>,
+    ageSelectedState: PersistentMap<Int, Boolean>,
+    categorySelectedState: PersistentMap<Int, Boolean>
+
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
+    var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var selectedSortingOption by remember { mutableStateOf(SortingOption.LATEST) }
+    var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
 
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
             onClick = { selectedSortingOption = it },
             currentSortingOption = selectedSortingOption
+        )
+    }
+    val propertySelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(propertySelectedState) } }
+    val regionSelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(regionSelectedState) } }
+    val ageSelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(ageSelectedState) } }
+    val categorySelectedStateCopy = remember { mutableStateMapOf<Int, Boolean>().apply { putAll(categorySelectedState) } }
+
+    if (isFilterBottomSheetVisible) {
+        ExploreFilterBottomSheet(
+            onDismiss = {
+                isFilterBottomSheetVisible = false
+            },
+            onFilterReset = onResetExploreFilterButtonClick,
+            onSave = onFilterApplyButtonClick,
+            onToggleFilter = { id, type ->
+                when (type) {
+                    FilterType.LOCAL_REVIEW -> {
+                        propertySelectedStateCopy[id] = !(propertySelectedStateCopy[id] ?: false)
+                    }
+                    FilterType.CATEGORY -> {
+                        categorySelectedStateCopy[id] = !(categorySelectedStateCopy[id] ?: false)
+                    }
+                    FilterType.REGION -> {
+                        regionSelectedStateCopy[id] = !(regionSelectedStateCopy[id] ?: false)
+                    }
+                    FilterType.AGE -> {
+                        ageSelectedStateCopy[id] = !(ageSelectedStateCopy[id] ?: false)
+                    }
+                    else -> {}
+                }
+            },
+            propertyItems = propertyItems,
+            regionItems = regionItems,
+            ageItems = ageItems,
+            categoryItems = categoryItems,
+            propertySelectedState = propertySelectedStateCopy,
+            regionSelectedState = regionSelectedStateCopy,
+            ageSelectedState = ageSelectedStateCopy,
+            categorySelectedState = categorySelectedStateCopy,
+            tabIndex = exploreFilterBottomSheetTabIndex
         )
     }
 
@@ -140,6 +210,30 @@ private fun ExploreScreen(
         Spacer(modifier = Modifier.height(24.dp))
         FilterChipRow(
             chipItems,
+            onFilterClick = { sort ->
+                when (sort) {
+                    FilterType.FILTER -> {
+                        exploreFilterBottomSheetTabIndex = 0
+                        isFilterBottomSheetVisible = true
+                    }
+                    FilterType.LOCAL_REVIEW -> {
+                        onLocalReviewButtonClick()
+                        propertySelectedStateCopy[1] = !(propertySelectedStateCopy[1] ?: false)
+                    }
+                    FilterType.CATEGORY -> {
+                        exploreFilterBottomSheetTabIndex = 1
+                        isFilterBottomSheetVisible = true
+                    }
+                    FilterType.REGION -> {
+                        exploreFilterBottomSheetTabIndex = 2
+                        isFilterBottomSheetVisible = true
+                    }
+                    FilterType.AGE -> {
+                        exploreFilterBottomSheetTabIndex = 3
+                        isFilterBottomSheetVisible = true
+                    }
+                }
+            },
             onSortFilterClick = {
                 isSortingBottomSheetVisible = true
             }

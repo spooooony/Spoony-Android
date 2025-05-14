@@ -2,12 +2,16 @@ package com.spoony.spoony.presentation.explore
 
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.entity.CategoryEntity
+import com.spoony.spoony.presentation.explore.model.ExploreFilter
+import com.spoony.spoony.presentation.explore.model.ExploreFilterDataProvider
 import com.spoony.spoony.presentation.explore.model.FeedModel
 import com.spoony.spoony.presentation.explore.model.FilterChipOptionProvider
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 
 data class ExploreState(
     val spoonCount: UiState<Int> = UiState.Loading,
@@ -17,5 +21,17 @@ data class ExploreState(
     val chipItems: ImmutableList<FilterOption> = FilterChipOptionProvider.getDefaultFilterOptions(),
     val categoryList: UiState<ImmutableList<CategoryEntity>> = UiState.Loading,
     val feedList: UiState<ImmutableList<FeedModel>> = UiState.Loading,
-    val placeReviewList: UiState<ImmutableList<PlaceReviewModel>> = UiState.Loading
+    val placeReviewList: UiState<ImmutableList<PlaceReviewModel>> = UiState.Loading,
+
+    val propertyItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultPropertyFilter(),
+    val propertySelectedState: PersistentMap<Int, Boolean> = persistentMapOf(),
+
+    val regionItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultRegionFilter(),
+    val regionSelectedState: PersistentMap<Int, Boolean> = persistentMapOf(),
+
+    val ageItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultAgeFilter(),
+    val ageSelectedState: PersistentMap<Int, Boolean> = persistentMapOf(),
+
+    val categoryItems: ImmutableList<ExploreFilter> = ExploreFilterDataProvider.getDefaultCategoryFilter(),
+    val categorySelectedState: PersistentMap<Int, Boolean> = persistentMapOf()
 )
