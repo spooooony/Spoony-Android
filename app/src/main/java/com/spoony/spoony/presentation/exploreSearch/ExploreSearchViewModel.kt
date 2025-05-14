@@ -30,7 +30,9 @@ class ExploreSearchViewModel @Inject constructor(
     ) {
         _state.update {
             it.copy(
-                searchType = searchType
+                searchType = searchType,
+                userInfoList = UiState.Loading,
+                placeReviewInfoList = UiState.Loading
             )
         }
         search(_state.value.searchKeyword)
@@ -60,11 +62,15 @@ class ExploreSearchViewModel @Inject constructor(
                                 it.copy(
                                     searchKeyword = keywordTrim,
                                     recentUserSearchQueryList = updatedList,
-                                    userInfoList = UiState.Success(
-                                        response.map { userEntity ->
-                                            userEntity.toModel()
-                                        }.toPersistentList()
-                                    )
+                                    userInfoList = if (response.isEmpty()) {
+                                        UiState.Empty
+                                    } else {
+                                        UiState.Success(
+                                            response.map { userEntity ->
+                                                userEntity.toModel()
+                                            }.toPersistentList()
+                                        )
+                                    }
                                 )
                             }
                         }
@@ -81,11 +87,15 @@ class ExploreSearchViewModel @Inject constructor(
                                 it.copy(
                                     searchKeyword = keywordTrim,
                                     recentReviewSearchQueryList = updatedList,
-                                    placeReviewInfoList = UiState.Success(
-                                        response.map { placeReviewEntity ->
-                                            placeReviewEntity.toModel()
-                                        }.toPersistentList()
-                                    )
+                                    placeReviewInfoList = if (response.isEmpty()) {
+                                        UiState.Empty
+                                    } else {
+                                        UiState.Success(
+                                            response.map { userEntity ->
+                                                userEntity.toModel()
+                                            }.toPersistentList()
+                                        )
+                                    }
                                 )
                             }
                         }
