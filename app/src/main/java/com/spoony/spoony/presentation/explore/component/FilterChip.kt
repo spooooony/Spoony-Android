@@ -32,7 +32,7 @@ fun FilterChip(
         if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray100
     }
     val textColor = remember(isSelected) {
-        if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray600
+        if (isSelected) spoonyAndroidThemeColors.main400 else spoonyAndroidThemeColors.gray500
     }
     val backgroundColor = remember(isSelected) {
         if (isSelected) spoonyAndroidThemeColors.main0 else spoonyAndroidThemeColors.gray0
