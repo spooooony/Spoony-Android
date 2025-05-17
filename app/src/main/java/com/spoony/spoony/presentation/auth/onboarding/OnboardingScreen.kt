@@ -108,7 +108,6 @@ private fun OnboardingScreen(
         ) {
             onboardingGraph(
                 navController = navController,
-                onUpdateSteps = viewModel::updateCurrentStep,
                 viewModel = viewModel,
                 navigateToMap = navigateToMap
             )

@@ -41,7 +41,6 @@ fun NavGraphBuilder.onboardingNavGraph(
 fun NavGraphBuilder.onboardingGraph(
     navController: NavHostController,
     navigateToMap: () -> Unit,
-    onUpdateSteps: (OnboardingSteps) -> Unit,
     viewModel: OnboardingViewModel
 ) {
     composable<StepOne>(
@@ -92,7 +91,7 @@ fun NavGraphBuilder.onboardingGraph(
         OnboardingStepThreeRoute(
             viewModel = viewModel,
             onNextButtonClick = {
-                onUpdateSteps(OnboardingSteps.END)
+                viewModel.updateCurrentStep(OnboardingSteps.END)
                 navController.navigate(
                     route = End,
                     navOptions = navOptions {
