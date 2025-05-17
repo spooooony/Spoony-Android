@@ -21,10 +21,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
+import com.spoony.spoony.presentation.attendance.navigation.attendanceNavGraph
 import com.spoony.spoony.presentation.auth.onboarding.navigation.onboardingNavGraph
 import com.spoony.spoony.presentation.auth.signin.navigation.signInNavGraph
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.termsOfServiceNavGraph
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
+import com.spoony.spoony.presentation.exploreSearch.navigation.exploreSearchNavGraph
 import com.spoony.spoony.presentation.follow.navigation.followNavGraph
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGraph
@@ -142,12 +144,26 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateToRegister = navigator::navigateToRegister,
+                    navigateToExploreSearch = navigator::navigateToExploreSearch,
                     navigateToReport = { postId, userId ->
                         navigator.navigateToReport(
                             postId = postId,
                             userId = userId
                         )
                     }
+                )
+
+                exploreSearchNavGraph(
+                    paddingValues = paddingValues,
+                    navigateToUserProfile = navigator::navigateToOtherPage,
+                    navigateToReport = { postId, userId ->
+                        navigator.navigateToReport(
+                            postId = postId,
+                            userId = userId
+                        )
+                    },
+                    navigateToPlaceDetail = navigator::navigateToPlaceDetail,
+                    navigateUp = navigator::navigateUp
                 )
 
                 registerNavGraph(
@@ -162,7 +178,7 @@ fun MainScreen(
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToProfileEdit = navigator::navigateToProfileEdit,
                     navigateToRegister = navigator::navigateToRegister,
-                    navigateToReviewDetail = { },
+                    navigateToReviewDetail = navigator::navigateToPlaceDetail,
                     navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
@@ -174,7 +190,9 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
                     navigateToFollow = navigator::navigateToFollow,
-                    navigateToReviewDetail = { }
+                    navigateToReviewDetail = navigator::navigateToPlaceDetail,
+                    navigateToReviewReport = navigator::navigateToReport,
+                    navigateToUserReport = { /* TODO: 이거 세홍쌤 신고 스크린과 싱크 필요 */ }
                 )
 
                 followNavGraph(
@@ -215,6 +233,11 @@ fun MainScreen(
                 )
 
                 settingPageNavGraph(
+                    navigateUp = navigator::navigateUp
+                )
+
+                attendanceNavGraph(
+                    paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp
                 )
             }

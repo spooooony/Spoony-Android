@@ -9,10 +9,12 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.spoony.spoony.presentation.attendance.navigation.navigateToAttendance
 import com.spoony.spoony.presentation.auth.onboarding.navigation.navigateToOnboarding
 import com.spoony.spoony.presentation.auth.signin.navigation.navigateToSignIn
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.navigateToTermsOfService
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
+import com.spoony.spoony.presentation.exploreSearch.navigation.navigateToExploreSearch
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
@@ -49,33 +51,29 @@ class MainNavigator(
         currentDestination?.hasRoute(it::class) == true
     }
 
-    private val mainTabNavOptions = navOptions {
-        navController.currentDestination?.route?.let {
-            popUpTo(it) {
-                inclusive = true
-                saveState = true
+    fun navigate(tab: MainTab) {
+        val mainTabNavOptions = navOptions {
+            navController.currentDestination?.route?.let {
+                popUpTo(it) {
+                    inclusive = true
+                    saveState = true
+                }
             }
+            launchSingleTop = true
+            restoreState = true
         }
-        launchSingleTop = true
-        restoreState = true
-    }
 
-    private fun MainTab.getNavOptions(): NavOptions = when (this) {
-        MainTab.REGISTER -> navOptions {
+        val registerNavOptions = navOptions {
             launchSingleTop = true
         }
 
-        else -> mainTabNavOptions
-    }
-
-    fun navigate(tab: MainTab) {
         when (tab) {
-            MainTab.MAP -> navController.navigateToMap(navOptions = tab.getNavOptions())
-            MainTab.EXPLORE -> navController.navigateToExplore(tab.getNavOptions())
-            MainTab.MYPAGE -> navController.navigateToMyPage(tab.getNavOptions())
+            MainTab.MAP -> navController.navigateToMap(navOptions = mainTabNavOptions)
+            MainTab.EXPLORE -> navController.navigateToExplore(mainTabNavOptions)
+            MainTab.MYPAGE -> navController.navigateToMyPage(mainTabNavOptions)
             MainTab.REGISTER -> navController.navigateToRegister(
                 registerType = RegisterType.CREATE,
-                navOptions = tab.getNavOptions()
+                navOptions = registerNavOptions
             )
         }
     }
@@ -191,6 +189,15 @@ class MainNavigator(
         navController.navigateToPlaceDetail(postId = postId)
     }
 
+    fun navigateToExploreSearch(
+        navOptions: NavOptions? = navOptions {
+            launchSingleTop = true
+            restoreState = true
+        }
+    ) {
+        navController.navigateToExploreSearch(navOptions)
+    }
+
     fun navigateToLocationMap(
         navOptions: NavOptions = navOptions {
             popUpTo(Map()) {
@@ -216,6 +223,14 @@ class MainNavigator(
         navOptions: NavOptions? = null
     ) {
         navController.navigateToSettingPage(
+            navOptions = navOptions
+        )
+    }
+
+    fun navigateToAttendance(
+        navOptions: NavOptions? = null
+    ) {
+        navController.navigateToAttendance(
             navOptions = navOptions
         )
     }
