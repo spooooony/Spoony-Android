@@ -20,7 +20,8 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 @Composable
 fun OnboardingTopAppBar(
     onBackButtonClick: () -> Unit,
-    onSkipButtonClick: () -> Unit
+    onSkipButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     SpoonyBasicTopAppBar(
         navigationIcon = {
@@ -48,6 +49,7 @@ fun OnboardingTopAppBar(
                     .padding(end = 20.dp)
                     .noRippleClickable(onSkipButtonClick)
             )
-        }
+        },
+        modifier = modifier
     )
 }

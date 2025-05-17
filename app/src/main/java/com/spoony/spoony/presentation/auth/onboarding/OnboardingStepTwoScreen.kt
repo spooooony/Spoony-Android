@@ -20,8 +20,10 @@ import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePicke
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.regionList
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
+import com.spoony.spoony.core.designsystem.model.BirthDate
 import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.toBirthDate
 import com.spoony.spoony.presentation.auth.onboarding.component.OnBoardingButton
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingContent
 
@@ -43,7 +45,7 @@ fun OnboardingStepTwoRoute(
     }
 
     OnboardingStepTwoScreen(
-        birth = state.birth.split("-"),
+        birth = state.birth.toBirthDate(),
         region = state.region,
         isButtonEnabled = isButtonEnabled,
         onUpdateBirth = viewModel::updateBirth,
@@ -54,7 +56,7 @@ fun OnboardingStepTwoRoute(
 
 @Composable
 private fun OnboardingStepTwoScreen(
-    birth: List<String>,
+    birth: BirthDate?,
     region: RegionModel,
     isButtonEnabled: Boolean,
     onUpdateBirth: (String) -> Unit,
@@ -77,10 +79,10 @@ private fun OnboardingStepTwoScreen(
                 onClick = {
                     birthBottomSheetVisibility = true
                 },
-                year = birth.getOrNull(0)?.takeIf { it.isNotBlank() } ?: "2000",
-                month = birth.getOrNull(1) ?: "01",
-                day = birth.getOrNull(2) ?: "01",
-                isBirthSelected = birth.getOrNull(0) != ""
+                year = birth?.year ?: "2000",
+                month = birth?.month ?: "01",
+                day = birth?.day ?: "01",
+                isBirthSelected = birth != null
             )
         }
 
@@ -106,9 +108,9 @@ private fun OnboardingStepTwoScreen(
         SpoonyDatePickerBottomSheet(
             onDismiss = { birthBottomSheetVisibility = false },
             onDateSelected = onUpdateBirth,
-            initialYear = birth.getOrNull(0)?.toIntOrNull() ?: 2000,
-            initialMonth = birth.getOrNull(1)?.toIntOrNull() ?: 1,
-            initialDay = birth.getOrNull(2)?.toIntOrNull() ?: 1
+            initialYear = birth?.year?.toIntOrNull() ?: 2000,
+            initialMonth = birth?.month?.toIntOrNull() ?: 1,
+            initialDay = birth?.day?.toIntOrNull() ?: 1
         )
     }
 
