@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.auth.onboarding
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,6 +53,7 @@ private fun OnboardingEndScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .background(SpoonyAndroidTheme.colors.white)
             .padding(horizontal = 20.dp)
             .padding(bottom = 20.dp)
     ) {

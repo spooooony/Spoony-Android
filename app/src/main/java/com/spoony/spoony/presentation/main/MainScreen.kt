@@ -123,7 +123,6 @@ fun MainScreen(
                 )
 
                 onboardingNavGraph(
-                    paddingValues = paddingValues,
                     navigateToMap = navigator::navigateToMap
                 )
 

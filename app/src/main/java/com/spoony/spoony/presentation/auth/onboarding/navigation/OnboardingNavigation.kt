@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.auth.onboarding.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -28,12 +29,10 @@ fun NavController.navigateToOnboarding(
 }
 
 fun NavGraphBuilder.onboardingNavGraph(
-    paddingValues: PaddingValues,
     navigateToMap: () -> Unit
 ) {
     composable<Onboarding> {
         OnboardingRoute(
-            paddingValues = paddingValues,
             navigateToMap = navigateToMap
         )
     }
@@ -46,18 +45,12 @@ fun NavGraphBuilder.onboardingGraph(
     viewModel: OnboardingViewModel
 ) {
     composable<StepOne>(
-//        enterTransition = {
-//            slideIntoContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Right,
-//                animationSpec = tween(500)
-//            )
-//        },
-//        exitTransition = {
-//            slideOutOfContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Left,
-//                animationSpec = tween(500)
-//            )
-//        }
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        }
     ) {
         OnBoardingStepOneRoute(
             viewModel = viewModel,
@@ -73,18 +66,12 @@ fun NavGraphBuilder.onboardingGraph(
     }
 
     composable<StepTwo>(
-//        enterTransition = {
-//            slideIntoContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Right,
-//                animationSpec = tween(500)
-//            )
-//        },
-//        exitTransition = {
-//            slideOutOfContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Left,
-//                animationSpec = tween(500)
-//            )
-//        }
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        }
     ) {
         OnboardingStepTwoRoute(
             viewModel = viewModel,
@@ -95,18 +82,12 @@ fun NavGraphBuilder.onboardingGraph(
     }
 
     composable<StepThree>(
-//        enterTransition = {
-//            slideIntoContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Right,
-//                animationSpec = tween(500)
-//            )
-//        },
-//        exitTransition = {
-//            slideOutOfContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Left,
-//                animationSpec = tween(500)
-//            )
-//        }
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        }
     ) {
         OnboardingStepThreeRoute(
             viewModel = viewModel,
@@ -125,18 +106,12 @@ fun NavGraphBuilder.onboardingGraph(
     }
 
     composable<End>(
-//        enterTransition = {
-//            slideIntoContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Left,
-//                animationSpec = tween(500)
-//            )
-//        },
-//        exitTransition = {
-//            slideOutOfContainer(
-//                AnimatedContentTransitionScope.SlideDirection.Right,
-//                animationSpec = tween(500)
-//            )
-//        }
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        }
     ) {
         OnboardingEndRoute(
             viewModel = viewModel,

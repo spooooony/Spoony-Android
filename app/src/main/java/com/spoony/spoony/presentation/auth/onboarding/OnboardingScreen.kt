@@ -2,7 +2,6 @@ package com.spoony.spoony.presentation.auth.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +28,6 @@ import com.spoony.spoony.presentation.register.component.TopLinearProgressBar
 
 @Composable
 fun OnboardingRoute(
-    paddingValues: PaddingValues,
     navigateToMap: () -> Unit,
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {

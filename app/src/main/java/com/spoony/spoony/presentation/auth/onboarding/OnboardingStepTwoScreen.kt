@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.auth.onboarding
 
 import BirthSelectButton
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBot
 import com.spoony.spoony.core.designsystem.component.bottomsheet.regionList
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
 import com.spoony.spoony.core.designsystem.model.RegionModel
+import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.auth.onboarding.component.OnBoardingButton
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingContent
 
@@ -66,6 +68,7 @@ private fun OnboardingStepTwoScreen(
         verticalArrangement = Arrangement.spacedBy(55.dp),
         modifier = Modifier
             .fillMaxSize()
+            .background(SpoonyAndroidTheme.colors.white)
             .padding(horizontal = 20.dp)
             .padding(top = 32.dp, bottom = 20.dp)
     ) {
@@ -102,10 +105,7 @@ private fun OnboardingStepTwoScreen(
     if (birthBottomSheetVisibility) {
         SpoonyDatePickerBottomSheet(
             onDismiss = { birthBottomSheetVisibility = false },
-            onDateSelected = {
-                onUpdateBirth(it)
-//                isBirthSelected = true
-            },
+            onDateSelected = onUpdateBirth,
             initialYear = birth.getOrNull(0)?.toIntOrNull() ?: 2000,
             initialMonth = birth.getOrNull(1)?.toIntOrNull() ?: 1,
             initialDay = birth.getOrNull(2)?.toIntOrNull() ?: 1
@@ -116,10 +116,7 @@ private fun OnboardingStepTwoScreen(
         SpoonyRegionBottomSheet(
             regionList = regionList,
             onDismiss = { regionBottomSheetVisibility = false },
-            onClick = {
-                onUpdateRegion(it)
-//                isRegionSelected = true
-            }
+            onClick = onUpdateRegion
         )
     }
 }
