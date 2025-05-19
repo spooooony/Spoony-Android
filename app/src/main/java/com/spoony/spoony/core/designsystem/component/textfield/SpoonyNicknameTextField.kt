@@ -27,7 +27,6 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import timber.log.Timber
 
 enum class NicknameTextFieldState(val text: String) {
     DEFAULT(""),
@@ -82,13 +81,11 @@ fun SpoonyNicknameTextField(
                     }
 
                     newText.trim().length < minLength -> {
-                        Timber.d("stateChanged minlength $newText")
                         onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
                         onValueChanged(newText)
                     }
 
                     else -> {
-                        Timber.d("stateChanged else $newText")
                         onStateChanged(NicknameTextFieldState.DEFAULT)
                         onValueChanged(newText)
                     }

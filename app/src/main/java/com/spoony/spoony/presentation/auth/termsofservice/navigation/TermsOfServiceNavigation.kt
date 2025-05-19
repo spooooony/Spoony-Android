@@ -20,12 +20,12 @@ fun NavController.navigateToTermsOfService(
 
 fun NavGraphBuilder.termsOfServiceNavGraph(
     paddingValues: PaddingValues,
-    navigateToMap: () -> Unit
+    navigateToOnboarding: () -> Unit
 ) {
     composable<TermsOfService> {
         TermsOfServiceRoute(
             paddingValues = paddingValues,
-            navigateToMap = navigateToMap
+            navigateToOnboarding = navigateToOnboarding
         )
     }
 }
