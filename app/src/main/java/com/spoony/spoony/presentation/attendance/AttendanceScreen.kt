@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,7 +33,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
@@ -58,8 +61,11 @@ private val daysList = persistentListOf("월", "화", "수", "목", "금", "토"
 fun AttendanceRoute(
     paddingValues: PaddingValues,
     navigateUp: () -> Unit,
+    showSnackBar: (String) -> Unit,
     viewModel: AttendanceViewModel = hiltViewModel()
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val systemUiController = rememberSystemUiController()
 
@@ -73,6 +79,17 @@ fun AttendanceRoute(
                 color = white
             )
         }
+    }
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { sideEffect ->
+                when (sideEffect) {
+                    is AttendanceSideEffect.ShowSnackBar -> {
+                        showSnackBar(sideEffect.message)
+                    }
+                }
+            }
     }
 
     AttendanceScreen(

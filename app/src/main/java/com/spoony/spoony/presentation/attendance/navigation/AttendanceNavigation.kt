@@ -20,12 +20,14 @@ fun NavController.navigateToAttendance(
 
 fun NavGraphBuilder.attendanceNavGraph(
     paddingValues: PaddingValues,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    showSnackBar: (String) -> Unit
 ) {
     composable<Attendance> {
         AttendanceRoute(
             paddingValues = paddingValues,
-            navigateUp = navigateUp
+            navigateUp = navigateUp,
+            showSnackBar = showSnackBar
         )
     }
 }

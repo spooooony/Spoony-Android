@@ -13,8 +13,11 @@ import java.time.format.TextStyle
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,6 +30,10 @@ class AttendanceViewModel @Inject constructor(
     private val _state: MutableStateFlow<AttendanceState> = MutableStateFlow(AttendanceState())
     val state: StateFlow<AttendanceState>
         get() = _state.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<AttendanceSideEffect>()
+    val sideEffect: SharedFlow<AttendanceSideEffect>
+        get() = _sideEffect.asSharedFlow()
 
     init {
         val today = LocalDate.now()
@@ -68,6 +75,9 @@ class AttendanceViewModel @Inject constructor(
                             spoonDrawList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                         )
                     }
+                    _sideEffect.emit(
+                        AttendanceSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                    )
                 }
         }
     }
@@ -80,6 +90,11 @@ class AttendanceViewModel @Inject constructor(
             return "${formatDateWithDayOfWeek(weekStartDate)} ~ ${formatDateWithDayOfWeek(weekEndDate)}"
         } catch (e: Exception) {
             Timber.e(e)
+            viewModelScope.launch {
+                _sideEffect.emit(
+                    AttendanceSideEffect.ShowSnackBar("예기치 않는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                )
+            }
             return ""
         }
     }
