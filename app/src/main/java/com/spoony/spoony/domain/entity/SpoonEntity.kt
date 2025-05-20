@@ -1,5 +1,11 @@
 package com.spoony.spoony.domain.entity
 
+data class SpoonListEntity(
+    val spoonResultList: List<SpoonEntity>,
+    val totalSpoonCount: Int,
+    val weeklySpoonCount: Int
+)
+
 data class SpoonEntity(
     val drawId: Int,
     val spoonType: SpoonType,
@@ -11,7 +17,7 @@ data class SpoonEntity(
         val spoonTypeId: Int,
         val spoonName: String,
         val spoonAmount: Int,
-        val probability: Int,
+        val probability: Double,
         val spoonImage: String
     )
 }

@@ -76,10 +76,10 @@ fun AttendanceRoute(
 
     AttendanceScreen(
         paddingValues = paddingValues,
-        weeklyDate = state.weeklyStartDate,
+        weeklyDate = viewModel.getWeeklyDate(state.weeklyStartDate),
         spoonDrawList = (state.spoonDrawList as? UiState.Success<ImmutableList<SpoonDrawModel>>)?.data
             ?: persistentListOf(),
-        spoonCount = 100,
+        spoonCount = state.totalSpoonCount,
         onBackButtonClick = navigateUp
     )
 }
