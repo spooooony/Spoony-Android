@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -191,7 +192,6 @@ private fun SpoonGrid(
         items(daysList) { day ->
             SpoonItem(
                 day = day,
-                isDrawn = weeklyList[day]?.spoonImage != null,
                 spoonImage = weeklyList[day]?.spoonImage
             )
         }
@@ -201,20 +201,19 @@ private fun SpoonGrid(
 @Composable
 private fun SpoonItem(
     day: String,
-    isDrawn: Boolean,
     spoonImage: String?
 ) {
-    val (borderColor, backgroundColor, textColor) = if (isDrawn) {
-        Triple(
-            SpoonyAndroidTheme.colors.main200,
-            SpoonyAndroidTheme.colors.main100,
-            SpoonyAndroidTheme.colors.main300
-        )
-    } else {
+    val (borderColor, backgroundColor, textColor) = if (spoonImage == null) {
         Triple(
             SpoonyAndroidTheme.colors.gray100,
             SpoonyAndroidTheme.colors.gray0,
             SpoonyAndroidTheme.colors.gray300
+        )
+    } else {
+        Triple(
+            SpoonyAndroidTheme.colors.main200,
+            SpoonyAndroidTheme.colors.main100,
+            SpoonyAndroidTheme.colors.main300
         )
     }
 
@@ -241,15 +240,14 @@ private fun SpoonItem(
                 .padding(start = 6.dp, top = 2.dp)
         )
 
-        if (isDrawn) {
-            Image(
-                painter = painterResource(R.drawable.img_wooden_spoon),
-                contentDescription = null
-            )
-        } else {
+        if (spoonImage == null) {
             Image(
                 painter = painterResource(R.drawable.img_wooden_spoon_grey),
                 contentDescription = null
+            )
+        } else {
+            UrlImage(
+                imageUrl = spoonImage
             )
         }
     }
