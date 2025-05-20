@@ -56,7 +56,8 @@ class AttendanceViewModel @Inject constructor(
                                         localDate = spoonEntity.localDate
                                     )
                                 }.toImmutableList()
-                            )
+                            ),
+                            totalSpoonCount = weeklyDrawResult.totalSpoonCount
                         )
                     }
                 }
