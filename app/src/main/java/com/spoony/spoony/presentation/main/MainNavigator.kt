@@ -10,6 +10,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.attendance.navigation.navigateToAttendance
+import com.spoony.spoony.presentation.auth.onboarding.navigation.navigateToOnboarding
 import com.spoony.spoony.presentation.auth.signin.navigation.navigateToSignIn
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.navigateToTermsOfService
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
@@ -96,6 +97,16 @@ class MainNavigator(
         }
     ) {
         navController.navigateToTermsOfService(navOptions = navOptions)
+    }
+
+    fun navigateToOnboarding(
+        navOptions: NavOptions? = navOptions {
+            popUpTo(NAVIGATION_ROOT) {
+                inclusive = true
+            }
+        }
+    ) {
+        navController.navigateToOnboarding(navOptions = navOptions)
     }
 
     fun navigateToMap(
