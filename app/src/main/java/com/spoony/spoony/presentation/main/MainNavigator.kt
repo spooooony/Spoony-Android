@@ -24,6 +24,7 @@ import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDeta
 import com.spoony.spoony.presentation.profileedit.navigation.navigateToProfileEdit
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
+import com.spoony.spoony.presentation.report.ReportType
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.setting.navigation.navigateToSettingPage
 import com.spoony.spoony.presentation.splash.navigation.Splash
@@ -119,10 +120,10 @@ class MainNavigator(
     }
 
     fun navigateToReport(
-        postId: Int,
-        userId: Int
+        reportTargetId: Int,
+        type: ReportType
     ) {
-        navController.navigateToReport(postId = postId, userId = userId)
+        navController.navigateToReport(reportTargetId = reportTargetId, type = type)
     }
 
     fun navigateToExplore(

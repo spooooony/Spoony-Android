@@ -54,6 +54,7 @@ import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import com.spoony.spoony.presentation.placeDetail.model.PlaceDetailModel
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
@@ -62,7 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -185,7 +186,7 @@ fun PlaceDetailRoute(
                             isMine = data.isMine,
                             isScooped = state.isScooped || data.isMine,
                             dropdownMenuList = dropDownMenuList,
-                            onReportButtonClick = { navigateToReport(postId, userProfile.userId) }
+                            onReportButtonClick = { navigateToReport(postId, ReportType.POST) }
                         )
                     }
                 )

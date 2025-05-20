@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.userpage.model
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.register.model.RegisterType
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -66,7 +67,7 @@ data class UserPageEvents(
     // 유저페이지
     val onBackButtonClick: () -> Unit = {},
     val onCheckBoxClick: () -> Unit = {},
-    val onReportReviewClick: (Int, Int) -> Unit = { _, _ -> },
-    val onReportUserClick: (Int) -> Unit = {},
+    val onReportReviewClick: (Int, ReportType) -> Unit = { _, _ -> },
+    val onReportUserClick: (Int, ReportType) -> Unit = { _, _ -> },
     val onUserBlockClick: (Int) -> Unit = {}
 )
