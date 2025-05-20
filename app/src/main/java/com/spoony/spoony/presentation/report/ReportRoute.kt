@@ -81,7 +81,7 @@ fun ReportRoute(
         reportOptions = state.reportOptions,
         selectedReportOption = state.selectedReportOption,
         reportContext = state.reportContext,
-        targetText = state.targetText,
+        reportType = state.reportType,
         reportButtonEnabled = state.reportButtonEnabled,
         onReportOptionSelected = viewModel::updateSelectedReportOption,
         onContextChanged = viewModel::updateReportContext,
@@ -105,7 +105,7 @@ private fun ReportScreen(
     reportOptions: ImmutableList<ReportOption>,
     selectedReportOption: ReportOption,
     reportContext: String,
-    targetText: String,
+    reportType: ReportType,
     reportButtonEnabled: Boolean,
     onReportOptionSelected: (ReportOption) -> Unit,
     onContextChanged: (String) -> Unit,
@@ -149,7 +149,7 @@ private fun ReportScreen(
             Spacer(modifier = Modifier.height(31.dp))
 
             Text(
-                text = "${targetText}를 신고하는 이유가 무엇인가요?",
+                text = "${reportType.text}를 신고하는 이유가 무엇인가요?",
                 color = SpoonyAndroidTheme.colors.black,
                 style = SpoonyAndroidTheme.typography.body1sb
             )

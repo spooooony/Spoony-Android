@@ -6,14 +6,15 @@ import kotlinx.collections.immutable.ImmutableList
 
 data class ReportState(
     val reportOptions: ImmutableList<ReportOption> = ReportOptionSelector.getOptionsForType(ReportType.POST),
-    val selectedReportOption: ReportOption = ReportOption.ADVERTISEMENT,
+    val selectedReportOption: ReportOption = ReportOption.PROMOTIONAL_CONTENT,
     val reportContext: String = "",
     val reportButtonEnabled: Boolean = false,
-    val reportType: ReportType = ReportType.USER,
-    val targetText: String = "후기"
+    val reportType: ReportType = ReportType.USER
 )
 
-enum class ReportType {
-    POST,
-    USER
+enum class ReportType(
+    val text: String
+) {
+    POST(text = "후기"),
+    USER(text = "유저")
 }

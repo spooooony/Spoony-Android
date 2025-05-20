@@ -37,8 +37,7 @@ class ReportViewModel @Inject constructor(
             currentState.copy(
                 reportType = reportArgs.type,
                 reportOptions = ReportOptionSelector.getOptionsForType(reportArgs.type),
-                selectedReportOption = ReportOptionSelector.getOptionsForType(reportArgs.type).first(),
-                targetText = if (reportArgs.type == ReportType.POST) "후기" else "유저"
+                selectedReportOption = ReportOptionSelector.getOptionsForType(reportArgs.type).first()
             )
         }
     }
