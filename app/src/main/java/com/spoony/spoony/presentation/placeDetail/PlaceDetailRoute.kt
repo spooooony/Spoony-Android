@@ -292,12 +292,14 @@ private fun PlaceDetailScreen(
             PlaceDetailSliderSection(
                 sliderPosition = value.toFloat()
             )
-            Spacer(modifier = Modifier.height(18.dp))
-            DisappointItem(
-                cons = cons,
-                onScoopButtonClick = onScoopButtonClick,
-                isBlurred = !isScooped
-            )
+            if (cons.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(18.dp))
+                DisappointItem(
+                    cons = cons,
+                    onScoopButtonClick = onScoopButtonClick,
+                    isBlurred = !isScooped
+                )
+            }
         }
         Spacer(modifier = Modifier.height(45.dp))
     }
