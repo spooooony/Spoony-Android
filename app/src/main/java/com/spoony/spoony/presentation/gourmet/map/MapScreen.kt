@@ -58,7 +58,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -385,11 +384,38 @@ private fun MapScreen(
             }
         }
 
+        AnimatedVisibility(
+            visible = sheetState.currentValue != AdvancedSheetState.Expanded && !isMarkerSelected,
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOut(targetOffset = { IntOffset(0, it.height + gpsIconOffset.toInt()) }),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(end = 20.dp)
+                    .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
+                    .noRippleClickable(onClick = onGpsButtonClick)
+                    .size(44.dp)
+                    .background(
+                        color = SpoonyAndroidTheme.colors.white,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_gps_24),
+                    contentDescription = null,
+                    tint = SpoonyAndroidTheme.colors.gray500,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+            }
+        }
+
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
-                .zIndex(1f)
         ) {
             if (locationInfo.placeId == null) {
                 MapTopAppBar(
@@ -495,33 +521,6 @@ private fun MapScreen(
                     },
                     sheetSwipeEnabled = placeList.isNotEmpty()
                 ) {}
-            }
-        }
-
-        AnimatedVisibility(
-            visible = sheetState.currentValue != AdvancedSheetState.Expanded && !isMarkerSelected,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOut(targetOffset = { IntOffset(0, it.height + gpsIconOffset.toInt()) }),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(end = 20.dp)
-                    .offset { IntOffset(0, (sheetState.offset + gpsIconOffset).toInt()) }
-                    .noRippleClickable(onClick = onGpsButtonClick)
-                    .size(44.dp)
-                    .background(
-                        color = SpoonyAndroidTheme.colors.white,
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_gps_24),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(10.dp)
-                )
             }
         }
     }
