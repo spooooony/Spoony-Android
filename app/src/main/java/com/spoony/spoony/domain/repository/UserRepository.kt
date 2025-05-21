@@ -4,4 +4,6 @@ import com.spoony.spoony.domain.entity.UserEntity
 
 interface UserRepository {
     suspend fun getUserInfoById(userId: Int): Result<UserEntity>
+    suspend fun followUser(userId: Int): Result<Unit>
+    suspend fun unfollowUser(userId: Int): Result<Unit>
 }

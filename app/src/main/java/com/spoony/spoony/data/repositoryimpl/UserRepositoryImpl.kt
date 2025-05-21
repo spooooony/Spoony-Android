@@ -13,4 +13,14 @@ class UserRepositoryImpl @Inject constructor(
         runCatching {
             userRemoteDataSource.getUserInfoById(userId).data!!.toDomain()
         }
+
+    override suspend fun followUser(userId: Int): Result<Unit> =
+        runCatching {
+            userRemoteDataSource.followUser(userId)
+        }
+
+    override suspend fun unfollowUser(userId: Int): Result<Unit> =
+        runCatching {
+            userRemoteDataSource.unfollowUser(userId)
+        }
 }
