@@ -1,9 +1,11 @@
 package com.spoony.spoony.presentation.gourmet.map
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.provider.Settings
 import android.view.Gravity
@@ -61,6 +63,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
@@ -154,13 +157,11 @@ fun MapRoute(
             ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
         }
 
-        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                moveCamera(
-                    cameraPositionState = cameraPositionState,
-                    latLng = LatLng(location.latitude, location.longitude)
-                )
-            }
+        getLastLocation(fusedLocationProviderClient) { location ->
+            moveCamera(
+                cameraPositionState = cameraPositionState,
+                latLng = LatLng(location.latitude, location.longitude)
+            )
         }
     }
 
@@ -186,13 +187,11 @@ fun MapRoute(
                 ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
             }
         ) {
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    moveCamera(
-                        cameraPositionState = cameraPositionState,
-                        latLng = LatLng(location.latitude, location.longitude)
-                    )
-                }
+            getLastLocation(fusedLocationProviderClient) { location ->
+                moveCamera(
+                    cameraPositionState = cameraPositionState,
+                    latLng = LatLng(location.latitude, location.longitude)
+                )
             }
         }
     }
@@ -241,13 +240,11 @@ fun MapRoute(
                     ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
                 }
             ) {
-                fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                    location?.let {
-                        moveCamera(
-                            cameraPositionState = cameraPositionState,
-                            latLng = LatLng(location.latitude, location.longitude)
-                        )
-                    }
+                getLastLocation(fusedLocationProviderClient) { location ->
+                    moveCamera(
+                        cameraPositionState = cameraPositionState,
+                        latLng = LatLng(location.latitude, location.longitude)
+                    )
                 }
             } else {
                 if (!shouldShowSystemDialog) {
@@ -612,6 +609,18 @@ private fun moveCamera(
             )
             .animate(CameraAnimation.Easing)
     )
+}
+
+@SuppressLint("MissingPermission")
+private fun getLastLocation(
+    fusedLocationProviderClient: FusedLocationProviderClient,
+    onLocationReceived: (Location) -> Unit
+) {
+    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+        location?.let {
+            onLocationReceived(it)
+        }
+    }
 }
 
 private object DefaultHeight {
