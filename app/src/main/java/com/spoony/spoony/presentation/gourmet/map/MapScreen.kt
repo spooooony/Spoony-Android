@@ -58,6 +58,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -288,7 +289,7 @@ private fun MapScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
-    val gpsIconOffset = with(density) { 75.dp.toPx() }
+    val gpsIconOffset = with(density) { 85.dp.toPx() }
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -388,6 +389,7 @@ private fun MapScreen(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
+                .zIndex(1f)
         ) {
             if (locationInfo.placeId == null) {
                 MapTopAppBar(
@@ -497,8 +499,9 @@ private fun MapScreen(
         }
 
         AnimatedVisibility(
-            visible = sheetState.currentValue != AdvancedSheetState.Expanded,
+            visible = sheetState.currentValue != AdvancedSheetState.Expanded && !isMarkerSelected,
             enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOut(targetOffset = { IntOffset(0, it.height + gpsIconOffset.toInt()) }),
             modifier = Modifier
                 .align(Alignment.TopEnd)
         ) {
