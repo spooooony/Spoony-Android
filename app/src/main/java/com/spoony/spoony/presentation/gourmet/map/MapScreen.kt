@@ -108,6 +108,10 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 private const val DEFAULT_ZOOM = 14.0
+private val LOCATION_PERMISSIONS = arrayOf(
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION
+)
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
@@ -123,14 +127,19 @@ fun MapRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val locationPermissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition(
+            LatLng(
+                state.locationModel.latitude,
+                state.locationModel.longitude
+            ),
+            state.locationModel.scale
+        )
+    }
 
     var shouldShowSystemDialog by remember {
         mutableStateOf(
-            locationPermissions.all { permission ->
+            LOCATION_PERMISSIONS.all { permission ->
                 ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
             }
         )
@@ -142,7 +151,7 @@ fun MapRoute(
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) {
-        shouldShowSystemDialog = locationPermissions.all { permission ->
+        shouldShowSystemDialog = LOCATION_PERMISSIONS.all { permission ->
             ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
         }
     }
@@ -163,14 +172,24 @@ fun MapRoute(
         }
     }
 
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(
-            LatLng(
-                state.locationModel.latitude,
-                state.locationModel.longitude
-            ),
-            state.locationModel.scale
-        )
+    LaunchedEffect(Unit) {
+        if (LOCATION_PERMISSIONS.any { permission ->
+                ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+            }
+        ) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    cameraPositionState.move(
+                        CameraUpdate
+                            .scrollAndZoomTo(
+                                LatLng(location.latitude, location.longitude),
+                                DEFAULT_ZOOM
+                            )
+                            .animate(CameraAnimation.Easing)
+                    )
+                }
+            }
+        }
     }
 
     CalculateDefaultHeight()
@@ -216,7 +235,7 @@ fun MapRoute(
             )
         },
         onGpsButtonClick = {
-            if (locationPermissions.any { permission ->
+            if (LOCATION_PERMISSIONS.any { permission ->
                     ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
                 }
             ) {
@@ -237,7 +256,7 @@ fun MapRoute(
                     isPermissionDialogVisible = true
                 }
 
-                locationPermissionLauncher.launch(locationPermissions)
+                locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
             }
         }
     )
