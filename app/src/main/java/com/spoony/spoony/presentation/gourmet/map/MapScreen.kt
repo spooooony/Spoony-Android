@@ -113,7 +113,6 @@ private val LOCATION_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_COARSE_LOCATION
 )
 
-@OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun MapRoute(
     paddingValues: PaddingValues,
@@ -154,6 +153,15 @@ fun MapRoute(
         shouldShowSystemDialog = LOCATION_PERMISSIONS.all { permission ->
             ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
         }
+
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                moveCamera(
+                    cameraPositionState = cameraPositionState,
+                    latLng = LatLng(location.latitude, location.longitude)
+                )
+            }
+        }
     }
 
     SideEffect {
@@ -173,19 +181,16 @@ fun MapRoute(
     }
 
     LaunchedEffect(Unit) {
-        if (LOCATION_PERMISSIONS.any { permission ->
+        if (
+            LOCATION_PERMISSIONS.any { permission ->
                 ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
             }
         ) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
-                    cameraPositionState.move(
-                        CameraUpdate
-                            .scrollAndZoomTo(
-                                LatLng(location.latitude, location.longitude),
-                                DEFAULT_ZOOM
-                            )
-                            .animate(CameraAnimation.Easing)
+                    moveCamera(
+                        cameraPositionState = cameraPositionState,
+                        latLng = LatLng(location.latitude, location.longitude)
                     )
                 }
             }
@@ -225,29 +230,22 @@ fun MapRoute(
         navigateToMapSearch = navigateToMapSearch,
         onBackButtonClick = navigateUp,
         moveCamera = { latitude, longitude ->
-            cameraPositionState.move(
-                CameraUpdate
-                    .scrollAndZoomTo(
-                        LatLng(latitude, longitude),
-                        DEFAULT_ZOOM
-                    )
-                    .animate(CameraAnimation.Easing)
+            moveCamera(
+                cameraPositionState = cameraPositionState,
+                latLng = LatLng(latitude, longitude)
             )
         },
         onGpsButtonClick = {
-            if (LOCATION_PERMISSIONS.any { permission ->
+            if (
+                LOCATION_PERMISSIONS.any { permission ->
                     ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
                 }
             ) {
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
-                        cameraPositionState.move(
-                            CameraUpdate
-                                .scrollAndZoomTo(
-                                    LatLng(location.latitude, location.longitude),
-                                    DEFAULT_ZOOM
-                                )
-                                .animate(CameraAnimation.Easing)
+                        moveCamera(
+                            cameraPositionState = cameraPositionState,
+                            latLng = LatLng(location.latitude, location.longitude)
                         )
                     }
                 }
@@ -571,7 +569,7 @@ private fun calculateMapHeight(
 
 @Composable
 private fun rememberCustomLocationSource(
-    isCompassEnabled: Boolean = false,
+    isCompassEnabled: Boolean = false
 ): LocationSource {
     val locationPermissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -599,6 +597,21 @@ private fun rememberCustomLocationSource(
         locationSource.setCompassEnabled(enabled = isCompassEnabled)
     }
     return locationSource
+}
+
+@OptIn(ExperimentalNaverMapApi::class)
+private fun moveCamera(
+    cameraPositionState: CameraPositionState,
+    latLng: LatLng
+) {
+    cameraPositionState.move(
+        CameraUpdate
+            .scrollAndZoomTo(
+                latLng,
+                DEFAULT_ZOOM
+            )
+            .animate(CameraAnimation.Easing)
+    )
 }
 
 private object DefaultHeight {
