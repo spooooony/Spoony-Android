@@ -155,7 +155,7 @@ fun MapRoute(
         }
 
         fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
+            location?.let {
                 moveCamera(
                     cameraPositionState = cameraPositionState,
                     latLng = LatLng(location.latitude, location.longitude)
@@ -187,7 +187,7 @@ fun MapRoute(
             }
         ) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
+                location?.let {
                     moveCamera(
                         cameraPositionState = cameraPositionState,
                         latLng = LatLng(location.latitude, location.longitude)
@@ -242,7 +242,7 @@ fun MapRoute(
                 }
             ) {
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                    if (location != null) {
+                    location?.let {
                         moveCamera(
                             cameraPositionState = cameraPositionState,
                             latLng = LatLng(location.latitude, location.longitude)
