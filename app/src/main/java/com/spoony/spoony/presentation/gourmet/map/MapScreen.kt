@@ -57,6 +57,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -65,6 +66,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.LocationSource
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
@@ -72,6 +74,7 @@ import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.location.FusedLocationSource
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
@@ -124,27 +127,23 @@ fun MapRoute(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
+
+    var shouldShowSystemDialog by remember {
+        mutableStateOf(
+            locationPermissions.all { permission ->
+                ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
+            }
+        )
+    }
+
     val fusedLocationProviderClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     var isPermissionDialogVisible by remember { mutableStateOf(false) }
-    var permissionDenied by remember { mutableStateOf(false) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
-        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-
-        val shouldShowRequestPermissionCoarse = ActivityCompat.shouldShowRequestPermissionRationale(
-            context as Activity,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-        val shouldShowRequestPermissionFine = ActivityCompat.shouldShowRequestPermissionRationale(
-            context as Activity,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        if (!fineGranted && !coarseGranted && !shouldShowRequestPermissionCoarse && !shouldShowRequestPermissionFine) {
-            // 권한 없고 시스템 다이얼로그 2회 모두 보여준 경우
-            permissionDenied = true
+    ) {
+        shouldShowSystemDialog = locationPermissions.all { permission ->
+            ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
         }
     }
 
@@ -217,8 +216,9 @@ fun MapRoute(
             )
         },
         onGpsButtonClick = {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            if (locationPermissions.any { permission ->
+                    ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+                }
             ) {
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
@@ -233,11 +233,11 @@ fun MapRoute(
                     }
                 }
             } else {
-                locationPermissionLauncher.launch(locationPermissions)
-
-                if (permissionDenied) {
+                if (!shouldShowSystemDialog) {
                     isPermissionDialogVisible = true
                 }
+
+                locationPermissionLauncher.launch(locationPermissions)
             }
         }
     )
@@ -295,6 +295,7 @@ private fun MapScreen(
                     ).value
                 ),
             cameraPositionState = cameraPositionState,
+            locationSource = rememberCustomLocationSource(),
             uiSettings = MapUiSettings(
                 isZoomControlEnabled = false,
                 logoGravity = Gravity.TOP or Gravity.END,
@@ -391,7 +392,7 @@ private fun MapScreen(
                 contentPadding = PaddingValues(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(vertical = 8.dp)
             ) {
                 items(6) { index ->
                     IconChip(
@@ -547,6 +548,38 @@ private fun calculateMapHeight(
             else -> MIN_PARTIALLY_HEIGHT
         }
     }
+}
+
+@Composable
+private fun rememberCustomLocationSource(
+    isCompassEnabled: Boolean = false,
+): LocationSource {
+    val locationPermissions = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
+    val context = LocalContext.current
+    val locationSource = remember {
+        object : FusedLocationSource(context) {
+
+            override fun hasPermissions(): Boolean {
+                return locationPermissions.all { permission ->
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        permission
+                    ) == PackageManager.PERMISSION_GRANTED
+                }
+            }
+
+            override fun onPermissionRequest() {}
+        }
+    }
+
+    LaunchedEffect(isCompassEnabled) {
+        locationSource.setCompassEnabled(enabled = isCompassEnabled)
+    }
+    return locationSource
 }
 
 private object DefaultHeight {
