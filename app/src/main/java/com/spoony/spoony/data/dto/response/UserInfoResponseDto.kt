@@ -10,15 +10,25 @@ data class UserInfoResponseDto(
     @SerialName("platform")
     val platform: String,
     @SerialName("platformId")
-    val plaformId: String,
+    val platformId: String,
     @SerialName("userName")
     val userName: String,
-    @SerialName("userImageUrl")
-    val userImageUrl: String,
     @SerialName("regionName")
     val regionName: String,
+    @SerialName("introduction")
+    val introduction: String,
     @SerialName("createdAt")
     val createdAt: String,
     @SerialName("updatedAt")
-    val updatedAt: String
+    val updatedAt: String,
+    @SerialName("followerCount")
+    val followerCount: Int,
+    @SerialName("followingCount")
+    val followingCount: Int,
+    @SerialName("isFollowing")
+    val isFollowing: Boolean,
+    @SerialName("reviewCount")
+    val reviewCount: Int,
+    @SerialName("profileImageUrl")
+    val profileImageUrl: String
 )
