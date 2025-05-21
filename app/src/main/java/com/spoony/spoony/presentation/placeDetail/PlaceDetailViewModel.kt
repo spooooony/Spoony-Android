@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.UserRepository
@@ -47,17 +46,55 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getUserInfo(userId: Int) {
         viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    userEntity = UiState.Success(
-                        UserEntity(
-                            userId = 1,
-                            userName = "안세홍",
-                            userProfileUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-                            userRegion = "성북구"
+            userRepository.getUserInfoById(userId)
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            userInfo = UiState.Success(
+                                response.toModel()
+                            ),
+                            isFollowing = response.isFollowing ?: false
                         )
-                    )
-                )
+                    }
+                }
+                .onFailure {
+                    _state.update {
+                        it.copy(
+                            userInfo = UiState.Failure("유저 정보 조회 실패")
+                        )
+                    }
+                }
+        }
+    }
+
+    fun followClick(userId: Int, isFollowing: Boolean) {
+        _state.update {
+            it.copy(
+                isFollowing = !isFollowing
+            )
+        }
+        viewModelScope.launch {
+            when (isFollowing) {
+                true ->
+                    userRepository.unfollowUser(userId = userId)
+                        .onFailure {
+                            _state.update {
+                                it.copy(
+                                    isFollowing = true
+                                )
+                            }
+                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("오류가 발생했습니다."))
+                        }
+                false ->
+                    userRepository.followUser(userId = userId)
+                        .onFailure {
+                            _state.update {
+                                it.copy(
+                                    isFollowing = false
+                                )
+                            }
+                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("오류가 발생했습니다."))
+                        }
             }
         }
     }
