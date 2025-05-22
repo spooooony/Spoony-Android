@@ -64,7 +64,7 @@ fun SpoonySlider(
         },
         modifier = modifier,
         enabled = enabled,
-        valueRange = 0f..1f,
+        valueRange = 0f..100f,
         thumb = {
             Icon(
                 imageVector = ImageVector.vectorResource(thumbIcon),
@@ -86,7 +86,7 @@ fun SpoonySlider(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(sliderState.value)
+                        .fillMaxWidth(sliderState.value / 100f)
                         .height(trackHeight)
                         .background(
                             brush = defaultBrush,
