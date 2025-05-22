@@ -58,6 +58,11 @@ class ExploreSearchViewModel @Inject constructor(
         viewModelScope.launch {
             when (_state.value.searchType) {
                 SearchType.USER -> {
+                    _state.update {
+                        it.copy(
+                            userInfoList = UiState.Loading
+                        )
+                    }
                     val updatedList = (listOf(keywordTrim) + _state.value.recentUserSearchQueryList.filterNot { it == keyword })
                         .take(6)
                         .toPersistentList()
@@ -94,6 +99,11 @@ class ExploreSearchViewModel @Inject constructor(
                 }
 
                 SearchType.REVIEW -> {
+                    _state.update {
+                        it.copy(
+                            placeReviewInfoList = UiState.Loading
+                        )
+                    }
                     val updatedList = (listOf(keywordTrim) + _state.value.recentReviewSearchQueryList.filterNot { it == keyword })
                         .take(6)
                         .toPersistentList()
