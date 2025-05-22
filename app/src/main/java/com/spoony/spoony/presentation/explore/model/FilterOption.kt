@@ -16,40 +16,40 @@ object FilterChipOptionProvider {
     fun getDefaultFilterOptions() = persistentListOf(
         FilterOption(
             sort = FilterType.FILTER,
-            text = "필터",
+            text = FilterType.FILTER.defaultText,
             isSelected = false,
             leftIconResId = R.drawable.ic_filter_16
         ),
         FilterOption(
             sort = FilterType.LOCAL_REVIEW,
-            text = "로컬 리뷰",
+            text = FilterType.LOCAL_REVIEW.defaultText,
             isSelected = false
         ),
         FilterOption(
             sort = FilterType.CATEGORY,
-            text = "카테고리",
+            text = FilterType.CATEGORY.defaultText,
             isSelected = false,
             rightIconResId = R.drawable.ic_arrow_down_16
         ),
         FilterOption(
             sort = FilterType.REGION,
-            text = "지역",
+            text = FilterType.CATEGORY.defaultText,
             isSelected = false,
             rightIconResId = R.drawable.ic_arrow_down_16
         ),
         FilterOption(
             sort = FilterType.AGE,
-            text = "연령대",
+            text = FilterType.AGE.defaultText,
             isSelected = false,
             rightIconResId = R.drawable.ic_arrow_down_16
         )
     )
 }
 
-enum class FilterType {
-    FILTER,
-    LOCAL_REVIEW,
-    CATEGORY,
-    REGION,
-    AGE
+enum class FilterType(val defaultText: String) {
+    FILTER(defaultText = "필터"),
+    LOCAL_REVIEW(defaultText = "로컬 리뷰"),
+    CATEGORY(defaultText = "카테고리"),
+    REGION(defaultText = "지역"),
+    AGE(defaultText = "연령대")
 }

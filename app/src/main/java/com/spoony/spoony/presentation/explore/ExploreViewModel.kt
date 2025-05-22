@@ -109,7 +109,7 @@ class ExploreViewModel @Inject constructor(
                     val selectedCategories = categorySelectedState.filter { it.value }
                     val isSelected = selectedCategories.isNotEmpty()
                     val updatedText = when {
-                        !isSelected -> "카테고리"
+                        !isSelected -> option.sort.defaultText
                         selectedCategories.size == 1 -> {
                             categoryItems.find { it.id == selectedCategories.keys.first() }?.name ?: "카테고리"
                         }
@@ -124,7 +124,7 @@ class ExploreViewModel @Inject constructor(
                     val selectedRegions = regionSelectedState.filter { it.value }
                     val isSelected = selectedRegions.isNotEmpty()
                     val updatedText = when {
-                        !isSelected -> "지역"
+                        !isSelected -> option.sort.defaultText
                         selectedRegions.size == 1 -> {
                             regionItems.find { it.id == selectedRegions.keys.first() }?.name ?: "지역"
                         }
@@ -139,7 +139,7 @@ class ExploreViewModel @Inject constructor(
                     val selectedAges = ageSelectedState.filter { it.value }
                     val isSelected = selectedAges.isNotEmpty()
                     val updatedText = when {
-                        !isSelected -> "연령대"
+                        !isSelected -> option.sort.defaultText
                         selectedAges.size == 1 -> {
                             ageItems.find { it.id == selectedAges.keys.first() }?.name ?: "연령대"
                         }
