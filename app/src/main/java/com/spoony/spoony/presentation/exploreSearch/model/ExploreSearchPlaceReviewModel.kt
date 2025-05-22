@@ -2,8 +2,8 @@ package com.spoony.spoony.presentation.exploreSearch.model
 
 import androidx.compose.ui.graphics.Color
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
-import com.spoony.spoony.core.util.extension.formatToYearMonthDay
 import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.toRelativeTimeOrDate
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import kotlinx.collections.immutable.ImmutableList
@@ -38,7 +38,7 @@ fun PlaceReviewEntity.toModel(): ExploreSearchPlaceReviewModel = ExploreSearchPl
     ),
     isMine = this.isMine ?: false,
     addMapCount = this.addMapCount ?: 0,
-    createdAt = this.createdAt?.formatToYearMonthDay() ?: ""
+    createdAt = this.createdAt?.toRelativeTimeOrDate() ?: ""
 )
 
 fun CategoryEntity.toModel(): ReviewCardCategory = ReviewCardCategory(
