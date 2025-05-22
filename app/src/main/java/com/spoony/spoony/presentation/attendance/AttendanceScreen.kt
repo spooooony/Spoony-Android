@@ -38,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.dialog.SpoonDrawDialog
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
@@ -68,6 +69,8 @@ fun AttendanceRoute(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val systemUiController = rememberSystemUiController()
+
+    var spoonDrawDialogVisibility by remember { mutableStateOf(true) }
 
     DisposableEffect(Unit) {
         systemUiController.setNavigationBarColor(
@@ -100,6 +103,17 @@ fun AttendanceRoute(
         spoonCount = state.totalSpoonCount,
         onBackButtonClick = navigateUp
     )
+
+    if (spoonDrawDialogVisibility) {
+        SpoonDrawDialog(
+            onDismiss = { spoonDrawDialogVisibility = false },
+            onSpoonDrawButtonClick = {
+                viewModel.drawSpoon()
+                (state.spoonDraw as? UiState.Success)?.data ?: SpoonDrawModel()
+            },
+            onConfirmButtonClick = { spoonDrawDialogVisibility = false }
+        )
+    }
 }
 
 @Composable
