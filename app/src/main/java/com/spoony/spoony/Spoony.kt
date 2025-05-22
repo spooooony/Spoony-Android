@@ -2,6 +2,7 @@ package com.spoony.spoony
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -12,6 +13,7 @@ class Spoony : Application() {
 
         initTimber()
         setDayMode()
+        initKakaoSdk()
     }
 
     private fun initTimber() {
@@ -20,5 +22,9 @@ class Spoony : Application() {
 
     private fun setDayMode() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    }
+
+    private fun initKakaoSdk() {
+        KakaoSdk.init(this, BuildConfig.NATIVE_APP_KEY)
     }
 }
