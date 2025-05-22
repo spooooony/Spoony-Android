@@ -96,6 +96,10 @@ fun AttendanceRoute(
             }
     }
 
+    LaunchedEffect(spoonDrawDialogVisibility) {
+        viewModel.getWeeklySpoonDraw()
+    }
+
     AttendanceScreen(
         paddingValues = paddingValues,
         weeklyDate = viewModel.getWeeklyDate(state.weeklyStartDate),
@@ -108,10 +112,7 @@ fun AttendanceRoute(
     if (spoonDrawDialogVisibility) {
         SpoonDrawDialog(
             onDismiss = { spoonDrawDialogVisibility = false },
-            onSpoonDrawButtonClick = {
-                viewModel.drawSpoon()
-                (state.spoonDraw as? UiState.Success)?.data ?: SpoonDrawModel()
-            },
+            onSpoonDrawButtonClick = viewModel::drawSpoon,
             onConfirmButtonClick = { spoonDrawDialogVisibility = false }
         )
     }

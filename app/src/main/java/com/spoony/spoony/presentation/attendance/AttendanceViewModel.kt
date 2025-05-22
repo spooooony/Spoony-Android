@@ -42,11 +42,9 @@ class AttendanceViewModel @Inject constructor(
                 weeklyStartDate = today.with(DayOfWeek.MONDAY).format(hyphenFormatter)
             )
         }
-
-        getWeeklySpoonDraw()
     }
 
-    private fun getWeeklySpoonDraw() {
+    fun getWeeklySpoonDraw() {
         viewModelScope.launch {
             spoonRepository.getWeeklySpoonDraw()
                 .onSuccess { weeklyDrawResult ->
@@ -82,36 +80,23 @@ class AttendanceViewModel @Inject constructor(
         }
     }
 
-    fun drawSpoon() {
-        viewModelScope.launch {
-            spoonRepository.drawSpoon()
-                .onSuccess { spoon ->
-                    _state.update {
-                        it.copy(
-                            spoonDraw = UiState.Success(
-                                SpoonDrawModel(
-                                    drawId = spoon.drawId,
-                                    spoonTypeId = spoon.spoonType.spoonTypeId,
-                                    spoonName = spoon.spoonType.spoonName,
-                                    spoonImage = spoon.spoonType.spoonImage,
-                                    spoonAmount = spoon.spoonType.spoonAmount,
-                                    localDate = spoon.localDate
-                                )
-                            )
-                        )
-                    }
-                }
-                .onFailure { exception ->
-                    Timber.e(exception)
-                    _state.update {
-                        it.copy(
-                            spoonDraw = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
-                        )
-                    }
-                    _sideEffect.emit(
-                        AttendanceSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
-                    )
-                }
+    suspend fun drawSpoon(): SpoonDrawModel {
+        return try {
+            val spoon = spoonRepository.drawSpoon().getOrThrow()
+            SpoonDrawModel(
+                drawId = spoon.drawId,
+                spoonTypeId = spoon.spoonType.spoonTypeId,
+                spoonName = spoon.spoonType.spoonName,
+                spoonImage = spoon.spoonType.spoonImage,
+                spoonAmount = spoon.spoonType.spoonAmount,
+                localDate = spoon.localDate
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+            _sideEffect.emit(
+                AttendanceSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+            )
+            SpoonDrawModel()
         }
     }
 
