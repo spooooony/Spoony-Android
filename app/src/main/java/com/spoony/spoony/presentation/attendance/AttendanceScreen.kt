@@ -41,6 +41,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dialog.SpoonDrawDialog
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
@@ -62,10 +63,10 @@ private val daysList = persistentListOf("월", "화", "수", "목", "금", "토"
 fun AttendanceRoute(
     paddingValues: PaddingValues,
     navigateUp: () -> Unit,
-    showSnackBar: (String) -> Unit,
     viewModel: AttendanceViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val showSnackBar = LocalSnackBarTrigger.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val systemUiController = rememberSystemUiController()

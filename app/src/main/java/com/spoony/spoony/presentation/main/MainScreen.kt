@@ -239,8 +239,7 @@ fun MainScreen(
 
                 attendanceNavGraph(
                     paddingValues = paddingValues,
-                    navigateUp = navigator::navigateUp,
-                    showSnackBar = onShowSnackBar
+                    navigateUp = navigator::navigateUp
                 )
             }
         }
