@@ -17,4 +17,8 @@ class SpoonRepositoryImpl @Inject constructor(
     override suspend fun getWeeklySpoonDraw(): Result<SpoonListEntity> = runCatching {
         spoonDataSource.getWeeklySpoonDraw().data!!.toDomain()
     }
+
+    override suspend fun getSpoonCount(): Result<Int> = runCatching {
+        spoonDataSource.getSpoonCount().data!!.spoonAmount
+    }
 }

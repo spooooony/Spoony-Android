@@ -6,6 +6,7 @@ import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.main100
 import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.domain.repository.SpoonRepository
 import com.spoony.spoony.presentation.userpage.model.ReviewData
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserProfile
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val spoonRepository: SpoonRepository
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<UserPageState> = MutableStateFlow(
@@ -53,7 +55,7 @@ class MyPageViewModel @Inject constructor(
 
     fun getSpoonCount() {
         viewModelScope.launch {
-            authRepository.getSpoonCount()
+            spoonRepository.getSpoonCount()
                 .onSuccess { count ->
                     _state.update { it.copy(spoonCount = count) }
                 }

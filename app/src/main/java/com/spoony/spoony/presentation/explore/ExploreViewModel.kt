@@ -6,6 +6,7 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
+import com.spoony.spoony.domain.repository.SpoonRepository
 import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,8 @@ import kotlinx.coroutines.launch
 class ExploreViewModel @Inject constructor(
     private val exploreRepository: ExploreRepository,
     private val authRepository: AuthRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val spoonRepository: SpoonRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreState> = MutableStateFlow(ExploreState())
     val state: StateFlow<ExploreState>
@@ -57,7 +59,7 @@ class ExploreViewModel @Inject constructor(
 
     fun getSpoonAccount() {
         viewModelScope.launch {
-            authRepository.getSpoonCount()
+            spoonRepository.getSpoonCount()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
