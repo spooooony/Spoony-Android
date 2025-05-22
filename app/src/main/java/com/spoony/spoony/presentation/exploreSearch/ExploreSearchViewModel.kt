@@ -54,7 +54,7 @@ class ExploreSearchViewModel @Inject constructor(
 
     fun search(keyword: String) {
         val keywordTrim = keyword.trim()
-        if (keyword.isBlank()) return
+        if (keywordTrim.isBlank()) return
         viewModelScope.launch {
             when (_state.value.searchType) {
                 SearchType.USER -> {
