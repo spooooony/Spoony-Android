@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,13 +44,18 @@ import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
+import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreFilterBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
+import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.FilterOption
+import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentMap
 
 @Composable
 fun ExploreRoute(
@@ -77,37 +83,126 @@ fun ExploreRoute(
 
     with(state) {
         ExploreScreen(
-            chipItems = state.chipItems,
             paddingValues = paddingValues,
             onClickSearch = navigateToExploreSearch,
-            placeReviewList = placeReviewList,
             onRegisterButtonClick = navigateToRegister,
             onPlaceDetailItemClick = navigateToPlaceDetail,
-            onReportButtonClick = navigateToReport
+            onReportButtonClick = navigateToReport,
+            onFilterApplyButtonClick = viewModel::applyExploreFilter,
+            onResetExploreFilterButtonClick = viewModel::resetExploreFilter,
+            onLocalReviewButtonClick = viewModel::localReviewToggle,
+            onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
+            onTabChange = viewModel::updateExploreType,
+            selectedSortingOption = selectedSortingOption,
+            chipItems = chipItems,
+            placeReviewList = placeReviewList,
+            propertyItems = exploreFilterItems.properties,
+            regionItems = exploreFilterItems.regions,
+            ageItems = exploreFilterItems.ages,
+            categoryItems = exploreFilterItems.categories,
+            propertySelectedState = filterSelectionState.properties,
+            regionSelectedState = filterSelectionState.regions,
+            ageSelectedState = filterSelectionState.ages,
+            categorySelectedState = filterSelectionState.categories,
+            exploreType = exploreType
         )
     }
 }
 
 @Composable
 private fun ExploreScreen(
-    chipItems: ImmutableList<FilterOption>,
     paddingValues: PaddingValues,
     onClickSearch: () -> Unit,
-    placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     onRegisterButtonClick: () -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
-    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit
+    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
+    onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
+    onResetExploreFilterButtonClick: () -> Unit,
+    onLocalReviewButtonClick: () -> Unit,
+    onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
+    onTabChange: (ExploreType) -> Unit,
+    selectedSortingOption: SortingOption,
+    chipItems: ImmutableList<FilterOption>,
+    placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
+    propertyItems: ImmutableList<ExploreFilter>,
+    regionItems: ImmutableList<ExploreFilter>,
+    ageItems: ImmutableList<ExploreFilter>,
+    categoryItems: ImmutableList<ExploreFilter>,
+    propertySelectedState: PersistentMap<Int, Boolean>,
+    regionSelectedState: PersistentMap<Int, Boolean>,
+    ageSelectedState: PersistentMap<Int, Boolean>,
+    categorySelectedState: PersistentMap<Int, Boolean>,
+    exploreType: ExploreType
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
-    var selectedSortingOption by remember { mutableStateOf(SortingOption.LATEST) }
+    var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
+    var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
 
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = { selectedSortingOption = it },
+            onClick = onSelectSortingOptionButtonClick,
             currentSortingOption = selectedSortingOption
+        )
+    }
+
+    val propertyState = remember(isFilterBottomSheetVisible, propertySelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(propertySelectedState)
+        }
+    }
+    val categoryState = remember(isFilterBottomSheetVisible, categorySelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(categorySelectedState)
+        }
+    }
+    val regionState = remember(isFilterBottomSheetVisible, regionSelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(regionSelectedState)
+        }
+    }
+    val ageState = remember(isFilterBottomSheetVisible, ageSelectedState) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            if (isFilterBottomSheetVisible) putAll(ageSelectedState)
+        }
+    }
+
+    if (isFilterBottomSheetVisible) {
+        ExploreFilterBottomSheet(
+            onDismiss = {
+                isFilterBottomSheetVisible = false
+            },
+            onFilterReset = onResetExploreFilterButtonClick,
+            onSave = {
+                isFilterBottomSheetVisible = false
+                onFilterApplyButtonClick(
+                    propertyState.toPersistentMap(),
+                    categoryState.toPersistentMap(),
+                    regionState.toPersistentMap(),
+                    ageState.toPersistentMap()
+                )
+            },
+            onToggleFilter = { id, type ->
+                val stateMap = when (type) {
+                    FilterType.LOCAL_REVIEW -> propertyState
+                    FilterType.CATEGORY -> categoryState
+                    FilterType.REGION -> regionState
+                    FilterType.AGE -> ageState
+                    else -> null
+                }
+                stateMap?.let { it[id] = !(it[id] ?: false) }
+            },
+            propertyItems = propertyItems,
+            regionItems = regionItems,
+            ageItems = ageItems,
+            categoryItems = categoryItems,
+            propertySelectedState = propertyState,
+            regionSelectedState = regionState,
+            ageSelectedState = ageState,
+            categorySelectedState = categoryState,
+            tabIndex = exploreFilterBottomSheetTabIndex
         )
     }
 
@@ -126,8 +221,9 @@ private fun ExploreScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ExploreTabRow(
-                selectedTabIndex = selectedTabIndex,
-                tabList = tabList
+                onTabChange = onTabChange,
+                tabList = tabList,
+                selectedTabIndex = selectedTabIndex
             )
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
@@ -139,13 +235,25 @@ private fun ExploreScreen(
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
-        FilterChipRow(
-            chipItems,
-            onSortFilterClick = {
-                isSortingBottomSheetVisible = true
-            }
-        )
-        Spacer(modifier = Modifier.height(24.dp))
+        if (exploreType == ExploreType.ALL) {
+            FilterChipRow(
+                chipItems,
+                onFilterClick = { filterType ->
+                    handleFilterClick(
+                        filterType = filterType,
+                        onLocalReviewButtonClick = onLocalReviewButtonClick,
+                        updateBottomSheetState = { index, isVisible ->
+                            exploreFilterBottomSheetTabIndex = index
+                            isFilterBottomSheetVisible = isVisible
+                        }
+                    )
+                },
+                onSortFilterClick = {
+                    isSortingBottomSheetVisible = true
+                }
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
         ExploreContent(
             modifier = Modifier
                 .padding(horizontal = 20.dp),
@@ -154,6 +262,20 @@ private fun ExploreScreen(
             onPlaceDetailItemClick = onPlaceDetailItemClick,
             onReportButtonClick = onReportButtonClick
         )
+    }
+}
+
+private fun handleFilterClick(
+    filterType: FilterType,
+    onLocalReviewButtonClick: () -> Unit,
+    updateBottomSheetState: (Int, Boolean) -> Unit
+) {
+    when (filterType) {
+        FilterType.FILTER -> updateBottomSheetState(0, true)
+        FilterType.LOCAL_REVIEW -> onLocalReviewButtonClick()
+        FilterType.CATEGORY -> updateBottomSheetState(1, true)
+        FilterType.REGION -> updateBottomSheetState(2, true)
+        FilterType.AGE -> updateBottomSheetState(3, true)
     }
 }
 

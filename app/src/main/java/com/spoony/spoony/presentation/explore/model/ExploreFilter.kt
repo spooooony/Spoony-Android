@@ -22,19 +22,19 @@ object ExploreFilterDataProvider {
     )
     fun getDefaultCategoryFilter(): ImmutableList<ExploreFilter> {
         val categoryData = persistentListOf(
-            Triple(2, "한식", "korean"),
-            Triple(3, "일식", "japanese"),
-            Triple(4, "중식", "chinese"),
-            Triple(5, "양식", "american"),
-            Triple(6, "카페", "cafe"),
-            Triple(7, "주류", "drink"),
-            Triple(8, "퓨전/세계요리", "world")
+            Triple(3, "한식", ""),
+            Triple(4, "일식", ""),
+            Triple(5, "중식", ""),
+            Triple(6, "양식", ""),
+            Triple(7, "카페", ""),
+            Triple(8, "주류", ""),
+            Triple(9, "퓨전/세계요리", "")
         )
 
-        return categoryData.map { (id, name, icon) ->
+        return categoryData.map { (categoryId, categoryName, _) ->
             ExploreFilter(
-                id = id,
-                name = name,
+                id = categoryId,
+                name = categoryName,
                 type = "category",
                 selectedIconUrl = "",
                 unSelectedIconUrl = ""
@@ -43,31 +43,31 @@ object ExploreFilterDataProvider {
     }
     fun getDefaultRegionFilter(): ImmutableList<ExploreFilter> {
         val regionData = persistentListOf(
-            Pair(9, "강남구"),
-            Pair(10, "강동구"),
-            Pair(11, "강북구"),
-            Pair(12, "강서구"),
-            Pair(13, "관악구"),
-            Pair(14, "광진구"),
-            Pair(15, "구로구"),
-            Pair(16, "금천구"),
-            Pair(17, "노원구"),
-            Pair(18, "도봉구"),
-            Pair(19, "동대문구"),
-            Pair(20, "동작구"),
-            Pair(21, "마포구"),
-            Pair(22, "서대문구"),
-            Pair(23, "서초구"),
-            Pair(24, "성동구"),
-            Pair(25, "성북구"),
-            Pair(26, "송파구"),
-            Pair(27, "양천구"),
-            Pair(28, "영등포구"),
-            Pair(29, "용산구"),
-            Pair(30, "은평구"),
-            Pair(31, "종로구"),
-            Pair(32, "중구"),
-            Pair(33, "중랑구")
+            Pair(1, "강남구"),
+            Pair(2, "강동구"),
+            Pair(3, "강북구"),
+            Pair(4, "강서구"),
+            Pair(5, "관악구"),
+            Pair(6, "광진구"),
+            Pair(7, "구로구"),
+            Pair(8, "금천구"),
+            Pair(9, "노원구"),
+            Pair(10, "도봉구"),
+            Pair(11, "동대문구"),
+            Pair(12, "동작구"),
+            Pair(13, "마포구"),
+            Pair(14, "서대문구"),
+            Pair(15, "서초구"),
+            Pair(16, "성동구"),
+            Pair(17, "성북구"),
+            Pair(18, "송파구"),
+            Pair(19, "양천구"),
+            Pair(20, "영등포구"),
+            Pair(21, "용산구"),
+            Pair(22, "은평구"),
+            Pair(23, "종로구"),
+            Pair(24, "중구"),
+            Pair(25, "중랑구")
         )
 
         return regionData.map { (id, name) ->
@@ -80,10 +80,10 @@ object ExploreFilterDataProvider {
     }
     fun getDefaultAgeFilter(): ImmutableList<ExploreFilter> {
         val ageData = persistentListOf(
-            Pair(34, "10대"),
-            Pair(35, "20대"),
-            Pair(36, "30대"),
-            Pair(37, "40대+")
+            Pair(10, "10대"),
+            Pair(20, "20대"),
+            Pair(30, "30대"),
+            Pair(40, "40대+")
         )
 
         return ageData.map { (id, name) ->
