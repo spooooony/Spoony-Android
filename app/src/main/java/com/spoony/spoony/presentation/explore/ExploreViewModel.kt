@@ -6,11 +6,13 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
-import com.spoony.spoony.domain.repository.SpoonRepository
+import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +25,7 @@ import kotlinx.coroutines.launch
 class ExploreViewModel @Inject constructor(
     private val exploreRepository: ExploreRepository,
     private val authRepository: AuthRepository,
-    private val categoryRepository: CategoryRepository,
-    private val spoonRepository: SpoonRepository
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreState> = MutableStateFlow(ExploreState())
     val state: StateFlow<ExploreState>
@@ -57,49 +58,140 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun getSpoonAccount() {
-        viewModelScope.launch {
-            spoonRepository.getSpoonCount()
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            spoonCount = UiState.Success(response)
-                        )
-                    }
+    fun localReviewToggle() {
+        val chipItems = _state.value.chipItems
+        val currentFilterState = _state.value.filterSelectionState
+        val propertySelectedState = currentFilterState.properties
+        val categorySelectedState = currentFilterState.categories
+        val regionSelectedState = currentFilterState.regions
+        val ageSelectedState = currentFilterState.ages
+        val isLocalReviewSelected = !(propertySelectedState[1] ?: false)
+
+        val updatedFilterOptions = chipItems.map { option ->
+            when (option.sort) {
+                FilterType.LOCAL_REVIEW -> {
+                    option.copy(isSelected = isLocalReviewSelected)
                 }
+
+                FilterType.FILTER -> {
+                    val isSelected = isLocalReviewSelected ||
+                            categorySelectedState.any { (_, selected) -> selected } ||
+                            regionSelectedState.any { (_, selected) -> selected } ||
+                            ageSelectedState.any { (_, selected) -> selected }
+                    option.copy(isSelected = isSelected)
+                }
+
+                else -> option
+            }
+        }.toImmutableList()
+        _state.update {
+            it.copy(
+                filterSelectionState = currentFilterState.copy(
+                    properties = propertySelectedState.put(1, isLocalReviewSelected)
+                ),
+                chipItems = updatedFilterOptions
+            )
         }
     }
 
-    fun getFeedList() {
-        viewModelScope.launch {
-            exploreRepository.getFeedList(
-                categoryId = _state.value.selectedCategoryId,
-                locationQuery = _state.value.selectedCity,
-                sortBy = _state.value.selectedSortingOption.stringCode
+    fun applyExploreFilter(propertySelectedState: PersistentMap<Int, Boolean>, categorySelectedState: PersistentMap<Int, Boolean>, regionSelectedState: PersistentMap<Int, Boolean>, ageSelectedState: PersistentMap<Int, Boolean>) {
+        val chipItems = _state.value.chipItems
+        val currentFilterState = _state.value.filterSelectionState
+        val currentFilterItems = _state.value.exploreFilterItems
+        val categoryItems = currentFilterItems.categories
+        val regionItems = currentFilterItems.regions
+        val ageItems = currentFilterItems.ages
+        val updatedFilterOptions = chipItems.map { option ->
+            when (option.sort) {
+                FilterType.LOCAL_REVIEW -> {
+                    val isSelected = propertySelectedState[1] ?: false
+                    option.copy(isSelected = isSelected)
+                }
+
+                FilterType.CATEGORY -> {
+                    val selectedCategories = categorySelectedState.filter { it.value }
+                    val isSelected = selectedCategories.isNotEmpty()
+                    val updatedText = when {
+                        !isSelected -> option.sort.defaultText
+                        selectedCategories.size == 1 -> {
+                            categoryItems.find { it.id == selectedCategories.keys.first() }?.name ?: "카테고리"
+                        }
+
+                        else -> {
+                            val firstSelected = categoryItems.find { it.id == selectedCategories.keys.min() }?.name ?: ""
+                            "$firstSelected 외 ${selectedCategories.size - 1}개"
+                        }
+                    }
+                    option.copy(isSelected = isSelected, text = updatedText)
+                }
+
+                FilterType.REGION -> {
+                    val selectedRegions = regionSelectedState.filter { it.value }
+                    val isSelected = selectedRegions.isNotEmpty()
+                    val updatedText = when {
+                        !isSelected -> option.sort.defaultText
+                        selectedRegions.size == 1 -> {
+                            regionItems.find { it.id == selectedRegions.keys.first() }?.name ?: "지역"
+                        }
+
+                        else -> {
+                            val firstSelected = regionItems.find { it.id == selectedRegions.keys.min() }?.name ?: ""
+                            "$firstSelected 외 ${selectedRegions.size - 1}개"
+                        }
+                    }
+                    option.copy(isSelected = isSelected, text = updatedText)
+                }
+
+                FilterType.AGE -> {
+                    val selectedAges = ageSelectedState.filter { it.value }
+                    val isSelected = selectedAges.isNotEmpty()
+                    val updatedText = when {
+                        !isSelected -> option.sort.defaultText
+                        selectedAges.size == 1 -> {
+                            ageItems.find { it.id == selectedAges.keys.first() }?.name ?: "연령대"
+                        }
+
+                        else -> {
+                            val firstSelected = ageItems.find { it.id == selectedAges.keys.min() }?.name ?: ""
+                            "$firstSelected 외 ${selectedAges.size - 1}개"
+                        }
+                    }
+                    option.copy(isSelected = isSelected, text = updatedText)
+                }
+
+                FilterType.FILTER -> {
+                    val isSelected = propertySelectedState.any { (_, selected) -> selected } ||
+                            categorySelectedState.any { (_, selected) -> selected } ||
+                            regionSelectedState.any { (_, selected) -> selected } ||
+                            ageSelectedState.any { (_, selected) -> selected }
+                    option.copy(isSelected = isSelected)
+                }
+            }
+        }.toImmutableList()
+        _state.update {
+            it.copy(
+                filterSelectionState = currentFilterState.copy(
+                    properties = propertySelectedState,
+                    categories = categorySelectedState,
+                    regions = regionSelectedState,
+                    ages = ageSelectedState
+                ),
+                chipItems = updatedFilterOptions
             )
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            feedList =
-                            if (response.isEmpty()) {
-                                UiState.Empty
-                            } else {
-                                UiState.Success(
-                                    response.map { feed ->
-                                        feed.toModel()
-                                    }.toImmutableList()
-                                )
-                            }
-                        )
-                    }
-                }
-                .onFailure {
-                    _state.update {
-                        it.copy(
-                            feedList = UiState.Failure("피드 목록 조회 실패")
-                        )
-                    }
-                }
+        }
+    }
+
+    fun resetExploreFilter() {
+        val currentFilterState = _state.value.filterSelectionState
+        _state.update {
+            it.copy(
+                filterSelectionState = currentFilterState.copy(
+                    properties = persistentMapOf(),
+                    categories = persistentMapOf(),
+                    regions = persistentMapOf(),
+                    ages = persistentMapOf()
+                )
+            )
         }
     }
 
@@ -138,30 +230,22 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun updateSelectedSortingOption(sortingOption: SortingOption) {
-        _state.update {
-            it.copy(
-                selectedSortingOption = sortingOption
-            )
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    selectedSortingOption = sortingOption
+                )
+            }
         }
     }
 
-    fun updateSelectedCity(city: String) {
-        _state.update {
-            it.copy(
-                selectedCity = city
-            )
+    fun updateExploreType(exploreType: ExploreType) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    exploreType = exploreType
+                )
+            }
         }
     }
-
-    fun updateSelectedCategory(categoryId: Int) {
-        _state.update {
-            it.copy(
-                selectedCategoryId = categoryId
-            )
-        }
-    }
-}
-
-sealed class ExploreSideEffect {
-    data class ShowSnackbar(val message: String) : ExploreSideEffect()
 }

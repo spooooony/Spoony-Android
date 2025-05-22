@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -30,12 +28,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicBottomSheet
@@ -55,9 +51,10 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.explore.component.ExploreFilterChip
 import com.spoony.spoony.presentation.explore.model.ExploreFilter
-import com.spoony.spoony.presentation.explore.model.ExploreFilterDataProvider
+import com.spoony.spoony.presentation.explore.model.FilterType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,11 +64,14 @@ fun ExploreFilterBottomSheet(
     onFilterReset: () -> Unit,
     onSave: () -> Unit,
     propertyItems: ImmutableList<ExploreFilter>,
-    onToggleFilter: (Int) -> Unit,
+    onToggleFilter: (Int, FilterType) -> Unit,
     categoryItems: ImmutableList<ExploreFilter>,
     regionItems: ImmutableList<ExploreFilter>,
     ageItems: ImmutableList<ExploreFilter>,
-    selectedState: SnapshotStateMap<Int, Boolean>,
+    propertySelectedState: SnapshotStateMap<Int, Boolean>,
+    regionSelectedState: SnapshotStateMap<Int, Boolean>,
+    categorySelectedState: SnapshotStateMap<Int, Boolean>,
+    ageSelectedState: SnapshotStateMap<Int, Boolean>,
     modifier: Modifier = Modifier,
     tabIndex: Int = 0
 ) {
@@ -106,7 +106,10 @@ fun ExploreFilterBottomSheet(
             ExploreFilterBottomSheetContent(
                 tabIndex = tabIndex,
                 onFilterSelected = onToggleFilter,
-                selectedState = selectedState,
+                propertySelectedState = propertySelectedState,
+                regionSelectedState = regionSelectedState,
+                categorySelectedState = categorySelectedState,
+                ageSelectedState = ageSelectedState,
                 propertyItems = propertyItems,
                 categoryItems = categoryItems,
                 regionItems = regionItems,
@@ -114,10 +117,7 @@ fun ExploreFilterBottomSheet(
             )
             SpoonyButton(
                 text = "필터 적용하기",
-                onClick = {
-                    handleDismiss()
-                    onSave()
-                },
+                onClick = onSave,
                 style = ButtonStyle.Primary,
                 size = ButtonSize.Xlarge,
                 modifier = Modifier
@@ -174,33 +174,71 @@ private fun ExploreFilterBottomSheetHeader(
     }
 }
 
+private enum class FilterSectionMap(val tabIndex: Int, val headerIndex: Int) {
+    PROPERTY(0, 0),
+    CATEGORY(1, 2),
+    REGION(2, 4),
+    AGE(3, 6);
+
+    companion object {
+        fun fromTabIndex(index: Int): FilterSectionMap? =
+            entries.firstOrNull { it.tabIndex == index }
+
+        fun fromHeaderIndex(index: Int): FilterSectionMap? =
+            entries.firstOrNull { it.headerIndex == index }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ExploreFilterBottomSheetContent(
     tabIndex: Int,
-    onFilterSelected: (Int) -> Unit,
+    onFilterSelected: (Int, FilterType) -> Unit,
     propertyItems: ImmutableList<ExploreFilter>,
     categoryItems: ImmutableList<ExploreFilter>,
     regionItems: ImmutableList<ExploreFilter>,
     ageItems: ImmutableList<ExploreFilter>,
-    selectedState: SnapshotStateMap<Int, Boolean>
+    propertySelectedState: SnapshotStateMap<Int, Boolean>,
+    regionSelectedState: SnapshotStateMap<Int, Boolean>,
+    categorySelectedState: SnapshotStateMap<Int, Boolean>,
+    ageSelectedState: SnapshotStateMap<Int, Boolean>
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
     val tabs = remember { persistentListOf("속성", "카테고리", "지역", "연령대") }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(selectedTabIndex) {
-        val targetIndex = selectedTabIndex.coerceIn(0, 3)
+    var isProgrammaticScrollInProgress by remember { mutableStateOf(false) }
 
-        coroutineScope.launch {
-            lazyListState.animateScrollToItem(targetIndex)
+    LaunchedEffect(selectedTabIndex) {
+        FilterSectionMap.fromTabIndex(selectedTabIndex)?.let { section ->
+            try {
+                isProgrammaticScrollInProgress = true
+                lazyListState.animateScrollToItem(section.headerIndex)
+            } finally {
+                isProgrammaticScrollInProgress = false
+            }
         }
     }
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemIndex }
+            .distinctUntilChanged()
+            .collect { index ->
+                if (!isProgrammaticScrollInProgress) {
+                    FilterSectionMap.fromHeaderIndex(index)?.let { section ->
+                        selectedTabIndex = section.tabIndex
+                    }
+                }
+            }
+    }
+
     ExploreFilterBottomSheetTabRow(
         tabs = tabs,
         tabIndex = selectedTabIndex,
         onTabSelected = { index ->
             selectedTabIndex = index
+            coroutineScope.launch {
+                lazyListState.animateScrollToItem(index)
+            }
         }
     )
     LazyColumn(
@@ -211,38 +249,40 @@ private fun ExploreFilterBottomSheetContent(
             .padding(
                 vertical = 18.dp,
                 horizontal = 12.dp
-            ),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+            )
     ) {
         item {
             FilterSectionHeader(title = "속성")
+        }
+
+        item {
             propertyItems.forEach { item ->
                 ExploreFilterChip(
                     text = item.name,
-                    isSelected = selectedState[item.id] == true,
-                    onClick = {
-                        selectedState[item.id] = !(selectedState[item.id] ?: false)
-                        onFilterSelected(item.id)
-                    }
+                    isSelected = propertySelectedState[item.id] == true,
+                    onClick = { onFilterSelected(item.id, FilterType.LOCAL_REVIEW) },
+                    modifier = Modifier.padding(top = 12.dp, bottom = 24.dp)
                 )
             }
         }
 
         item {
             FilterSectionHeader(title = "카테고리")
+        }
+
+        item {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 24.dp)
             ) {
                 categoryItems.forEach { item ->
                     IconChip(
                         text = item.name,
-                        onClick = {
-                            selectedState[item.id] = !(selectedState[item.id] ?: false)
-                            onFilterSelected(item.id)
-                        },
-                        isSelected = selectedState[item.id] == true,
+                        onClick = { onFilterSelected(item.id, FilterType.CATEGORY) },
+                        isSelected = categorySelectedState[item.id] == true,
                         unSelectedIconUrl = item.unSelectedIconUrl,
                         selectedIconUrl = item.selectedIconUrl,
                         textStyle = SpoonyAndroidTheme.typography.caption1m
@@ -253,19 +293,21 @@ private fun ExploreFilterBottomSheetContent(
 
         item {
             FilterSectionHeader(title = "지역")
+        }
+
+        item {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 24.dp)
             ) {
                 regionItems.forEach { item ->
                     ExploreFilterChip(
                         text = item.name,
-                        isSelected = selectedState[item.id] == true,
-                        onClick = {
-                            selectedState[item.id] = !(selectedState[item.id] ?: false)
-                            onFilterSelected(item.id)
-                        }
+                        isSelected = regionSelectedState[item.id] == true,
+                        onClick = { onFilterSelected(item.id, FilterType.REGION) }
                     )
                 }
             }
@@ -273,23 +315,26 @@ private fun ExploreFilterBottomSheetContent(
 
         item {
             FilterSectionHeader(title = "연령대")
+        }
+
+        item {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
             ) {
                 ageItems.forEach { item ->
                     ExploreFilterChip(
                         text = item.name,
-                        isSelected = selectedState[item.id] == true,
-                        onClick = {
-                            selectedState[item.id] = !(selectedState[item.id] ?: false)
-                            onFilterSelected(item.id)
-                        }
+                        isSelected = ageSelectedState[item.id] == true,
+                        onClick = { onFilterSelected(item.id, FilterType.AGE) }
                     )
                 }
             }
         }
+
         item { Spacer(modifier = Modifier.height(85.dp)) }
     }
 }
@@ -300,14 +345,13 @@ private fun ExploreFilterBottomSheetTabRow(
     onTabSelected: (Int) -> Unit,
     tabIndex: Int = 0
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
     TabRow(
-        selectedTabIndex = selectedTabIndex,
+        selectedTabIndex = tabIndex,
         containerColor = SpoonyAndroidTheme.colors.white,
         contentColor = SpoonyAndroidTheme.colors.main400,
         indicator = { tabPositions ->
-            if (tabPositions.isNotEmpty() && selectedTabIndex < tabPositions.size) {
-                val tabPosition = tabPositions[selectedTabIndex]
+            if (tabPositions.isNotEmpty() && tabIndex < tabPositions.size) {
+                val tabPosition = tabPositions[tabIndex]
                 val tabWidth = tabPosition.right - tabPosition.left
                 val indicatorOffset by animateDpAsState(
                     targetValue = tabPosition.left + (tabWidth - 50.dp) / 2,
@@ -337,12 +381,11 @@ private fun ExploreFilterBottomSheetTabRow(
                     Text(
                         text = title,
                         style = SpoonyAndroidTheme.typography.body2b,
-                        color = if (selectedTabIndex == index) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray400
+                        color = if (tabIndex == index) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray400
                     )
                 },
-                selected = selectedTabIndex == index,
+                selected = tabIndex == index,
                 onClick = {
-                    selectedTabIndex = index
                     onTabSelected(index)
                 },
                 selectedContentColor = Color.White,
@@ -361,82 +404,6 @@ private fun FilterSectionHeader(
         text = title,
         style = SpoonyAndroidTheme.typography.body1b,
         color = SpoonyAndroidTheme.colors.gray900,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp)
+        modifier = Modifier.fillMaxWidth()
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ExploreFilterBottomSheetPreview() {
-    var isDialogVisible by remember { mutableStateOf(false) }
-    val filterIds = remember { mutableStateListOf<Int>() }
-    val filterIdsBackup = remember { mutableStateListOf<Int>() }
-
-    val propertyItems = remember { ExploreFilterDataProvider.getDefaultPropertyFilter() }
-    val regionItems = remember { ExploreFilterDataProvider.getDefaultRegionFilter() }
-    val ageItems = remember { ExploreFilterDataProvider.getDefaultAgeFilter() }
-    val categoryItems = remember { ExploreFilterDataProvider.getDefaultCategoryFilter() }
-    val selectedState = remember { mutableStateMapOf<Int, Boolean>() }
-    val allFilters = propertyItems + categoryItems + regionItems + ageItems
-    allFilters.forEach { filter ->
-        selectedState[filter.id] = filter.id in filterIds
-    }
-
-    val saveChanges: () -> Unit = {
-        filterIds.clear()
-        filterIds.addAll(filterIdsBackup)
-    }
-
-    val returnChanges: () -> Unit = {
-        filterIdsBackup.clear()
-        filterIdsBackup.addAll(filterIds)
-        allFilters.forEach { filter ->
-            selectedState[filter.id] = filter.id in filterIds
-        }
-    }
-
-    val toggleFilter: (Int) -> Unit = { id ->
-        when (filterIdsBackup.contains(id)) {
-            true -> filterIdsBackup.remove(id)
-            false -> filterIdsBackup.add(id)
-        }
-    }
-
-    val resetFilters: () -> Unit = {
-        filterIdsBackup.clear()
-        allFilters.forEach { filter ->
-            selectedState[filter.id] = false
-        }
-    }
-
-    SpoonyAndroidTheme {
-        if (isDialogVisible) {
-            ExploreFilterBottomSheet(
-                onDismiss = {
-                    isDialogVisible = false
-                    returnChanges()
-                },
-                onFilterReset = resetFilters,
-                onSave = saveChanges,
-                onToggleFilter = toggleFilter,
-                propertyItems = propertyItems,
-                regionItems = regionItems,
-                ageItems = ageItems,
-                categoryItems = categoryItems,
-                selectedState = selectedState
-            )
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Button(
-                onClick = { isDialogVisible = true }
-            ) {
-                Text(text = "bottomSheet")
-            }
-        }
-    }
 }
