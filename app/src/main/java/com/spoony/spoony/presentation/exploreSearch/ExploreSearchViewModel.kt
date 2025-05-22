@@ -8,6 +8,7 @@ import com.spoony.spoony.presentation.exploreSearch.model.toModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -51,6 +52,16 @@ class ExploreSearchViewModel @Inject constructor(
             )
         }
     }
+    private fun makeSearchHistoryList(
+        filteredKeyword: String,
+        rawList: List<String>,
+        newKeywordList: List<String> = listOf(),
+        maxSize: Int = 6
+    ): ImmutableList<String> {
+        return (newKeywordList + rawList.filterNot { it == filteredKeyword })
+            .take(maxSize)
+            .toPersistentList()
+    }
 
     fun search(keyword: String) {
         val keywordTrim = keyword.trim()
@@ -63,10 +74,7 @@ class ExploreSearchViewModel @Inject constructor(
                             userInfoList = UiState.Loading
                         )
                     }
-                    val updatedList = (listOf(keywordTrim) + _state.value.recentUserSearchQueryList.filterNot { it == keyword })
-                        .take(6)
-                        .toPersistentList()
-
+                    val updatedList = makeSearchHistoryList(keywordTrim, _state.value.recentUserSearchQueryList, listOf(keywordTrim))
                     exploreRepository.getUserListByKeyword(keywordTrim)
                         .onSuccess { response ->
                             _state.update {
@@ -104,9 +112,7 @@ class ExploreSearchViewModel @Inject constructor(
                             placeReviewInfoList = UiState.Loading
                         )
                     }
-                    val updatedList = (listOf(keywordTrim) + _state.value.recentReviewSearchQueryList.filterNot { it == keyword })
-                        .take(6)
-                        .toPersistentList()
+                    val updatedList = makeSearchHistoryList(keywordTrim, _state.value.recentReviewSearchQueryList, listOf(keywordTrim))
                     exploreRepository.getPlaceReviewByKeyword(keywordTrim)
                         .onSuccess { response ->
                             _state.update {
@@ -144,7 +150,7 @@ class ExploreSearchViewModel @Inject constructor(
     fun removeRecentSearchItem(keyword: String) {
         when (_state.value.searchType) {
             SearchType.USER -> {
-                val updatedList = _state.value.recentUserSearchQueryList.filterNot { it == keyword }.toPersistentList()
+                val updatedList = makeSearchHistoryList(keyword, _state.value.recentUserSearchQueryList)
                 _state.update {
                     it.copy(
                         recentUserSearchQueryList = updatedList
@@ -152,7 +158,7 @@ class ExploreSearchViewModel @Inject constructor(
                 }
             }
             SearchType.REVIEW -> {
-                val updatedList = _state.value.recentReviewSearchQueryList.filterNot { it == keyword }.toPersistentList()
+                val updatedList = makeSearchHistoryList(keyword, _state.value.recentReviewSearchQueryList)
                 _state.update {
                     it.copy(
                         recentReviewSearchQueryList = updatedList
