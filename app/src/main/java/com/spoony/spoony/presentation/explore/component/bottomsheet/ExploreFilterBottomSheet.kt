@@ -174,17 +174,17 @@ private fun ExploreFilterBottomSheetHeader(
     }
 }
 
-private enum class FilterSectionHeader(val tabIndex: Int, val headerIndex: Int) {
+private enum class FilterSectionMap(val tabIndex: Int, val headerIndex: Int) {
     PROPERTY(0, 0),
     CATEGORY(1, 2),
     REGION(2, 4),
     AGE(3, 6);
 
     companion object {
-        fun fromTabIndex(index: Int): FilterSectionHeader? =
+        fun fromTabIndex(index: Int): FilterSectionMap? =
             entries.firstOrNull { it.tabIndex == index }
 
-        fun fromHeaderIndex(index: Int): FilterSectionHeader? =
+        fun fromHeaderIndex(index: Int): FilterSectionMap? =
             entries.firstOrNull { it.headerIndex == index }
     }
 }
@@ -210,7 +210,7 @@ private fun ExploreFilterBottomSheetContent(
     var isProgrammaticScrollInProgress by remember { mutableStateOf(false) }
 
     LaunchedEffect(selectedTabIndex) {
-        FilterSectionHeader.fromTabIndex(selectedTabIndex)?.let { section ->
+        FilterSectionMap.fromTabIndex(selectedTabIndex)?.let { section ->
             try {
                 isProgrammaticScrollInProgress = true
                 lazyListState.animateScrollToItem(section.headerIndex)
@@ -224,7 +224,7 @@ private fun ExploreFilterBottomSheetContent(
             .distinctUntilChanged()
             .collect { index ->
                 if (!isProgrammaticScrollInProgress) {
-                    FilterSectionHeader.fromHeaderIndex(index)?.let { section ->
+                    FilterSectionMap.fromHeaderIndex(index)?.let { section ->
                         selectedTabIndex = section.tabIndex
                     }
                 }
