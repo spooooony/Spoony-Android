@@ -7,14 +7,15 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.report.ReportRoute
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToReport(
-    postId: Int,
-    userId: Int,
+    reportTargetId: Int,
+    type: ReportType,
     navOptions: NavOptions? = null
 ) {
-    navigate(Report(postId, userId), navOptions)
+    navigate(Report(reportTargetId, type), navOptions)
 }
 
 fun NavGraphBuilder.reportNavGraph(
@@ -32,4 +33,4 @@ fun NavGraphBuilder.reportNavGraph(
 }
 
 @Serializable
-data class Report(val postId: Int, val userId: Int) : Route
+data class Report(val reportTargetId: Int, val type: ReportType) : Route
