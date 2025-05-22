@@ -107,8 +107,8 @@ class ExploreSearchViewModel @Inject constructor(
                                         UiState.Empty
                                     } else {
                                         UiState.Success(
-                                            response.map { userEntity ->
-                                                userEntity.toModel()
+                                            response.map { placeReviewEntity ->
+                                                placeReviewEntity.toModel()
                                             }.toPersistentList()
                                         )
                                     }
