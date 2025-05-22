@@ -75,9 +75,9 @@ class ExploreViewModel @Inject constructor(
 
                 FilterType.FILTER -> {
                     val isSelected = isLocalReviewSelected ||
-                            categorySelectedState.any { (_, selected) -> selected } ||
-                            regionSelectedState.any { (_, selected) -> selected } ||
-                            ageSelectedState.any { (_, selected) -> selected }
+                        categorySelectedState.any { (_, selected) -> selected } ||
+                        regionSelectedState.any { (_, selected) -> selected } ||
+                        ageSelectedState.any { (_, selected) -> selected }
                     option.copy(isSelected = isSelected)
                 }
 
@@ -161,9 +161,9 @@ class ExploreViewModel @Inject constructor(
 
                 FilterType.FILTER -> {
                     val isSelected = propertySelectedState.any { (_, selected) -> selected } ||
-                            categorySelectedState.any { (_, selected) -> selected } ||
-                            regionSelectedState.any { (_, selected) -> selected } ||
-                            ageSelectedState.any { (_, selected) -> selected }
+                        categorySelectedState.any { (_, selected) -> selected } ||
+                        regionSelectedState.any { (_, selected) -> selected } ||
+                        ageSelectedState.any { (_, selected) -> selected }
                     option.copy(isSelected = isSelected)
                 }
             }
