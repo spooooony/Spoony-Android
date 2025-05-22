@@ -55,6 +55,7 @@ import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import com.spoony.spoony.presentation.placeDetail.model.PlaceDetailModel
 import com.spoony.spoony.presentation.placeDetail.model.UserInfoModel
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -65,6 +66,7 @@ import kotlinx.coroutines.launch
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -198,6 +200,7 @@ fun PlaceDetailRoute(
                             onDeleteReviewClick = {
                                 deleteReviewDialogVisibility = true
                             },
+                            onEditReviewClick = { navigateToEditReview(postId, RegisterType.EDIT) },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
@@ -228,6 +231,7 @@ private fun PlaceDetailScreen(
     cons: String,
     onScoopButtonClick: () -> Unit,
     onDeleteReviewClick: () -> Unit,
+    onEditReviewClick: () -> Unit,
     userProfileUrl: String,
     userName: String,
     userRegion: String,
@@ -280,6 +284,7 @@ private fun PlaceDetailScreen(
                                     onReportButtonClick()
                                 }
                                 DropdownOption.EDIT.name -> {
+                                    onEditReviewClick()
                                 }
                                 DropdownOption.DELETE.name -> {
                                     onDeleteReviewClick()
