@@ -47,6 +47,7 @@ import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchTopAp
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchUserItem
 import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchPlaceReviewModel
 import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
+import com.spoony.spoony.presentation.exploreSearch.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
 import com.spoony.spoony.presentation.report.ReportType
@@ -267,12 +268,12 @@ private fun ExploreSearchScreen(
                                         val menuList = remember {
                                             if (placeReviewInfo.isMine) {
                                                 persistentListOf(
-                                                    "수정하기",
-                                                    "삭제하기"
+                                                    ExploreDropdownOption.EDIT.string,
+                                                    ExploreDropdownOption.DELETE.string
                                                 )
                                             } else {
                                                 persistentListOf(
-                                                    "신고하기"
+                                                    ExploreDropdownOption.REPORT.string
                                                 )
                                             }
                                         }
@@ -281,9 +282,9 @@ private fun ExploreSearchScreen(
                                             review = placeReviewInfo.description,
                                             onMenuItemClick = {
                                                 when (it) {
-                                                    "신고하기" -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
-                                                    "수정하기" -> {}
-                                                    "삭제하기" -> {}
+                                                    ExploreDropdownOption.REPORT.string -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
+                                                    ExploreDropdownOption.EDIT.string -> {}
+                                                    ExploreDropdownOption.DELETE.string -> {}
                                                 }
                                             },
                                             date = placeReviewInfo.createdAt,
