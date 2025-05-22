@@ -43,6 +43,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.formatToYearMonthDay
 import com.spoony.spoony.presentation.main.SHOW_SNACKBAR_TIMEMILLIS
+import com.spoony.spoony.presentation.placeDetail.component.DeleteReviewDialog
 import com.spoony.spoony.presentation.placeDetail.component.DisappointItem
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailBottomBar
@@ -74,6 +75,7 @@ fun PlaceDetailRoute(
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     var scoopDialogVisibility by remember { mutableStateOf(false) }
+    var deleteReviewDialogVisibility by remember { mutableStateOf(false) }
 
     val onShowSnackBar: (String) -> Unit = { message ->
         coroutineScope.launch {
@@ -91,6 +93,9 @@ fun PlaceDetailRoute(
             when (effect) {
                 is PlaceDetailSideEffect.ShowSnackbar -> {
                     onShowSnackBar(effect.message)
+                }
+                is PlaceDetailSideEffect.NavigateUp -> {
+                    navigateUp()
                 }
             }
         }
@@ -127,6 +132,17 @@ fun PlaceDetailRoute(
                     },
                     onClickNegative = {
                         scoopDialogVisibility = false
+                    }
+                )
+            }
+            if (deleteReviewDialogVisibility) {
+                DeleteReviewDialog(
+                    onClickPositive = {
+                        viewModel.deleteReview(postId)
+                        deleteReviewDialogVisibility = false
+                    },
+                    onClickNegative = {
+                        deleteReviewDialogVisibility = false
                     }
                 )
             }
@@ -179,6 +195,9 @@ fun PlaceDetailRoute(
                             onScoopButtonClick = {
                                 scoopDialogVisibility = true
                             },
+                            onDeleteReviewClick = {
+                                deleteReviewDialogVisibility = true
+                            },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
@@ -208,6 +227,7 @@ private fun PlaceDetailScreen(
     value: Double,
     cons: String,
     onScoopButtonClick: () -> Unit,
+    onDeleteReviewClick: () -> Unit,
     userProfileUrl: String,
     userName: String,
     userRegion: String,
@@ -262,6 +282,7 @@ private fun PlaceDetailScreen(
                                 DropdownOption.EDIT.name -> {
                                 }
                                 DropdownOption.DELETE.name -> {
+                                    onDeleteReviewClick()
                                 }
                             }
                         },

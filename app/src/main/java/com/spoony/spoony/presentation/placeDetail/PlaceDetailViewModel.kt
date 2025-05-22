@@ -196,4 +196,18 @@ class PlaceDetailViewModel @Inject constructor(
                 .onFailure(Timber::e)
         }
     }
+
+    fun deleteReview(
+        postId: Int
+    ) {
+        viewModelScope.launch {
+            postRepository.deletePost(postId)
+                .onSuccess {
+                    _sideEffect.emit(PlaceDetailSideEffect.NavigateUp)
+                }
+                .onFailure {
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                }
+        }
+    }
 }

@@ -57,4 +57,9 @@ interface PostService {
         @Part("data") data: RequestBody,
         @Part photos: List<MultipartBody.Part>
     ): BaseResponse<Unit>
+
+    @DELETE("/api/v1/post/{postId}")
+    suspend fun deletePost(
+        @Path("postId") postId: Int
+    ): BaseResponse<Boolean>
 }
