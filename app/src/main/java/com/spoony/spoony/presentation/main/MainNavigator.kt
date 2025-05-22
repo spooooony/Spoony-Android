@@ -10,6 +10,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.presentation.attendance.navigation.navigateToAttendance
+import com.spoony.spoony.presentation.auth.onboarding.navigation.navigateToOnboarding
 import com.spoony.spoony.presentation.auth.signin.navigation.navigateToSignIn
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.navigateToTermsOfService
 import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
@@ -23,6 +24,7 @@ import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDeta
 import com.spoony.spoony.presentation.profileedit.navigation.navigateToProfileEdit
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.navigateToRegister
+import com.spoony.spoony.presentation.report.ReportType
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.setting.navigation.navigateToSettingPage
 import com.spoony.spoony.presentation.splash.navigation.Splash
@@ -97,6 +99,16 @@ class MainNavigator(
         navController.navigateToTermsOfService(navOptions = navOptions)
     }
 
+    fun navigateToOnboarding(
+        navOptions: NavOptions? = navOptions {
+            popUpTo(NAVIGATION_ROOT) {
+                inclusive = true
+            }
+        }
+    ) {
+        navController.navigateToOnboarding(navOptions = navOptions)
+    }
+
     fun navigateToMap(
         navOptions: NavOptions? = navOptions {
             popUpTo(NAVIGATION_ROOT) {
@@ -108,10 +120,10 @@ class MainNavigator(
     }
 
     fun navigateToReport(
-        postId: Int,
-        userId: Int
+        reportTargetId: Int,
+        type: ReportType
     ) {
-        navController.navigateToReport(postId = postId, userId = userId)
+        navController.navigateToReport(reportTargetId = reportTargetId, type = type)
     }
 
     fun navigateToExplore(

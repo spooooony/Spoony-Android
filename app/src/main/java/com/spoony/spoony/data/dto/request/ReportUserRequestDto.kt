@@ -4,11 +4,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ReportPostRequestDto(
-    @SerialName("postId")
-    val postId: Int,
-    @SerialName("reportType")
-    val reportType: String,
+data class ReportUserRequestDto(
+    @SerialName("targetUserId")
+    val targetUserId: Int,
+    @SerialName("userReportType")
+    val userReportType: String,
     @SerialName("reportDetail")
     val reportDetail: String
 )

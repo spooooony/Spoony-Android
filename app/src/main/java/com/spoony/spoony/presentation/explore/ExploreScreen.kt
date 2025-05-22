@@ -51,6 +51,7 @@ import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
@@ -62,7 +63,7 @@ fun ExploreRoute(
     navigateToExploreSearch: () -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToRegister: () -> Unit,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -114,7 +115,7 @@ private fun ExploreScreen(
     onClickSearch: () -> Unit,
     onRegisterButtonClick: () -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
-    onReportButtonClick: (postId: Int, userId: Int) -> Unit,
+    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
     onResetExploreFilterButtonClick: () -> Unit,
     onLocalReviewButtonClick: () -> Unit,
@@ -286,7 +287,7 @@ private fun handleFilterClick(
 @Composable
 private fun ExploreContent(
     onRegisterButtonClick: () -> Unit,
-    onReportButtonClick: (postId: Int, userId: Int) -> Unit,
+    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     modifier: Modifier = Modifier
@@ -333,7 +334,7 @@ private fun ExploreContent(
                         onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
                         onMenuItemClick = { option ->
                             when (option) {
-                                "신고하기" -> onReportButtonClick(placeReview.reviewId, placeReview.userId)
+                                "신고하기" -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
                             }
                         }
                     )

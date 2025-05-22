@@ -24,7 +24,7 @@ fun MapEmptyBottomSheetContent(
     onClick: () -> Unit,
     description: String = "아직 추가된 장소가 없어요.\n다른 사람의 리스트를 떠먹어보세요!",
     buttonText: String = "떠먹으러 가기",
-    buttonStyle: ButtonStyle = ButtonStyle.Secondary,
+    buttonStyle: ButtonStyle = ButtonStyle.Primary,
     modifier: Modifier = Modifier
 ) {
     Column(

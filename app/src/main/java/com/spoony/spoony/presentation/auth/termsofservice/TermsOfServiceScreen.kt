@@ -57,7 +57,7 @@ private val termsList = persistentListOf(
 @Composable
 fun TermsOfServiceRoute(
     paddingValues: PaddingValues,
-    navigateToMap: () -> Unit
+    navigateToOnboarding: () -> Unit
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -69,14 +69,14 @@ fun TermsOfServiceRoute(
 
     TermsOfServiceScreen(
         paddingValues = paddingValues,
-        navigateToMap = navigateToMap
+        navigateToOnboarding = navigateToOnboarding
     )
 }
 
 @Composable
 private fun TermsOfServiceScreen(
     paddingValues: PaddingValues,
-    navigateToMap: () -> Unit
+    navigateToOnboarding: () -> Unit
 ) {
     val context = LocalContext.current
     val isChecked = remember { mutableStateListOf(*Array(termsList.size) { false }) }
@@ -138,7 +138,7 @@ private fun TermsOfServiceScreen(
             text = "동의합니다",
             size = ButtonSize.Xlarge,
             style = ButtonStyle.Primary,
-            onClick = navigateToMap,
+            onClick = navigateToOnboarding,
             enabled = isRequiredAgreed,
             modifier = Modifier
                 .fillMaxWidth()

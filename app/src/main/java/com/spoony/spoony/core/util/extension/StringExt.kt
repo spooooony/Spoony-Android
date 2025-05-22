@@ -1,5 +1,6 @@
 package com.spoony.spoony.core.util.extension
 
+import com.spoony.spoony.core.designsystem.model.BirthDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -15,5 +16,14 @@ fun String.formatToYearMonthDay(): String {
         dateTime.format(outputFormatter)
     } catch (e: Exception) {
         ""
+    }
+}
+
+fun String.toBirthDate(): BirthDate? {
+    val dateList = this.split("-")
+    return if (dateList.size == 3) {
+        BirthDate(dateList[0], dateList[1], dateList[2])
+    } else {
+        null
     }
 }
