@@ -116,7 +116,8 @@ fun MainScreen(
                 signInNavGraph(
                     paddingValues = paddingValues,
                     navigateToMap = navigator::navigateToMap,
-                    navigateToTermsOfService = navigator::navigateToTermsOfService
+                    navigateToTermsOfService = navigator::navigateToTermsOfService,
+                    showSnackBar = onShowSnackBar
                 )
 
                 termsOfServiceNavGraph(

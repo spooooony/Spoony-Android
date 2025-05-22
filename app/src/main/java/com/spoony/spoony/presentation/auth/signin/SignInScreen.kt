@@ -15,10 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.kakao.sdk.user.UserApiClient
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main100
@@ -28,8 +33,12 @@ import com.spoony.spoony.presentation.auth.signin.component.SocialLoginButton
 fun SignInRoute(
     paddingValues: PaddingValues,
     navigateToMap: () -> Unit,
-    navigateToTermsOfService: () -> Unit
+    navigateToTermsOfService: () -> Unit,
+    showSnackBar: (String) -> Unit,
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val systemUiController = rememberSystemUiController()
 
     LaunchedEffect(Unit) {
@@ -38,18 +47,44 @@ fun SignInRoute(
         )
     }
 
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { sideEffect ->
+                when (sideEffect) {
+                    is SignInSideEffect.ShowSnackBar -> showSnackBar(sideEffect.message)
+                    is SignInSideEffect.NavigateToSignUp -> navigateToTermsOfService()
+                    is SignInSideEffect.NavigateToMap -> navigateToMap()
+                    is SignInSideEffect.StartKakaoTalkLogin -> {
+                        UserApiClient.instance.loginWithKakaoTalk(
+                            context = context,
+                            callback = viewModel::handleSignInResult
+                        )
+                    }
+
+                    is SignInSideEffect.StartKakaoWebLogin -> {
+                        UserApiClient.instance.loginWithKakaoAccount(
+                            context = context,
+                            callback = viewModel::handleSignInResult
+                        )
+                    }
+                }
+            }
+    }
+
     SignInScreen(
         paddingValues = paddingValues,
-        navigateToMap = navigateToMap,
-        navigateToTermsOfService = navigateToTermsOfService
+        onSignInButtonClick = {
+            viewModel.startKakaoLogin(
+                UserApiClient.instance.isKakaoTalkLoginAvailable(context)
+            )
+        }
     )
 }
 
 @Composable
 private fun SignInScreen(
     paddingValues: PaddingValues,
-    navigateToMap: () -> Unit,
-    navigateToTermsOfService: () -> Unit
+    onSignInButtonClick: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -92,7 +127,7 @@ private fun SignInScreen(
                 title = "카카오로 계속하기",
                 icon = ImageVector.vectorResource(R.drawable.ic_kakao_logo_18),
                 backgroundColor = SpoonyAndroidTheme.colors.kakaoYellow,
-                onClick = navigateToTermsOfService
+                onClick = onSignInButtonClick
             )
         }
     }

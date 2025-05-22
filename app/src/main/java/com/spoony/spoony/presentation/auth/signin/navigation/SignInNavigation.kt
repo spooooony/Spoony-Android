@@ -21,13 +21,15 @@ fun NavController.navigateToSignIn(
 fun NavGraphBuilder.signInNavGraph(
     paddingValues: PaddingValues,
     navigateToMap: () -> Unit,
-    navigateToTermsOfService: () -> Unit
+    navigateToTermsOfService: () -> Unit,
+    showSnackBar: (String) -> Unit
 ) {
     composable<SignIn> {
         SignInRoute(
             paddingValues = paddingValues,
             navigateToMap = navigateToMap,
-            navigateToTermsOfService = navigateToTermsOfService
+            navigateToTermsOfService = navigateToTermsOfService,
+            showSnackBar = showSnackBar
         )
     }
 }
