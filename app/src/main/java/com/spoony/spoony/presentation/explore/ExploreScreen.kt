@@ -242,7 +242,6 @@ private fun ExploreScreen(
                     handleFilterClick(
                         filterType = filterType,
                         onLocalReviewButtonClick = onLocalReviewButtonClick,
-                        propertyState = propertyState,
                         updateBottomSheetState = { index, isVisible ->
                             exploreFilterBottomSheetTabIndex = index
                             isFilterBottomSheetVisible = isVisible
@@ -269,15 +268,11 @@ private fun ExploreScreen(
 private fun handleFilterClick(
     filterType: FilterType,
     onLocalReviewButtonClick: () -> Unit,
-    propertyState: MutableMap<Int, Boolean>,
     updateBottomSheetState: (Int, Boolean) -> Unit
 ) {
     when (filterType) {
         FilterType.FILTER -> updateBottomSheetState(0, true)
-        FilterType.LOCAL_REVIEW -> {
-            onLocalReviewButtonClick()
-            propertyState[1] = !(propertyState[1] ?: false)
-        }
+        FilterType.LOCAL_REVIEW -> onLocalReviewButtonClick()
         FilterType.CATEGORY -> updateBottomSheetState(1, true)
         FilterType.REGION -> updateBottomSheetState(2, true)
         FilterType.AGE -> updateBottomSheetState(3, true)
