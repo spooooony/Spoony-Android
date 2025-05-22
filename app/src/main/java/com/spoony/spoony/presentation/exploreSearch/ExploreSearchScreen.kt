@@ -50,6 +50,7 @@ import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
 import com.spoony.spoony.presentation.exploreSearch.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -60,6 +61,7 @@ fun ExploreSearchRoute(
     navigateToUserProfile: (Int) -> Unit,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateUp: () -> Unit,
     viewModel: ExploreSearchViewModel = hiltViewModel()
 ) {
@@ -89,6 +91,7 @@ fun ExploreSearchRoute(
         onRemoveRecentSearchItem = viewModel::removeRecentSearchItem,
         onClearRecentSearchItem = viewModel::clearRecentSearchItem,
         onSearch = viewModel::search,
+        onEditReviewClick = navigateToEditReview,
         onClearSearchKeyword = viewModel::clearSearchKeyword,
         recentReviewSearchQueryList = state.recentReviewSearchQueryList,
         recentUserSearchQueryList = state.recentUserSearchQueryList,
@@ -110,6 +113,7 @@ private fun ExploreSearchScreen(
     onSwitchType: (SearchType) -> Unit,
     onClearRecentSearchItem: () -> Unit,
     onSearch: (String) -> Unit,
+    onEditReviewClick: (Int, RegisterType) -> Unit,
     onClearSearchKeyword: () -> Unit,
     recentReviewSearchQueryList: ImmutableList<String>,
     recentUserSearchQueryList: ImmutableList<String>,
@@ -283,7 +287,7 @@ private fun ExploreSearchScreen(
                                             onMenuItemClick = {
                                                 when (it) {
                                                     ExploreDropdownOption.REPORT.string -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
-                                                    ExploreDropdownOption.EDIT.string -> {}
+                                                    ExploreDropdownOption.EDIT.string -> onEditReviewClick(placeReviewInfo.reviewId, RegisterType.EDIT)
                                                     ExploreDropdownOption.DELETE.string -> {}
                                                 }
                                             },
