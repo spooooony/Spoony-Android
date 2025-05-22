@@ -12,11 +12,11 @@ interface ExploreRemoteDataSource {
         sortBy: String
     ): BaseResponse<FeedsResponseDto>
 
-    suspend fun getPlaceReviewSearchByKeyword(
+    suspend fun getPlaceReviewByKeyword(
         query: String
     ): BaseResponse<PlaceReviewListResponseDto>
 
-    suspend fun getUserListSearchByKeyword(
+    suspend fun getUserListByKeyword(
         query: String
     ): BaseResponse<UserListSearchResponseDto>
 }

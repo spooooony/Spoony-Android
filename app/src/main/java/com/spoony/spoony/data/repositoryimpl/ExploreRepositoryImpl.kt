@@ -175,14 +175,14 @@ class ExploreRepositoryImpl @Inject constructor(
         )
     )
 
-    override suspend fun getPlaceReviewSearchByKeyword(query: String): Result<List<PlaceReviewEntity>> = runCatching {
-        exploreRemoteDataSource.getPlaceReviewSearchByKeyword(
+    override suspend fun getPlaceReviewByKeyword(query: String): Result<List<PlaceReviewEntity>> = runCatching {
+        exploreRemoteDataSource.getPlaceReviewByKeyword(
             query = query
         ).data!!.postSearchResultList.map { it.toDomain() }
     }
 
-    override suspend fun getUserListSearchByKeyword(query: String): Result<List<UserEntity>> = runCatching {
-        exploreRemoteDataSource.getUserListSearchByKeyword(
+    override suspend fun getUserListByKeyword(query: String): Result<List<UserEntity>> = runCatching {
+        exploreRemoteDataSource.getUserListByKeyword(
             query = query
         ).data!!.userSimpleResponseDTO.map { it.toDomain() }
     }

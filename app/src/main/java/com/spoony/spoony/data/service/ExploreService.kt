@@ -17,12 +17,12 @@ interface ExploreService {
     ): BaseResponse<FeedsResponseDto>
 
     @GET("/api/v1/post/search")
-    suspend fun getPlaceReviewSearchByKeyword(
+    suspend fun getPlaceReviewByKeyword(
         @Query("query") query: String
     ): BaseResponse<PlaceReviewListResponseDto>
 
     @GET("/api/v1/user/search")
-    suspend fun getUserListSearchByKeyword(
+    suspend fun getUserListByKeyword(
         @Query("query") query: String
     ): BaseResponse<UserListSearchResponseDto>
 }

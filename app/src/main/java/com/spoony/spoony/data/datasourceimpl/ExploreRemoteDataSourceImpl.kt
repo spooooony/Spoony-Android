@@ -21,11 +21,11 @@ class ExploreRemoteDataSourceImpl @Inject constructor(
         sortBy = sortBy
     )
 
-    override suspend fun getPlaceReviewSearchByKeyword(query: String): BaseResponse<PlaceReviewListResponseDto> = exploreService.getPlaceReviewSearchByKeyword(
+    override suspend fun getPlaceReviewByKeyword(query: String): BaseResponse<PlaceReviewListResponseDto> = exploreService.getPlaceReviewByKeyword(
         query = query
     )
 
-    override suspend fun getUserListSearchByKeyword(query: String): BaseResponse<UserListSearchResponseDto> = exploreService.getUserListSearchByKeyword(
+    override suspend fun getUserListByKeyword(query: String): BaseResponse<UserListSearchResponseDto> = exploreService.getUserListByKeyword(
         query = query
     )
 }

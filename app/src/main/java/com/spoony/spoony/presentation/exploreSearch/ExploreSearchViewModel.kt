@@ -56,7 +56,7 @@ class ExploreSearchViewModel @Inject constructor(
                         .take(6)
                         .toPersistentList()
 
-                    exploreRepository.getUserListSearchByKeyword(keywordTrim)
+                    exploreRepository.getUserListByKeyword(keywordTrim)
                         .onSuccess { response ->
                             _state.update {
                                 it.copy(
@@ -81,7 +81,7 @@ class ExploreSearchViewModel @Inject constructor(
                     val updatedList = (listOf(keywordTrim) + _state.value.recentReviewSearchQueryList.filterNot { it == keyword })
                         .take(6)
                         .toPersistentList()
-                    exploreRepository.getPlaceReviewSearchByKeyword(keywordTrim)
+                    exploreRepository.getPlaceReviewByKeyword(keywordTrim)
                         .onSuccess { response ->
                             _state.update {
                                 it.copy(

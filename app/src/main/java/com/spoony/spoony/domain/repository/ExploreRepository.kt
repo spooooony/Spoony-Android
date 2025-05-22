@@ -13,11 +13,11 @@ interface ExploreRepository {
 
     suspend fun getAllFeedList(): Result<List<PlaceReviewEntity>>
 
-    suspend fun getPlaceReviewSearchByKeyword(
+    suspend fun getPlaceReviewByKeyword(
         query: String
     ): Result<List<PlaceReviewEntity>>
 
-    suspend fun getUserListSearchByKeyword(
+    suspend fun getUserListByKeyword(
         query: String
     ): Result<List<UserEntity>>
 }
