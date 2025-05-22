@@ -240,7 +240,3 @@ class ExploreViewModel @Inject constructor(
         }
     }
 }
-
-sealed class ExploreSideEffect {
-    data class ShowSnackbar(val message: String) : ExploreSideEffect()
-}
