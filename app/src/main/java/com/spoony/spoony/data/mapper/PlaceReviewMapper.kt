@@ -15,7 +15,8 @@ fun PlaceReviewResponseDto.toDomain(): PlaceReviewEntity =
         category = this.categoryColorResponse.toDomain(),
         addMapCount = this.zzimCount,
         photoUrlList = this.photoUrlList,
-        createdAt = this.createdAt
+        createdAt = this.createdAt,
+        isMine = this.isMine
     )
 
 fun CategoryColorResponseDto.toDomain(): CategoryEntity = CategoryEntity(

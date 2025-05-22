@@ -28,5 +28,7 @@ data class PlaceReviewResponseDto(
     @SerialName("photoUrlList")
     val photoUrlList: List<String>,
     @SerialName("createdAt")
-    val createdAt: String
+    val createdAt: String,
+    @SerialName("isMine")
+    val isMine: Boolean
 )
