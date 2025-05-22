@@ -14,6 +14,5 @@ data class MapState(
     ),
     val placeCardInfo: UiState<ImmutableList<AddedMapPostEntity>> = UiState.Loading,
     val addedPlaceList: UiState<ImmutableList<AddedPlaceEntity>> = UiState.Loading,
-    val placeCount: Int = 0,
-    val spoonCount: Int = 0
+    val placeCount: Int = 0
 )

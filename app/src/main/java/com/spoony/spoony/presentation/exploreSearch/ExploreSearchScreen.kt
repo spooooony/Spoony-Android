@@ -46,6 +46,7 @@ import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchPlaceRevi
 import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -53,7 +54,7 @@ import kotlinx.collections.immutable.persistentListOf
 fun ExploreSearchRoute(
     paddingValues: PaddingValues,
     navigateToUserProfile: (Int) -> Unit,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateUp: () -> Unit,
     viewModel: ExploreSearchViewModel = hiltViewModel()
@@ -85,7 +86,7 @@ private fun ExploreSearchScreen(
     paddingValues: PaddingValues,
     searchKeyword: String,
     searchType: SearchType,
-    onReviewReportButtonClick: (postId: Int, userId: Int) -> Unit,
+    onReviewReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onUserButtonClick: (Int) -> Unit,
     onPlaceDetailButtonClick: (Int) -> Unit,
     onBackButtonClick: () -> Unit,
@@ -265,7 +266,7 @@ private fun ExploreSearchScreen(
                                             review = placeReviewInfo.description,
                                             onMenuItemClick = {
                                                 when (it) {
-                                                    "신고하기" -> onReviewReportButtonClick(placeReviewInfo.reviewId, placeReviewInfo.userId)
+                                                    "신고하기" -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
                                                     "수정하기" -> {}
                                                     "삭제하기" -> {}
                                                 }

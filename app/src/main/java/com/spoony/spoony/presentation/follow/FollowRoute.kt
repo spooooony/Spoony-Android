@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spoony.spoony.core.designsystem.component.topappbar.BackAndMenuTopAppBar
+import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
-import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.presentation.follow.component.FollowTabRow
 import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
@@ -154,8 +154,8 @@ private fun FollowScreen(
                     .align(Alignment.TopCenter)
                     .zIndex(1f),
                 state = refreshState,
-                containerColor = main400.copy(alpha = alpha),
-                contentColor = white.copy(alpha = alpha)
+                containerColor = SpoonyAndroidTheme.colors.main500.copy(alpha = alpha),
+                contentColor = SpoonyAndroidTheme.colors.white.copy(alpha = alpha)
             )
         }
     }

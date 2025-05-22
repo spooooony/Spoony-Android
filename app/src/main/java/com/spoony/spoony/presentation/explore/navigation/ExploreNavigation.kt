@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.MainTabRoute
 import com.spoony.spoony.presentation.explore.ExploreRoute
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToExplore(
@@ -19,7 +20,7 @@ fun NavGraphBuilder.exploreNavGraph(
     paddingValues: PaddingValues,
     navigateToExploreSearch: () -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToRegister: () -> Unit
 ) {
     composable<Explore> {

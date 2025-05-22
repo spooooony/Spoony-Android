@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.spoony.spoony.core.navigation.Route
 import com.spoony.spoony.presentation.placeDetail.PlaceDetailRoute
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToPlaceDetail(
@@ -18,7 +19,7 @@ fun NavController.navigateToPlaceDetail(
 
 fun NavGraphBuilder.placeDetailNavGraph(
     paddingValues: PaddingValues,
-    navigateToReport: (postId: Int, userId: Int) -> Unit,
+    navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<PlaceDetail> {

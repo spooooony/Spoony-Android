@@ -7,8 +7,12 @@ import javax.inject.Inject
 class ReportRepositoryImpl @Inject constructor(
     private val reportDataSource: ReportDataSource
 ) : ReportRepository {
-    override suspend fun postReportPost(postId: Int, userId: Int, reportType: String, reportDetail: String): Result<Boolean> =
+    override suspend fun postReport(postId: Int, reportType: String, reportDetail: String): Result<Boolean> =
         runCatching {
-            reportDataSource.postReportPost(postId = postId, userId = userId, reportType = reportType, reportDetail = reportDetail).success
+            reportDataSource.postReport(postId = postId, reportType = reportType, reportDetail = reportDetail).success
+        }
+    override suspend fun userReport(userTargetId: Int, userReportType: String, reportDetail: String): Result<Boolean> =
+        runCatching {
+            reportDataSource.userReport(userTargetId = userTargetId, userReportType = userReportType, reportDetail = reportDetail).success
         }
 }

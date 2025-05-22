@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.presentation.attendance.navigation.attendanceNavGraph
+import com.spoony.spoony.presentation.auth.onboarding.navigation.onboardingNavGraph
 import com.spoony.spoony.presentation.auth.signin.navigation.signInNavGraph
 import com.spoony.spoony.presentation.auth.termsofservice.navigation.termsOfServiceNavGraph
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
@@ -120,6 +121,10 @@ fun MainScreen(
 
                 termsOfServiceNavGraph(
                     paddingValues = paddingValues,
+                    navigateToOnboarding = navigator::navigateToOnboarding
+                )
+
+                onboardingNavGraph(
                     navigateToMap = navigator::navigateToMap
                 )
 
@@ -140,10 +145,10 @@ fun MainScreen(
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateToRegister = navigator::navigateToRegister,
                     navigateToExploreSearch = navigator::navigateToExploreSearch,
-                    navigateToReport = { postId, userId ->
+                    navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
-                            postId = postId,
-                            userId = userId
+                            reportTargetId = reportTargetId,
+                            type = type
                         )
                     }
                 )
@@ -151,10 +156,10 @@ fun MainScreen(
                 exploreSearchNavGraph(
                     paddingValues = paddingValues,
                     navigateToUserProfile = navigator::navigateToOtherPage,
-                    navigateToReport = { postId, userId ->
+                    navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
-                            postId = postId,
-                            userId = userId
+                            reportTargetId = reportTargetId,
+                            type = type
                         )
                     },
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
@@ -187,7 +192,7 @@ fun MainScreen(
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToReviewDetail = navigator::navigateToPlaceDetail,
                     navigateToReviewReport = navigator::navigateToReport,
-                    navigateToUserReport = { /* TODO: 이거 세홍쌤 신고 스크린과 싱크 필요 */ }
+                    navigateToUserReport = navigator::navigateToReport
                 )
 
                 followNavGraph(
@@ -199,10 +204,10 @@ fun MainScreen(
                 placeDetailNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToReport = { postId, userId ->
+                    navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
-                            postId = postId,
-                            userId = userId
+                            reportTargetId = reportTargetId,
+                            type = type
                         )
                     }
                 )

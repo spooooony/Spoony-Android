@@ -115,12 +115,6 @@ fun SpoonyRegionBottomSheet(
         selectedRegion = RegionModel(-1, "")
     }
 
-    GetColumnHeight(
-        onHeightMeasured = {
-            columnHeight = it
-        }
-    )
-
     SpoonyBasicBottomSheet(
         onDismiss = handleOnDismiss,
         sheetState = sheetState,
@@ -147,6 +141,11 @@ fun SpoonyRegionBottomSheet(
                             modifier = Modifier
                                 .background(if (city == selectedCity) SpoonyAndroidTheme.colors.white else SpoonyAndroidTheme.colors.gray0)
                                 .border(1.dp, color = SpoonyAndroidTheme.colors.gray0)
+                                .onGloballyPositioned {
+                                    if (columnHeight == 0) {
+                                        columnHeight = it.size.height
+                                    }
+                                }
                         )
                     }
                 }
@@ -224,20 +223,5 @@ private fun RegionItem(
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(vertical = 12.dp)
-    )
-}
-
-@Composable
-private fun GetColumnHeight(
-    onHeightMeasured: (Int) -> Unit
-) {
-    RegionItem(
-        region = "",
-        isSelected = false,
-        onClick = {},
-        modifier = Modifier
-            .onGloballyPositioned {
-                onHeightMeasured(it.size.height)
-            }
     )
 }
