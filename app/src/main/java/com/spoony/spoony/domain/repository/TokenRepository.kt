@@ -10,5 +10,6 @@ interface TokenRepository {
     suspend fun clearTokens()
 
     suspend fun initCachedAccessToken()
+    fun updateCachedAccessToken(token: String)
     fun getCachedAccessToken(): String
 }

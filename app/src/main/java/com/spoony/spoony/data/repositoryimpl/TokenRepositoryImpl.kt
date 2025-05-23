@@ -15,10 +15,7 @@ class TokenRepositoryImpl @Inject constructor(
 
     override suspend fun getRefreshToken(): Flow<String> = tokenDataSource.getRefreshToken()
 
-    override suspend fun updateAccessToken(accessToken: String) {
-        cachedAccessToken = accessToken
-        tokenDataSource.updateAccessToken(accessToken)
-    }
+    override suspend fun updateAccessToken(accessToken: String) = tokenDataSource.updateAccessToken(accessToken)
 
     override suspend fun updateRefreshToken(refreshToken: String) = tokenDataSource.updateRefreshToken(refreshToken)
 
@@ -26,6 +23,10 @@ class TokenRepositoryImpl @Inject constructor(
 
     override suspend fun initCachedAccessToken() {
         cachedAccessToken = getAccessToken().firstOrNull().orEmpty()
+    }
+
+    override fun updateCachedAccessToken(token: String) {
+        cachedAccessToken = token
     }
 
     override fun getCachedAccessToken(): String = cachedAccessToken
