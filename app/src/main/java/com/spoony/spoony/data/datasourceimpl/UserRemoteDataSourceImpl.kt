@@ -2,6 +2,7 @@ package com.spoony.spoony.data.datasourceimpl
 
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.datasource.UserRemoteDataSource
+import com.spoony.spoony.data.dto.response.BasicUserInfoResponseDto
 import com.spoony.spoony.data.dto.response.UserInfoResponseDto
 import com.spoony.spoony.data.service.UserService
 import javax.inject.Inject
@@ -9,6 +10,9 @@ import javax.inject.Inject
 class UserRemoteDataSourceImpl @Inject constructor(
     private val userService: UserService
 ) : UserRemoteDataSource {
-    override suspend fun getUserInfoById(userId: Int): BaseResponse<UserInfoResponseDto> =
+    override suspend fun getMyInfo(): BaseResponse<BasicUserInfoResponseDto> =
+        userService.getMyInfo()
+
+    override suspend fun getUserInfoById(userId: Int): BaseResponse<BasicUserInfoResponseDto> =
         userService.getUserInfoById(userId)
 }

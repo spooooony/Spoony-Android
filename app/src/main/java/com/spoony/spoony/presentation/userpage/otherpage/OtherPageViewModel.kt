@@ -1,30 +1,38 @@
 package com.spoony.spoony.presentation.userpage.otherpage
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
-import com.spoony.spoony.core.designsystem.theme.main100
-import com.spoony.spoony.core.designsystem.theme.main400
+import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.domain.repository.ReviewRepository
+import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.userpage.model.ReviewData
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserProfile
 import com.spoony.spoony.presentation.userpage.model.UserType
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.OtherPage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class OtherPageViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
+    private val reviewRepository: ReviewRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -40,21 +48,34 @@ class OtherPageViewModel @Inject constructor(
     val state: StateFlow<UserPageState>
         get() = _state.asStateFlow()
 
+    private val _sideEffect = MutableSharedFlow<OtherPageSideEffect>()
+    val sideEffect: SharedFlow<OtherPageSideEffect>
+        get() = _sideEffect.asSharedFlow()
+
     fun getUserProfile() {
         viewModelScope.launch {
-            val profile = UserProfile(
-                profileId = userInfo.userId,
-                imageUrl = "https://avatars.githubusercontent.com/u/52882799?v=4",
-                nickname = "맛잘알 패트릭 ${userInfo.userId}",
-                region = "경기도 스푼",
-                introduction = "그의 네이버 지도를 훔쳐라",
-                reviewCount = 2,
-                followerCount = 10,
-                followingCount = 20,
-                isFollowing = false
-            )
-            _state.update { it.copy(profile = profile) }
-            getUserReviews()
+            userRepository.getUserInfoById(userInfo.userId)
+                .onSuccess { userInfoEntity ->
+                    _state.update { currentState ->
+                        currentState.copy(
+                            profile = UserProfile(
+                                profileId = userInfoEntity.userId,
+                                imageUrl = userInfoEntity.profileImageUrl,
+                                nickname = userInfoEntity.userName,
+                                region = userInfoEntity.regionName,
+                                introduction = userInfoEntity.introduction,
+                                reviewCount = userInfoEntity.reviewCount,
+                                followerCount = userInfoEntity.followerCount,
+                                followingCount = userInfoEntity.followingCount,
+                                isFollowing = userInfoEntity.isFollowing
+                            )
+                        )
+                    }
+                    getOtherUserReviews()
+                }
+                .onFailure {
+                    _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                }
         }
     }
 
@@ -87,6 +108,7 @@ class OtherPageViewModel @Inject constructor(
 
     fun toggleLocalReviewOnly() {
         _state.update { it.copy(isLocalReviewOnly = !it.isLocalReviewOnly) }
+        getOtherUserReviews()
     }
 
     fun blockUser(userId: Int) {
@@ -102,47 +124,39 @@ class OtherPageViewModel @Inject constructor(
         }
     }
 
-    private fun getUserReviews() {
+    private fun getOtherUserReviews() {
         viewModelScope.launch {
-            val mockReviews = persistentListOf(
-                ReviewData(
-                    reviewId = 1,
-                    content = "이 근처에서 제일 맛있는 파스타집! 까르보나라가 진짜 크리미하고 맛있어요. 가격도 합리적이에요.",
-                    category = ReviewCardCategory(
-                        text = "파스타",
-                        iconUrl = "",
-                        textColor = main400,
-                        backgroundColor = main100
-                    ),
-                    username = "맛잘알 패트릭 ${userInfo.userId}",
-                    userRegion = "경기도 스푼",
-                    date = "2023.08.10",
-                    addMapCount = 15,
-                    imageList = persistentListOf(
-                        "https://picsum.photos/id/488/200/200"
-                    )
-                ),
-                ReviewData(
-                    reviewId = 2,
-                    content = "이 동네에 이런 핫도그집이 있다니! 핫도그 빵이 정말 폭신폭신하고 소시지도 쫄깃해요. 소스도 다양해서 취향대로 골라먹을 수 있어요.",
-                    category = ReviewCardCategory(
-                        text = "브런치",
-                        iconUrl = "",
-                        textColor = main400,
-                        backgroundColor = main100
-                    ),
-                    username = "맛잘알 패트릭 ${userInfo.userId}",
-                    userRegion = "경기도 스푼",
-                    date = "2023.07.25",
-                    addMapCount = 8,
-                    imageList = persistentListOf(
-                        "https://picsum.photos/id/431/200/200",
-                        "https://picsum.photos/id/555/200/200"
-                    )
-                )
-            )
+            reviewRepository.getOtherReview(userInfo.userId, _state.value.isLocalReviewOnly)
+                .onSuccess { reviewEntity ->
+                    val reviews = reviewEntity.feedList.map { feed ->
+                        ReviewData(
+                            reviewId = feed.postId,
+                            content = feed.description,
+                            category = ReviewCardCategory(
+                                text = feed.categoryInfo.categoryName,
+                                iconUrl = feed.categoryInfo.iconUrl,
+                                textColor = Color.hexToColor(feed.categoryInfo.textColor.toValidHexColor()),
+                                backgroundColor = Color.hexToColor(feed.categoryInfo.backgroundColor.toValidHexColor())
+                            ),
+                            username = feed.userName,
+                            userRegion = feed.userRegion,
+                            date = feed.createdAt,
+                            addMapCount = feed.zzimCount,
+                            imageList = feed.photoUrlList.toImmutableList()
+                        )
+                    }.toImmutableList()
 
-            _state.update { it.copy(reviews = mockReviews) }
+                    _state.update { currentState ->
+                        currentState.copy(reviews = reviews)
+                    }
+                }
+                .onFailure {
+                    _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                }
         }
     }
+}
+
+sealed class OtherPageSideEffect {
+    data class ShowSnackbar(val message: String) : OtherPageSideEffect()
 }
