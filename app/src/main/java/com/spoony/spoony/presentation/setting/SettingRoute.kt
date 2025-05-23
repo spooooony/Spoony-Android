@@ -1,9 +1,12 @@
 package com.spoony.spoony.presentation.setting
 
 import android.content.Intent
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
@@ -22,6 +25,7 @@ private typealias URL = String
 
 @Composable
 fun SettingRoute(
+    paddingValues: PaddingValues,
     navigateUp: () -> Unit
 ) {
     val settingNavigator: NavHostController = rememberNavController()
@@ -43,7 +47,8 @@ fun SettingRoute(
 
     NavHost(
         navController = settingNavigator,
-        startDestination = SettingRoutes.Main
+        startDestination = SettingRoutes.Main,
+        modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
     ) {
         composable<SettingRoutes.Main> {
             SettingMainRoute(
