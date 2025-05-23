@@ -11,6 +11,7 @@ import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -32,9 +33,12 @@ class ExploreSearchViewModel @Inject constructor(
     val sideEffect: SharedFlow<ExploreSearchSideEffect>
         get() = _sideEffect
 
+    private var searchJob: Job? = null
+
     fun switchSearchType(
         searchType: SearchType
     ) {
+        searchJob?.cancel()
         _state.update {
             it.copy(
                 searchType = searchType,
@@ -46,6 +50,7 @@ class ExploreSearchViewModel @Inject constructor(
     }
 
     fun clearSearchKeyword() {
+        searchJob?.cancel()
         _state.update {
             it.copy(
                 searchKeyword = ""
@@ -66,7 +71,8 @@ class ExploreSearchViewModel @Inject constructor(
     fun search(keyword: String) {
         val keywordTrim = keyword.trim()
         if (keywordTrim.isBlank()) return
-        viewModelScope.launch {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
             when (_state.value.searchType) {
                 SearchType.USER -> {
                     _state.update {
