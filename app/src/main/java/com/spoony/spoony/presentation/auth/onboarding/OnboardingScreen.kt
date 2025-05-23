@@ -68,6 +68,7 @@ private fun OnboardingScreen(
                     onBackButtonClick = navController::navigateUp,
                     onSkipButtonClick = {
                         viewModel.skipStep()
+                        viewModel.signUp()
                         navController.navigate(
                             route = End,
                             navOptions = navOptions {
