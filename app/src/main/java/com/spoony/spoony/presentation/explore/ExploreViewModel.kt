@@ -7,6 +7,7 @@ import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.presentation.explore.model.FilterType
+import com.spoony.spoony.presentation.explore.model.toExploreFilter
 import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
@@ -36,24 +38,25 @@ class ExploreViewModel @Inject constructor(
 
     init {
         getAllFeedList()
+        getCategoryList()
     }
 
     private fun getCategoryList() {
         viewModelScope.launch {
-            categoryRepository.getCategories()
+            categoryRepository.getFoodCategories()
                 .onSuccess { response ->
+                    val categoryList = response.map { it.toExploreFilter() }.toImmutableList()
                     _state.update {
                         it.copy(
-                            categoryList = UiState.Success(response.toImmutableList())
+                            exploreFilterItems = it.exploreFilterItems.copy(
+                                categories = categoryList
+                            )
                         )
                     }
                 }
-                .onFailure {
-                    _state.update {
-                        it.copy(
-                            categoryList = UiState.Failure("카테고리 목록 조회 실패")
-                        )
-                    }
+                .onFailure { e ->
+                    Timber.e(e)
+                    _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
     }
@@ -111,7 +114,7 @@ class ExploreViewModel @Inject constructor(
                     val updatedText = when {
                         !isSelected -> option.sort.defaultText
                         selectedCategories.size == 1 -> {
-                            categoryItems.find { it.id == selectedCategories.keys.first() }?.name ?: "카테고리"
+                            categoryItems.find { it.id == selectedCategories.keys.first() }?.name ?: option.sort.defaultText
                         }
                         else -> {
                             val firstSelected = categoryItems.find { it.id == selectedCategories.keys.min() }?.name ?: ""
@@ -126,7 +129,7 @@ class ExploreViewModel @Inject constructor(
                     val updatedText = when {
                         !isSelected -> option.sort.defaultText
                         selectedRegions.size == 1 -> {
-                            regionItems.find { it.id == selectedRegions.keys.first() }?.name ?: "지역"
+                            regionItems.find { it.id == selectedRegions.keys.first() }?.name ?: option.sort.defaultText
                         }
                         else -> {
                             val firstSelected = regionItems.find { it.id == selectedRegions.keys.min() }?.name ?: ""
@@ -141,7 +144,7 @@ class ExploreViewModel @Inject constructor(
                     val updatedText = when {
                         !isSelected -> option.sort.defaultText
                         selectedAges.size == 1 -> {
-                            ageItems.find { it.id == selectedAges.keys.first() }?.name ?: "연령대"
+                            ageItems.find { it.id == selectedAges.keys.first() }?.name ?: option.sort.defaultText
                         }
                         else -> {
                             val firstSelected = ageItems.find { it.id == selectedAges.keys.min() }?.name ?: ""

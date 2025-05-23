@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.explore.model
 
+import com.spoony.spoony.domain.entity.CategoryEntity
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -11,6 +12,16 @@ data class ExploreFilter(
     val selectedIconUrl: String = "",
     val unSelectedIconUrl: String = ""
 )
+
+fun CategoryEntity.toExploreFilter(): ExploreFilter {
+    return ExploreFilter(
+        id = this.categoryId,
+        name = this.categoryName,
+        type = "category",
+        selectedIconUrl = this.iconUrl,
+        unSelectedIconUrl = this.unSelectedIconUrl ?: ""
+    )
+}
 
 object ExploreFilterDataProvider {
     fun getDefaultPropertyFilter() = persistentListOf(
