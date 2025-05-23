@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -20,6 +21,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private enum class SpoonDrawDialogState {
     DRAW, LOADING, RESULT
@@ -28,9 +30,11 @@ private enum class SpoonDrawDialogState {
 @Composable
 fun SpoonDrawDialog(
     onDismiss: () -> Unit,
-    onSpoonDrawButtonClick: () -> SpoonDrawModel,
+    onSpoonDrawButtonClick: suspend () -> SpoonDrawModel,
     onConfirmButtonClick: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     var dialogState by remember { mutableStateOf(SpoonDrawDialogState.DRAW) }
     var drawResult by remember { mutableStateOf(SpoonDrawModel()) }
 
@@ -49,7 +53,9 @@ fun SpoonDrawDialog(
                 buttonText = "스푼 뽑기",
                 onButtonClick = {
                     dialogState = SpoonDrawDialogState.LOADING
-                    drawResult = onSpoonDrawButtonClick()
+                    coroutineScope.launch {
+                        drawResult = onSpoonDrawButtonClick()
+                    }
                 },
                 onDismiss = onDismiss
             ) {

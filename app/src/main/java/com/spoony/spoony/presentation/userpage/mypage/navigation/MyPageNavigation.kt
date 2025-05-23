@@ -24,7 +24,8 @@ fun NavGraphBuilder.myPageNavGraph(
     navigateToProfileEdit: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
-    navigateToEditReview: (Int, RegisterType) -> Unit
+    navigateToEditReview: (Int, RegisterType) -> Unit,
+    navigateToAttendance: () -> Unit
 ) {
     composable<MyPage> {
         MyPageRoute(
@@ -34,7 +35,8 @@ fun NavGraphBuilder.myPageNavGraph(
             navigateToProfileEdit = navigateToProfileEdit,
             navigateToRegister = navigateToRegister,
             navigateToReviewDetail = navigateToReviewDetail,
-            navigateToEditReview = navigateToEditReview
+            navigateToEditReview = navigateToEditReview,
+            navigateToAttendance = navigateToAttendance
         )
     }
 }

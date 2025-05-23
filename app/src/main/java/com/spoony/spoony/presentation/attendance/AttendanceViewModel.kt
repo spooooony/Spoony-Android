@@ -1,60 +1,106 @@
 package com.spoony.spoony.presentation.attendance
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.domain.repository.SpoonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 import javax.inject.Inject
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltViewModel
-class AttendanceViewModel @Inject constructor() : ViewModel() {
+class AttendanceViewModel @Inject constructor(
+    private val spoonRepository: SpoonRepository
+) : ViewModel() {
     private val _state: MutableStateFlow<AttendanceState> = MutableStateFlow(AttendanceState())
     val state: StateFlow<AttendanceState>
         get() = _state.asStateFlow()
 
-    init {
-        getWeeklySpoonDraw()
-    }
+    private val _sideEffect = MutableSharedFlow<AttendanceSideEffect>()
+    val sideEffect: SharedFlow<AttendanceSideEffect>
+        get() = _sideEffect.asSharedFlow()
 
-    private fun getWeeklySpoonDraw() {
+    init {
+        val today = LocalDate.now()
         _state.update {
             it.copy(
-                weeklyStartDate = getWeeklyDate("2025-05-05"),
-                spoonDrawList = UiState.Success(
-                    persistentListOf(
-                        SpoonDrawModel(
-                            drawId = 1,
-                            spoonTypeId = 1,
-                            spoonName = "일회용 티스푼",
-                            spoonAmount = 1,
-                            spoonImage = "",
-                            localDate = "2025-05-05"
-                        ),
-                        SpoonDrawModel(
-                            drawId = 2,
-                            spoonTypeId = 2,
-                            spoonName = "황금 스푼",
-                            spoonAmount = 4,
-                            spoonImage = "",
-                            localDate = "2025-05-09"
-                        )
-                    )
-                )
+                weeklyStartDate = today.with(DayOfWeek.MONDAY).format(hyphenFormatter)
             )
         }
     }
 
-    private fun getWeeklyDate(startDate: String): String {
+    fun getWeeklySpoonDraw() {
+        viewModelScope.launch {
+            spoonRepository.getWeeklySpoonDraw()
+                .onSuccess { weeklyDrawResult ->
+                    _state.update {
+                        it.copy(
+                            spoonDrawList = UiState.Success(
+                                weeklyDrawResult.spoonResultList.map { spoonEntity ->
+                                    SpoonDrawModel(
+                                        drawId = spoonEntity.drawId,
+                                        spoonTypeId = spoonEntity.spoonType.spoonTypeId,
+                                        spoonName = spoonEntity.spoonType.spoonName,
+                                        spoonAmount = spoonEntity.spoonType.spoonAmount,
+                                        spoonImage = spoonEntity.spoonType.spoonImage,
+                                        localDate = spoonEntity.localDate
+                                    )
+                                }.toImmutableList()
+                            ),
+                            totalSpoonCount = weeklyDrawResult.totalSpoonCount
+                        )
+                    }
+                }
+                .onFailure { exception ->
+                    Timber.e(exception)
+                    _state.update {
+                        it.copy(
+                            spoonDrawList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        )
+                    }
+                    _sideEffect.emit(
+                        AttendanceSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                    )
+                }
+        }
+    }
+
+    suspend fun drawSpoon(): SpoonDrawModel {
+        return try {
+            val spoon = spoonRepository.drawSpoon().getOrThrow()
+            SpoonDrawModel(
+                drawId = spoon.drawId,
+                spoonTypeId = spoon.spoonType.spoonTypeId,
+                spoonName = spoon.spoonType.spoonName,
+                spoonImage = spoon.spoonType.spoonImage,
+                spoonAmount = spoon.spoonType.spoonAmount,
+                localDate = spoon.localDate
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+            _sideEffect.emit(
+                AttendanceSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+            )
+            SpoonDrawModel()
+        }
+    }
+
+    fun getWeeklyDate(startDate: String): String {
         try {
             val weekStartDate = LocalDate.parse(startDate, hyphenFormatter)
             val weekEndDate = weekStartDate.plusDays(6)
@@ -62,6 +108,11 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
             return "${formatDateWithDayOfWeek(weekStartDate)} ~ ${formatDateWithDayOfWeek(weekEndDate)}"
         } catch (e: Exception) {
             Timber.e(e)
+            viewModelScope.launch {
+                _sideEffect.emit(
+                    AttendanceSideEffect.ShowSnackBar("예기치 않는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                )
+            }
             return ""
         }
     }
