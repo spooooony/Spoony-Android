@@ -126,6 +126,7 @@ private fun ReportScreen(
     Column(
         modifier = Modifier
             .addFocusCleaner(focusManager)
+            .padding(top = paddingValues.calculateTopPadding())
             .navigationBarsPadding()
     ) {
         TitleTopAppBar(

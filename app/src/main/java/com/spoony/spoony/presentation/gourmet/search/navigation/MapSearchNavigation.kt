@@ -22,6 +22,7 @@ fun NavGraphBuilder.mapSearchNavGraph(
 ) {
     composable<MapSearch> {
         MapSearchRoute(
+            paddingValues = paddingValues,
             navigateUp = navigateUp,
             navigateToLocationMap = navigateToLocationMap
         )

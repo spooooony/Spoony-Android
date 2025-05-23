@@ -7,6 +7,7 @@ import com.spoony.spoony.data.repositoryimpl.MapRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.PostRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.RegisterRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.ReportRepositoryImpl
+import com.spoony.spoony.data.repositoryimpl.ReviewRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.SpoonRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.UserRepositoryImpl
 import com.spoony.spoony.domain.repository.AuthRepository
@@ -16,6 +17,7 @@ import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.RegisterRepository
 import com.spoony.spoony.domain.repository.ReportRepository
+import com.spoony.spoony.domain.repository.ReviewRepository
 import com.spoony.spoony.domain.repository.SpoonRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import dagger.Binds
@@ -62,4 +64,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindSpoonRepository(spoonRepositoryImpl: SpoonRepositoryImpl): SpoonRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindReviewRepository(reviewRepositoryImpl: ReviewRepositoryImpl): ReviewRepository
 }
