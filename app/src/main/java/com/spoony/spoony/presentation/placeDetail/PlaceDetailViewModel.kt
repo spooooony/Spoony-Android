@@ -8,6 +8,7 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.PostRepository
+import com.spoony.spoony.domain.repository.SpoonRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.placeDetail.model.toModel
 import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
@@ -26,6 +27,7 @@ class PlaceDetailViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
+    private val spoonRepository: SpoonRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
@@ -90,7 +92,7 @@ class PlaceDetailViewModel @Inject constructor(
 
     private fun getUserSpoonCount() {
         viewModelScope.launch {
-            authRepository.getSpoonCount()
+            spoonRepository.getSpoonCount()
                 .onSuccess { response ->
                     _state.update {
                         it.copy(

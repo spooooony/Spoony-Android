@@ -15,11 +15,6 @@ class AuthRepositoryImpl @Inject constructor(
             authRemoteDataSource.getUserInfo().data!!.toDomain()
         }
 
-    override suspend fun getSpoonCount(): Result<Int> =
-        runCatching {
-            authRemoteDataSource.getSpoonCount().data!!.spoonAmount
-        }
-
     override suspend fun login(): Result<TokenEntity?> =
         runCatching {
             authRemoteDataSource.login().data!!.jwtTokenDto?.toDomain()

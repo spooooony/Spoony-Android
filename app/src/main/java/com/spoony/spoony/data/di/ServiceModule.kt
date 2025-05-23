@@ -7,6 +7,7 @@ import com.spoony.spoony.data.service.MapService
 import com.spoony.spoony.data.service.PlaceService
 import com.spoony.spoony.data.service.PostService
 import com.spoony.spoony.data.service.ReportService
+import com.spoony.spoony.data.service.SpoonService
 import com.spoony.spoony.data.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -57,4 +58,9 @@ object ServiceModule {
     @Singleton
     fun provideUserService(retrofit: Retrofit): UserService =
         retrofit.create(UserService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSpoonService(retrofit: Retrofit): SpoonService =
+        retrofit.create(SpoonService::class.java)
 }

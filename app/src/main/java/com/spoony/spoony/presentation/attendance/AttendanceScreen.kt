@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +33,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.dialog.SpoonDrawDialog
+import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
@@ -59,8 +65,13 @@ fun AttendanceRoute(
     navigateUp: () -> Unit,
     viewModel: AttendanceViewModel = hiltViewModel()
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val showSnackBar = LocalSnackBarTrigger.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val systemUiController = rememberSystemUiController()
+
+    var spoonDrawDialogVisibility by remember { mutableStateOf(true) }
 
     DisposableEffect(Unit) {
         systemUiController.setNavigationBarColor(
@@ -74,14 +85,37 @@ fun AttendanceRoute(
         }
     }
 
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { sideEffect ->
+                when (sideEffect) {
+                    is AttendanceSideEffect.ShowSnackBar -> {
+                        showSnackBar(sideEffect.message)
+                    }
+                }
+            }
+    }
+
+    LaunchedEffect(spoonDrawDialogVisibility) {
+        viewModel.getWeeklySpoonDraw()
+    }
+
     AttendanceScreen(
         paddingValues = paddingValues,
-        weeklyDate = state.weeklyStartDate,
+        weeklyDate = viewModel.getWeeklyDate(state.weeklyStartDate),
         spoonDrawList = (state.spoonDrawList as? UiState.Success<ImmutableList<SpoonDrawModel>>)?.data
             ?: persistentListOf(),
-        spoonCount = 100,
+        spoonCount = state.totalSpoonCount,
         onBackButtonClick = navigateUp
     )
+
+    if (spoonDrawDialogVisibility) {
+        SpoonDrawDialog(
+            onDismiss = { spoonDrawDialogVisibility = false },
+            onSpoonDrawButtonClick = viewModel::drawSpoon,
+            onConfirmButtonClick = { spoonDrawDialogVisibility = false }
+        )
+    }
 }
 
 @Composable
@@ -191,7 +225,6 @@ private fun SpoonGrid(
         items(daysList) { day ->
             SpoonItem(
                 day = day,
-                isDrawn = weeklyList[day]?.spoonImage != null,
                 spoonImage = weeklyList[day]?.spoonImage
             )
         }
@@ -201,20 +234,19 @@ private fun SpoonGrid(
 @Composable
 private fun SpoonItem(
     day: String,
-    isDrawn: Boolean,
     spoonImage: String?
 ) {
-    val (borderColor, backgroundColor, textColor) = if (isDrawn) {
-        Triple(
-            SpoonyAndroidTheme.colors.main200,
-            SpoonyAndroidTheme.colors.main100,
-            SpoonyAndroidTheme.colors.main300
-        )
-    } else {
+    val (borderColor, backgroundColor, textColor) = if (spoonImage == null) {
         Triple(
             SpoonyAndroidTheme.colors.gray100,
             SpoonyAndroidTheme.colors.gray0,
             SpoonyAndroidTheme.colors.gray300
+        )
+    } else {
+        Triple(
+            SpoonyAndroidTheme.colors.main200,
+            SpoonyAndroidTheme.colors.main100,
+            SpoonyAndroidTheme.colors.main300
         )
     }
 
@@ -241,15 +273,14 @@ private fun SpoonItem(
                 .padding(start = 6.dp, top = 2.dp)
         )
 
-        if (isDrawn) {
-            Image(
-                painter = painterResource(R.drawable.img_wooden_spoon),
-                contentDescription = null
-            )
-        } else {
+        if (spoonImage == null) {
             Image(
                 painter = painterResource(R.drawable.img_wooden_spoon_grey),
                 contentDescription = null
+            )
+        } else {
+            UrlImage(
+                imageUrl = spoonImage
             )
         }
     }
