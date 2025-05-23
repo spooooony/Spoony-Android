@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.profileedit.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -17,6 +18,7 @@ fun NavController.navigateToProfileEdit(
 }
 
 fun NavGraphBuilder.profileEditGraph(
+    paddingValues: PaddingValues,
     navigateUp: () -> Unit
 ) {
     composable<ProfileEdit>(
@@ -34,6 +36,7 @@ fun NavGraphBuilder.profileEditGraph(
         }
     ) {
         ProfileEditScreen(
+            paddingValues = paddingValues,
             onBackButtonClick = navigateUp
         )
     }
