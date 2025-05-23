@@ -83,7 +83,7 @@ class PlaceDetailViewModel @Inject constructor(
                                     isFollowing = true
                                 )
                             }
-                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("오류가 발생했습니다."))
+                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                         }
                 false ->
                     userRepository.followUser(userId = userId)
@@ -93,7 +93,7 @@ class PlaceDetailViewModel @Inject constructor(
                                     isFollowing = false
                                 )
                             }
-                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("오류가 발생했습니다."))
+                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                         }
             }
         }
@@ -121,6 +121,7 @@ class PlaceDetailViewModel @Inject constructor(
                             placeDetailModel = UiState.Failure("게시물 조회 실패")
                         )
                     }
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
     }
@@ -137,12 +138,14 @@ class PlaceDetailViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure {
+                .onFailure { e ->
+                    Timber.e(e)
                     _state.update {
                         it.copy(
                             spoonCount = UiState.Failure("유저 스푼 개수 조회 실패")
                         )
                     }
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
     }
@@ -161,39 +164,60 @@ class PlaceDetailViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure(Timber::e)
+                .onFailure { e ->
+                    Timber.e(e)
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                }
         }
     }
 
     fun addMyMap(postId: Int) {
+        _state.update {
+            it.copy(
+                isAddMap = true,
+                addMapCount = it.addMapCount + 1
+            )
+        }
         viewModelScope.launch {
             postRepository.postAddMap(postId = postId)
                 .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에 추가되었어요."))
-                    _state.update {
-                        it.copy(
-                            isAddMap = true,
-                            addMapCount = it.addMapCount + 1
-                        )
-                    }
                 }
-                .onFailure(Timber::e)
-        }
-    }
-
-    fun deletePinMap(postId: Int) {
-        viewModelScope.launch {
-            postRepository.deletePinMap(postId = postId)
-                .onSuccess {
-                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
+                .onFailure { e ->
+                    Timber.e(e)
                     _state.update {
                         it.copy(
                             isAddMap = false,
                             addMapCount = it.addMapCount - 1
                         )
                     }
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
-                .onFailure(Timber::e)
+        }
+    }
+
+    fun deletePinMap(postId: Int) {
+        _state.update {
+            it.copy(
+                isAddMap = false,
+                addMapCount = it.addMapCount - 1
+            )
+        }
+        viewModelScope.launch {
+            postRepository.deletePinMap(postId = postId)
+                .onSuccess {
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("내 지도에서 삭제되었어요."))
+                }
+                .onFailure { e ->
+                    Timber.e(e)
+                    _state.update {
+                        it.copy(
+                            isAddMap = true,
+                            addMapCount = it.addMapCount + 1
+                        )
+                    }
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                }
         }
     }
 
@@ -205,8 +229,9 @@ class PlaceDetailViewModel @Inject constructor(
                 .onSuccess {
                     _sideEffect.emit(PlaceDetailSideEffect.NavigateUp)
                 }
-                .onFailure {
-                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                .onFailure { e ->
+                    Timber.e(e)
+                    _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
     }
