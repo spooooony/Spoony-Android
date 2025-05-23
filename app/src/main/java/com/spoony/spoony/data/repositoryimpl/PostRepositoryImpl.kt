@@ -36,4 +36,10 @@ class PostRepositoryImpl @Inject constructor(
                 postId = placeId
             ).data?.zzimFocusResponseList!!.map { it.toDomain() }
         }
+
+    override suspend fun deletePost(postId: Int): Result<Unit> =
+        runCatching {
+            postRemoteDataSource.deletePost(postId)
+            Unit
+        }
 }

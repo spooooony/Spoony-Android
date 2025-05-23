@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class ReviewRepositoryImpl @Inject constructor(
     private val reviewDataSource: ReviewRemoteDataSource
-): ReviewRepository {
+) : ReviewRepository {
     override suspend fun getMyReview(): Result<UserPageReviewEntity> =
         runCatching {
             reviewDataSource.getMyReview().data!!.toDomain()

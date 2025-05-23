@@ -18,4 +18,3 @@ fun BasicUserInfoResponseDto.toDomain() = BasicUserInfoEntity(
     reviewCount = this.reviewCount,
     profileImageUrl = this.profileImageUrl
 )
-

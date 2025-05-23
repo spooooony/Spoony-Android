@@ -6,5 +6,5 @@ interface ReviewRepository {
     suspend fun getMyReview(): Result<UserPageReviewEntity>
 
     suspend fun getOtherReview(targetUserId: Int, isLocalReview: Boolean):
-            Result<UserPageReviewEntity>
+        Result<UserPageReviewEntity>
 }

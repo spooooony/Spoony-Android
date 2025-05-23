@@ -4,11 +4,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
-import com.spoony.spoony.core.designsystem.theme.main100
-import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.toValidHexColor
-import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.ReviewRepository
 import com.spoony.spoony.domain.repository.SpoonRepository
 import com.spoony.spoony.domain.repository.UserRepository
@@ -18,14 +16,13 @@ import com.spoony.spoony.presentation.userpage.model.UserProfile
 import com.spoony.spoony.presentation.userpage.model.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -33,7 +30,8 @@ import kotlinx.coroutines.launch
 class MyPageViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val reviewRepository: ReviewRepository,
-    private val spoonRepository: SpoonRepository
+    private val spoonRepository: SpoonRepository,
+    private val postRepository: PostRepository
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<UserPageState> = MutableStateFlow(
@@ -116,6 +114,19 @@ class MyPageViewModel @Inject constructor(
                     _state.update { currentState ->
                         currentState.copy(reviews = reviews)
                     }
+                }
+                .onFailure {
+                    _sideEffect.emit(MyPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                }
+        }
+    }
+
+    fun deleteReview(reviewId: Int) {
+        viewModelScope.launch {
+            postRepository.deletePost(reviewId)
+                .onSuccess {
+                    getUserProfile()
+                    _sideEffect.emit(MyPageSideEffect.ShowSnackbar("삭제 되었어요!"))
                 }
                 .onFailure {
                     _sideEffect.emit(MyPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))

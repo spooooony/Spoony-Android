@@ -3,7 +3,6 @@ package com.spoony.spoony.data.datasourceimpl
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.datasource.UserRemoteDataSource
 import com.spoony.spoony.data.dto.response.BasicUserInfoResponseDto
-import com.spoony.spoony.data.dto.response.UserInfoResponseDto
 import com.spoony.spoony.data.service.UserService
 import javax.inject.Inject
 

@@ -5,8 +5,8 @@ import com.spoony.spoony.data.dto.response.UserPageReviewResponseDto
 
 interface ReviewRemoteDataSource {
     suspend fun getMyReview():
-            BaseResponse<UserPageReviewResponseDto>
+        BaseResponse<UserPageReviewResponseDto>
 
     suspend fun getOtherReview(targetUserId: Int, isLocalReview: Boolean):
-            BaseResponse<UserPageReviewResponseDto>
+        BaseResponse<UserPageReviewResponseDto>
 }

@@ -8,11 +8,10 @@ import javax.inject.Inject
 
 class ReviewRemoteDataSourceImpl @Inject constructor(
     private val reviewService: ReviewService
-): ReviewRemoteDataSource {
+) : ReviewRemoteDataSource {
     override suspend fun getMyReview(): BaseResponse<UserPageReviewResponseDto> =
         reviewService.getMyReview()
 
     override suspend fun getOtherReview(targetUserId: Int, isLocalReview: Boolean): BaseResponse<UserPageReviewResponseDto> =
         reviewService.getOtherReview(targetUserId, isLocalReview)
-
 }

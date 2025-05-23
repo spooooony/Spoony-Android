@@ -104,7 +104,7 @@ class FollowViewModel @Inject constructor(
     private fun generateMockFollowings(userId: Int): ImmutableList<UserItemUiState> {
         return (1..50).map { index ->
             UserItemUiState(
-                userId = index + userId,
+                userId = index,
                 userName = getUserNameByIndex(index + userId),
                 imageUrl = "https://picsum.photos/${200 + index}",
                 region = getRegionByIndex(index + userId),
