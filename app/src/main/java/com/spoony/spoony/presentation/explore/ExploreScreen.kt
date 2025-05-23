@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.explore
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,9 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -26,8 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -260,7 +267,8 @@ private fun ExploreScreen(
             placeReviewList = placeReviewList,
             onRegisterButtonClick = onRegisterButtonClick,
             onPlaceDetailItemClick = onPlaceDetailItemClick,
-            onReportButtonClick = onReportButtonClick
+            onReportButtonClick = onReportButtonClick,
+            onRefresh = {}
         )
     }
 }
@@ -279,11 +287,13 @@ private fun handleFilterClick(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExploreContent(
     onRegisterButtonClick: () -> Unit,
     onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
+    onRefresh: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     modifier: Modifier = Modifier
 ) {
@@ -300,40 +310,72 @@ private fun ExploreContent(
         }
 
         is UiState.Success -> {
-            LazyColumn(
-                modifier = modifier,
-                contentPadding = PaddingValues(bottom = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(
-                    items = placeReviewList.data,
-                    key = { placeReview ->
-                        placeReview.reviewId
+            val refreshState = rememberPullToRefreshState()
+
+            val alpha by remember {
+                derivedStateOf {
+                    if (refreshState.isRefreshing) {
+                        1f
+                    } else {
+                        refreshState.progress.let { it * it * it }
                     }
-                ) { placeReview ->
-                    ReviewCard(
-                        reviewId = placeReview.reviewId,
-                        username = placeReview.userName,
-                        userRegion = placeReview.userRegion,
-                        review = placeReview.description,
-                        addMapCount = placeReview.addMapCount,
-                        date = placeReview.createdAt,
-                        imageList = placeReview.photoUrlList,
-                        category = ReviewCardCategory(
-                            text = placeReview.category.categoryName,
-                            iconUrl = placeReview.category.iconUrl,
-                            backgroundColor = Color.hexToColor(placeReview.category.backgroundColor.toValidHexColor()),
-                            textColor = Color.hexToColor(placeReview.category.textColor.toValidHexColor())
-                        ),
-                        menuItems = menuItems,
-                        onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
-                        onMenuItemClick = { option ->
-                            when (option) {
-                                "신고하기" -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
-                            }
-                        }
-                    )
                 }
+            }
+
+            LaunchedEffect(refreshState.isRefreshing) {
+                if (refreshState.isRefreshing) {
+                    onRefresh()
+                    refreshState.endRefresh()
+                }
+            }
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .nestedScroll(refreshState.nestedScrollConnection)
+            ) {
+                LazyColumn(
+                    modifier = Modifier,
+                    contentPadding = PaddingValues(bottom = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(
+                        items = placeReviewList.data,
+                        key = { placeReview ->
+                            placeReview.reviewId
+                        }
+                    ) { placeReview ->
+                        ReviewCard(
+                            reviewId = placeReview.reviewId,
+                            username = placeReview.userName,
+                            userRegion = placeReview.userRegion,
+                            review = placeReview.description,
+                            addMapCount = placeReview.addMapCount,
+                            date = placeReview.createdAt,
+                            imageList = placeReview.photoUrlList,
+                            category = ReviewCardCategory(
+                                text = placeReview.category.categoryName,
+                                iconUrl = placeReview.category.iconUrl,
+                                backgroundColor = Color.hexToColor(placeReview.category.backgroundColor.toValidHexColor()),
+                                textColor = Color.hexToColor(placeReview.category.textColor.toValidHexColor())
+                            ),
+                            menuItems = menuItems,
+                            onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
+                            onMenuItemClick = { option ->
+                                when (option) {
+                                    "신고하기" -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
+                                }
+                            }
+                        )
+                    }
+                }
+                PullToRefreshContainer(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .zIndex(1f),
+                    state = refreshState,
+                    containerColor = SpoonyAndroidTheme.colors.main500.copy(alpha = alpha),
+                    contentColor = SpoonyAndroidTheme.colors.white.copy(alpha = alpha)
+                )
             }
         }
 
