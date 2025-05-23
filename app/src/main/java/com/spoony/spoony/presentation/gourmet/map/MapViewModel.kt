@@ -122,14 +122,15 @@ class MapViewModel @Inject constructor(
 
     private fun getUserInfo() {
         viewModelScope.launch {
-            authRepository.getUserInfo()
-                .onSuccess { response ->
-                    _state.update {
-                        it.copy(
-                            userName = UiState.Success(response.userName)
-                        )
-                    }
-                }
+            // TODO: 민재오빠가 만들어둔걸로 바꿔두기
+//            authRepository.getUserInfo()
+//                .onSuccess { response ->
+//                    _state.update {
+//                        it.copy(
+//                            userName = UiState.Success(response.userName)
+//                        )
+//                    }
+//                }
         }
     }
 

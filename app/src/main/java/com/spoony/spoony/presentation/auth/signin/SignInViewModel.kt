@@ -6,13 +6,19 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
+import com.spoony.spoony.domain.repository.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class SignInViewModel @Inject constructor() : ViewModel() {
+@HiltViewModel
+class SignInViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
     private val _sideEffect = MutableSharedFlow<SignInSideEffect>()
     val sideEffect: SharedFlow<SignInSideEffect>
         get() = _sideEffect.asSharedFlow()
@@ -31,7 +37,8 @@ class SignInViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             when {
                 token != null -> {
-                    // 로그인 성공
+                    // 카카오 로그인 성공
+                    signIn(token)
                 }
 
                 error is ClientError && error.reason == ClientErrorCause.Cancelled -> {
@@ -47,6 +54,23 @@ class SignInViewModel @Inject constructor() : ViewModel() {
                 else -> {
                     _sideEffect.emit(SignInSideEffect.ShowSnackBar("카카오 로그인에 실패했습니다."))
                 }
+            }
+        }
+    }
+
+    private fun signIn(
+        token: OAuthToken,
+        platform: String = "KAKAO"
+    ) {
+        viewModelScope.launch {
+            authRepository.signIn(
+                token = token.accessToken,
+                platform = platform
+            ).onSuccess { token ->
+                Timber.d("token: $token")
+            }.onFailure { exception ->
+                Timber.e(exception)
+                _sideEffect.emit(SignInSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
             }
         }
     }

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginResponseDto(
+data class SignInResponseDto(
     @SerialName("exists")
     val exists: Boolean,
     @SerialName("user")

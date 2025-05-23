@@ -1,15 +1,16 @@
 package com.spoony.spoony.data.service
 
 import com.spoony.spoony.core.network.BaseResponse
-import com.spoony.spoony.data.dto.response.LoginResponseDto
-import com.spoony.spoony.data.dto.response.UserInfoResponseDto
-import retrofit2.http.GET
+import com.spoony.spoony.data.dto.request.SignInRequestDto
+import com.spoony.spoony.data.dto.response.SignInResponseDto
+import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthService {
-    @GET("/api/v1/user")
-    suspend fun getUserInfo(): BaseResponse<UserInfoResponseDto>
-
-    @POST("/apio/v1/auth/login")
-    suspend fun login(): BaseResponse<LoginResponseDto>
+    @POST("/api/v1/auth/login")
+    suspend fun signIn(
+        @Header("Authorization") authorization: String,
+        @Body signInRequestDto: SignInRequestDto
+    ): BaseResponse<SignInResponseDto>
 }
