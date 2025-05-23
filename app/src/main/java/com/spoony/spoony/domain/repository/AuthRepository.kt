@@ -7,4 +7,13 @@ interface AuthRepository {
         token: String,
         platform: String
     ): Result<TokenEntity?>
+
+    suspend fun signUp(
+        token: String,
+        platform: String,
+        userName: String,
+        birth: String?,
+        regionId: Int?,
+        introduction: String?
+    ): Result<TokenEntity>
 }

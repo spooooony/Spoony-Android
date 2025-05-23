@@ -44,7 +44,7 @@ fun OnboardingStepTwoRoute(
     }
 
     LaunchedEffect(state.birth, state.region) {
-        isButtonEnabled = state.birth != "" || state.region.regionId != -1
+        isButtonEnabled = state.birth != null || state.region != null
     }
 
     OnboardingStepTwoScreen(
@@ -85,7 +85,7 @@ fun OnboardingStepTwoRoute(
 @Composable
 private fun OnboardingStepTwoScreen(
     birth: BirthDate?,
-    region: RegionModel,
+    region: RegionModel?,
     isButtonEnabled: Boolean,
     onBirthButtonClick: () -> Unit,
     onRegionButtonClick: () -> Unit,
@@ -112,8 +112,8 @@ private fun OnboardingStepTwoScreen(
         OnboardingContent("주로 활동하는 지역을 설정해 주세요") {
             RegionSelectButton(
                 onClick = onRegionButtonClick,
-                region = "서울 ${region.regionName}",
-                isSelected = region.regionId != -1
+                region = "서울 ${region?.regionName ?: "마포구"}",
+                isSelected = region != null
             )
         }
 

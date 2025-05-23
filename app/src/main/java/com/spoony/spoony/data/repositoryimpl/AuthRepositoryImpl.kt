@@ -19,4 +19,16 @@ class AuthRepositoryImpl @Inject constructor(
                 platform = platform
             ).data!!.jwtTokenDto?.toDomain()
         }
+
+    override suspend fun signUp(token: String, platform: String, userName: String, birth: String?, regionId: Int?, introduction: String?): Result<TokenEntity> =
+        runCatching {
+            authRemoteDataSource.signUp(
+                token = token,
+                platform = platform,
+                userName = userName,
+                birth = birth,
+                regionId = regionId,
+                introduction = introduction
+            ).data!!.jwtTokenDto!!.toDomain()
+        }
 }

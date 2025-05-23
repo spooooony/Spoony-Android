@@ -8,4 +8,13 @@ interface AuthRemoteDataSource {
         token: String,
         platform: String
     ): BaseResponse<SignInResponseDto>
+
+    suspend fun signUp(
+        token: String,
+        platform: String,
+        userName: String,
+        birth: String?,
+        regionId: Int?,
+        introduction: String?
+    ): BaseResponse<SignInResponseDto>
 }

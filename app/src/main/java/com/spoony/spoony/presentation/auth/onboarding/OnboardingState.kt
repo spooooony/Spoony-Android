@@ -18,9 +18,10 @@ enum class OnboardingSteps() {
 data class OnboardingState(
     val nickname: String = "",
     val nicknameState: NicknameTextFieldState = NicknameTextFieldState.DEFAULT,
-    val birth: String = "",
-    val region: RegionModel = RegionModel(-1, "마포구"),
-    val introduction: String = "",
+    val birth: String? = null,
+    val region: RegionModel? = null,
+    val introduction: String? = null,
     val currentStep: OnboardingSteps = OnboardingSteps.ONE,
-    val regionList: UiState<ImmutableList<RegionModel>> = UiState.Loading
+    val regionList: UiState<ImmutableList<RegionModel>> = UiState.Loading,
+    val signUpState: UiState<Unit> = UiState.Loading
 )

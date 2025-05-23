@@ -19,8 +19,8 @@ fun String.formatToYearMonthDay(): String {
     }
 }
 
-fun String.toBirthDate(): BirthDate? {
-    val dateList = this.split("-")
+fun String?.toBirthDate(): BirthDate? {
+    val dateList = this?.split("-") ?: listOf()
     return if (dateList.size == 3) {
         BirthDate(dateList[0], dateList[1], dateList[2])
     } else {

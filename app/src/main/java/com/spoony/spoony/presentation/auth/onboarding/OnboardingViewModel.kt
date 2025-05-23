@@ -7,6 +7,7 @@ import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.UserRepository
+import com.spoony.spoony.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val signUpUseCase: SignUpUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<OnboardingState> = MutableStateFlow(OnboardingState())
     val state: StateFlow<OnboardingState>
@@ -29,8 +31,8 @@ class OnboardingViewModel @Inject constructor(
             OnboardingSteps.TWO -> {
                 _state.update {
                     it.copy(
-                        birth = "",
-                        region = RegionModel(-1, "마포구")
+                        birth = null,
+                        region = null
                     )
                 }
             }
@@ -38,7 +40,7 @@ class OnboardingViewModel @Inject constructor(
             OnboardingSteps.THREE -> {
                 _state.update {
                     it.copy(
-                        introduction = ""
+                        introduction = null
                     )
                 }
             }
@@ -71,6 +73,28 @@ class OnboardingViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun signUp() {
+        viewModelScope.launch {
+            with(_state.value) {
+                signUpUseCase(
+                    platform = "KAKAO",
+                    userName = nickname,
+                    birth = birth,
+                    regionId = region?.regionId,
+                    introduction = introduction
+                ).onSuccess {
+                    _state.update {
+                        it.copy(signUpState = UiState.Empty)
+                    }
+                }.onLogFailure {
+                    _state.update {
+                        it.copy(signUpState = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    }
+                }
+            }
         }
     }
 
