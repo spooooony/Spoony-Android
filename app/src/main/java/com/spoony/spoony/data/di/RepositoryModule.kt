@@ -5,6 +5,7 @@ import com.spoony.spoony.data.repositoryimpl.CategoryRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.ExploreRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.MapRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.PostRepositoryImpl
+import com.spoony.spoony.data.repositoryimpl.RegionRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.RegisterRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.ReportRepositoryImpl
 import com.spoony.spoony.data.repositoryimpl.UserRepositoryImpl
@@ -13,6 +14,7 @@ import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
+import com.spoony.spoony.domain.repository.RegionRepository
 import com.spoony.spoony.domain.repository.RegisterRepository
 import com.spoony.spoony.domain.repository.ReportRepository
 import com.spoony.spoony.domain.repository.UserRepository
@@ -56,4 +58,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRegionRepository(regionRepositoryImpl: RegionRepositoryImpl): RegionRepository
 }

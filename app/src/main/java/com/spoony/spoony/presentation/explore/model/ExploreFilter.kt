@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.explore.model
 
 import com.spoony.spoony.domain.entity.CategoryEntity
+import com.spoony.spoony.domain.entity.RegionEntity
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -20,6 +21,14 @@ fun CategoryEntity.toExploreFilter(): ExploreFilter {
         type = "category",
         selectedIconUrl = this.iconUrl,
         unSelectedIconUrl = this.unSelectedIconUrl ?: ""
+    )
+}
+
+fun RegionEntity.toExploreFilter(): ExploreFilter {
+    return ExploreFilter(
+        id = this.regionId,
+        name = this.regionName,
+        type = "region"
     )
 }
 

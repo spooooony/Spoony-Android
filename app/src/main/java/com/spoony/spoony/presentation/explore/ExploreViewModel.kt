@@ -6,6 +6,7 @@ import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
+import com.spoony.spoony.domain.repository.RegionRepository
 import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.toExploreFilter
 import com.spoony.spoony.presentation.explore.model.toModel
@@ -27,7 +28,8 @@ import timber.log.Timber
 class ExploreViewModel @Inject constructor(
     private val exploreRepository: ExploreRepository,
     private val authRepository: AuthRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val regionRepository: RegionRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreState> = MutableStateFlow(ExploreState())
     val state: StateFlow<ExploreState>
@@ -39,6 +41,7 @@ class ExploreViewModel @Inject constructor(
     init {
         getAllFeedList()
         getCategoryList()
+        getRegionList()
     }
 
     private fun getCategoryList() {
@@ -50,6 +53,26 @@ class ExploreViewModel @Inject constructor(
                         it.copy(
                             exploreFilterItems = it.exploreFilterItems.copy(
                                 categories = categoryList
+                            )
+                        )
+                    }
+                }
+                .onFailure { e ->
+                    Timber.e(e)
+                    _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                }
+        }
+    }
+
+    private fun getRegionList() {
+        viewModelScope.launch {
+            regionRepository.getRegionList()
+                .onSuccess { response ->
+                    val regionList = response.map { it.toExploreFilter() }.toImmutableList()
+                    _state.update {
+                        it.copy(
+                            exploreFilterItems = it.exploreFilterItems.copy(
+                                regions = regionList
                             )
                         )
                     }
