@@ -8,6 +8,6 @@ data class UserEntity(
     val userId: Int,
     val userName: String,
     val userProfileUrl: String,
-    val userRegion: RegionEntity,
+    val regionName: String,
     val platform: String? = "KAKAO"
 )

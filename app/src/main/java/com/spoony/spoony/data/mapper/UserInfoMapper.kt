@@ -7,6 +7,6 @@ fun UserInfoResponseDto.toDomain(): UserEntity = UserEntity(
     userId = this.userId,
     userName = this.userName,
     userProfileUrl = this.userImageUrl,
-    userRegion = this.regionName,
+    regionName = this.regionName,
     platform = this.platform
 )

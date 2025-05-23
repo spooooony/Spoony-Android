@@ -50,10 +50,10 @@ android {
             properties.getProperty("user.token")
         )
 
-        manifestPlaceholders["naverClientId"] = properties.getProperty("naverClientId")
-        buildConfigField("String", "NAVER_CLIENT_ID", properties.getProperty("naver.client.id"))
+        manifestPlaceholders["naverClientId"] = properties["naverClientId"] as String
+        buildConfigField("String", "NAVER_CLIENT_ID", properties["naver.client.id"] as String)
 
-        manifestPlaceholders["nativeAppKey"] = properties.getProperty("nativeAppKey")
+        manifestPlaceholders["nativeAppKey"] = properties["nativeAppKey"] as String
         buildConfigField("String", "NATIVE_APP_KEY", properties.getProperty("native.app.key"))
     }
 
