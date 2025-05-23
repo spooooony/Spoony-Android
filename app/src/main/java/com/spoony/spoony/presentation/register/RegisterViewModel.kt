@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
@@ -115,7 +116,7 @@ class RegisterViewModel @Inject constructor(
                         )
                     }
                 }
-            }.onFailure {
+            }.onLogFailure {
                 _sideEffect.emit(RegisterSideEffect.ShowSnackbar("장소 선택 중 오류가 발생했습니다"))
             }
         }
@@ -235,7 +236,7 @@ class RegisterViewModel @Inject constructor(
                 _state.update { it.copy(isLoading = false) }
                 resetState()
                 onSuccess()
-            }.onFailure {
+            }.onLogFailure {
                 _state.update { it.copy(isLoading = false) }
                 _sideEffect.emit(RegisterSideEffect.ShowSnackbar("등록 중 오류가 발생했습니다"))
             }
