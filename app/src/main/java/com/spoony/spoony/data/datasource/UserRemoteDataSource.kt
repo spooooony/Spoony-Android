@@ -7,4 +7,5 @@ import com.spoony.spoony.data.dto.response.UserInfoResponseDto
 interface UserRemoteDataSource {
     suspend fun getUserInfoById(userId: Int): BaseResponse<UserInfoResponseDto>
     suspend fun getRegionList(): BaseResponse<GetRegionListDto>
+    suspend fun checkUserNameExist(userName: String): BaseResponse<Boolean>
 }

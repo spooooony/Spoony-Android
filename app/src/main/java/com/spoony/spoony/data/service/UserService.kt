@@ -5,6 +5,7 @@ import com.spoony.spoony.data.dto.response.GetRegionListDto
 import com.spoony.spoony.data.dto.response.UserInfoResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface UserService {
     @GET("/api/v1/user/{userId}")
@@ -14,4 +15,9 @@ interface UserService {
 
     @GET("/api/v1/user/region")
     suspend fun getRegionList(): BaseResponse<GetRegionListDto>
+
+    @GET("/api/v1/user/exists")
+    suspend fun checkUserNameExist(
+        @Query("userName") userName: String
+    ): BaseResponse<Boolean>
 }

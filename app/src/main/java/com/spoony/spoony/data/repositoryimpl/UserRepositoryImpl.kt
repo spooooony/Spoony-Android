@@ -19,4 +19,9 @@ class UserRepositoryImpl @Inject constructor(
         runCatching {
             userRemoteDataSource.getRegionList().data!!.regionList.map { it.toDomain() }
         }
+
+    override suspend fun checkUserNameExist(userName: String): Result<Boolean> =
+        runCatching {
+            userRemoteDataSource.checkUserNameExist(userName).data == true
+        }
 }

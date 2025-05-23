@@ -11,8 +11,11 @@ import com.spoony.spoony.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,6 +28,10 @@ class OnboardingViewModel @Inject constructor(
     private val _state: MutableStateFlow<OnboardingState> = MutableStateFlow(OnboardingState())
     val state: StateFlow<OnboardingState>
         get() = _state.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<OnboardingSideEffect>()
+    val sideEffect: SharedFlow<OnboardingSideEffect>
+        get() = _sideEffect.asSharedFlow()
 
     fun skipStep() {
         when (_state.value.currentStep) {
@@ -49,7 +56,26 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
+    fun checkUserNameExist() {
+        viewModelScope.launch {
+            userRepository.checkUserNameExist(_state.value.nickname)
+                .onSuccess {
+                    if (it) {
+                        updateNicknameState(NicknameTextFieldState.DUPLICATE)
+                    } else {
+                        updateNicknameState(NicknameTextFieldState.AVAILABLE)
+                    }
+                }
+                .onLogFailure {
+                    _sideEffect.emit(OnboardingSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                }
+        }
+    }
+
     fun getRegionList() {
+        _state.update {
+            it.copy(regionList = UiState.Loading)
+        }
         viewModelScope.launch {
             userRepository.getRegionList()
                 .onSuccess { regionList ->

@@ -6,4 +6,5 @@ import com.spoony.spoony.domain.entity.UserEntity
 interface UserRepository {
     suspend fun getUserInfoById(userId: Int): Result<UserEntity>
     suspend fun getRegionList(): Result<List<RegionEntity>>
+    suspend fun checkUserNameExist(userName: String): Result<Boolean>
 }

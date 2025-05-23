@@ -9,9 +9,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyNicknameTextField
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.auth.onboarding.component.OnBoardingButton
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingContent
@@ -22,9 +25,22 @@ fun OnBoardingStepOneRoute(
     onNextButtonClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val showSnackbar = LocalSnackBarTrigger.current
 
     LaunchedEffect(Unit) {
         viewModel.updateCurrentStep(OnboardingSteps.ONE)
+    }
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { sideEffect ->
+                when (sideEffect) {
+                    is OnboardingSideEffect.ShowSnackbar -> {
+                        showSnackbar(sideEffect.message)
+                    }
+                }
+            }
     }
 
     OnboardingStepOneScreen(
@@ -32,7 +48,7 @@ fun OnBoardingStepOneRoute(
         nicknameState = state.nicknameState,
         onNicknameChanged = viewModel::updateNickname,
         onStateChanged = viewModel::updateNicknameState,
-        checkNicknameValid = { true },
+        checkNicknameValid = viewModel::checkUserNameExist,
         onButtonClick = onNextButtonClick
     )
 }
@@ -43,7 +59,7 @@ private fun OnboardingStepOneScreen(
     nicknameState: NicknameTextFieldState,
     onNicknameChanged: (String) -> Unit,
     onStateChanged: (NicknameTextFieldState) -> Unit,
-    checkNicknameValid: (String) -> Boolean,
+    checkNicknameValid: () -> Unit,
     onButtonClick: () -> Unit
 ) {
     Column(
@@ -62,15 +78,7 @@ private fun OnboardingStepOneScreen(
                 onStateChanged = onStateChanged,
                 minLength = 1,
                 maxLength = 10,
-                onDoneAction = {
-                    onStateChanged(
-                        if (checkNicknameValid(nickname)) {
-                            NicknameTextFieldState.AVAILABLE
-                        } else {
-                            NicknameTextFieldState.DUPLICATE
-                        }
-                    )
-                }
+                onDoneAction = checkNicknameValid
             )
         }
 

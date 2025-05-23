@@ -15,4 +15,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getRegionList(): BaseResponse<GetRegionListDto> =
         userService.getRegionList()
+
+    override suspend fun checkUserNameExist(userName: String): BaseResponse<Boolean> =
+        userService.checkUserNameExist(userName)
 }

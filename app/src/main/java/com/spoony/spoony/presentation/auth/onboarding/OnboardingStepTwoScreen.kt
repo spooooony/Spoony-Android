@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePickerBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBottomSheet
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.BirthDate
 import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -34,6 +35,7 @@ fun OnboardingStepTwoRoute(
     onNextButtonClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showSnackbar = LocalSnackBarTrigger.current
 
     var isButtonEnabled by remember { mutableStateOf(false) }
     var birthBottomSheetVisibility by remember { mutableStateOf(false) }
@@ -45,6 +47,12 @@ fun OnboardingStepTwoRoute(
 
     LaunchedEffect(state.birth, state.region) {
         isButtonEnabled = state.birth != null || state.region != null
+    }
+
+    LaunchedEffect(state.regionList) {
+        if (state.regionList is UiState.Failure) {
+            showSnackbar((state.signUpState as? UiState.Failure)?.msg.orEmpty())
+        }
     }
 
     OnboardingStepTwoScreen(
