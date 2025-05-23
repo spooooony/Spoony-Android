@@ -4,45 +4,52 @@ import com.spoony.spoony.R
 import kotlinx.collections.immutable.persistentListOf
 
 data class FilterOption(
-    val sort: String,
+    val sort: FilterType,
     val text: String,
     val isSelected: Boolean = false,
     val leftIconResId: Int? = null,
-    val rightIconResId: Int? = null,
-    val onClick: () -> Unit = {}
+    val rightIconResId: Int? = null
 )
 
 object FilterChipOptionProvider {
 
     fun getDefaultFilterOptions() = persistentListOf(
         FilterOption(
-            sort = "filter",
-            text = "필터",
+            sort = FilterType.FILTER,
+            text = FilterType.FILTER.defaultText,
             isSelected = false,
             leftIconResId = R.drawable.ic_filter_16
         ),
         FilterOption(
-            sort = "local_review",
-            text = "로컬 리뷰",
+            sort = FilterType.LOCAL_REVIEW,
+            text = FilterType.LOCAL_REVIEW.defaultText,
             isSelected = false
         ),
         FilterOption(
-            sort = "category",
-            text = "카테고리",
+            sort = FilterType.CATEGORY,
+            text = FilterType.CATEGORY.defaultText,
             isSelected = false,
             rightIconResId = R.drawable.ic_arrow_down_16
         ),
         FilterOption(
-            sort = "region",
-            text = "지역",
+            sort = FilterType.REGION,
+            text = FilterType.CATEGORY.defaultText,
             isSelected = false,
             rightIconResId = R.drawable.ic_arrow_down_16
         ),
         FilterOption(
-            sort = "age",
-            text = "연령대",
+            sort = FilterType.AGE,
+            text = FilterType.AGE.defaultText,
             isSelected = false,
             rightIconResId = R.drawable.ic_arrow_down_16
         )
     )
+}
+
+enum class FilterType(val defaultText: String) {
+    FILTER(defaultText = "필터"),
+    LOCAL_REVIEW(defaultText = "로컬 리뷰"),
+    CATEGORY(defaultText = "카테고리"),
+    REGION(defaultText = "지역"),
+    AGE(defaultText = "연령대")
 }
