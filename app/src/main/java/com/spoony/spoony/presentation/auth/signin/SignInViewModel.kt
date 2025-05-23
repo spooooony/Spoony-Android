@@ -6,7 +6,9 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.domain.usecase.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,7 +19,8 @@ import timber.log.Timber
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val signInUseCase: SignInUseCase
 ) : ViewModel() {
     private val _sideEffect = MutableSharedFlow<SignInSideEffect>()
     val sideEffect: SharedFlow<SignInSideEffect>
@@ -36,10 +39,7 @@ class SignInViewModel @Inject constructor(
     fun handleSignInResult(token: OAuthToken?, error: Throwable?) {
         viewModelScope.launch {
             when {
-                token != null -> {
-                    // 카카오 로그인 성공
-                    signIn(token)
-                }
+                token != null -> signIn(token)
 
                 error is ClientError && error.reason == ClientErrorCause.Cancelled -> {
                     // 사용자가 로그인을 취소한 경우
@@ -63,14 +63,17 @@ class SignInViewModel @Inject constructor(
         platform: String = "KAKAO"
     ) {
         viewModelScope.launch {
-            authRepository.signIn(
+            signInUseCase(
                 token = token.accessToken,
                 platform = platform
             ).onSuccess { token ->
-                Timber.d("token: $token")
-            }.onFailure { exception ->
-                Timber.e(exception)
-                _sideEffect.emit(SignInSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                if (token == null) {
+                    _sideEffect.emit(SignInSideEffect.NavigateToSignUp)
+                } else {
+                    _sideEffect.emit(SignInSideEffect.NavigateToMap)
+                }
+            }.onLogFailure {
+                _sideEffect.emit(SignInSideEffect.ShowSnackBar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
             }
         }
     }
