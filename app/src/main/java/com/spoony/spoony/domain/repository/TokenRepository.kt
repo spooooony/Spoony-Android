@@ -8,4 +8,7 @@ interface TokenRepository {
     suspend fun updateAccessToken(accessToken: String)
     suspend fun updateRefreshToken(refreshToken: String)
     suspend fun clearTokens()
+
+    suspend fun initCachedAccessToken()
+    fun getCachedAccessToken(): String
 }
