@@ -74,27 +74,21 @@ class PlaceDetailViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            when (isFollowing) {
-                true ->
-                    userRepository.unfollowUser(userId = userId)
-                        .onFailure {
-                            _state.update {
-                                it.copy(
-                                    isFollowing = true
-                                )
-                            }
-                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
-                        }
-                false ->
-                    userRepository.followUser(userId = userId)
-                        .onFailure {
-                            _state.update {
-                                it.copy(
-                                    isFollowing = false
-                                )
-                            }
-                            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
-                        }
+            val result = if (isFollowing) {
+                userRepository.unfollowUser(userId = userId)
+            } else {
+                userRepository.followUser(userId = userId)
+            }
+
+            result.onFailure {
+                _state.update {
+                    it.copy(
+                        isFollowing = !it.isFollowing
+                    )
+                }
+                _sideEffect.emit(
+                    PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                )
             }
         }
     }
