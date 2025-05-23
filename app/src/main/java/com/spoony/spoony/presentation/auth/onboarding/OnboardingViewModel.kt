@@ -1,17 +1,25 @@
 package com.spoony.spoony.presentation.auth.onboarding
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.model.RegionModel
+import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.onLogFailure
+import com.spoony.spoony.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor() : ViewModel() {
+class OnboardingViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
     private val _state: MutableStateFlow<OnboardingState> = MutableStateFlow(OnboardingState())
     val state: StateFlow<OnboardingState>
         get() = _state.asStateFlow()
@@ -36,6 +44,33 @@ class OnboardingViewModel @Inject constructor() : ViewModel() {
             }
 
             else -> {}
+        }
+    }
+
+    fun getRegionList() {
+        viewModelScope.launch {
+            userRepository.getRegionList()
+                .onSuccess { regionList ->
+                    _state.update {
+                        it.copy(
+                            regionList = UiState.Success(
+                                regionList.map { region ->
+                                    RegionModel(
+                                        regionId = region.regionId,
+                                        regionName = region.regionName
+                                    )
+                                }.toImmutableList()
+                            )
+                        )
+                    }
+                }
+                .onLogFailure {
+                    _state.update {
+                        it.copy(
+                            regionList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        )
+                    }
+                }
         }
     }
 

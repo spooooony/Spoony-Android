@@ -13,7 +13,6 @@ class SignInUseCase @Inject constructor(
         token: String,
         platform: String
     ): Result<TokenEntity?> {
-
         return authRepository.signIn(
             token = token,
             platform = platform
