@@ -173,4 +173,7 @@ class ExploreRepositoryImpl @Inject constructor(
             )
         )
     )
+
+    override suspend fun getPlaceReviewListFollowing(): Result<List<PlaceReviewEntity>> =
+        Result.success(listOf())
 }

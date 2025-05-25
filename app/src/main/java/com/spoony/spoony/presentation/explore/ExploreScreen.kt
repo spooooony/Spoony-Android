@@ -57,6 +57,7 @@ import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
+import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
@@ -297,9 +298,6 @@ private fun ExploreContent(
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     modifier: Modifier = Modifier
 ) {
-    val menuItems = persistentListOf(
-        "신고하기"
-    )
     when (placeReviewList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
@@ -344,6 +342,18 @@ private fun ExploreContent(
                             placeReview.reviewId
                         }
                     ) { placeReview ->
+                        val menuList = remember {
+                            if (placeReview.isMine) {
+                                persistentListOf(
+                                    ExploreDropdownOption.EDIT.string,
+                                    ExploreDropdownOption.DELETE.string
+                                )
+                            } else {
+                                persistentListOf(
+                                    ExploreDropdownOption.REPORT.string
+                                )
+                            }
+                        }
                         ReviewCard(
                             reviewId = placeReview.reviewId,
                             username = placeReview.userName,
@@ -358,11 +368,13 @@ private fun ExploreContent(
                                 backgroundColor = Color.hexToColor(placeReview.category.backgroundColor.toValidHexColor()),
                                 textColor = Color.hexToColor(placeReview.category.textColor.toValidHexColor())
                             ),
-                            menuItems = menuItems,
+                            menuItems = menuList,
                             onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
                             onMenuItemClick = { option ->
                                 when (option) {
-                                    "신고하기" -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
+                                    ExploreDropdownOption.REPORT.string -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
+                                    ExploreDropdownOption.EDIT.string -> {}
+                                    ExploreDropdownOption.DELETE.string -> {}
                                 }
                             }
                         )

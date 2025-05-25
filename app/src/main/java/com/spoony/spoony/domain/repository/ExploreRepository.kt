@@ -11,4 +11,6 @@ interface ExploreRepository {
     ): Result<List<FeedEntity>>
 
     suspend fun getAllFeedList(): Result<List<PlaceReviewEntity>>
+
+    suspend fun getPlaceReviewListFollowing(): Result<List<PlaceReviewEntity>>
 }

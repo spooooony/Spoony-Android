@@ -1,6 +1,7 @@
 package com.spoony.spoony.data.datasource
 
 import com.spoony.spoony.core.network.BaseResponse
+import com.spoony.spoony.data.dto.response.ExplorePlaceReviewListFollowingResponseDto
 import com.spoony.spoony.data.dto.response.FeedsResponseDto
 
 interface ExploreRemoteDataSource {
@@ -9,4 +10,6 @@ interface ExploreRemoteDataSource {
         query: String,
         sortBy: String
     ): BaseResponse<FeedsResponseDto>
+
+    suspend fun getPlaceReviewListFollowing(): BaseResponse<ExplorePlaceReviewListFollowingResponseDto>
 }

@@ -15,7 +15,8 @@ data class PlaceReviewModel(
     val photoUrlList: ImmutableList<String> = persistentListOf(),
     val category: CategoryEntity,
     val addMapCount: Int,
-    val createdAt: String
+    val createdAt: String,
+    val isMine: Boolean
 )
 
 fun PlaceReviewEntity.toModel(): PlaceReviewModel = PlaceReviewModel(
@@ -34,5 +35,6 @@ fun PlaceReviewEntity.toModel(): PlaceReviewModel = PlaceReviewModel(
         backgroundColor = ""
     ),
     addMapCount = this.addMapCount ?: 0,
-    createdAt = this.createdAt ?: ""
+    createdAt = this.createdAt ?: "",
+    isMine = this.isMine ?: false
 )
