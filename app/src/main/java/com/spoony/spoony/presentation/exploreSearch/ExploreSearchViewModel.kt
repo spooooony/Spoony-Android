@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ class ExploreSearchViewModel @Inject constructor(
 
     private val _sideEffect = MutableSharedFlow<ExploreSearchSideEffect>()
     val sideEffect: SharedFlow<ExploreSearchSideEffect>
-        get() = _sideEffect
+        get() = _sideEffect.asSharedFlow()
 
     private var searchJob: Job? = null
 
@@ -141,7 +142,7 @@ class ExploreSearchViewModel @Inject constructor(
                             Timber.e(exception)
                             _state.update {
                                 it.copy(
-                                    userInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                                    placeReviewInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                                 )
                             }
                             _sideEffect.emit(
