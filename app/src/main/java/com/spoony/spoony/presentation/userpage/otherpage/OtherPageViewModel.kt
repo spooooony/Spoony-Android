@@ -114,7 +114,7 @@ class OtherPageViewModel @Inject constructor(
                             _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("해당 유저가 차단 해제되었어요."))
                         }
                         .onLogFailure {
-                            _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                            _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                         }
                 }
 
@@ -131,7 +131,7 @@ class OtherPageViewModel @Inject constructor(
                             _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("해당 유저가 차단되었어요."))
                         }
                         .onLogFailure {
-                            _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                            _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                         }
                 }
             }
@@ -147,7 +147,7 @@ class OtherPageViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
