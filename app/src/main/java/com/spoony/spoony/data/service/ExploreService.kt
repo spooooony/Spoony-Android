@@ -2,7 +2,7 @@ package com.spoony.spoony.data.service
 
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.dto.response.ExplorePlaceReviewFilteredResponseDto
-import com.spoony.spoony.data.dto.response.ExplorePlaceReviewListFollowingResponseDto
+import com.spoony.spoony.data.dto.response.ExplorePlaceReviewFollowingResponseDto
 import com.spoony.spoony.data.dto.response.PlaceReviewListResponseDto
 import com.spoony.spoony.data.dto.response.UserListSearchResponseDto
 import retrofit2.http.GET
@@ -30,5 +30,5 @@ interface ExploreService {
     ): BaseResponse<UserListSearchResponseDto>
 
     @GET("/api/v1/feed/following")
-    suspend fun getPlaceReviewListFollowing(): BaseResponse<ExplorePlaceReviewListFollowingResponseDto>
+    suspend fun getPlaceReviewListFollowing(): BaseResponse<ExplorePlaceReviewFollowingResponseDto>
 }

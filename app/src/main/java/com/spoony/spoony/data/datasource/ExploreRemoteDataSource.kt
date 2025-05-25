@@ -2,12 +2,12 @@ package com.spoony.spoony.data.datasource
 
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.dto.response.ExplorePlaceReviewFilteredResponseDto
-import com.spoony.spoony.data.dto.response.ExplorePlaceReviewListFollowingResponseDto
+import com.spoony.spoony.data.dto.response.ExplorePlaceReviewFollowingResponseDto
 import com.spoony.spoony.data.dto.response.PlaceReviewListResponseDto
 import com.spoony.spoony.data.dto.response.UserListSearchResponseDto
 
 interface ExploreRemoteDataSource {
-    suspend fun getPlaceReviewListFollowing(): BaseResponse<ExplorePlaceReviewListFollowingResponseDto>
+    suspend fun getPlaceReviewListFollowing(): BaseResponse<ExplorePlaceReviewFollowingResponseDto>
 
     suspend fun getPlaceReviewByKeyword(
         query: String
