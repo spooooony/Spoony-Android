@@ -1,5 +1,9 @@
 package com.spoony.spoony.presentation.explore.model
 
+import androidx.compose.ui.graphics.Color
+import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
+import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.toRelativeTimeOrDate
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import kotlinx.collections.immutable.ImmutableList
@@ -13,7 +17,7 @@ data class PlaceReviewModel(
     val userRegion: String,
     val description: String,
     val photoUrlList: ImmutableList<String> = persistentListOf(),
-    val category: CategoryEntity,
+    val category: ReviewCardCategory,
     val addMapCount: Int,
     val createdAt: String,
     val isMine: Boolean
@@ -26,15 +30,20 @@ fun PlaceReviewEntity.toModel(): PlaceReviewModel = PlaceReviewModel(
     userRegion = this.userRegion ?: "",
     description = this.description,
     photoUrlList = this.photoUrlList?.toImmutableList() ?: persistentListOf(),
-    category = this.category ?: CategoryEntity(
-        categoryId = 0,
-        categoryName = "",
+    category = this.category?.toModel() ?: ReviewCardCategory(
+        text = "",
         iconUrl = "",
-        unSelectedIconUrl = "",
-        textColor = "",
-        backgroundColor = ""
+        textColor = Color.Unspecified,
+        backgroundColor = Color.Unspecified
     ),
     addMapCount = this.addMapCount ?: 0,
-    createdAt = this.createdAt ?: "",
+    createdAt = this.createdAt?.toRelativeTimeOrDate() ?: "",
     isMine = this.isMine ?: false
+)
+
+fun CategoryEntity.toModel(): ReviewCardCategory = ReviewCardCategory(
+    text = this.categoryName,
+    iconUrl = this.iconUrl,
+    textColor = Color.hexToColor(this.textColor ?: ""),
+    backgroundColor = Color.hexToColor(this.backgroundColor ?: "")
 )

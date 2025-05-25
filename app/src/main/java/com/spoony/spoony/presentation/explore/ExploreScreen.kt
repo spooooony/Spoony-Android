@@ -45,9 +45,7 @@ import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
@@ -363,10 +361,10 @@ private fun ExploreContent(
                             date = placeReview.createdAt,
                             imageList = placeReview.photoUrlList,
                             category = ReviewCardCategory(
-                                text = placeReview.category.categoryName,
+                                text = placeReview.category.text,
                                 iconUrl = placeReview.category.iconUrl,
-                                backgroundColor = Color.hexToColor(placeReview.category.backgroundColor.toValidHexColor()),
-                                textColor = Color.hexToColor(placeReview.category.textColor.toValidHexColor())
+                                backgroundColor = placeReview.category.backgroundColor,
+                                textColor = placeReview.category.textColor
                             ),
                             menuItems = menuList,
                             onClick = { onPlaceDetailItemClick(placeReview.reviewId) },

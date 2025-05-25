@@ -16,6 +16,7 @@ import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -265,7 +266,56 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
+    private fun getPlaceReviewFollowingList() {
+        _state.update {
+            it.copy(
+                placeReviewList = UiState.Loading
+            )
+        }
+        viewModelScope.launch {
+            try {
+                exploreRepository.getPlaceReviewListFollowing()
+                    .onSuccess { response ->
+                        _state.update {
+                            it.copy(
+                                placeReviewList =
+                                if (response.isEmpty()) {
+                                    UiState.Empty
+                                } else {
+                                    UiState.Success(
+                                        response.map { placeReview ->
+                                            placeReview.toModel()
+                                        }.toPersistentList()
+                                    )
+                                }
+                            )
+                        }
+                        _sideEffect.send(ExploreSideEffect.ShowSnackbar("데이터 받기 성공"))
+                    }
+                    .onFailure { e ->
+                        Timber.tag("getPlaceReviewFollowingList").e(e)
+                        _state.update {
+                            it.copy(
+                                placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                            )
+                        }
+                        _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    }
+            } catch (e: Exception) {
+                _sideEffect.send(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+            }
+        }
+    }
     fun updateExploreType(exploreType: ExploreType) {
+        if (state.value.exploreType == exploreType) return
+        when (exploreType) {
+            ExploreType.ALL -> {
+                getAllFeedList()
+            }
+            ExploreType.FOLLOWING -> {
+                getPlaceReviewFollowingList()
+            }
+        }
         viewModelScope.launch {
             _state.update {
                 it.copy(

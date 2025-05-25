@@ -187,6 +187,7 @@ class ExploreRepositoryImpl @Inject constructor(
         ).data!!.userSimpleResponseDTO.map { it.toDomain() }
     }
 
-    override suspend fun getPlaceReviewListFollowing(): Result<List<PlaceReviewEntity>> =
-        Result.success(listOf())
+    override suspend fun getPlaceReviewListFollowing(): Result<List<PlaceReviewEntity>> = runCatching {
+        exploreRemoteDataSource.getPlaceReviewListFollowing().data!!.feedsResponseList.map { it.toDomain() }
+    }
 }
