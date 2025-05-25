@@ -243,7 +243,7 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    private fun getPlaceReviewListFiltered() {
+    fun getPlaceReviewListFiltered() {
         val currentFilterState = _state.value.filterSelectionState
         val selectedCategoryIds = (currentFilterState.properties + currentFilterState.categories)
             .filterValues { it }

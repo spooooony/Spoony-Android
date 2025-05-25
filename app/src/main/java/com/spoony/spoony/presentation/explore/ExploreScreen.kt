@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -100,6 +102,7 @@ fun ExploreRoute(
             onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
             onTabChange = viewModel::updateExploreType,
             onRefresh = viewModel::refreshExploreScreen,
+            onLoadNextPage = viewModel::getPlaceReviewListFiltered,
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
@@ -129,6 +132,7 @@ private fun ExploreScreen(
     onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
     onTabChange: (ExploreType) -> Unit,
     onRefresh: () -> Unit,
+    onLoadNextPage: () -> Unit,
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -282,7 +286,8 @@ private fun ExploreScreen(
             onRegisterButtonClick = onRegisterButtonClick,
             onPlaceDetailItemClick = onPlaceDetailItemClick,
             onReportButtonClick = onReportButtonClick,
-            onRefresh = onRefresh
+            onRefresh = onRefresh,
+            onLoadNextPage = onLoadNextPage
         )
     }
 }
@@ -308,9 +313,33 @@ private fun ExploreContent(
     onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
     onRefresh: () -> Unit,
+    onLoadNextPage: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+    val isLoadingMore = remember { mutableStateOf(false) }
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val layoutInfo = listState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleItem to totalItems
+        }.collect { (lastVisibleItem, totalItems) ->
+            val threshold = 2
+            if (
+                !isLoadingMore.value &&
+                lastVisibleItem >= totalItems - threshold &&
+                totalItems > 0
+            ) {
+                isLoadingMore.value = true
+                onLoadNextPage()
+                isLoadingMore.value = false
+            }
+        }
+    }
+
     when (placeReviewList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
@@ -345,6 +374,7 @@ private fun ExploreContent(
                     .nestedScroll(refreshState.nestedScrollConnection)
             ) {
                 LazyColumn(
+                    state = listState,
                     modifier = Modifier,
                     contentPadding = PaddingValues(bottom = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
