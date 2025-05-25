@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -65,6 +67,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.launch
 
 @Composable
 fun ExploreRoute(
@@ -183,6 +186,8 @@ private fun ExploreScreen(
             if (isFilterBottomSheetVisible) putAll(ageSelectedState)
         }
     }
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
 
     if (isFilterBottomSheetVisible) {
         ExploreFilterBottomSheet(
@@ -198,6 +203,10 @@ private fun ExploreScreen(
                     regionState.toPersistentMap(),
                     ageState.toPersistentMap()
                 )
+                // 필터 검색 완료 시 스크롤 최상단으로 초기화
+                coroutineScope.launch {
+                    listState.scrollToItem(0)
+                }
             },
             onToggleFilter = { id, type ->
                 when (type) {
@@ -269,7 +278,12 @@ private fun ExploreScreen(
                 onFilterClick = { filterType ->
                     handleFilterClick(
                         filterType = filterType,
-                        onLocalReviewButtonClick = onLocalReviewButtonClick,
+                        onLocalReviewButtonClick = {
+                            onLocalReviewButtonClick()
+                            coroutineScope.launch {
+                                listState.scrollToItem(0)
+                            }
+                        },
                         updateBottomSheetState = { index, isVisible ->
                             exploreFilterBottomSheetTabIndex = index
                             isFilterBottomSheetVisible = isVisible
@@ -293,7 +307,8 @@ private fun ExploreScreen(
             onLoadNextPage = onLoadNextPage,
             onEditButtonClick = onEditButtonClick,
             onClickSearch = onClickSearch,
-            exploreType = exploreType
+            exploreType = exploreType,
+            listState = listState
         )
     }
 }
@@ -324,9 +339,9 @@ private fun ExploreContent(
     onEditButtonClick: (Int, RegisterType) -> Unit,
     onClickSearch: () -> Unit,
     exploreType: ExploreType,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
     val isLoadingMore = remember { mutableStateOf(false) }
 
     LaunchedEffect(listState) {
