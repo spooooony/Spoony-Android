@@ -96,9 +96,7 @@ fun PlaceDetailRoute(
                 is PlaceDetailSideEffect.ShowSnackbar -> {
                     onShowSnackBar(effect.message)
                 }
-                is PlaceDetailSideEffect.NavigateUp -> {
-                    navigateUp()
-                }
+                is PlaceDetailSideEffect.NavigateUp -> navigateUp()
             }
         }
     }
