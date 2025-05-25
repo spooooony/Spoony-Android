@@ -54,7 +54,7 @@ class MyPageViewModel @Inject constructor(
                     getMyReview()
                 }
                 .onFailure {
-                    _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                    _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -68,7 +68,7 @@ class MyPageViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    _sideEffect.emit(MyPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -82,7 +82,7 @@ class MyPageViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                    _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -95,7 +95,7 @@ class MyPageViewModel @Inject constructor(
                     _sideEffect.emit(MyPageSideEffect.ShowSnackbar("삭제 되었어요!"))
                 }
                 .onFailure {
-                    _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                    _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
