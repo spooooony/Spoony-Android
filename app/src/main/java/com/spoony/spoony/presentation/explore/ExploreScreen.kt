@@ -99,6 +99,7 @@ fun ExploreRoute(
             onLocalReviewButtonClick = viewModel::localReviewToggle,
             onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
             onTabChange = viewModel::updateExploreType,
+            onRefresh = viewModel::refreshExploreScreen,
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
@@ -127,6 +128,7 @@ private fun ExploreScreen(
     onLocalReviewButtonClick: () -> Unit,
     onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
     onTabChange: (ExploreType) -> Unit,
+    onRefresh: () -> Unit,
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -280,7 +282,7 @@ private fun ExploreScreen(
             onRegisterButtonClick = onRegisterButtonClick,
             onPlaceDetailItemClick = onPlaceDetailItemClick,
             onReportButtonClick = onReportButtonClick,
-            onRefresh = {}
+            onRefresh = onRefresh
         )
     }
 }

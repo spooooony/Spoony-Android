@@ -349,6 +349,18 @@ class ExploreViewModel @Inject constructor(
             }
         }
     }
+
+    fun refreshExploreScreen() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    placeReviewList = UiState.Loading,
+                    cursor = -1
+                )
+            }
+            getPlaceReviewListFiltered()
+        }
+    }
     fun updateExploreType(exploreType: ExploreType) {
         if (state.value.exploreType == exploreType) return
         viewModelScope.launch {
@@ -356,7 +368,8 @@ class ExploreViewModel @Inject constructor(
                 it.copy(
                     exploreType = exploreType,
                     placeReviewList = UiState.Loading,
-                    cursor = -1
+                    cursor = -1,
+                    selectedSortingOption = SortingOption.LATEST
                 )
             }
         }
