@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.exploreSearch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.data.datasource.local.RecentSearchDataSource
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.presentation.exploreSearch.model.toModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
@@ -24,7 +25,8 @@ import timber.log.Timber
 
 @HiltViewModel
 class ExploreSearchViewModel @Inject constructor(
-    private val exploreRepository: ExploreRepository
+    private val exploreRepository: ExploreRepository,
+    private val recentSearchDataSource: RecentSearchDataSource
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreSearchState> = MutableStateFlow(ExploreSearchState())
     val state: StateFlow<ExploreSearchState>
@@ -35,6 +37,32 @@ class ExploreSearchViewModel @Inject constructor(
         get() = _sideEffect.asSharedFlow()
 
     private var searchJob: Job? = null
+
+    init {
+        observeRecentSearchQueries()
+    }
+
+    private fun observeRecentSearchQueries() {
+        viewModelScope.launch {
+            launch {
+                recentSearchDataSource.getRecentReviewQueries()
+                    .collect { reviewQueries ->
+                        _state.update {
+                            it.copy(recentReviewSearchQueryList = reviewQueries.toPersistentList())
+                        }
+                    }
+            }
+
+            launch {
+                recentSearchDataSource.getRecentUserQueries()
+                    .collect { userQueries ->
+                        _state.update {
+                            it.copy(recentUserSearchQueryList = userQueries.toPersistentList())
+                        }
+                    }
+            }
+        }
+    }
 
     fun switchSearchType(
         searchType: SearchType
@@ -82,6 +110,7 @@ class ExploreSearchViewModel @Inject constructor(
                         )
                     }
                     val updatedList = makeSearchHistoryList(keywordTrim, _state.value.recentUserSearchQueryList, listOf(keywordTrim))
+                    recentSearchDataSource.setUserQueries(updatedList)
                     exploreRepository.getUserListByKeyword(keywordTrim)
                         .onSuccess { response ->
                             _state.update {
@@ -120,6 +149,7 @@ class ExploreSearchViewModel @Inject constructor(
                         )
                     }
                     val updatedList = makeSearchHistoryList(keywordTrim, _state.value.recentReviewSearchQueryList, listOf(keywordTrim))
+                    recentSearchDataSource.setReviewQueries(updatedList)
                     exploreRepository.getPlaceReviewByKeyword(keywordTrim)
                         .onSuccess { response ->
                             _state.update {
@@ -155,40 +185,49 @@ class ExploreSearchViewModel @Inject constructor(
     }
 
     fun removeRecentSearchItem(keyword: String) {
-        when (_state.value.searchType) {
-            SearchType.USER -> {
-                val updatedList = makeSearchHistoryList(keyword, _state.value.recentUserSearchQueryList)
-                _state.update {
-                    it.copy(
-                        recentUserSearchQueryList = updatedList
-                    )
+        viewModelScope.launch {
+            when (_state.value.searchType) {
+                SearchType.USER -> {
+                    val updatedList = makeSearchHistoryList(keyword, _state.value.recentUserSearchQueryList)
+                    recentSearchDataSource.setUserQueries(updatedList)
+                    _state.update {
+                        it.copy(
+                            recentUserSearchQueryList = updatedList
+                        )
+                    }
                 }
-            }
-            SearchType.REVIEW -> {
-                val updatedList = makeSearchHistoryList(keyword, _state.value.recentReviewSearchQueryList)
-                _state.update {
-                    it.copy(
-                        recentReviewSearchQueryList = updatedList
-                    )
+
+                SearchType.REVIEW -> {
+                    val updatedList = makeSearchHistoryList(keyword, _state.value.recentReviewSearchQueryList)
+                    recentSearchDataSource.setReviewQueries(updatedList)
+                    _state.update {
+                        it.copy(
+                            recentReviewSearchQueryList = updatedList
+                        )
+                    }
                 }
             }
         }
     }
 
     fun clearRecentSearchItem() {
-        when (_state.value.searchType) {
-            SearchType.USER -> {
-                _state.update {
-                    it.copy(
-                        recentUserSearchQueryList = persistentListOf()
-                    )
+        viewModelScope.launch {
+            when (_state.value.searchType) {
+                SearchType.USER -> {
+                    recentSearchDataSource.clearUserQueries()
+                    _state.update {
+                        it.copy(
+                            recentUserSearchQueryList = persistentListOf()
+                        )
+                    }
                 }
-            }
-            SearchType.REVIEW -> {
-                _state.update {
-                    it.copy(
-                        recentReviewSearchQueryList = persistentListOf()
-                    )
+                SearchType.REVIEW -> {
+                    recentSearchDataSource.clearReviewQueries()
+                    _state.update {
+                        it.copy(
+                            recentReviewSearchQueryList = persistentListOf()
+                        )
+                    }
                 }
             }
         }
