@@ -26,6 +26,7 @@ fun MyPageRoute(
     navigateToFollow: (FollowType, Int) -> Unit,
     navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
+    navigateToAttendance: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
@@ -43,7 +44,7 @@ fun MyPageRoute(
         onReviewClick = navigateToReviewDetail,
         onEditReviewClick = navigateToEditReview,
         onDeleteReviewClick = { /* 리뷰 삭제 넣을거임 */ },
-        onLogoClick = { /* 스푰 뽑기 */ }
+        onLogoClick = navigateToAttendance
     )
 
     UserPageScreen(

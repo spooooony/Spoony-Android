@@ -72,6 +72,7 @@ class ExploreViewModel @Inject constructor(
                 FilterType.LOCAL_REVIEW -> {
                     option.copy(isSelected = isLocalReviewSelected)
                 }
+
                 FilterType.FILTER -> {
                     val isSelected = isLocalReviewSelected ||
                         categorySelectedState.any { (_, selected) -> selected } ||
@@ -79,6 +80,7 @@ class ExploreViewModel @Inject constructor(
                         ageSelectedState.any { (_, selected) -> selected }
                     option.copy(isSelected = isSelected)
                 }
+
                 else -> option
             }
         }.toImmutableList()
@@ -105,6 +107,7 @@ class ExploreViewModel @Inject constructor(
                     val isSelected = propertySelectedState[1] ?: false
                     option.copy(isSelected = isSelected)
                 }
+
                 FilterType.CATEGORY -> {
                     val selectedCategories = categorySelectedState.filter { it.value }
                     val isSelected = selectedCategories.isNotEmpty()
@@ -113,6 +116,7 @@ class ExploreViewModel @Inject constructor(
                         selectedCategories.size == 1 -> {
                             categoryItems.find { it.id == selectedCategories.keys.first() }?.name ?: "카테고리"
                         }
+
                         else -> {
                             val firstSelected = categoryItems.find { it.id == selectedCategories.keys.min() }?.name ?: ""
                             "$firstSelected 외 ${selectedCategories.size - 1}개"
@@ -120,6 +124,7 @@ class ExploreViewModel @Inject constructor(
                     }
                     option.copy(isSelected = isSelected, text = updatedText)
                 }
+
                 FilterType.REGION -> {
                     val selectedRegions = regionSelectedState.filter { it.value }
                     val isSelected = selectedRegions.isNotEmpty()
@@ -128,6 +133,7 @@ class ExploreViewModel @Inject constructor(
                         selectedRegions.size == 1 -> {
                             regionItems.find { it.id == selectedRegions.keys.first() }?.name ?: "지역"
                         }
+
                         else -> {
                             val firstSelected = regionItems.find { it.id == selectedRegions.keys.min() }?.name ?: ""
                             "$firstSelected 외 ${selectedRegions.size - 1}개"
@@ -135,6 +141,7 @@ class ExploreViewModel @Inject constructor(
                     }
                     option.copy(isSelected = isSelected, text = updatedText)
                 }
+
                 FilterType.AGE -> {
                     val selectedAges = ageSelectedState.filter { it.value }
                     val isSelected = selectedAges.isNotEmpty()
@@ -143,6 +150,7 @@ class ExploreViewModel @Inject constructor(
                         selectedAges.size == 1 -> {
                             ageItems.find { it.id == selectedAges.keys.first() }?.name ?: "연령대"
                         }
+
                         else -> {
                             val firstSelected = ageItems.find { it.id == selectedAges.keys.min() }?.name ?: ""
                             "$firstSelected 외 ${selectedAges.size - 1}개"
@@ -150,6 +158,7 @@ class ExploreViewModel @Inject constructor(
                     }
                     option.copy(isSelected = isSelected, text = updatedText)
                 }
+
                 FilterType.FILTER -> {
                     val isSelected = propertySelectedState.any { (_, selected) -> selected } ||
                         categorySelectedState.any { (_, selected) -> selected } ||
