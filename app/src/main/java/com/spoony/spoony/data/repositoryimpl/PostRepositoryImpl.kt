@@ -40,6 +40,5 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun deletePost(postId: Int): Result<Unit> =
         runCatching {
             postRemoteDataSource.deletePost(postId)
-            Unit
         }
 }
