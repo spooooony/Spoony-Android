@@ -7,7 +7,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.report.ReportType
@@ -28,9 +31,24 @@ fun OtherPageRoute(
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
+    val showSnackBar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
+    }
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is OtherPageSideEffect.ShowSnackbar -> {
+                    showSnackBar(effect.message)
+                }
+                is OtherPageSideEffect.ShowError -> {
+                    showSnackBar(effect.errorType.description)
+                }
+            }
+        }
     }
 
     val userPageEvents = UserPageEvents(

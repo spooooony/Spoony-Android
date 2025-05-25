@@ -7,7 +7,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.register.model.RegisterType
@@ -30,10 +33,25 @@ fun MyPageRoute(
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
+    val showSnackBar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
         viewModel.getSpoonCount()
+    }
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is MyPageSideEffect.ShowSnackbar -> {
+                    showSnackBar(effect.message)
+                }
+                is MyPageSideEffect.ShowError -> {
+                    showSnackBar(effect.errorType.description)
+                }
+            }
+        }
     }
 
     val userPageEvents = UserPageEvents(
@@ -43,7 +61,7 @@ fun MyPageRoute(
         onFollowClick = navigateToFollow,
         onReviewClick = navigateToReviewDetail,
         onEditReviewClick = navigateToEditReview,
-        onDeleteReviewClick = { /* 리뷰 삭제 넣을거임 */ },
+        onDeleteReviewClick = viewModel::deleteReview,
         onLogoClick = navigateToAttendance
     )
 
