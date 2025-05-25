@@ -4,10 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.state.ErrorType
-import com.spoony.spoony.core.util.extension.hexToColor
-import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.repository.ReviewRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.FollowManager
