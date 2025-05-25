@@ -10,8 +10,7 @@ import com.spoony.spoony.presentation.follow.FollowManager
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserProfile
 import com.spoony.spoony.presentation.userpage.model.UserType
-import com.spoony.spoony.presentation.userpage.model.toReviewDataList
-import com.spoony.spoony.presentation.userpage.model.toUserProfileModel
+import com.spoony.spoony.presentation.userpage.model.toModel
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.OtherPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -53,7 +52,7 @@ class OtherPageViewModel @Inject constructor(
             userRepository.getUserInfoById(userInfo.userId)
                 .onSuccess { userInfoEntity ->
                     _state.update { currentState ->
-                        currentState.copy(profile = userInfoEntity.toUserProfileModel())
+                        currentState.copy(profile = userInfoEntity.toModel())
                     }
                     getOtherUserReviews()
                 }
@@ -115,7 +114,7 @@ class OtherPageViewModel @Inject constructor(
             reviewRepository.getOtherReview(userInfo.userId, _state.value.isLocalReviewOnly)
                 .onSuccess { reviewEntity ->
                     _state.update { currentState ->
-                        currentState.copy(reviews = reviewEntity.toReviewDataList())
+                        currentState.copy(reviews = reviewEntity.toModel())
                     }
                 }
                 .onFailure {

@@ -30,10 +30,12 @@ class FollowViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _followers = MutableStateFlow<ImmutableList<UserItemUiState>>(persistentListOf())
-    val followers: StateFlow<ImmutableList<UserItemUiState>> = _followers.asStateFlow()
+    val followers: StateFlow<ImmutableList<UserItemUiState>>
+        get() = _followers.asStateFlow()
 
     private val _following = MutableStateFlow<ImmutableList<UserItemUiState>>(persistentListOf())
-    val following: StateFlow<ImmutableList<UserItemUiState>> = _following.asStateFlow()
+    val following: StateFlow<ImmutableList<UserItemUiState>>
+        get() = _following.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<FollowPageSideEffect>()
     val sideEffect: SharedFlow<FollowPageSideEffect>

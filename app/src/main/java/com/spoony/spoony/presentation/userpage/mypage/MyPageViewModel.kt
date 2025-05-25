@@ -9,8 +9,7 @@ import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.userpage.model.UserPageState
 import com.spoony.spoony.presentation.userpage.model.UserProfile
 import com.spoony.spoony.presentation.userpage.model.UserType
-import com.spoony.spoony.presentation.userpage.model.toReviewDataList
-import com.spoony.spoony.presentation.userpage.model.toUserProfileModel
+import com.spoony.spoony.presentation.userpage.model.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,7 +48,7 @@ class MyPageViewModel @Inject constructor(
             userRepository.getMyInfo()
                 .onSuccess { userInfo ->
                     _state.update { currentState ->
-                        currentState.copy(profile = userInfo.toUserProfileModel())
+                        currentState.copy(profile = userInfo.toModel())
                     }
                     getMyReview()
                 }
@@ -78,7 +77,7 @@ class MyPageViewModel @Inject constructor(
             reviewRepository.getMyReview()
                 .onSuccess { reviewEntity ->
                     _state.update { currentState ->
-                        currentState.copy(reviews = reviewEntity.toReviewDataList())
+                        currentState.copy(reviews = reviewEntity.toModel())
                     }
                 }
                 .onFailure {

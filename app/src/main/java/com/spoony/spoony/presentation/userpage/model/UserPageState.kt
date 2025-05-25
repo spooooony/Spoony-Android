@@ -27,7 +27,7 @@ data class UserProfile(
     val isBlocked: Boolean = false
 )
 
-fun BasicUserInfoEntity.toUserProfileModel(): UserProfile = UserProfile(
+fun BasicUserInfoEntity.toModel(): UserProfile = UserProfile(
     profileId = this.userId,
     imageUrl = this.profileImageUrl,
     nickname = this.userName,
@@ -50,10 +50,10 @@ data class ReviewData(
     val imageList: ImmutableList<String> = persistentListOf()
 )
 
-fun UserPageReviewEntity.toReviewDataList(): ImmutableList<ReviewData> =
-    this.feedList.map { it.toReviewData() }.toImmutableList()
+fun UserPageReviewEntity.toModel(): ImmutableList<ReviewData> =
+    this.feedList.map { it.toModel() }.toImmutableList()
 
-fun UserFeedEntity.toReviewData(): ReviewData = ReviewData(
+fun UserFeedEntity.toModel(): ReviewData = ReviewData(
     reviewId = this.postId,
     content = this.description,
     category = ReviewCardCategory(

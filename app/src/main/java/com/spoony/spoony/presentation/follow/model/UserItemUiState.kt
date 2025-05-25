@@ -1,6 +1,6 @@
 package com.spoony.spoony.presentation.follow.model
 
-import com.spoony.spoony.domain.entity.User // User 엔티티 import 추가
+import com.spoony.spoony.domain.entity.User
 
 data class UserItemUiState(
     val userId: Int,
