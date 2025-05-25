@@ -73,6 +73,7 @@ fun UserPageScreen(
                 )
 
                 UserType.OTHER_PAGE -> BackAndMenuTopAppBar(
+                    isMenuIconVisible = !state.isBlocked,
                     menuItemList = topBarMenuItemList,
                     onBackButtonClick = events.onBackButtonClick,
                     onMenuButtonClick = { menuItem ->
@@ -90,9 +91,9 @@ fun UserPageScreen(
 
             ProfileHeaderSection(
                 imageUrl = state.userImageUrl,
-                reviewCount = state.reviewCount,
-                followerCount = state.followerCount,
-                followingCount = state.followingCount,
+                reviewCount = if (state.isBlocked) 0 else state.reviewCount,
+                followerCount = if (state.isBlocked) 0 else state.followerCount,
+                followingCount = if (state.isBlocked) 0 else state.followingCount,
                 onFollowerClick = { events.onFollowClick(FollowType.FOLLOWER, state.profileId) },
                 onFollowingClick = { events.onFollowClick(FollowType.FOLLOWING, state.profileId) },
                 modifier = Modifier.padding(horizontal = 20.dp)
@@ -105,7 +106,13 @@ fun UserPageScreen(
                 region = state.region,
                 nickname = state.userName,
                 introduction = state.introduction,
-                onButtonClick = events.onMainButtonClick,
+                onButtonClick = {
+                    if (state.isBlocked) {
+                        isUserBlockDialogVisible = true
+                    } else {
+                        events.onMainButtonClick()
+                    }
+                },
                 isFollowing = state.isFollowing,
                 isBlocked = state.isBlocked,
                 modifier = Modifier.padding(horizontal = 20.dp)
@@ -141,7 +148,7 @@ fun UserPageScreen(
 
             if (isUserBlockDialogVisible) {
                 TwoButtonDialog(
-                    message = "${state.userName} 님을\n차단하시겠습니까?",
+                    message = if (state.isBlocked) "${state.userName} 님의\n차단을 해제하시겠습니까?" else "${state.userName} 님을\n차단하시겠습니까?",
                     negativeText = "아니요",
                     positiveText = "네",
                     onClickNegative = { isUserBlockDialogVisible = false },
@@ -177,7 +184,7 @@ fun UserPageScreen(
                     )
                     Text(
                         text = "지금은 프로필을 볼 수 없지만, \n" +
-                            "원하시면 차단을 해제할 수 있어요.",
+                                "원하시면 차단을 해제할 수 있어요.",
                         style = SpoonyAndroidTheme.typography.body2m,
                         color = SpoonyAndroidTheme.colors.gray500,
                         textAlign = TextAlign.Center
@@ -196,7 +203,7 @@ fun UserPageScreen(
                             buttonStyle = ButtonStyle.Primary
                         )
 
-                        UserType.OTHER_PAGE -> EmptyContent("아직 등록된 로컬리뷰가 없어요")
+                        UserType.OTHER_PAGE -> EmptyContent(if (state.isLocalReviewOnly) "아직 등록된 로컬리뷰가 없어요" else "아직 등록된 리뷰가 없어요")
                     }
                 }
 

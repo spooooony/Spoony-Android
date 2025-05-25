@@ -106,7 +106,8 @@ private fun FollowScreen(
     ) {
         BackAndMenuTopAppBar(
             onBackButtonClick = onBackButtonClick,
-            modifier = Modifier.padding(horizontal = 20.dp)
+            modifier = Modifier.padding(horizontal = 20.dp),
+            isMenuIconVisible = false
         )
 
         FollowTabRow(

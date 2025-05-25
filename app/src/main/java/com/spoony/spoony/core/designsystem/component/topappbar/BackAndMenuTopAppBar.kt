@@ -14,12 +14,14 @@ import com.spoony.spoony.core.designsystem.component.dropdown.IconDropdown
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BackAndMenuTopAppBar(
     onBackButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-    menuItemList: ImmutableList<String>? = null,
+    isMenuIconVisible: Boolean = true,
+    menuItemList: ImmutableList<String> = persistentListOf(),
     onMenuButtonClick: (String) -> Unit = {}
 ) {
     SpoonyBasicTopAppBar(
@@ -39,7 +41,7 @@ fun BackAndMenuTopAppBar(
             }
         },
         actions = {
-            if (menuItemList != null) {
+            if (isMenuIconVisible) {
                 IconDropdown(
                     menuItems = menuItemList,
                     onMenuItemClick = onMenuButtonClick
