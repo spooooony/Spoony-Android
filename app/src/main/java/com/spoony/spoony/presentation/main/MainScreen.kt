@@ -163,7 +163,8 @@ fun MainScreen(
                         )
                     },
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
-                    navigateUp = navigator::navigateUp
+                    navigateUp = navigator::navigateUp,
+                    navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
                 registerNavGraph(
@@ -179,7 +180,8 @@ fun MainScreen(
                     navigateToProfileEdit = navigator::navigateToProfileEdit,
                     navigateToRegister = navigator::navigateToRegister,
                     navigateToReviewDetail = navigator::navigateToPlaceDetail,
-                    navigateToEditReview = navigator::navigateToReviewEdit
+                    navigateToEditReview = navigator::navigateToReviewEdit,
+                    navigateToAttendance = navigator::navigateToAttendance
                 )
 
                 profileEditGraph(

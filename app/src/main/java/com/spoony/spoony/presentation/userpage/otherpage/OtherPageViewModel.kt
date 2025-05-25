@@ -69,6 +69,7 @@ class OtherPageViewModel @Inject constructor(
                             isBlocked = false
                         )
                     )
+
                     else -> state.copy(
                         profile = currentProfile.copy(
                             isFollowing = !currentProfile.isFollowing,
