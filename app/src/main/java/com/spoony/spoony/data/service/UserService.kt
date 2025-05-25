@@ -37,12 +37,11 @@ interface UserService {
 
     @GET("/api/v1/user/followings/{targetUserId}")
     suspend fun getOtherFollowings(
-        @Path ("targetUserId") targetUserId: Int
+        @Path("targetUserId") targetUserId: Int
     ): BaseResponse<FollowListResponseDto>
-
 
     @GET("/api/v1/user/followers/{targetUserId}")
     suspend fun getOtherFollowers(
-        @Path ("targetUserId") targetUserId: Int
+        @Path("targetUserId") targetUserId: Int
     ): BaseResponse<FollowListResponseDto>
 }

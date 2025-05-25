@@ -36,7 +36,6 @@ import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
 import com.spoony.spoony.presentation.follow.component.UserListScreen
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
-import com.spoony.spoony.presentation.userpage.mypage.MyPageSideEffect
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 

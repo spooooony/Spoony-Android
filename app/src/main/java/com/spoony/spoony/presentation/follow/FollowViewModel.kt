@@ -9,8 +9,8 @@ import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
 import com.spoony.spoony.presentation.follow.model.toModel
 import com.spoony.spoony.presentation.follow.navigation.Follow
-import com.spoony.spoony.presentation.userpage.otherpage.OtherPageSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class FollowViewModel @Inject constructor(
@@ -63,7 +62,7 @@ class FollowViewModel @Inject constructor(
             } else {
                 userRepository.getOtherFollowers(userId)
             }
-            
+
             result
                 .onSuccess { followList ->
                     _followers.value = followList.users.map { it.toModel() }.toImmutableList()
@@ -81,7 +80,7 @@ class FollowViewModel @Inject constructor(
             } else {
                 userRepository.getOtherFollowings(userId)
             }
-            
+
             result
                 .onSuccess { followList ->
                     _following.value = followList.users.map { it.toModel() }.toImmutableList()
