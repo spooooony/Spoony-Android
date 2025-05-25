@@ -5,7 +5,7 @@ data class BasicUserInfoEntity(
     val platform: String,
     val platformId: String,
     val userName: String,
-    val regionName: String,
+    val regionName: String?,
     val introduction: String,
     val createdAt: String,
     val updatedAt: String,

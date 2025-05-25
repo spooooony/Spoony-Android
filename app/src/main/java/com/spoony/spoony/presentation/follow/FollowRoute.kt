@@ -24,7 +24,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.core.designsystem.component.topappbar.BackAndMenuTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.white
@@ -33,6 +36,7 @@ import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
 import com.spoony.spoony.presentation.follow.component.UserListScreen
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
+import com.spoony.spoony.presentation.userpage.mypage.MyPageSideEffect
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
@@ -46,6 +50,19 @@ fun FollowRoute(
     val followers by viewModel.followers.collectAsState()
     val following by viewModel.following.collectAsState()
     val followType by viewModel.followType.collectAsState()
+
+    val showSnackBar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is FollowPageSideEffect.ShowSnackbar -> {
+                    showSnackBar(effect.message)
+                }
+            }
+        }
+    }
 
     FollowScreen(
         followers = followers,

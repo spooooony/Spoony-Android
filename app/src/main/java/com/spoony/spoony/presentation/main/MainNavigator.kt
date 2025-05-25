@@ -36,7 +36,7 @@ const val NAVIGATION_ROOT = 0
 class MainNavigator(
     val navController: NavHostController
 ) {
-    val startDestination = Splash
+    val startDestination = Map()
 
     private val currentDestination: NavDestination?
         @Composable get() = navController

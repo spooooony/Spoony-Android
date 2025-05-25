@@ -1,11 +1,18 @@
 package com.spoony.spoony.presentation.userpage.model
 
+import androidx.compose.ui.graphics.Color
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
+import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.toValidHexColor
+import com.spoony.spoony.domain.entity.BasicUserInfoEntity
+import com.spoony.spoony.domain.entity.UserFeedEntity
+import com.spoony.spoony.domain.entity.UserPageReviewEntity
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 data class UserProfile(
     val profileId: Int = 0,
@@ -20,6 +27,18 @@ data class UserProfile(
     val isBlocked: Boolean = false
 )
 
+fun BasicUserInfoEntity.toUserProfileModel(): UserProfile = UserProfile(
+    profileId = this.userId,
+    imageUrl = this.profileImageUrl,
+    nickname = this.userName,
+    region = this.regionName?: "",
+    introduction = this.introduction,
+    reviewCount = this.reviewCount,
+    followerCount = this.followerCount,
+    followingCount = this.followingCount,
+    isFollowing = this.isFollowing
+)
+
 data class ReviewData(
     val reviewId: Int = 0,
     val content: String = "",
@@ -29,6 +48,25 @@ data class ReviewData(
     val date: String = "",
     val addMapCount: Int = 0,
     val imageList: ImmutableList<String> = persistentListOf()
+)
+
+fun UserPageReviewEntity.toReviewDataList(): ImmutableList<ReviewData> =
+    this.feedList.map { it.toReviewData() }.toImmutableList()
+
+fun UserFeedEntity.toReviewData(): ReviewData = ReviewData(
+    reviewId = this.postId,
+    content = this.description,
+    category = ReviewCardCategory(
+        text = this.categoryInfo.categoryName,
+        iconUrl = this.categoryInfo.iconUrl,
+        textColor = Color.hexToColor(this.categoryInfo.textColor.toValidHexColor()),
+        backgroundColor = Color.hexToColor(this.categoryInfo.backgroundColor.toValidHexColor())
+    ),
+    username = this.userName,
+    userRegion = this.userRegion,
+    date = this.createdAt,
+    addMapCount = this.zzimCount,
+    imageList = this.photoUrlList.toImmutableList()
 )
 
 data class UserPageState(
