@@ -2,7 +2,7 @@ package com.spoony.spoony.data.datasourceimpl
 
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.datasource.UserRemoteDataSource
-import com.spoony.spoony.data.dto.request.FollowRequestDto
+import com.spoony.spoony.data.dto.request.TargetUserRequestDto
 import com.spoony.spoony.data.dto.response.BasicUserInfoResponseDto
 import com.spoony.spoony.data.dto.response.FollowListResponseDto
 import com.spoony.spoony.data.service.UserService
@@ -19,12 +19,12 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun followUser(userId: Int): BaseResponse<Unit> =
         userService.followUser(
-            FollowRequestDto(targetUserId = userId)
+            TargetUserRequestDto(targetUserId = userId)
         )
 
     override suspend fun unfollowUser(userId: Int): BaseResponse<Unit> =
         userService.unfollowUser(
-            FollowRequestDto(targetUserId = userId)
+            TargetUserRequestDto(targetUserId = userId)
         )
 
     override suspend fun getMyFollowings(): BaseResponse<FollowListResponseDto> =
@@ -38,4 +38,14 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getOtherFollowers(targetUserId: Int): BaseResponse<FollowListResponseDto> =
         userService.getOtherFollowers(targetUserId)
+
+    override suspend fun blockUser(userId: Int): BaseResponse<Unit> =
+        userService.blockUser(
+            TargetUserRequestDto(targetUserId = userId)
+        )
+
+    override suspend fun unblockUser(userId: Int): BaseResponse<Unit> =
+        userService.unblockUser(
+            TargetUserRequestDto(targetUserId = userId)
+        )
 }

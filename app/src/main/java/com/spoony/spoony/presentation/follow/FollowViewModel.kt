@@ -43,7 +43,8 @@ class FollowViewModel @Inject constructor(
         get() = _sideEffect.asSharedFlow()
 
     private val _followType = MutableStateFlow(FollowType.FOLLOWER)
-    val followType: StateFlow<FollowType> = _followType.asStateFlow()
+    val followType: StateFlow<FollowType>
+        get() = _followType.asStateFlow()
 
     private val followInfo = savedStateHandle.toRoute<Follow>()
     private val userId = followInfo.userId

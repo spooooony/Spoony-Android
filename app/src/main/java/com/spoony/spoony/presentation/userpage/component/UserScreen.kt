@@ -61,7 +61,14 @@ fun UserPageScreen(
         modifier = modifier
             .fillMaxSize()
             .background(white)
-            .padding(paddingValues)
+            .then(
+                if (state.userType == UserType.OTHER_PAGE) {
+                    modifier.padding(bottom = paddingValues.calculateBottomPadding())
+                } else {
+                    modifier.padding(paddingValues)
+                }
+            )
+
     ) {
         item {
             when (state.userType) {
@@ -138,6 +145,7 @@ fun UserPageScreen(
 
                 if (state.userType == UserType.OTHER_PAGE) {
                     LocalReviewFilterCheckBox(
+                        enabled = !state.isBlocked,
                         isSelected = state.isCheckBoxSelected,
                         onClick = events.onCheckBoxClick
                     )
@@ -148,7 +156,7 @@ fun UserPageScreen(
 
             if (isUserBlockDialogVisible) {
                 TwoButtonDialog(
-                    message = if (state.isBlocked) "${state.userName} 님의\n차단을 해제하시겠습니까?" else "${state.userName} 님을\n차단하시겠습니까?",
+                    message = if (state.isBlocked) "${state.userName} 님을\n차단 해제하시겠습니까?" else "${state.userName} 님을\n차단하시겠습니까?",
                     negativeText = "아니요",
                     positiveText = "네",
                     onClickNegative = { isUserBlockDialogVisible = false },
@@ -184,7 +192,7 @@ fun UserPageScreen(
                     )
                     Text(
                         text = "지금은 프로필을 볼 수 없지만, \n" +
-                                "원하시면 차단을 해제할 수 있어요.",
+                            "원하시면 차단을 해제할 수 있어요.",
                         style = SpoonyAndroidTheme.typography.body2m,
                         color = SpoonyAndroidTheme.colors.gray500,
                         textAlign = TextAlign.Center

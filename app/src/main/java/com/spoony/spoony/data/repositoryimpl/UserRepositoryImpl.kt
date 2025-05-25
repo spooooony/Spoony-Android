@@ -49,4 +49,14 @@ class UserRepositoryImpl @Inject constructor(
         runCatching {
             userRemoteDataSource.getOtherFollowers(targetUserId).data!!.toDomain()
         }
+
+    override suspend fun blockUser(userId: Int): Result<Unit> =
+        runCatching {
+            userRemoteDataSource.blockUser(userId)
+        }
+
+    override suspend fun unblockUser(userId: Int): Result<Unit> =
+        runCatching {
+            userRemoteDataSource.unblockUser(userId)
+        }
 }
