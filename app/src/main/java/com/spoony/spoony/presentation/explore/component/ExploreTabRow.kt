@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,13 +40,12 @@ fun ExploreTabRow(
     modifier: Modifier = Modifier,
     tabList: ImmutableList<String>,
     onTabChange: (ExploreType) -> Unit,
-    selectedTabIndex: MutableState<Int>
+    exploreType: ExploreType
 ) {
     var startX by remember { mutableStateOf(0.dp) }
     val tabWidths = remember { mutableListOf<Float>() }
     var rowStartX by remember { mutableFloatStateOf(0f) }
     val density = LocalDensity.current
-
     Column {
         Row(
             modifier = modifier
@@ -60,13 +58,12 @@ fun ExploreTabRow(
             tabList.forEachIndexed { index, tab ->
                 ExploreTab(
                     label = tab,
-                    selected = selectedTabIndex.value == index,
+                    selected = ExploreType.entries.indexOf(exploreType) == index,
                     onClick = {
-                        selectedTabIndex.value = index
                         onTabChange(ExploreType.entries[index])
                     },
                     onStartXChange = { x ->
-                        if (index == selectedTabIndex.value) {
+                        if (ExploreType.entries.indexOf(exploreType) == index) {
                             startX = with(density) { (x - rowStartX + 2).toDp() }
                         }
                     },
@@ -91,7 +88,7 @@ fun ExploreTabRow(
         )
 
         val indicatorWidth = if (tabWidths.isNotEmpty()) {
-            with(density) { tabWidths[selectedTabIndex.value].toDp() }
+            with(density) { tabWidths[ExploreType.entries.indexOf(exploreType)].toDp() }
         } else {
             0.dp
         }

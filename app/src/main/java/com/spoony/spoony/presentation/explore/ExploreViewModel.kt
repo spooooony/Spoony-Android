@@ -280,10 +280,14 @@ class ExploreViewModel @Inject constructor(
                         _state.update {
                             val placeReviewList = (it.placeReviewList as? UiState.Success)?.data ?: persistentListOf()
                             val newItems = reviews.map { placeReview -> placeReview.toModel() }.toPersistentList()
+                            val mergedList = (placeReviewList + newItems).toPersistentList()
+
                             it.copy(
-                                placeReviewList = UiState.Success(
-                                    (placeReviewList + newItems).toPersistentList()
-                                ),
+                                placeReviewList = if (mergedList.isEmpty()) {
+                                    UiState.Empty
+                                } else {
+                                    UiState.Success(mergedList)
+                                },
                                 cursor = nextCursor
                             )
                         }

@@ -151,7 +151,6 @@ private fun ExploreScreen(
     exploreType: ExploreType
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
-    val selectedTabIndex = remember { mutableIntStateOf(0) }
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
@@ -252,7 +251,7 @@ private fun ExploreScreen(
             ExploreTabRow(
                 onTabChange = onTabChange,
                 tabList = tabList,
-                selectedTabIndex = selectedTabIndex
+                exploreType = exploreType
             )
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
@@ -292,7 +291,9 @@ private fun ExploreScreen(
             onReportButtonClick = onReportButtonClick,
             onRefresh = onRefresh,
             onLoadNextPage = onLoadNextPage,
-            onEditButtonClick = onEditButtonClick
+            onEditButtonClick = onEditButtonClick,
+            onClickSearch = onClickSearch,
+            exploreType = exploreType
         )
     }
 }
@@ -321,6 +322,8 @@ private fun ExploreContent(
     onLoadNextPage: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
     onEditButtonClick: (Int, RegisterType) -> Unit,
+    onClickSearch: () -> Unit,
+    exploreType: ExploreType,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -349,7 +352,8 @@ private fun ExploreContent(
     when (placeReviewList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
-                onClick = onRegisterButtonClick,
+                onClick = if (exploreType == ExploreType.ALL) onRegisterButtonClick else onClickSearch,
+                exploreType = exploreType,
                 modifier = Modifier
                     .fillMaxSize()
             )
