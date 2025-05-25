@@ -59,6 +59,7 @@ import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.explore.type.SortingOption
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
@@ -71,6 +72,7 @@ fun ExploreRoute(
     navigateToExploreSearch: () -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToRegister: () -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
@@ -96,6 +98,7 @@ fun ExploreRoute(
             onRegisterButtonClick = navigateToRegister,
             onPlaceDetailItemClick = navigateToPlaceDetail,
             onReportButtonClick = navigateToReport,
+            onEditButtonClick = navigateToEditReview,
             onFilterApplyButtonClick = viewModel::applyExploreFilter,
             onResetExploreFilterButtonClick = viewModel::resetExploreFilter,
             onLocalReviewButtonClick = viewModel::localReviewToggle,
@@ -126,6 +129,7 @@ private fun ExploreScreen(
     onRegisterButtonClick: () -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
     onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
+    onEditButtonClick: (Int, RegisterType) -> Unit,
     onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
     onResetExploreFilterButtonClick: () -> Unit,
     onLocalReviewButtonClick: () -> Unit,
@@ -287,7 +291,8 @@ private fun ExploreScreen(
             onPlaceDetailItemClick = onPlaceDetailItemClick,
             onReportButtonClick = onReportButtonClick,
             onRefresh = onRefresh,
-            onLoadNextPage = onLoadNextPage
+            onLoadNextPage = onLoadNextPage,
+            onEditButtonClick = onEditButtonClick
         )
     }
 }
@@ -315,6 +320,7 @@ private fun ExploreContent(
     onRefresh: () -> Unit,
     onLoadNextPage: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
+    onEditButtonClick: (Int, RegisterType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -413,7 +419,7 @@ private fun ExploreContent(
                             onMenuItemClick = { option ->
                                 when (option) {
                                     ExploreDropdownOption.REPORT.string -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
-                                    ExploreDropdownOption.EDIT.string -> {}
+                                    ExploreDropdownOption.EDIT.string -> onEditButtonClick(placeReview.reviewId, RegisterType.EDIT)
                                     ExploreDropdownOption.DELETE.string -> {}
                                 }
                             }
