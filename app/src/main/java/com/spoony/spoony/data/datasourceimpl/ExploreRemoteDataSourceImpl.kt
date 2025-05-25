@@ -2,6 +2,7 @@ package com.spoony.spoony.data.datasourceimpl
 
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
+import com.spoony.spoony.data.dto.response.ExplorePlaceReviewFilteredResponseDto
 import com.spoony.spoony.data.dto.response.ExplorePlaceReviewListFollowingResponseDto
 import com.spoony.spoony.data.dto.response.FeedsResponseDto
 import com.spoony.spoony.data.dto.response.PlaceReviewListResponseDto
@@ -32,4 +33,14 @@ class ExploreRemoteDataSourceImpl @Inject constructor(
     override suspend fun getUserListByKeyword(query: String): BaseResponse<UserListSearchResponseDto> = exploreService.getUserListByKeyword(
         query = query
     )
+
+    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: Int?, size: Int?): BaseResponse<ExplorePlaceReviewFilteredResponseDto> =
+        exploreService.getPlaceReviewListFiltered(
+            categoryIds = categoryIds,
+            regionIds = regionIds,
+            ageGroups = ageGroups,
+            sortBy = sortBy,
+            cursor = cursor,
+            size = size
+        )
 }

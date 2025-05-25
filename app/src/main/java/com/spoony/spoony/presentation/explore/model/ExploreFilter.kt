@@ -35,7 +35,7 @@ fun RegionEntity.toExploreFilter(): ExploreFilter {
 object ExploreFilterDataProvider {
     fun getDefaultPropertyFilter() = persistentListOf(
         ExploreFilter(
-            id = 1,
+            id = 2,
             name = "로컬 리뷰",
             type = "property"
         )

@@ -191,14 +191,27 @@ private fun ExploreScreen(
                 )
             },
             onToggleFilter = { id, type ->
-                val stateMap = when (type) {
-                    FilterType.LOCAL_REVIEW -> propertyState
-                    FilterType.CATEGORY -> categoryState
-                    FilterType.REGION -> regionState
-                    FilterType.AGE -> ageState
-                    else -> null
+                when (type) {
+                    FilterType.LOCAL_REVIEW -> {
+                        propertyState[id] = !(propertyState[id] ?: false)
+                    }
+                    FilterType.CATEGORY -> {
+                        categoryState[id] = !(categoryState[id] ?: false)
+                    }
+                    FilterType.REGION -> {
+                        regionState[id] = !(regionState[id] ?: false)
+                    }
+                    FilterType.AGE -> {
+                        val alreadySelected = ageState[id] == true
+                        ageState.keys.forEach { key ->
+                            ageState[key] = false
+                        }
+                        if (!alreadySelected) {
+                            ageState[id] = true
+                        }
+                    }
+                    else -> Unit
                 }
-                stateMap?.let { it[id] = !(it[id] ?: false) }
             },
             propertyItems = propertyItems,
             regionItems = regionItems,
@@ -335,10 +348,7 @@ private fun ExploreContent(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(
-                        items = placeReviewList.data,
-                        key = { placeReview ->
-                            placeReview.reviewId
-                        }
+                        items = placeReviewList.data
                     ) { placeReview ->
                         val menuList = remember {
                             if (placeReview.isMine) {

@@ -22,4 +22,13 @@ interface ExploreRepository {
     suspend fun getUserListByKeyword(
         query: String
     ): Result<List<UserEntity>>
+
+    suspend fun getPlaceReviewListFiltered(
+        categoryIds: List<Int>?,
+        regionIds: List<Int>?,
+        ageGroups: List<String>?,
+        sortBy: String?,
+        cursor: Int?,
+        size: Int?
+    ): Result<Pair<List<PlaceReviewEntity>, Int>>
 }

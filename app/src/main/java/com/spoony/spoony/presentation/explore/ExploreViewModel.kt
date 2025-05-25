@@ -14,6 +14,7 @@ import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -40,9 +41,9 @@ class ExploreViewModel @Inject constructor(
     val sideEffect = _sideEffect.receiveAsFlow()
 
     init {
-        getAllFeedList()
         getCategoryList()
         getRegionList()
+        getPlaceReviewListFiltered()
     }
 
     private fun getCategoryList() {
@@ -92,7 +93,7 @@ class ExploreViewModel @Inject constructor(
         val categorySelectedState = currentFilterState.categories
         val regionSelectedState = currentFilterState.regions
         val ageSelectedState = currentFilterState.ages
-        val isLocalReviewSelected = !(propertySelectedState[1] ?: false)
+        val isLocalReviewSelected = !(propertySelectedState[2] ?: false)
 
         val updatedFilterOptions = chipItems.map { option ->
             when (option.sort) {
@@ -111,13 +112,18 @@ class ExploreViewModel @Inject constructor(
                 else -> option
             }
         }.toImmutableList()
-        _state.update {
-            it.copy(
-                filterSelectionState = currentFilterState.copy(
-                    properties = propertySelectedState.put(1, isLocalReviewSelected)
-                ),
-                chipItems = updatedFilterOptions
-            )
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    filterSelectionState = currentFilterState.copy(
+                        properties = propertySelectedState.put(2, isLocalReviewSelected)
+                    ),
+                    chipItems = updatedFilterOptions,
+                    placeReviewList = UiState.Loading,
+                    cursor = -1
+                )
+            }
+            getPlaceReviewListFiltered()
         }
     }
 
@@ -131,7 +137,7 @@ class ExploreViewModel @Inject constructor(
         val updatedFilterOptions = chipItems.map { option ->
             when (option.sort) {
                 FilterType.LOCAL_REVIEW -> {
-                    val isSelected = propertySelectedState[1] ?: false
+                    val isSelected = propertySelectedState[2] ?: false
                     option.copy(isSelected = isSelected)
                 }
 
@@ -195,16 +201,21 @@ class ExploreViewModel @Inject constructor(
                 }
             }
         }.toImmutableList()
-        _state.update {
-            it.copy(
-                filterSelectionState = currentFilterState.copy(
-                    properties = propertySelectedState,
-                    categories = categorySelectedState,
-                    regions = regionSelectedState,
-                    ages = ageSelectedState
-                ),
-                chipItems = updatedFilterOptions
-            )
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    filterSelectionState = currentFilterState.copy(
+                        properties = propertySelectedState,
+                        categories = categorySelectedState,
+                        regions = regionSelectedState,
+                        ages = ageSelectedState
+                    ),
+                    chipItems = updatedFilterOptions,
+                    placeReviewList = UiState.Loading,
+                    cursor = -1
+                )
+            }
+            getPlaceReviewListFiltered()
         }
     }
 
@@ -266,12 +277,73 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    private fun getPlaceReviewFollowingList() {
-        _state.update {
-            it.copy(
-                placeReviewList = UiState.Loading
-            )
+    private fun getPlaceReviewListFiltered() {
+        val currentFilterState = _state.value.filterSelectionState
+        val selectedCategoryIds = (currentFilterState.properties + currentFilterState.categories)
+            .filterValues { it }
+            .keys
+            .toList()
+
+        val selectedRegionIds = currentFilterState.regions
+            .filterValues { it }
+            .keys
+            .toList()
+
+        val selectedAgeGroups = currentFilterState.ages
+            .filterValues { it }
+            .keys
+            .map {
+                when (it) {
+                    10 -> "AGE_10S"
+                    20 -> "AGE_20S"
+                    30 -> "AGE_30S"
+                    else -> "AGE_ETC"
+                }
+            }
+        viewModelScope.launch {
+            try {
+                exploreRepository.getPlaceReviewListFiltered(
+                    categoryIds = selectedCategoryIds,
+                    regionIds = selectedRegionIds,
+                    ageGroups = selectedAgeGroups,
+                    sortBy = _state.value.selectedSortingOption.stringCode,
+                    cursor = _state.value.cursor.takeIf { it != -1 },
+                    size = _state.value.size
+                )
+                    .onSuccess { (reviews, nextCursor) ->
+                        _state.update {
+                            val placeReviewList = (it.placeReviewList as? UiState.Success)?.data ?: persistentListOf()
+                            val newItems = reviews.map { placeReview -> placeReview.toModel() }.toPersistentList()
+                            it.copy(
+                                placeReviewList = UiState.Success(
+                                    (placeReviewList + newItems).toPersistentList()
+                                ),
+                                cursor = nextCursor
+                            )
+                        }
+                    }
+                    .onFailure { e ->
+                        Timber.e(e)
+                        _state.update {
+                            it.copy(
+                                placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                            )
+                        }
+                        _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
+                _state.update {
+                    it.copy(
+                        placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                    )
+                }
+                _sideEffect.send(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+            }
         }
+    }
+
+    private fun getPlaceReviewFollowingList() {
         viewModelScope.launch {
             try {
                 exploreRepository.getPlaceReviewListFollowing()
@@ -290,10 +362,9 @@ class ExploreViewModel @Inject constructor(
                                 }
                             )
                         }
-                        _sideEffect.send(ExploreSideEffect.ShowSnackbar("데이터 받기 성공"))
                     }
                     .onFailure { e ->
-                        Timber.tag("getPlaceReviewFollowingList").e(e)
+                        Timber.e(e)
                         _state.update {
                             it.copy(
                                 placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
@@ -302,25 +373,33 @@ class ExploreViewModel @Inject constructor(
                         _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                     }
             } catch (e: Exception) {
+                Timber.e(e)
+                _state.update {
+                    it.copy(
+                        placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                    )
+                }
                 _sideEffect.send(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
             }
         }
     }
     fun updateExploreType(exploreType: ExploreType) {
         if (state.value.exploreType == exploreType) return
-        when (exploreType) {
-            ExploreType.ALL -> {
-                getAllFeedList()
-            }
-            ExploreType.FOLLOWING -> {
-                getPlaceReviewFollowingList()
-            }
-        }
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    exploreType = exploreType
+                    exploreType = exploreType,
+                    placeReviewList = UiState.Loading,
+                    cursor = -1
                 )
+            }
+        }
+        when (exploreType) {
+            ExploreType.ALL -> {
+                getPlaceReviewListFiltered()
+            }
+            ExploreType.FOLLOWING -> {
+                getPlaceReviewFollowingList()
             }
         }
     }
