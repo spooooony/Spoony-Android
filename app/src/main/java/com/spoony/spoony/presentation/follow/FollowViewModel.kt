@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
@@ -124,7 +125,7 @@ class FollowViewModel @Inject constructor(
             },
             onError = {
                 viewModelScope.launch {
-                    _sideEffect.emit(FollowPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
                 }
             },
             coroutineScope = viewModelScope
@@ -161,4 +162,5 @@ class FollowViewModel @Inject constructor(
 
 sealed class FollowPageSideEffect {
     data class ShowSnackbar(val message: String) : FollowPageSideEffect()
+    data class ShowError(val errorType: ErrorType) : FollowPageSideEffect()
 }

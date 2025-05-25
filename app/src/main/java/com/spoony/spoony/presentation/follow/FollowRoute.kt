@@ -59,6 +59,9 @@ fun FollowRoute(
                 is FollowPageSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
+                is FollowPageSideEffect.ShowError -> {
+                    showSnackBar(effect.errorType.description)
+                }
             }
         }
     }
