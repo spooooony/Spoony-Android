@@ -58,7 +58,7 @@ class OtherPageViewModel @Inject constructor(
                     getOtherUserReviews()
                 }
                 .onLogFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -85,7 +85,7 @@ class OtherPageViewModel @Inject constructor(
             getCurrentState = { _state.value.profile.isFollowing },
             onError = {
                 viewModelScope.launch {
-                    _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
             },
             coroutineScope = viewModelScope

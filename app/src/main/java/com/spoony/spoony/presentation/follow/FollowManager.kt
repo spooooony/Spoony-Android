@@ -19,6 +19,8 @@ class FollowManager @Inject constructor(
         onUiUpdate: (Boolean) -> Unit,
         getCurrentState: () -> Boolean,
         onError: () -> Unit,
+        onSuccess: () -> Unit = {},
+        debounceDuration: Long = 600L,
         coroutineScope: CoroutineScope
     ) {
         val newFollowState = !isCurrentlyFollowing
@@ -30,27 +32,38 @@ class FollowManager @Inject constructor(
 
         debounceJobs[userId]?.cancel()
         debounceJobs[userId] = coroutineScope.launch {
-            delay(600)
+            delay(debounceDuration)
 
             val originalState = originalStates[userId] ?: isCurrentlyFollowing
             val finalState = getCurrentState()
 
             if (originalState == finalState) {
-                debounceJobs.remove(userId)
-                originalStates.remove(userId)
+                cleanupUser(userId)
                 return@launch
             }
 
-            val apiResult = if (finalState) userRepository.followUser(userId) else userRepository.unfollowUser(userId)
+            val apiResult =
+                if (finalState) {
+                    userRepository.followUser(userId)
+                } else {
+                    userRepository.unfollowUser(userId)
+                }
 
-            apiResult.onFailure {
-                onUiUpdate(originalState)
-                onError()
-            }
+            apiResult
+                .onSuccess {
+                    onSuccess()
+                }.onFailure {
+                    onUiUpdate(originalState)
+                    onError()
+                }
 
-            debounceJobs.remove(userId)
-            originalStates.remove(userId)
+            cleanupUser(userId)
         }
+    }
+
+    private fun cleanupUser(userId: Int) {
+        debounceJobs.remove(userId)
+        originalStates.remove(userId)
     }
 
     fun clear() {

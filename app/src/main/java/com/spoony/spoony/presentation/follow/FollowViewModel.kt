@@ -126,7 +126,7 @@ class FollowViewModel @Inject constructor(
             },
             onError = {
                 viewModelScope.launch {
-                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
+                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
             },
             coroutineScope = viewModelScope
