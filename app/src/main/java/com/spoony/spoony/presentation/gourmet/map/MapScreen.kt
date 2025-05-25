@@ -426,8 +426,7 @@ private fun MapScreen(
             } else {
                 CloseTopAppBar(
                     title = locationInfo.placeName ?: "",
-                    onCloseButtonClick = onBackButtonClick,
-                    topPadding = paddingValues.calculateTopPadding()
+                    onCloseButtonClick = onBackButtonClick
                 )
             }
 

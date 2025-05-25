@@ -28,6 +28,7 @@ fun SpoonyBasicTopAppBar(
             .background(backgroundColor)
             .fillMaxWidth()
             .padding(vertical = 12.dp)
+            .statusBarsPadding()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

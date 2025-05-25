@@ -28,7 +28,7 @@ fun BackAndMenuTopAppBar(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(32.dp)
                     .noRippleClickable(onBackButtonClick)
             ) {
                 Icon(
