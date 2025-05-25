@@ -117,7 +117,7 @@ private fun FollowScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
             .background(white)
     ) {
         BackAndMenuTopAppBar(

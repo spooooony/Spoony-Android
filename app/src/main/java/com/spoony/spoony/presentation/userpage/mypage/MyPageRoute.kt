@@ -47,6 +47,9 @@ fun MyPageRoute(
                 is MyPageSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
+                is MyPageSideEffect.ShowError -> {
+                    showSnackBar(effect.errorType.description)
+                }
             }
         }
     }

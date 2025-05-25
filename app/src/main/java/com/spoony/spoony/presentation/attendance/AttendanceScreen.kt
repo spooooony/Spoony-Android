@@ -136,7 +136,7 @@ private fun AttendanceScreen(
 
     Column(
         modifier = Modifier
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TagTopAppBar(
             count = spoonCount,

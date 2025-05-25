@@ -4,6 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
+import com.spoony.spoony.core.state.ErrorType
+import com.spoony.spoony.core.util.extension.hexToColor
+import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.domain.repository.ReviewRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.FollowManager
@@ -57,7 +61,7 @@ class OtherPageViewModel @Inject constructor(
                     getOtherUserReviews()
                 }
                 .onFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
                 }
         }
     }
@@ -118,7 +122,7 @@ class OtherPageViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.GENERAL_ERROR))
                 }
         }
     }
@@ -131,4 +135,5 @@ class OtherPageViewModel @Inject constructor(
 
 sealed class OtherPageSideEffect {
     data class ShowSnackbar(val message: String) : OtherPageSideEffect()
+    data class ShowError(val errorType: ErrorType) : OtherPageSideEffect()
 }
