@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
@@ -38,7 +39,7 @@ fun CloseTopAppBar(
         backgroundColor = backgroundColor,
         modifier = modifier
             .background(backgroundColor)
-            .padding(top = topPadding)
+            .padding(top = topPadding),
     ) {
         Text(
             text = title,
