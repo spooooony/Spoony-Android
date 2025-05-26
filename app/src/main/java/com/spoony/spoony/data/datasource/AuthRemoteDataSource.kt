@@ -2,6 +2,7 @@ package com.spoony.spoony.data.datasource
 
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.dto.response.SignInResponseDto
+import com.spoony.spoony.data.dto.response.SignUpResponseDto
 
 interface AuthRemoteDataSource {
     suspend fun signIn(
@@ -16,5 +17,5 @@ interface AuthRemoteDataSource {
         birth: String?,
         regionId: Int?,
         introduction: String?
-    ): BaseResponse<SignInResponseDto>
+    ): BaseResponse<SignUpResponseDto>
 }

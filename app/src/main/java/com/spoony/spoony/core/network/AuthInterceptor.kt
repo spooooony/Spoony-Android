@@ -1,6 +1,5 @@
 package com.spoony.spoony.core.network
 
-import com.spoony.spoony.BuildConfig
 import com.spoony.spoony.domain.repository.TokenRepository
 import javax.inject.Inject
 import okhttp3.Interceptor
@@ -11,15 +10,9 @@ class AuthInterceptor @Inject constructor(
     private val tokenRepository: TokenRepository
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = tokenRepository.getCachedAccessToken()
-
         val originalRequest = chain.request()
 
-        val authRequest = if (token.isNotBlank()) {
-            originalRequest.newBuilder().newAuthBuilder().build()
-        } else {
-            originalRequest
-        }
+        val authRequest = originalRequest.newBuilder().newAuthBuilder().build()
 
         val response = chain.proceed(authRequest)
 
@@ -27,7 +20,7 @@ class AuthInterceptor @Inject constructor(
     }
 
     private fun Request.Builder.newAuthBuilder() =
-        this.addHeader(AUTHORIZATION, "$BEARER ${BuildConfig.USER_TOKEN}")
+        this.addHeader(AUTHORIZATION, "$BEARER ${tokenRepository.getCachedAccessToken()}")
 
     companion object {
         private const val AUTHORIZATION = "Authorization"

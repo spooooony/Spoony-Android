@@ -71,15 +71,13 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    @Auth
     fun provideAuthInterceptor(authInterceptor: AuthInterceptor): Interceptor = authInterceptor
 
     @Provides
     @Singleton
-    @Auth
     fun provideClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        @Auth authInterceptor: Interceptor
+        authInterceptor: Interceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
@@ -88,7 +86,28 @@ object RetrofitModule {
     @Provides
     @Singleton
     @Auth
+    fun provideAuthClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ) = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    @Provides
+    @Singleton
     fun provideRetrofit(
+        client: OkHttpClient,
+        factory: Converter.Factory
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(factory)
+            .build()
+
+    @Provides
+    @Singleton
+    @Auth
+    fun provideAuthRetrofit(
         @Auth client: OkHttpClient,
         factory: Converter.Factory
     ): Retrofit =

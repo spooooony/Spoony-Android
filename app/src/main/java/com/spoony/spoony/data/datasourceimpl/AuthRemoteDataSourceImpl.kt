@@ -5,6 +5,7 @@ import com.spoony.spoony.data.datasource.AuthRemoteDataSource
 import com.spoony.spoony.data.dto.request.SignInRequestDto
 import com.spoony.spoony.data.dto.request.SignUpRequestDto
 import com.spoony.spoony.data.dto.response.SignInResponseDto
+import com.spoony.spoony.data.dto.response.SignUpResponseDto
 import com.spoony.spoony.data.service.AuthService
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class AuthRemoteDataSourceImpl @Inject constructor(
         birth: String?,
         regionId: Int?,
         introduction: String?
-    ): BaseResponse<SignInResponseDto> =
+    ): BaseResponse<SignUpResponseDto> =
         authService.signUp(
             authorization = "$BEARER $token",
             signUpRequestDto = SignUpRequestDto(
