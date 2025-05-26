@@ -192,7 +192,7 @@ fun UserPageScreen(
                     )
                     Text(
                         text = "지금은 프로필을 볼 수 없지만, \n" +
-                                "원하시면 차단을 해제할 수 있어요.",
+                            "원하시면 차단을 해제할 수 있어요.",
                         style = SpoonyAndroidTheme.typography.body2m,
                         color = SpoonyAndroidTheme.colors.gray500,
                         textAlign = TextAlign.Center
