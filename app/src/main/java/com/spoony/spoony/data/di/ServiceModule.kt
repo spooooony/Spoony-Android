@@ -23,17 +23,17 @@ import retrofit2.Retrofit
 object ServiceModule {
     @Provides
     @Singleton
-    fun providePostService(@Auth retrofit: Retrofit): PostService =
+    fun providePostService(retrofit: Retrofit): PostService =
         retrofit.create(PostService::class.java)
 
     @Provides
     @Singleton
-    fun providePlaceService(@Auth retrofit: Retrofit): PlaceService =
+    fun providePlaceService(retrofit: Retrofit): PlaceService =
         retrofit.create(PlaceService::class.java)
 
     @Provides
     @Singleton
-    fun provideCategoryService(@Auth retrofit: Retrofit): CategoryService =
+    fun provideCategoryService(retrofit: Retrofit): CategoryService =
         retrofit.create(CategoryService::class.java)
 
     @Provides
@@ -43,27 +43,27 @@ object ServiceModule {
 
     @Provides
     @Singleton
-    fun provideReportService(@Auth retrofit: Retrofit): ReportService =
+    fun provideReportService(retrofit: Retrofit): ReportService =
         retrofit.create(ReportService::class.java)
 
     @Provides
     @Singleton
-    fun provideExploreService(@Auth retrofit: Retrofit): ExploreService =
+    fun provideExploreService(retrofit: Retrofit): ExploreService =
         retrofit.create(ExploreService::class.java)
 
     @Provides
     @Singleton
-    fun provideMapService(@Auth retrofit: Retrofit): MapService =
+    fun provideMapService(retrofit: Retrofit): MapService =
         retrofit.create(MapService::class.java)
 
     @Provides
     @Singleton
-    fun provideUserService(@Auth retrofit: Retrofit): UserService =
+    fun provideUserService(retrofit: Retrofit): UserService =
         retrofit.create(UserService::class.java)
 
     @Provides
     @Singleton
-    fun provideSpoonService(@Auth retrofit: Retrofit): SpoonService =
+    fun provideSpoonService(retrofit: Retrofit): SpoonService =
         retrofit.create(SpoonService::class.java)
 
     @Provides
