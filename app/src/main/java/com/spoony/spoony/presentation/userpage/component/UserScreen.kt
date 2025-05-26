@@ -141,7 +141,7 @@ fun UserPageScreen(
                     .padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ReviewCounter(reviewCount = state.reviewCount)
+                ReviewCounter(reviewCount = state.reviews.size)
 
                 if (state.userType == UserType.OTHER_PAGE) {
                     LocalReviewFilterCheckBox(
@@ -192,7 +192,7 @@ fun UserPageScreen(
                     )
                     Text(
                         text = "지금은 프로필을 볼 수 없지만, \n" +
-                            "원하시면 차단을 해제할 수 있어요.",
+                                "원하시면 차단을 해제할 수 있어요.",
                         style = SpoonyAndroidTheme.typography.body2m,
                         color = SpoonyAndroidTheme.colors.gray500,
                         textAlign = TextAlign.Center
@@ -200,7 +200,7 @@ fun UserPageScreen(
                 }
             }
         } else {
-            when (state.reviewCount) {
+            when (state.reviews.size) {
                 0 -> item {
                     Spacer(modifier = Modifier.height(54.dp))
                     when (state.userType) {
@@ -211,7 +211,12 @@ fun UserPageScreen(
                             buttonStyle = ButtonStyle.Primary
                         )
 
-                        UserType.OTHER_PAGE -> EmptyContent(if (state.isLocalReviewOnly) "아직 등록된 로컬리뷰가 없어요" else "아직 등록된 리뷰가 없어요")
+                        UserType.OTHER_PAGE -> EmptyContent(
+                            text = when (state.isLocalReviewOnly) {
+                                true -> "아직 등록된 로컬리뷰가 없어요"
+                                false -> "아직 등록된 리뷰가 없어요"
+                            }
+                        )
                     }
                 }
 
