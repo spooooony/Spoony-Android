@@ -11,19 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
-import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.presentation.auth.onboarding.component.OnBoardingButton
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingContent
 
 @Composable
 fun OnboardingStepThreeRoute(
-    viewModel: OnboardingViewModel,
-    onNextButtonClick: () -> Unit
+    viewModel: OnboardingViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val showSnackbar = LocalSnackBarTrigger.current
 
     LaunchedEffect(Unit) {
         viewModel.updateCurrentStep(OnboardingSteps.THREE)
@@ -34,12 +30,6 @@ fun OnboardingStepThreeRoute(
         onValueChanged = viewModel::updateIntroduction,
         onButtonClick = viewModel::signUp
     )
-
-    when (state.signUpState) {
-        is UiState.Empty -> onNextButtonClick()
-        is UiState.Failure -> showSnackbar((state.signUpState as? UiState.Failure)?.msg.orEmpty())
-        else -> {}
-    }
 }
 
 @Composable

@@ -6,8 +6,8 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
-import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.usecase.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
     private val signInUseCase: SignInUseCase
 ) : ViewModel() {
     private val _sideEffect = MutableSharedFlow<SignInSideEffect>()
@@ -72,7 +71,7 @@ class SignInViewModel @Inject constructor(
                     _sideEffect.emit(SignInSideEffect.NavigateToMap)
                 }
             }.onLogFailure {
-                _sideEffect.emit(SignInSideEffect.ShowSnackBar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                _sideEffect.emit(SignInSideEffect.ShowSnackBar(ErrorType.GENERAL_ERROR.description))
             }
         }
     }

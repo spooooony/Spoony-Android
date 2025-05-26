@@ -19,7 +19,7 @@ class SignInUseCase @Inject constructor(
         ).fold(
             onSuccess = { tokenEntity ->
                 try {
-                    tokenRepository.updateCachedAccessToken(tokenEntity?.accessToken.orEmpty())
+                    tokenRepository.updateCachedAccessToken(tokenEntity?.accessToken ?: token)
 
                     if (tokenEntity != null) {
                         tokenRepository.updateAccessToken(tokenEntity.accessToken)
