@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.ErrorType
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
@@ -71,8 +72,9 @@ class FollowViewModel @Inject constructor(
                 .onSuccess { followList ->
                     _followers.value = followList.users.map { it.toModel() }.toImmutableList()
                 }
-                .onFailure {
+                .onLogFailure {
                     _followers.value = persistentListOf()
+                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -89,17 +91,18 @@ class FollowViewModel @Inject constructor(
                 .onSuccess { followList ->
                     _following.value = followList.users.map { it.toModel() }.toImmutableList()
                 }
-                .onFailure {
+                .onLogFailure {
                     _following.value = persistentListOf()
+                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
 
-    fun refreshFollowers() {
+    private fun refreshFollowers() {
         loadFollowers()
     }
 
-    fun refreshFollowings() {
+    private fun refreshFollowings() {
         loadFollowings()
     }
 
@@ -112,7 +115,7 @@ class FollowViewModel @Inject constructor(
 
     fun toggleFollow(userId: Int) {
         val targetUser = findTargetUser(userId, _followers.value to _following.value)
-        val isCurrentlyFollowing = targetUser?.isFollowing ?: false
+        val isCurrentlyFollowing = targetUser?.isFollowing == true
 
         followManager.toggleFollow(
             userId = userId,
@@ -122,7 +125,7 @@ class FollowViewModel @Inject constructor(
                 _following.value = updateFollowState(_following.value, userId, newFollowState)
             },
             getCurrentState = {
-                findTargetUser(userId, _followers.value to _following.value)?.isFollowing ?: false
+                findTargetUser(userId, _followers.value to _following.value)?.isFollowing == true
             },
             onError = {
                 viewModelScope.launch {
