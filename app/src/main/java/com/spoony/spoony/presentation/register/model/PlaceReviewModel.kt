@@ -1,7 +1,8 @@
 package com.spoony.spoony.presentation.register.model
 
-import com.spoony.spoony.domain.entity.CategoryEntity
+import androidx.core.net.toUri
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
+import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -18,13 +19,7 @@ data class PlaceReviewModel(
     val placeAddress: String,
     val latitude: Double,
     val longitude: Double,
-    val category: CategoryModel
-)
-
-data class CategoryModel(
-    val categoryId: Int,
-    val categoryName: String,
-    val iconUrl: String
+    val category: CategoryState
 )
 
 fun PlaceReviewEntity.toModel(): PlaceReviewModel =
@@ -41,12 +36,25 @@ fun PlaceReviewEntity.toModel(): PlaceReviewModel =
         placeAddress = placeAddress ?: "",
         latitude = latitude ?: 0.0,
         longitude = longitude ?: 0.0,
-        category = category?.toModel() ?: CategoryModel(0, "", "")
+        category = category?.toModel() ?: CategoryState(0, "", "", "")
     )
 
-fun CategoryEntity.toModel(): CategoryModel =
-    CategoryModel(
-        categoryId = categoryId,
-        categoryName = categoryName,
-        iconUrl = iconUrl
+fun PlaceReviewModel.toRegisterState(currentState: RegisterState): RegisterState =
+    currentState.copy(
+        selectedPlace = PlaceState(
+            placeName = placeName,
+            placeAddress = placeAddress,
+            placeRoadAddress = placeAddress,
+            latitude = latitude,
+            longitude = longitude
+        ),
+        selectedCategory = category,
+        menuList = menuList,
+        detailReview = description,
+        optionalReview = cons ?: "",
+        userSatisfactionValue = value.toFloat(),
+        originalPhotoUrls = photoUrls,
+        selectedPhotos = photoUrls.map { url ->
+            SelectedPhoto(uri = url.toUri())
+        }.toImmutableList()
     )

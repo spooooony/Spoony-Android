@@ -4,57 +4,8 @@ import com.spoony.spoony.domain.entity.RegisterPostEntity
 import com.spoony.spoony.domain.entity.UpdatePostEntity
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 
-data class RegisterPostModel(
-    val description: String,
-    val value: Float,
-    val cons: String?,
-    val placeName: String,
-    val placeAddress: String,
-    val placeRoadAddress: String,
-    val latitude: Double,
-    val longitude: Double,
-    val categoryId: Int,
-    val menuList: List<String>,
-    val photos: List<String>
-)
-
-data class UpdatePostModel(
-    val postId: Int,
-    val description: String,
-    val value: Float,
-    val cons: String?,
-    val categoryId: Int,
-    val menuList: List<String>,
-    val deleteImageUrls: List<String>,
-    val newPhotos: List<String>
-)
-
-fun RegisterPostEntity.toModel(): RegisterPostModel =
-    RegisterPostModel(
-        description = description,
-        value = value,
-        cons = cons,
-        placeName = placeName,
-        placeAddress = placeAddress,
-        placeRoadAddress = placeRoadAddress,
-        latitude = latitude,
-        longitude = longitude,
-        categoryId = categoryId,
-        menuList = menuList,
-        photos = photos
-    )
-
-fun UpdatePostEntity.toModel(): UpdatePostModel =
-    UpdatePostModel(
-        postId = postId,
-        description = description,
-        value = value,
-        cons = cons,
-        categoryId = categoryId,
-        menuList = menuList,
-        deleteImageUrls = deleteImageUrls,
-        newPhotos = newPhotos
-    )
+val SelectedPhoto.isNewPhoto: Boolean
+    get() = !uri.toString().startsWith("http")
 
 fun RegisterState.toRegisterPostEntity(): RegisterPostEntity =
     RegisterPostEntity(
@@ -82,6 +33,3 @@ fun RegisterState.toUpdatePostEntity(postId: Int, deleteImageUrls: List<String>)
         deleteImageUrls = deleteImageUrls,
         newPhotos = selectedPhotos.filter { it.isNewPhoto }.map { it.uri.toString() }
     )
-
-val SelectedPhoto.isNewPhoto: Boolean
-    get() = !uri.toString().startsWith("http")

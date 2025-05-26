@@ -11,7 +11,7 @@ data class CategoryState(
     val iconUrlSelected: String
 )
 
-fun CategoryEntity.toPresentation(): CategoryState =
+fun CategoryEntity.toModel(): CategoryState =
     CategoryState(
         categoryId = categoryId,
         categoryName = categoryName,

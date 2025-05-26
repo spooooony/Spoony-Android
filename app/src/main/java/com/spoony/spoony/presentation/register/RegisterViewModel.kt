@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.register
 
-import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,8 +14,8 @@ import com.spoony.spoony.presentation.register.model.PlaceState
 import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.model.toModel
-import com.spoony.spoony.presentation.register.model.toPresentation
 import com.spoony.spoony.presentation.register.model.toRegisterPostEntity
+import com.spoony.spoony.presentation.register.model.toRegisterState
 import com.spoony.spoony.presentation.register.model.toUpdatePostEntity
 import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -65,31 +64,7 @@ class RegisterViewModel @Inject constructor(
                     .onSuccess { postDetail ->
                         val postModel = postDetail.toModel()
                         _state.update { currentState ->
-                            currentState.copy(
-                                selectedPlace = PlaceState(
-                                    placeName = postModel.placeName,
-                                    placeAddress = postModel.placeAddress,
-                                    placeRoadAddress = postModel.placeAddress,
-                                    latitude = postModel.latitude,
-                                    longitude = postModel.longitude
-                                ),
-                                selectedCategory = CategoryState(
-                                    categoryId = postModel.category.categoryId,
-                                    categoryName = postModel.category.categoryName,
-                                    iconUrlSelected = postModel.category.iconUrl,
-                                    iconUrlNotSelected = ""
-                                ),
-                                menuList = postModel.menuList,
-                                detailReview = postModel.description,
-                                optionalReview = postModel.cons ?: "",
-                                userSatisfactionValue = postModel.value.toFloat(),
-                                originalPhotoUrls = postModel.photoUrls,
-                                selectedPhotos = postModel.photoUrls.map { url ->
-                                    SelectedPhoto(
-                                        uri = url.toUri()
-                                    )
-                                }.toImmutableList()
-                            )
+                            postModel.toRegisterState(currentState)
                         }
                     }
                     .onLogFailure {
@@ -105,7 +80,7 @@ class RegisterViewModel @Inject constructor(
                 .onSuccess { categoryEntities ->
                     _state.update { state ->
                         state.copy(
-                            categories = categoryEntities.map { it.toPresentation() }.toImmutableList()
+                            categories = categoryEntities.map { it.toModel() }.toImmutableList()
                         )
                     }
                 }
@@ -126,7 +101,7 @@ class RegisterViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             searchResults = placeEntities.map { entity ->
-                                entity.toPresentation()
+                                entity.toModel()
                             }.toImmutableList()
                         )
                     }

@@ -12,7 +12,7 @@ data class PlaceState(
     val longitude: Double
 )
 
-fun PlaceEntity.toPresentation(): PlaceState =
+fun PlaceEntity.toModel(): PlaceState =
     PlaceState(
         placeName = placeName,
         placeAddress = placeAddress,
