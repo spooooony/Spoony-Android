@@ -78,7 +78,7 @@ class PlaceDetailViewModel @Inject constructor(
                             userInfo = UiState.Success(
                                 response.toModel()
                             ),
-                            isFollowing = response.isFollowing ?: false
+                            isFollowing = response.isFollowing
                         )
                     }
                 }

@@ -1,6 +1,6 @@
 package com.spoony.spoony.presentation.placeDetail.model
 
-import com.spoony.spoony.domain.entity.UserEntity
+import com.spoony.spoony.domain.entity.BasicUserInfoEntity
 
 data class UserInfoModel(
     val userId: Int,
@@ -9,9 +9,9 @@ data class UserInfoModel(
     val userRegion: String
 )
 
-fun UserEntity.toModel(): UserInfoModel = UserInfoModel(
+fun BasicUserInfoEntity.toModel(): UserInfoModel = UserInfoModel(
     userId = this.userId,
     userName = this.userName,
-    userProfileUrl = this.userProfileUrl,
-    userRegion = this.userRegion
+    userProfileUrl = this.profileImageUrl,
+    userRegion = this.regionName
 )
