@@ -1,6 +1,7 @@
 package com.spoony.spoony.core.util.extension
 
 import com.spoony.spoony.core.designsystem.model.BirthDate
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -14,6 +15,25 @@ fun String.formatToYearMonthDay(): String {
         val outputFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.getDefault())
         val dateTime = LocalDateTime.parse(this, inputFormatter)
         dateTime.format(outputFormatter)
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+fun String.toRelativeTimeOrDate(): String {
+    return try {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
+        val dateTime = LocalDateTime.parse(this, formatter)
+
+        val now = LocalDateTime.now()
+        val duration = Duration.between(dateTime, now)
+
+        when {
+            duration.toMinutes() < 1 -> "방금 전"
+            duration.toHours() < 1 -> "약 ${duration.toMinutes()}분 전"
+            duration.toHours() < 24 -> "약 ${duration.toHours()}시간 전"
+            else -> this.formatToYearMonthDay()
+        }
     } catch (e: Exception) {
         ""
     }
