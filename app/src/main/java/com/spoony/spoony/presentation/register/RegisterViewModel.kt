@@ -1,9 +1,11 @@
 package com.spoony.spoony.presentation.register
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
@@ -12,7 +14,11 @@ import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.Category
 import com.spoony.spoony.presentation.register.model.Place
+import com.spoony.spoony.presentation.register.model.PlaceReviewModel
 import com.spoony.spoony.presentation.register.model.RegisterType
+import com.spoony.spoony.presentation.register.model.toModel
+import com.spoony.spoony.presentation.register.model.toRegisterPostEntity
+import com.spoony.spoony.presentation.register.model.toUpdatePostEntity
 import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,11 +28,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.StateFlow
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
@@ -54,8 +60,43 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun loadState() {
-        if (registerType == RegisterType.EDIT) {
-            // TODO: 리뷰 수정에 맞는 GET API
+        if (registerType == RegisterType.EDIT && postId != null) {
+            viewModelScope.launch {
+                repository.getPostDetail(postId)
+                    .onSuccess { postDetail ->
+                        val postModel = postDetail.toModel()
+                        _state.update { currentState ->
+                            currentState.copy(
+                                selectedPlace = Place(
+                                    placeName = postModel.placeName,
+                                    placeAddress = postModel.placeAddress,
+                                    placeRoadAddress = "",
+                                    latitude = postModel.latitude,
+                                    longitude = postModel.longitude
+                                ),
+                                selectedCategory = Category(
+                                    categoryId = postModel.category.categoryId,
+                                    categoryName = postModel.category.categoryName,
+                                    iconUrlSelected = postModel.category.iconUrl,
+                                    iconUrlNotSelected = ""
+                                ),
+                                menuList = postModel.menuList,
+                                detailReview = postModel.description,
+                                optionalReview = postModel.cons ?: "",
+                                userSatisfactionValue = (postModel.value / 100).toFloat(),
+                                originalPhotoUrls = postModel.photoUrls,
+                                selectedPhotos = postModel.photoUrls.map { url ->
+                                    SelectedPhoto(
+                                        uri = Uri.parse(url)
+                                    )
+                                }.toImmutableList()
+                            )
+                        }
+                    }
+                    .onLogFailure {
+                        _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
+                    }
+            }
         }
     }
 
@@ -117,7 +158,7 @@ class RegisterViewModel @Inject constructor(
                     }
                 }
             }.onLogFailure {
-                _sideEffect.emit(RegisterSideEffect.ShowSnackbar("장소 선택 중 오류가 발생했습니다"))
+                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
             }
         }
     }
@@ -142,7 +183,7 @@ class RegisterViewModel @Inject constructor(
 
             currentState.copy(
                 menuList = buildList {
-                    addAll(currentMenuList)
+                    addAll(currentState.menuList)
                     set(index, value)
                 }.toImmutableList()
             )
@@ -217,28 +258,49 @@ class RegisterViewModel @Inject constructor(
             selectedPhotos.size >= MIN_PHOTO_COUNT
     }
 
+    private fun calculateDeleteImageUrls(): List<String> {
+        val currentState = _state.value
+        val currentImageUrls = currentState.selectedPhotos
+            .map { it.uri.toString() }
+            .filter { it.startsWith("http") }
+        
+        return currentState.originalPhotoUrls.filter { originalUrl ->
+            originalUrl !in currentImageUrls
+        }
+    }
+
     fun registerPost(onSuccess: () -> Unit) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            repository.registerPost(
-                title = state.value.oneLineReview, // TODO: 추후 옵셔널 리뷰로 변경
-                description = state.value.detailReview,
-                placeName = state.value.selectedPlace.placeName,
-                placeAddress = state.value.selectedPlace.placeAddress,
-                placeRoadAddress = state.value.selectedPlace.placeRoadAddress,
-                latitude = state.value.selectedPlace.latitude,
-                longitude = state.value.selectedPlace.longitude,
-                categoryId = state.value.selectedCategory.categoryId,
-                menuList = state.value.menuList.filter { it.isNotBlank() },
-                photos = state.value.selectedPhotos.map { it.uri }
-            ).onSuccess {
-                _state.update { it.copy(isLoading = false) }
-                resetState()
-                onSuccess()
-            }.onLogFailure {
-                _state.update { it.copy(isLoading = false) }
-                _sideEffect.emit(RegisterSideEffect.ShowSnackbar("등록 중 오류가 발생했습니다"))
+            when (registerType) {
+                RegisterType.CREATE -> {
+                    val registerPostEntity = state.value.toRegisterPostEntity()
+                    repository.registerPost(registerPostEntity)
+                        .onSuccess {
+                            _state.update { it.copy(isLoading = false) }
+                            resetState()
+                            onSuccess()
+                        }.onLogFailure {
+                            _state.update { it.copy(isLoading = false) }
+                            _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
+                        }
+                }
+                RegisterType.EDIT -> {
+                    if (postId != null) {
+                        val deleteImageUrls = calculateDeleteImageUrls()
+                        val updatePostEntity = state.value.toUpdatePostEntity(postId, deleteImageUrls)
+                        repository.updatePost(updatePostEntity)
+                            .onSuccess {
+                                _state.update { it.copy(isLoading = false) }
+                                resetState()
+                                onSuccess()
+                            }.onLogFailure {
+                                _state.update { it.copy(isLoading = false) }
+                                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
+                            }
+                    }
+                }
             }
         }
     }

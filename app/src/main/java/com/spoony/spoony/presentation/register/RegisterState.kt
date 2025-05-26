@@ -16,10 +16,11 @@ data class RegisterState(
     val menuList: ImmutableList<String> = persistentListOf(""),
 
     val oneLineReview: String = "", // TODO: 추후 삭제 예정
-    val userSatisfactionValue: Float = 0.5f,
+    val userSatisfactionValue: Float = 50f,
     val detailReview: String = "",
     val optionalReview: String = "",
     val selectedPhotos: ImmutableList<SelectedPhoto> = persistentListOf(),
+    val originalPhotoUrls: ImmutableList<String> = persistentListOf(), // 수정 시 원본 이미지 URL 목록
     val isPhotoErrorVisible: Boolean = false,
 
     val currentStep: Float = 1f,
