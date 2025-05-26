@@ -3,6 +3,7 @@ package com.spoony.spoony.data.repositoryimpl
 import com.spoony.spoony.data.datasource.UserRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.domain.entity.BasicUserInfoEntity
+import com.spoony.spoony.domain.entity.FollowListEntity
 import com.spoony.spoony.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -27,5 +28,25 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun unfollowUser(userId: Int): Result<Unit> =
         runCatching {
             userRemoteDataSource.unfollowUser(userId)
+        }
+
+    override suspend fun getMyFollowings(): Result<FollowListEntity> =
+        runCatching {
+            userRemoteDataSource.getMyFollowings().data!!.toDomain()
+        }
+
+    override suspend fun getMyFollowers(): Result<FollowListEntity> =
+        runCatching {
+            userRemoteDataSource.getMyFollowers().data!!.toDomain()
+        }
+
+    override suspend fun getOtherFollowings(targetUserId: Int): Result<FollowListEntity> =
+        runCatching {
+            userRemoteDataSource.getOtherFollowings(targetUserId).data!!.toDomain()
+        }
+
+    override suspend fun getOtherFollowers(targetUserId: Int): Result<FollowListEntity> =
+        runCatching {
+            userRemoteDataSource.getOtherFollowers(targetUserId).data!!.toDomain()
         }
 }
