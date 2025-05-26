@@ -42,8 +42,8 @@ import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.formatToYearMonthDay
-import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.presentation.main.SHOW_SNACKBAR_TIMEMILLIS
+import com.spoony.spoony.presentation.placeDetail.component.DeleteReviewDialog
 import com.spoony.spoony.presentation.placeDetail.component.DisappointItem
 import com.spoony.spoony.presentation.placeDetail.component.IconDropdownMenu
 import com.spoony.spoony.presentation.placeDetail.component.PlaceDetailBottomBar
@@ -53,7 +53,9 @@ import com.spoony.spoony.presentation.placeDetail.component.ScoopDialog
 import com.spoony.spoony.presentation.placeDetail.component.StoreInfo
 import com.spoony.spoony.presentation.placeDetail.component.UserProfileInfo
 import com.spoony.spoony.presentation.placeDetail.model.PlaceDetailModel
+import com.spoony.spoony.presentation.placeDetail.model.UserInfoModel
 import com.spoony.spoony.presentation.placeDetail.type.DropdownOption
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -64,6 +66,7 @@ import kotlinx.coroutines.launch
 fun PlaceDetailRoute(
     paddingValues: PaddingValues,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -74,6 +77,7 @@ fun PlaceDetailRoute(
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     var scoopDialogVisibility by remember { mutableStateOf(false) }
+    var deleteReviewDialogVisibility by remember { mutableStateOf(false) }
 
     val onShowSnackBar: (String) -> Unit = { message ->
         coroutineScope.launch {
@@ -92,6 +96,7 @@ fun PlaceDetailRoute(
                 is PlaceDetailSideEffect.ShowSnackbar -> {
                     onShowSnackBar(effect.message)
                 }
+                is PlaceDetailSideEffect.NavigateUp -> navigateUp()
             }
         }
     }
@@ -103,9 +108,9 @@ fun PlaceDetailRoute(
 
     val context = LocalContext.current
 
-    val userProfile = when (state.userEntity) {
-        is UiState.Success -> (state.userEntity as UiState.Success<UserEntity>).data
-        else -> UserEntity(
+    val userProfile = when (state.userInfo) {
+        is UiState.Success -> (state.userInfo as UiState.Success<UserInfoModel>).data
+        else -> UserInfoModel(
             userId = -1,
             userProfileUrl = "",
             userName = "",
@@ -130,9 +135,23 @@ fun PlaceDetailRoute(
                     }
                 )
             }
+            if (deleteReviewDialogVisibility) {
+                DeleteReviewDialog(
+                    onClickPositive = {
+                        viewModel.deleteReview(postId)
+                        deleteReviewDialogVisibility = false
+                    },
+                    onClickNegative = {
+                        deleteReviewDialogVisibility = false
+                    }
+                )
+            }
             with(state.placeDetailModel as UiState.Success<PlaceDetailModel>) {
                 val dropDownMenuList = when (data.isMine) {
-                    true -> persistentListOf()
+                    true -> persistentListOf(
+                        DropdownOption.EDIT,
+                        DropdownOption.DELETE
+                    )
                     false -> persistentListOf(DropdownOption.REPORT)
                 }
                 Scaffold(
@@ -176,9 +195,15 @@ fun PlaceDetailRoute(
                             onScoopButtonClick = {
                                 scoopDialogVisibility = true
                             },
+                            onDeleteReviewClick = {
+                                deleteReviewDialogVisibility = true
+                            },
+                            onEditReviewClick = { navigateToEditReview(postId, RegisterType.EDIT) },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
+                            isFollowing = state.isFollowing,
+                            onFollowButtonClick = { viewModel.onFollowButtonClick(userProfile.userId, state.isFollowing) },
                             photoUrlList = data.photoUrlList,
                             date = data.createdAt.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,
@@ -203,9 +228,13 @@ private fun PlaceDetailScreen(
     value: Double,
     cons: String,
     onScoopButtonClick: () -> Unit,
+    onDeleteReviewClick: () -> Unit,
+    onEditReviewClick: () -> Unit,
     userProfileUrl: String,
     userName: String,
     userRegion: String,
+    isFollowing: Boolean,
+    onFollowButtonClick: () -> Unit,
     photoUrlList: ImmutableList<String>,
     date: String,
     placeAddress: String,
@@ -232,7 +261,7 @@ private fun PlaceDetailScreen(
             UserProfileInfo(
                 imageUrl = userProfileUrl,
                 name = userName,
-                location = "서울시 $userRegion 수저"
+                location = "서울 $userRegion 수저"
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -240,8 +269,8 @@ private fun PlaceDetailScreen(
             ) {
                 if (!isMine) {
                     FollowButton(
-                        isFollowing = false,
-                        onClick = { }
+                        isFollowing = isFollowing,
+                        onClick = onFollowButtonClick
                     )
                 }
                 if (dropdownMenuList.isNotEmpty()) {
@@ -251,6 +280,12 @@ private fun PlaceDetailScreen(
                             when (menu) {
                                 DropdownOption.REPORT.name -> {
                                     onReportButtonClick()
+                                }
+                                DropdownOption.EDIT.name -> {
+                                    onEditReviewClick()
+                                }
+                                DropdownOption.DELETE.name -> {
+                                    onDeleteReviewClick()
                                 }
                             }
                         },
@@ -292,12 +327,14 @@ private fun PlaceDetailScreen(
             PlaceDetailSliderSection(
                 sliderPosition = value.toFloat()
             )
-            Spacer(modifier = Modifier.height(18.dp))
-            DisappointItem(
-                cons = cons,
-                onScoopButtonClick = onScoopButtonClick,
-                isBlurred = !isScooped
-            )
+            if (cons.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(18.dp))
+                DisappointItem(
+                    cons = cons,
+                    onScoopButtonClick = onScoopButtonClick,
+                    isBlurred = !isScooped
+                )
+            }
         }
         Spacer(modifier = Modifier.height(45.dp))
     }

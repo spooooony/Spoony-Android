@@ -212,7 +212,8 @@ fun MainScreen(
                             reportTargetId = reportTargetId,
                             type = type
                         )
-                    }
+                    },
+                    navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
                 reportNavGraph(
