@@ -49,8 +49,9 @@ import com.spoony.spoony.presentation.register.component.CustomDropDownMenu
 import com.spoony.spoony.presentation.register.component.DropdownMenuItem
 import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.SearchResultItem
-import com.spoony.spoony.presentation.register.model.Category
-import com.spoony.spoony.presentation.register.model.Place
+import com.spoony.spoony.presentation.register.model.CategoryState
+import com.spoony.spoony.presentation.register.model.PlaceState
+import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 
@@ -103,10 +104,10 @@ private fun RegisterStartScreen(
     onNextClick: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onSearchAction: (String) -> Unit,
-    onPlaceSelect: (Place) -> Unit,
+    onPlaceSelect: (PlaceState) -> Unit,
     onPlaceClear: () -> Unit,
     onDismissSearchResults: () -> Unit,
-    onSelectCategory: (Category) -> Unit,
+    onSelectCategory: (CategoryState) -> Unit,
     onMenuUpdate: (Int, String) -> Unit,
     onMenuRemove: (Int) -> Unit,
     onMenuAdd: () -> Unit,
@@ -183,12 +184,12 @@ private fun RegisterStartScreen(
 
 @Composable
 private fun PlaceSearchSection(
-    place: Place,
+    place: PlaceState,
     searchQuery: String,
-    searchResults: ImmutableList<Place>,
+    searchResults: ImmutableList<PlaceState>,
     onSearchQueryChange: (String) -> Unit,
     onSearchAction: (String) -> Unit,
-    onPlaceSelect: (Place) -> Unit,
+    onPlaceSelect: (PlaceState) -> Unit,
     onPlaceClear: () -> Unit,
     onDismissSearchResults: () -> Unit,
     isCleanerIconVisible: Boolean,
@@ -249,10 +250,10 @@ private fun PlaceSearchSection(
 
 @Composable
 private fun SearchResultsList(
-    results: ImmutableList<Place>,
+    results: ImmutableList<PlaceState>,
     textFieldSize: Int,
     onDismiss: () -> Unit,
-    onItemClick: (Place) -> Unit,
+    onItemClick: (PlaceState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     CustomDropDownMenu(
@@ -279,9 +280,9 @@ private fun SearchResultsList(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CategorySection(
-    categories: ImmutableList<Category>,
-    selectedCategory: Category,
-    onSelectCategory: (Category) -> Unit,
+    categories: ImmutableList<CategoryState>,
+    selectedCategory: CategoryState,
+    onSelectCategory: (CategoryState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {

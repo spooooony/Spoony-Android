@@ -187,7 +187,7 @@ class MainNavigator(
         postId: Int,
         navOptions: NavOptions? = null
     ) {
-        navController.navigateToPlaceDetail(postId = postId)
+        navController.navigateToPlaceDetail(postId = postId, navOptions = navOptions)
     }
 
     fun navigateToExploreSearch(
@@ -201,8 +201,7 @@ class MainNavigator(
 
     fun navigateToLocationMap(
         navOptions: NavOptions = navOptions {
-            popUpTo(Map()) {
-            }
+            popUpTo(Map())
         },
         locationId: Int? = null,
         locationName: String? = null,

@@ -36,6 +36,7 @@ import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MIN_D
 import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.PhotoPicker
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
+import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -43,6 +44,7 @@ import kotlinx.collections.immutable.toPersistentList
 @Composable
 fun RegisterEndRoute(
     onRegisterComplete: () -> Unit,
+    onEditComplete: (postId: Int) -> Unit,
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -50,7 +52,6 @@ fun RegisterEndRoute(
     val registerType = viewModel.registerType
 
     val isNextButtonEnabled = remember(
-        state.oneLineReview,
         state.detailReview,
         state.selectedPhotos,
         state.isLoading
@@ -67,6 +68,8 @@ fun RegisterEndRoute(
         onOptionalReviewChange = viewModel::updateOptionalReview,
         onRegisterPost = viewModel::registerPost,
         onRegisterComplete = onRegisterComplete,
+        onEditComplete = onEditComplete,
+        postId = viewModel.postId,
         modifier = modifier
     )
 }
@@ -81,6 +84,8 @@ private fun RegisterEndScreen(
     onOptionalReviewChange: (String) -> Unit,
     onRegisterPost: (onSuccess: () -> Unit) -> Unit,
     onRegisterComplete: () -> Unit,
+    onEditComplete: (postId: Int) -> Unit,
+    postId: Int?,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
@@ -129,14 +134,18 @@ private fun RegisterEndScreen(
             enabled = isNextButtonEnabled,
             onClick = {
                 onRegisterPost {
-                    isDialogVisible = true
+                    if (registerType == RegisterType.EDIT && postId != null) {
+                        onEditComplete(postId)
+                    } else {
+                        isDialogVisible = true
+                    }
                 }
             },
             editText = if (registerType == RegisterType.CREATE) "다음" else "리뷰 수정"
         )
     }
 
-    if (isDialogVisible) {
+    if (isDialogVisible && registerType == RegisterType.CREATE) {
         SingleButtonDialog(
             message = "수저 1개를 획득했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
             text = "좋아요!",

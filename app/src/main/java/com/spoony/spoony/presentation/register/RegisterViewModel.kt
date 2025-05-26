@@ -1,27 +1,26 @@
 package com.spoony.spoony.presentation.register
 
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
-import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
-import com.spoony.spoony.presentation.register.model.Category
-import com.spoony.spoony.presentation.register.model.Place
-import com.spoony.spoony.presentation.register.model.PlaceReviewModel
+import com.spoony.spoony.presentation.register.model.CategoryState
+import com.spoony.spoony.presentation.register.model.PlaceState
+import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.model.toModel
+import com.spoony.spoony.presentation.register.model.toPresentation
 import com.spoony.spoony.presentation.register.model.toRegisterPostEntity
 import com.spoony.spoony.presentation.register.model.toUpdatePostEntity
 import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +32,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
@@ -53,7 +53,7 @@ class RegisterViewModel @Inject constructor(
 
     private val registerInfo = savedStateHandle.toRoute<Register>()
     val registerType = registerInfo.registerType
-    private val postId = registerInfo.postId
+    val postId = registerInfo.postId
 
     init {
         loadCategories()
@@ -67,14 +67,14 @@ class RegisterViewModel @Inject constructor(
                         val postModel = postDetail.toModel()
                         _state.update { currentState ->
                             currentState.copy(
-                                selectedPlace = Place(
+                                selectedPlace = PlaceState(
                                     placeName = postModel.placeName,
                                     placeAddress = postModel.placeAddress,
-                                    placeRoadAddress = "",
+                                    placeRoadAddress = postModel.placeAddress,
                                     latitude = postModel.latitude,
                                     longitude = postModel.longitude
                                 ),
-                                selectedCategory = Category(
+                                selectedCategory = CategoryState(
                                     categoryId = postModel.category.categoryId,
                                     categoryName = postModel.category.categoryName,
                                     iconUrlSelected = postModel.category.iconUrl,
@@ -83,18 +83,18 @@ class RegisterViewModel @Inject constructor(
                                 menuList = postModel.menuList,
                                 detailReview = postModel.description,
                                 optionalReview = postModel.cons ?: "",
-                                userSatisfactionValue = (postModel.value / 100).toFloat(),
+                                userSatisfactionValue = postModel.value.toFloat(),
                                 originalPhotoUrls = postModel.photoUrls,
                                 selectedPhotos = postModel.photoUrls.map { url ->
                                     SelectedPhoto(
-                                        uri = Uri.parse(url)
+                                        uri = url.toUri()
                                     )
                                 }.toImmutableList()
                             )
                         }
                     }
                     .onLogFailure {
-                        _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
+                        _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
                     }
             }
         }
@@ -139,7 +139,7 @@ class RegisterViewModel @Inject constructor(
         _state.update { it.copy(searchQuery = query) }
     }
 
-    fun selectPlace(place: Place) {
+    fun selectPlace(place: PlaceState) {
         viewModelScope.launch {
             repository.checkDuplicatePlace(
                 latitude = place.latitude,
@@ -158,7 +158,7 @@ class RegisterViewModel @Inject constructor(
                     }
                 }
             }.onLogFailure {
-                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
+                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
             }
         }
     }
@@ -166,13 +166,13 @@ class RegisterViewModel @Inject constructor(
     fun clearSelectedPlace() {
         _state.update {
             it.copy(
-                selectedPlace = Place("", "", "", 0.0, 0.0),
+                selectedPlace = PlaceState("", "", "", 0.0, 0.0),
                 searchQuery = ""
             )
         }
     }
 
-    fun selectCategory(category: Category) {
+    fun selectCategory(category: CategoryState) {
         _state.update { it.copy(selectedCategory = category) }
     }
 
@@ -283,7 +283,7 @@ class RegisterViewModel @Inject constructor(
                             onSuccess()
                         }.onLogFailure {
                             _state.update { it.copy(isLoading = false) }
-                            _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
+                            _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
                         }
                 }
                 RegisterType.EDIT -> {
@@ -297,7 +297,7 @@ class RegisterViewModel @Inject constructor(
                                 onSuccess()
                             }.onLogFailure {
                                 _state.update { it.copy(isLoading = false) }
-                                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.GENERAL_ERROR.description))
+                                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
                             }
                     }
                 }
@@ -332,23 +332,6 @@ class RegisterViewModel @Inject constructor(
         const val MAX_OPTIONAL_REVIEW_LENGTH = 100
     }
 }
-
-fun CategoryEntity.toPresentation(): Category =
-    Category(
-        categoryId = categoryId,
-        categoryName = categoryName,
-        iconUrlSelected = iconUrl,
-        iconUrlNotSelected = unSelectedIconUrl ?: ""
-    )
-
-fun PlaceEntity.toPresentation(): Place =
-    Place(
-        placeName = placeName,
-        placeAddress = placeAddress,
-        placeRoadAddress = placeRoadAddress,
-        latitude = latitude,
-        longitude = longitude
-    )
 
 sealed class RegisterSideEffect {
     data class ShowSnackbar(val message: String) : RegisterSideEffect()

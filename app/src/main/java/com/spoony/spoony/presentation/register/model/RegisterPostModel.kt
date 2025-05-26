@@ -2,7 +2,7 @@ package com.spoony.spoony.presentation.register.model
 
 import com.spoony.spoony.domain.entity.RegisterPostEntity
 import com.spoony.spoony.domain.entity.UpdatePostEntity
-import com.spoony.spoony.presentation.register.RegisterState
+import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import kotlinx.collections.immutable.toImmutableList
 
@@ -61,7 +61,7 @@ fun UpdatePostEntity.toModel(): UpdatePostModel =
 fun RegisterState.toRegisterPostEntity(): RegisterPostEntity =
     RegisterPostEntity(
         description = detailReview,
-        value = userSatisfactionValue * 100, // 0.0~1.0 -> 0.0~100.0
+        value = userSatisfactionValue,
         cons = optionalReview.takeIf { it.isNotBlank() },
         placeName = selectedPlace.placeName,
         placeAddress = selectedPlace.placeAddress,
@@ -77,7 +77,7 @@ fun RegisterState.toUpdatePostEntity(postId: Int, deleteImageUrls: List<String>)
     UpdatePostEntity(
         postId = postId,
         description = detailReview,
-        value = userSatisfactionValue * 100, // 0.0~1.0 -> 0.0~100.0
+        value = userSatisfactionValue,
         cons = optionalReview.takeIf { it.isNotBlank() },
         categoryId = selectedCategory.categoryId,
         menuList = menuList.filter { it.isNotBlank() },
