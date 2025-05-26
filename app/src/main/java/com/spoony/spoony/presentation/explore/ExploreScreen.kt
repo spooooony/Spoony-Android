@@ -210,7 +210,6 @@ private fun ExploreScreen(
                     regionState.toPersistentMap(),
                     ageState.toPersistentMap()
                 )
-                // 필터 검색 완료 시 스크롤 최상단으로 초기화
                 coroutineScope.launch {
                     listState.scrollToItem(0)
                 }

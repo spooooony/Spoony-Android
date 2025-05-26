@@ -368,7 +368,11 @@ class ExploreViewModel @Inject constructor(
                     cursor = -1
                 )
             }
-            getPlaceReviewListFiltered()
+            if (state.value.exploreType == ExploreType.ALL) {
+                getPlaceReviewListFiltered()
+            } else {
+                getPlaceReviewFollowingList()
+            }
         }
     }
     fun updateExploreType(exploreType: ExploreType) {
