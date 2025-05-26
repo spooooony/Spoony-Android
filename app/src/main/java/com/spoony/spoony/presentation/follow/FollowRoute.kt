@@ -24,7 +24,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.core.designsystem.component.topappbar.BackAndMenuTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.white
@@ -46,6 +49,22 @@ fun FollowRoute(
     val followers by viewModel.followers.collectAsState()
     val following by viewModel.following.collectAsState()
     val followType by viewModel.followType.collectAsState()
+
+    val showSnackBar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is FollowPageSideEffect.ShowSnackbar -> {
+                    showSnackBar(effect.message)
+                }
+                is FollowPageSideEffect.ShowError -> {
+                    showSnackBar(effect.errorType.description)
+                }
+            }
+        }
+    }
 
     FollowScreen(
         followers = followers,
@@ -101,7 +120,7 @@ private fun FollowScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
             .background(white)
     ) {
         BackAndMenuTopAppBar(

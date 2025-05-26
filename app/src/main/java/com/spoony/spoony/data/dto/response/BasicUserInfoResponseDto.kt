@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserInfoResponseDto(
+data class BasicUserInfoResponseDto(
     @SerialName("userId")
     val userId: Int,
     @SerialName("platform")
@@ -14,7 +14,7 @@ data class UserInfoResponseDto(
     @SerialName("userName")
     val userName: String,
     @SerialName("regionName")
-    val regionName: String,
+    val regionName: String?,
     @SerialName("introduction")
     val introduction: String,
     @SerialName("createdAt")

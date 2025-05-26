@@ -42,4 +42,7 @@ class PostRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getZzimByLocation(locationId: Int): BaseResponse<ZzimLocationResponseDto> =
         postService.getZzimByLocation(locationId)
+
+    override suspend fun deletePost(postId: Int): BaseResponse<Unit> =
+        postService.deletePost(postId)
 }

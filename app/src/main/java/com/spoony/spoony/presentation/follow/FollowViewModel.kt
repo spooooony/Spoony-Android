@@ -4,37 +4,48 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.spoony.spoony.core.state.ErrorType
+import com.spoony.spoony.core.util.extension.onLogFailure
+import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
+import com.spoony.spoony.presentation.follow.model.toModel
 import com.spoony.spoony.presentation.follow.navigation.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 @HiltViewModel
 class FollowViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val userRepository: UserRepository,
+    private val followManager: FollowManager
 ) : ViewModel() {
 
     private val _followers = MutableStateFlow<ImmutableList<UserItemUiState>>(persistentListOf())
-    val followers: StateFlow<ImmutableList<UserItemUiState>> = _followers.asStateFlow()
+    val followers: StateFlow<ImmutableList<UserItemUiState>>
+        get() = _followers.asStateFlow()
 
     private val _following = MutableStateFlow<ImmutableList<UserItemUiState>>(persistentListOf())
-    val following: StateFlow<ImmutableList<UserItemUiState>> = _following.asStateFlow()
+    val following: StateFlow<ImmutableList<UserItemUiState>>
+        get() = _following.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<FollowPageSideEffect>()
+    val sideEffect: SharedFlow<FollowPageSideEffect>
+        get() = _sideEffect.asSharedFlow()
 
     private val _followType = MutableStateFlow(FollowType.FOLLOWER)
-    val followType: StateFlow<FollowType> = _followType.asStateFlow()
-
-    private val followingMutex = Mutex()
-    private val followersMutex = Mutex()
+    val followType: StateFlow<FollowType>
+        get() = _followType.asStateFlow()
 
     private val followInfo = savedStateHandle.toRoute<Follow>()
     private val userId = followInfo.userId
@@ -45,80 +56,54 @@ class FollowViewModel @Inject constructor(
     }
 
     private fun loadInitialData() {
-        loadFollowers(userId)
-        loadFollowings(userId)
+        loadFollowers()
+        loadFollowings()
     }
 
-    fun loadFollowers(userId: Int) {
+    private fun loadFollowers() {
         viewModelScope.launch {
-            followersMutex.withLock {
-                _followers.value = generateMockFollowers(userId)
+            val result = if (userId == -1) {
+                userRepository.getMyFollowers()
+            } else {
+                userRepository.getOtherFollowers(userId)
             }
+
+            result
+                .onSuccess { followList ->
+                    _followers.value = followList.users.map { it.toModel() }.toImmutableList()
+                }
+                .onLogFailure {
+                    _followers.value = persistentListOf()
+                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                }
         }
     }
 
-    private fun generateMockFollowers(userId: Int): ImmutableList<UserItemUiState> {
-        return (1..50).map { index ->
-            UserItemUiState(
-                userId = index + userId,
-                userName = getUserNameByIndex(index + userId),
-                imageUrl = "https://picsum.photos/${200 + index}",
-                region = getRegionByIndex(index + userId),
-                isFollowing = index % 2 == 0
-            )
-        }.toImmutableList()
-    }
-
-    private fun getUserNameByIndex(index: Int): String = when (index % 10) {
-        0 -> "김스푸니$index"
-        1 -> "박맛집$index"
-        2 -> "이푸드$index"
-        3 -> "최미식$index"
-        4 -> "정먹방$index"
-        5 -> "황냠냠$index"
-        6 -> "한맛집$index"
-        7 -> "송푸드$index"
-        8 -> "정맛도$index"
-        else -> "윤미식$index"
-    }
-
-    private fun getRegionByIndex(index: Int): String = when (index % 8) {
-        0 -> "서울"
-        1 -> "부산"
-        2 -> "인천"
-        3 -> "대구"
-        4 -> "대전"
-        5 -> "광주"
-        6 -> "울산"
-        else -> "제주도"
-    }
-
-    fun loadFollowings(userId: Int) {
+    private fun loadFollowings() {
         viewModelScope.launch {
-            followingMutex.withLock {
-                _following.value = generateMockFollowings(userId)
+            val result = if (userId == -1) {
+                userRepository.getMyFollowings()
+            } else {
+                userRepository.getOtherFollowings(userId)
             }
+
+            result
+                .onSuccess { followList ->
+                    _following.value = followList.users.map { it.toModel() }.toImmutableList()
+                }
+                .onLogFailure {
+                    _following.value = persistentListOf()
+                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                }
         }
     }
 
-    private fun generateMockFollowings(userId: Int): ImmutableList<UserItemUiState> {
-        return (1..50).map { index ->
-            UserItemUiState(
-                userId = index + userId,
-                userName = getUserNameByIndex(index + userId),
-                imageUrl = "https://picsum.photos/${200 + index}",
-                region = getRegionByIndex(index + userId),
-                isFollowing = index % 2 == 0
-            )
-        }.toImmutableList()
+    private fun refreshFollowers() {
+        loadFollowers()
     }
 
-    fun refreshFollowers() {
-        loadFollowers(userId)
-    }
-
-    fun refreshFollowings() {
-        loadFollowings(userId)
+    private fun refreshFollowings() {
+        loadFollowings()
     }
 
     fun refresh(type: FollowType) {
@@ -129,25 +114,57 @@ class FollowViewModel @Inject constructor(
     }
 
     fun toggleFollow(userId: Int) {
-        viewModelScope.launch {
-            followersMutex.withLock {
-                val updatedList = toggleFollow(_followers.value, userId)
-                _followers.value = updatedList
-            }
-            followingMutex.withLock {
-                val updatedList = toggleFollow(_following.value, userId)
-                _following.value = updatedList
-            }
-        }
+        val targetUser = findTargetUser(userId, _followers.value to _following.value)
+        val isCurrentlyFollowing = targetUser?.isFollowing == true
+
+        followManager.toggleFollow(
+            userId = userId,
+            isCurrentlyFollowing = isCurrentlyFollowing,
+            onUiUpdate = { newFollowState ->
+                _followers.value = updateFollowState(_followers.value, userId, newFollowState)
+                _following.value = updateFollowState(_following.value, userId, newFollowState)
+            },
+            getCurrentState = {
+                findTargetUser(userId, _followers.value to _following.value)?.isFollowing == true
+            },
+            onError = {
+                viewModelScope.launch {
+                    _sideEffect.emit(FollowPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                }
+            },
+            coroutineScope = viewModelScope
+        )
     }
 
-    private fun toggleFollow(currentList: ImmutableList<UserItemUiState>, userId: Int): ImmutableList<UserItemUiState> {
+    private fun findTargetUser(
+        userId: Int,
+        states: Pair<ImmutableList<UserItemUiState>, ImmutableList<UserItemUiState>>
+    ): UserItemUiState? {
+        val (followers, following) = states
+        return followers.find { it.userId == userId } ?: following.find { it.userId == userId }
+    }
+
+    private fun updateFollowState(
+        currentList: ImmutableList<UserItemUiState>,
+        userId: Int,
+        isFollowing: Boolean
+    ): ImmutableList<UserItemUiState> {
         return currentList.map { user ->
             if (user.userId == userId) {
-                user.copy(isFollowing = !user.isFollowing)
+                user.copy(isFollowing = isFollowing)
             } else {
                 user
             }
         }.toImmutableList()
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        followManager.clear()
+    }
+}
+
+sealed class FollowPageSideEffect {
+    data class ShowSnackbar(val message: String) : FollowPageSideEffect()
+    data class ShowError(val errorType: ErrorType) : FollowPageSideEffect()
 }
