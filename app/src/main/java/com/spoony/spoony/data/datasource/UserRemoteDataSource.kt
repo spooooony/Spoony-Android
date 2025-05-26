@@ -7,4 +7,6 @@ interface UserRemoteDataSource {
     suspend fun getMyInfo(): BaseResponse<BasicUserInfoResponseDto>
 
     suspend fun getUserInfoById(userId: Int): BaseResponse<BasicUserInfoResponseDto>
+    suspend fun followUser(userId: Int): BaseResponse<Unit>
+    suspend fun unfollowUser(userId: Int): BaseResponse<Unit>
 }
