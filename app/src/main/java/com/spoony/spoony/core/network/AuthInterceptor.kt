@@ -5,11 +5,14 @@ import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import timber.log.Timber
 
 class AuthInterceptor @Inject constructor(
     private val tokenRepository: TokenRepository
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        Timber.d("ACCESS_TOKEN: ${tokenRepository.getCachedAccessToken()}")
+
         val originalRequest = chain.request()
 
         val authRequest = originalRequest.newBuilder().newAuthBuilder().build()

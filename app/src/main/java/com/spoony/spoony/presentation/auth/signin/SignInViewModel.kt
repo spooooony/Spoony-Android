@@ -71,7 +71,7 @@ class SignInViewModel @Inject constructor(
                     _sideEffect.emit(SignInSideEffect.NavigateToMap)
                 }
             }.onLogFailure {
-                _sideEffect.emit(SignInSideEffect.ShowSnackBar(ErrorType.GENERAL_ERROR.description))
+                _sideEffect.emit(SignInSideEffect.ShowSnackBar(ErrorType.UNEXPECTED_ERROR.description))
             }
         }
     }

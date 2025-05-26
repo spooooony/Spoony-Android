@@ -44,17 +44,11 @@ android {
             properties.getProperty("dev.base.url")
         )
 
-        buildConfigField(
-            "String",
-            "USER_TOKEN",
-            properties.getProperty("user.token")
-        )
-
         manifestPlaceholders["naverClientId"] = properties["naverClientId"] as String
         buildConfigField("String", "NAVER_CLIENT_ID", properties["naver.client.id"] as String)
 
         manifestPlaceholders["nativeAppKey"] = properties["nativeAppKey"] as String
-        buildConfigField("String", "NATIVE_APP_KEY", properties.getProperty("native.app.key"))
+        buildConfigField("String", "NATIVE_APP_KEY", properties["native.app.key"] as String)
     }
 
     buildTypes {
