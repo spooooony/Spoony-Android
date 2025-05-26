@@ -13,12 +13,12 @@ class RecentSearchDataSourceImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : RecentSearchDataSource {
 
-    override suspend fun getRecentReviewQueries(): Flow<List<String>> = dataStore.data
+    override fun getRecentReviewQueries(): Flow<List<String>> = dataStore.data
         .map { preferences ->
             preferences[REVIEW_QUERY_KEY]?.toList() ?: emptyList()
         }
 
-    override suspend fun getRecentUserQueries(): Flow<List<String>> = dataStore.data
+    override fun getRecentUserQueries(): Flow<List<String>> = dataStore.data
         .map { preferences ->
             preferences[USER_QUERY_KEY]?.toList() ?: emptyList()
         }

@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -44,22 +45,18 @@ class ExploreSearchViewModel @Inject constructor(
 
     private fun observeRecentSearchQueries() {
         viewModelScope.launch {
-            launch {
-                recentSearchDataSource.getRecentReviewQueries()
-                    .collect { reviewQueries ->
-                        _state.update {
-                            it.copy(recentReviewSearchQueryList = reviewQueries.toPersistentList())
-                        }
-                    }
-            }
-
-            launch {
+            combine(
+                recentSearchDataSource.getRecentReviewQueries(),
                 recentSearchDataSource.getRecentUserQueries()
-                    .collect { userQueries ->
-                        _state.update {
-                            it.copy(recentUserSearchQueryList = userQueries.toPersistentList())
-                        }
-                    }
+            ) { reviewQueries, userQueries ->
+                reviewQueries.toPersistentList() to userQueries.toPersistentList()
+            }.collect { (reviewList, userList) ->
+                _state.update {
+                    it.copy(
+                        recentReviewSearchQueryList = reviewList,
+                        recentUserSearchQueryList = userList
+                    )
+                }
             }
         }
     }
