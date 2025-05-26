@@ -160,10 +160,17 @@ private fun ExploreScreen(
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = onSelectSortingOptionButtonClick,
+            onClick = {
+                onSelectSortingOptionButtonClick(it)
+                coroutineScope.launch {
+                    listState.scrollToItem(0)
+                }
+            },
             currentSortingOption = selectedSortingOption
         )
     }
@@ -188,8 +195,6 @@ private fun ExploreScreen(
             if (isFilterBottomSheetVisible) putAll(ageSelectedState)
         }
     }
-    val coroutineScope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
 
     if (isFilterBottomSheetVisible) {
         ExploreFilterBottomSheet(

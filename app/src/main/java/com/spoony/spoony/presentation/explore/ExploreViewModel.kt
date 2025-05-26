@@ -240,9 +240,12 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    selectedSortingOption = sortingOption
+                    selectedSortingOption = sortingOption,
+                    placeReviewList = UiState.Loading,
+                    cursor = -1
                 )
             }
+            getPlaceReviewListFiltered()
         }
     }
 
