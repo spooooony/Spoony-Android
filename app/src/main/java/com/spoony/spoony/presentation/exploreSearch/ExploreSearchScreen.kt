@@ -31,8 +31,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
@@ -42,8 +45,12 @@ import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchRecen
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchRecentItem
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchTopAppbar
 import com.spoony.spoony.presentation.exploreSearch.component.ExploreSearchUserItem
+import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchPlaceReviewModel
+import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
+import com.spoony.spoony.presentation.exploreSearch.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import com.spoony.spoony.presentation.exploreSearch.type.toKoreanText
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -54,10 +61,23 @@ fun ExploreSearchRoute(
     navigateToUserProfile: (Int) -> Unit,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateUp: () -> Unit,
     viewModel: ExploreSearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val showSnackBar = LocalSnackBarTrigger.current
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            when (effect) {
+                is ExploreSearchSideEffect.ShowSnackBar -> {
+                    showSnackBar(effect.message)
+                }
+            }
+        }
+    }
 
     ExploreSearchScreen(
         paddingValues = paddingValues,
@@ -71,6 +91,7 @@ fun ExploreSearchRoute(
         onRemoveRecentSearchItem = viewModel::removeRecentSearchItem,
         onClearRecentSearchItem = viewModel::clearRecentSearchItem,
         onSearch = viewModel::search,
+        onEditReviewClick = navigateToEditReview,
         onClearSearchKeyword = viewModel::clearSearchKeyword,
         recentReviewSearchQueryList = state.recentReviewSearchQueryList,
         recentUserSearchQueryList = state.recentUserSearchQueryList,
@@ -92,11 +113,12 @@ private fun ExploreSearchScreen(
     onSwitchType: (SearchType) -> Unit,
     onClearRecentSearchItem: () -> Unit,
     onSearch: (String) -> Unit,
+    onEditReviewClick: (Int, RegisterType) -> Unit,
     onClearSearchKeyword: () -> Unit,
     recentReviewSearchQueryList: ImmutableList<String>,
     recentUserSearchQueryList: ImmutableList<String>,
-    userInfoList: UiState<ImmutableList<UserInfo>>,
-    placeReviewInfoList: UiState<ImmutableList<PlaceReviewInfo>>
+    userInfoList: UiState<ImmutableList<ExploreSearchUserModel>>,
+    placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>
 ) {
     val focusRequester = remember { FocusRequester() }
     var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -152,8 +174,10 @@ private fun ExploreSearchScreen(
                     modifier = Modifier
                         .padding(top = 4.dp, bottom = 9.dp),
                     onClick = {
-                        tabRowIndex = index
-                        onSwitchType(title)
+                        if (tabRowIndex != index) {
+                            tabRowIndex = index
+                            onSwitchType(title)
+                        }
                     },
                     selectedContentColor = SpoonyAndroidTheme.colors.white
                 ) {
@@ -248,12 +272,12 @@ private fun ExploreSearchScreen(
                                         val menuList = remember {
                                             if (placeReviewInfo.isMine) {
                                                 persistentListOf(
-                                                    "수정하기",
-                                                    "삭제하기"
+                                                    ExploreDropdownOption.EDIT.string,
+                                                    ExploreDropdownOption.DELETE.string
                                                 )
                                             } else {
                                                 persistentListOf(
-                                                    "신고하기"
+                                                    ExploreDropdownOption.REPORT.string
                                                 )
                                             }
                                         }
@@ -262,12 +286,12 @@ private fun ExploreSearchScreen(
                                             review = placeReviewInfo.description,
                                             onMenuItemClick = {
                                                 when (it) {
-                                                    "신고하기" -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
-                                                    "수정하기" -> {}
-                                                    "삭제하기" -> {}
+                                                    ExploreDropdownOption.REPORT.string -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
+                                                    ExploreDropdownOption.EDIT.string -> onEditReviewClick(placeReviewInfo.reviewId, RegisterType.EDIT)
+                                                    ExploreDropdownOption.DELETE.string -> {}
                                                 }
                                             },
-                                            date = placeReviewInfo.date,
+                                            date = placeReviewInfo.createdAt,
                                             username = placeReviewInfo.userName,
                                             userRegion = placeReviewInfo.userRegion,
                                             addMapCount = placeReviewInfo.addMapCount,

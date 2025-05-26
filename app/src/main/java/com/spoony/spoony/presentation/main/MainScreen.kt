@@ -163,7 +163,8 @@ fun MainScreen(
                         )
                     },
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
-                    navigateUp = navigator::navigateUp
+                    navigateUp = navigator::navigateUp,
+                    navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
                 registerNavGraph(

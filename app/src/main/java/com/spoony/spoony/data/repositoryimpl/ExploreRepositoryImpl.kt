@@ -5,6 +5,7 @@ import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.FeedEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
+import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.domain.repository.ExploreRepository
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
@@ -173,4 +174,16 @@ class ExploreRepositoryImpl @Inject constructor(
             )
         )
     )
+
+    override suspend fun getPlaceReviewByKeyword(query: String): Result<List<PlaceReviewEntity>> = runCatching {
+        exploreRemoteDataSource.getPlaceReviewByKeyword(
+            query = query
+        ).data!!.postSearchResultList.map { it.toDomain() }
+    }
+
+    override suspend fun getUserListByKeyword(query: String): Result<List<UserEntity>> = runCatching {
+        exploreRemoteDataSource.getUserListByKeyword(
+            query = query
+        ).data!!.userSimpleResponseDTO.map { it.toDomain() }
+    }
 }

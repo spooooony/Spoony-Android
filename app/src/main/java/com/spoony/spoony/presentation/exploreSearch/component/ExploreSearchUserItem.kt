@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.presentation.exploreSearch.UserInfo
+import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
 
 @Composable
 fun ExploreSearchUserItem(
-    userInfo: UserInfo,
+    userInfo: ExploreSearchUserModel,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -38,7 +38,7 @@ fun ExploreSearchUserItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         UrlImage(
-            imageUrl = userInfo.imageUrl,
+            imageUrl = userInfo.userProfileUrl,
             modifier = Modifier.size(48.dp),
             shape = CircleShape,
             contentScale = ContentScale.Crop,
@@ -47,7 +47,7 @@ fun ExploreSearchUserItem(
         Spacer(modifier = Modifier.width(14.dp))
         Column {
             Text(
-                text = userInfo.nickname,
+                text = userInfo.userName,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = SpoonyAndroidTheme.typography.body2b,
@@ -55,7 +55,7 @@ fun ExploreSearchUserItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "${userInfo.region} 스푼",
+                text = "서울 ${userInfo.userRegion} 스푼",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = SpoonyAndroidTheme.typography.caption1m,
