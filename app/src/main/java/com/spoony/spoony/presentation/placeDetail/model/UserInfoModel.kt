@@ -13,5 +13,5 @@ fun BasicUserInfoEntity.toModel(): UserInfoModel = UserInfoModel(
     userId = this.userId,
     userName = this.userName,
     userProfileUrl = this.profileImageUrl,
-    userRegion = this.regionName
+    userRegion = this.regionName ?: ""
 )
