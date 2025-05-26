@@ -61,5 +61,5 @@ interface PostService {
     @DELETE("/api/v1/post/{postId}")
     suspend fun deletePost(
         @Path("postId") postId: Int
-    ): BaseResponse<Boolean>
+    ): BaseResponse<Unit>
 }

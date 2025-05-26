@@ -14,5 +14,5 @@ interface PostRepository {
 
     suspend fun getAddedMapPost(placeId: Int): Result<List<AddedMapPostEntity>>
 
-    suspend fun deletePost(postId: Int): Result<Boolean>
+    suspend fun deletePost(postId: Int): Result<Unit>
 }
