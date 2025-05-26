@@ -14,4 +14,5 @@ interface PostRemoteDataSource {
     suspend fun getAddedMapPost(postId: Int): BaseResponse<AddedMapPostListDto>
     suspend fun getAddedMap(): BaseResponse<AddedMapListResponseDto>
     suspend fun getZzimByLocation(locationId: Int): BaseResponse<ZzimLocationResponseDto>
+    suspend fun deletePost(postId: Int): BaseResponse<Unit>
 }
