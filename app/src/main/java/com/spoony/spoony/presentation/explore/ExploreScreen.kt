@@ -45,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -109,6 +110,7 @@ fun ExploreRoute(
             onTabChange = viewModel::updateExploreType,
             onRefresh = viewModel::refreshExploreScreen,
             onLoadNextPage = viewModel::getPlaceReviewListFiltered,
+            onReviewDeleteButtonClick = viewModel::deleteReview,
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
@@ -140,6 +142,7 @@ private fun ExploreScreen(
     onTabChange: (ExploreType) -> Unit,
     onRefresh: () -> Unit,
     onLoadNextPage: () -> Unit,
+    onReviewDeleteButtonClick: (Int) -> Unit,
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -157,7 +160,6 @@ private fun ExploreScreen(
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
-
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
@@ -303,6 +305,7 @@ private fun ExploreScreen(
             onRegisterButtonClick = onRegisterButtonClick,
             onPlaceDetailItemClick = onPlaceDetailItemClick,
             onReportButtonClick = onReportButtonClick,
+            onReviewDeleteButtonClick = onReviewDeleteButtonClick,
             onRefresh = onRefresh,
             onLoadNextPage = onLoadNextPage,
             onEditButtonClick = onEditButtonClick,
@@ -333,6 +336,7 @@ private fun ExploreContent(
     onRegisterButtonClick: () -> Unit,
     onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
+    onReviewDeleteButtonClick: (Int) -> Unit,
     onRefresh: () -> Unit,
     onLoadNextPage: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -343,7 +347,21 @@ private fun ExploreContent(
     modifier: Modifier = Modifier
 ) {
     val isLoadingMore = remember { mutableStateOf(false) }
-
+    var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
+    var targetReviewId by remember { mutableIntStateOf(0) }
+    if (isReviewDeleteDialogVisible) {
+        TwoButtonDialog(
+            message = "정말로 리뷰를 삭제할까요?",
+            negativeText = "아니요",
+            positiveText = "네",
+            onClickNegative = { isReviewDeleteDialogVisible = false },
+            onClickPositive = {
+                onReviewDeleteButtonClick(targetReviewId)
+                isReviewDeleteDialogVisible = false
+            },
+            onDismiss = { }
+        )
+    }
     LaunchedEffect(listState) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
@@ -439,7 +457,10 @@ private fun ExploreContent(
                                 when (option) {
                                     ExploreDropdownOption.REPORT.string -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
                                     ExploreDropdownOption.EDIT.string -> onEditButtonClick(placeReview.reviewId, RegisterType.EDIT)
-                                    ExploreDropdownOption.DELETE.string -> {}
+                                    ExploreDropdownOption.DELETE.string -> {
+                                        targetReviewId = placeReview.reviewId
+                                        isReviewDeleteDialogVisible = true
+                                    }
                                 }
                             }
                         )

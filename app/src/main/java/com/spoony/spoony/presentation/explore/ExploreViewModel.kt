@@ -3,9 +3,9 @@ package com.spoony.spoony.presentation.explore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
+import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.RegionRepository
 import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.toExploreFilter
@@ -18,10 +18,12 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,16 +31,17 @@ import timber.log.Timber
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
     private val exploreRepository: ExploreRepository,
-    private val authRepository: AuthRepository,
+    private val postRepository: PostRepository,
     private val categoryRepository: CategoryRepository,
     private val regionRepository: RegionRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreState> = MutableStateFlow(ExploreState())
     val state: StateFlow<ExploreState>
-        get() = _state
+        get() = _state.asStateFlow()
 
-    private val _sideEffect = Channel<ExploreSideEffect>(Channel.BUFFERED)
-    val sideEffect = _sideEffect.receiveAsFlow()
+    private val _sideEffect = MutableSharedFlow<ExploreSideEffect>()
+    val sideEffect: SharedFlow<ExploreSideEffect>
+        get() = _sideEffect.asSharedFlow()
 
     init {
         getCategoryList()
@@ -61,7 +64,7 @@ class ExploreViewModel @Inject constructor(
                 }
                 .onFailure { e ->
                     Timber.e(e)
-                    _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
     }
@@ -81,7 +84,7 @@ class ExploreViewModel @Inject constructor(
                 }
                 .onFailure { e ->
                     Timber.e(e)
-                    _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
     }
@@ -296,19 +299,19 @@ class ExploreViewModel @Inject constructor(
                         Timber.e(e)
                         _state.update {
                             it.copy(
-                                placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                                placeReviewList = UiState.Failure("버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                             )
                         }
-                        _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                        _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                     }
             } catch (e: Exception) {
                 Timber.e(e)
                 _state.update {
                     it.copy(
-                        placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                        placeReviewList = UiState.Failure("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.")
                     )
                 }
-                _sideEffect.send(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                _sideEffect.emit(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
             }
         }
     }
@@ -337,19 +340,19 @@ class ExploreViewModel @Inject constructor(
                         Timber.e(e)
                         _state.update {
                             it.copy(
-                                placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                                placeReviewList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                             )
                         }
-                        _sideEffect.send(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                        _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                     }
             } catch (e: Exception) {
                 Timber.e(e)
                 _state.update {
                     it.copy(
-                        placeReviewList = UiState.Failure("팔로잉 피드 목록 조회 실패")
+                        placeReviewList = UiState.Failure("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.")
                     )
                 }
-                _sideEffect.send(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
+                _sideEffect.emit(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
             }
         }
     }
@@ -385,5 +388,8 @@ class ExploreViewModel @Inject constructor(
                 getPlaceReviewFollowingList()
             }
         }
+    }
+
+    fun deleteReview(reviewId: Int) {
     }
 }
