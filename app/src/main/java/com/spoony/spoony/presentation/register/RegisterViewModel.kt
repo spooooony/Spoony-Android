@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
-import com.spoony.spoony.domain.entity.PlaceEntity
 import com.spoony.spoony.domain.repository.RegisterRepository
 import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
@@ -21,18 +20,18 @@ import com.spoony.spoony.presentation.register.model.toRegisterPostEntity
 import com.spoony.spoony.presentation.register.model.toUpdatePostEntity
 import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
@@ -263,7 +262,7 @@ class RegisterViewModel @Inject constructor(
         val currentImageUrls = currentState.selectedPhotos
             .map { it.uri.toString() }
             .filter { it.startsWith("http") }
-        
+
         return currentState.originalPhotoUrls.filter { originalUrl ->
             originalUrl !in currentImageUrls
         }

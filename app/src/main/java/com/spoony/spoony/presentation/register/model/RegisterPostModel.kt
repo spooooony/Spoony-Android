@@ -2,9 +2,7 @@ package com.spoony.spoony.presentation.register.model
 
 import com.spoony.spoony.domain.entity.RegisterPostEntity
 import com.spoony.spoony.domain.entity.UpdatePostEntity
-import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
-import kotlinx.collections.immutable.toImmutableList
 
 data class RegisterPostModel(
     val description: String,

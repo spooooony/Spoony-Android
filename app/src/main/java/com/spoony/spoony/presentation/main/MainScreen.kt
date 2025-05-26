@@ -177,7 +177,7 @@ fun MainScreen(
                         navigator.navigateToPlaceDetail(
                             postId = it,
                             navOptions = navOptions {
-                                popUpTo<Register>{
+                                popUpTo<Register> {
                                     inclusive = true
                                 }
                             }

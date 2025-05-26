@@ -1,6 +1,7 @@
 package com.spoony.spoony.data.repositoryimpl
 
 import android.content.Context
+import androidx.core.net.toUri
 import com.spoony.spoony.core.network.ContentUriRequestBody
 import com.spoony.spoony.data.datasource.CategoryDataSource
 import com.spoony.spoony.data.datasource.PlaceDataSource
@@ -24,7 +25,6 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
-import androidx.core.net.toUri
 
 class RegisterRepositoryImpl @Inject constructor(
     private val placeDataSource: PlaceDataSource,
@@ -32,7 +32,7 @@ class RegisterRepositoryImpl @Inject constructor(
     private val postService: PostService,
     @ApplicationContext private val context: Context
 ) : RegisterRepository {
-    
+
     override suspend fun getFoodCategories(): Result<List<CategoryEntity>> = runCatching {
         categoryDataSource.getFoodCategories().data!!.categoryMonoList.map { it.toDomain() }
     }
@@ -67,7 +67,7 @@ class RegisterRepositoryImpl @Inject constructor(
                     Json.encodeToString(RegisterPostRequestDto.serializer(), requestDto)
                         .toRequestBody(MEDIA_TYPE_JSON.toMediaType())
                 }
-                
+
                 val asyncPhotoParts = registerPostEntity.photos.map { uriString ->
                     async {
                         val uri = uriString.toUri()
@@ -76,7 +76,7 @@ class RegisterRepositoryImpl @Inject constructor(
                         photoBody.toFormData(FORM_DATA_NAME_PHOTOS)
                     }
                 }
-                
+
                 postService.registerPost(
                     data = asyncRequestBody.await(),
                     photos = asyncPhotoParts.awaitAll()
@@ -106,7 +106,7 @@ class RegisterRepositoryImpl @Inject constructor(
                     Json.encodeToString(UpdatePostRequestDto.serializer(), requestDto)
                         .toRequestBody(MEDIA_TYPE_JSON.toMediaType())
                 }
-                
+
                 val asyncPhotoParts = updatePostEntity.newPhotos.map { uriString ->
                     async {
                         val uri = uriString.toUri()
@@ -115,7 +115,7 @@ class RegisterRepositoryImpl @Inject constructor(
                         photoBody.toFormData(FORM_DATA_NAME_PHOTOS)
                     }
                 }
-                
+
                 postService.updatePost(
                     data = asyncRequestBody.await(),
                     photos = asyncPhotoParts.awaitAll()

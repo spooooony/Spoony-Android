@@ -3,7 +3,6 @@ package com.spoony.spoony.presentation.register.model
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 data class PlaceReviewModel(
