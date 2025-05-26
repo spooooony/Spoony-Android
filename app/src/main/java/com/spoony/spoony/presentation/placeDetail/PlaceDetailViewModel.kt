@@ -62,7 +62,7 @@ class PlaceDetailViewModel @Inject constructor(
                 .onFailure {
                     _state.update {
                         it.copy(
-                            userInfo = UiState.Failure("유저 정보 조회 실패")
+                            userInfo = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                         )
                     }
                 }
@@ -114,7 +114,7 @@ class PlaceDetailViewModel @Inject constructor(
                 .onFailure {
                     _state.update {
                         it.copy(
-                            placeDetailModel = UiState.Failure("게시물 조회 실패")
+                            placeDetailModel = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                         )
                     }
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
@@ -138,7 +138,7 @@ class PlaceDetailViewModel @Inject constructor(
                     Timber.e(e)
                     _state.update {
                         it.copy(
-                            spoonCount = UiState.Failure("유저 스푼 개수 조회 실패")
+                            spoonCount = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
                         )
                     }
                     _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
