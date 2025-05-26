@@ -8,6 +8,7 @@ import com.spoony.spoony.data.datasource.PlaceDataSource
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.datasource.RegionRemoteDataSource
 import com.spoony.spoony.data.datasource.ReportDataSource
+import com.spoony.spoony.data.datasource.ReviewRemoteDataSource
 import com.spoony.spoony.data.datasource.SpoonDataSource
 import com.spoony.spoony.data.datasource.UserRemoteDataSource
 import com.spoony.spoony.data.datasourceimpl.AuthRemoteDataSourceImpl
@@ -18,6 +19,7 @@ import com.spoony.spoony.data.datasourceimpl.PlaceDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.PostRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.RegionRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.ReportDataSourceImpl
+import com.spoony.spoony.data.datasourceimpl.ReviewRemoteDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.SpoonDataSourceImpl
 import com.spoony.spoony.data.datasourceimpl.UserRemoteDataSourceImpl
 import dagger.Binds
@@ -84,4 +86,10 @@ abstract class DataSourceModule {
     abstract fun bindSpoonDataSource(
         spoonDataSourceImpl: SpoonDataSourceImpl
     ): SpoonDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindReviewSource(
+        remoteDataSourceImpl: ReviewRemoteDataSourceImpl
+    ): ReviewRemoteDataSource
 }
