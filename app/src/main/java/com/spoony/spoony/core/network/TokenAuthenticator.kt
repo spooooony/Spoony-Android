@@ -1,6 +1,6 @@
 package com.spoony.spoony.core.network
 
-import com.spoony.spoony.domain.repository.TokenRefreshRepository
+import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.TokenRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.firstOrNull
@@ -12,13 +12,13 @@ import okhttp3.Route
 
 class TokenAuthenticator @Inject constructor(
     private val tokenRepository: TokenRepository,
-    private val tokenRefreshRepository: TokenRefreshRepository
+    private val authRepository: AuthRepository
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         return runBlocking {
             val refreshToken = tokenRepository.getRefreshToken().firstOrNull() ?: return@runBlocking null
 
-            val result = tokenRefreshRepository.refreshToken(refreshToken)
+            val result = authRepository.refreshToken(refreshToken)
             val newToken = result.getOrNull()
 
             if (newToken == null) {

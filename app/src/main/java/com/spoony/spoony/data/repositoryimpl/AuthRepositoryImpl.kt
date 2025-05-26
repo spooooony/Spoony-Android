@@ -31,4 +31,8 @@ class AuthRepositoryImpl @Inject constructor(
                 introduction = introduction
             ).data!!.jwtTokenDto!!.toDomain()
         }
+
+    override suspend fun refreshToken(token: String): Result<TokenEntity> = runCatching {
+        authRemoteDataSource.refreshToken(token).data!!.toDomain()
+    }
 }

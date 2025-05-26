@@ -16,4 +16,6 @@ interface AuthRepository {
         regionId: Int?,
         introduction: String?
     ): Result<TokenEntity>
+
+    suspend fun refreshToken(token: String): Result<TokenEntity>
 }

@@ -10,7 +10,6 @@ import com.spoony.spoony.data.service.PostService
 import com.spoony.spoony.data.service.ReportService
 import com.spoony.spoony.data.service.ReviewService
 import com.spoony.spoony.data.service.SpoonService
-import com.spoony.spoony.data.service.TokenRefreshService
 import com.spoony.spoony.data.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -41,11 +40,6 @@ object ServiceModule {
     @Singleton
     fun provideAuthService(@Auth retrofit: Retrofit): AuthService =
         retrofit.create(AuthService::class.java)
-
-    @Provides
-    @Singleton
-    fun provideTokenRefreshService(@Auth retrofit: Retrofit): TokenRefreshService =
-        retrofit.create(TokenRefreshService::class.java)
 
     @Provides
     @Singleton

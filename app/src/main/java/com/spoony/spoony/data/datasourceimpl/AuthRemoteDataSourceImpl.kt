@@ -6,6 +6,7 @@ import com.spoony.spoony.data.dto.request.SignInRequestDto
 import com.spoony.spoony.data.dto.request.SignUpRequestDto
 import com.spoony.spoony.data.dto.response.SignInResponseDto
 import com.spoony.spoony.data.dto.response.SignUpResponseDto
+import com.spoony.spoony.data.dto.response.TokenResponseDto
 import com.spoony.spoony.data.service.AuthService
 import javax.inject.Inject
 
@@ -39,6 +40,9 @@ class AuthRemoteDataSourceImpl @Inject constructor(
                 introduction = introduction
             )
         )
+
+    override suspend fun refreshToken(token: String): BaseResponse<TokenResponseDto> =
+        authService.refreshToken(token)
 
     companion object {
         private const val BEARER = "Bearer"
