@@ -4,13 +4,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignInResponseDto(
-    @SerialName("exists")
-    val exists: Boolean,
+data class SignUpResponseDto(
     @SerialName("user")
-    val user: UserDto?,
+    val user: UserDto,
     @SerialName("jwtTokenDto")
-    val jwtTokenDto: TokenResponseDto?
+    val jwtTokenDto: TokenResponseDto
 ) {
     @Serializable
     data class UserDto(
