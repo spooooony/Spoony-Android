@@ -56,7 +56,7 @@ class PlaceDetailViewModel @Inject constructor(
                             userId = 1,
                             userName = "안세홍",
                             userProfileUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-                            regionName = "성북구"
+                            userRegion = "성북구"
                         )
                     )
                 )

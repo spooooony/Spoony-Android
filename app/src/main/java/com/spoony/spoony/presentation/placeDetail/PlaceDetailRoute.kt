@@ -109,7 +109,7 @@ fun PlaceDetailRoute(
             userId = -1,
             userProfileUrl = "",
             userName = "",
-            regionName = ""
+            userRegion = ""
         )
     }
 
@@ -178,7 +178,7 @@ fun PlaceDetailRoute(
                             },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
-                            userRegion = userProfile.regionName,
+                            userRegion = userProfile.userRegion,
                             photoUrlList = data.photoUrlList,
                             date = data.createdAt.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,
