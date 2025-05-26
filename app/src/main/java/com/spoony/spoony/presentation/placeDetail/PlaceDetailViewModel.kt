@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import timber.log.Timber
 
 @OptIn(FlowPreview::class)
@@ -62,6 +63,9 @@ class PlaceDetailViewModel @Inject constructor(
     }
 
     fun onFollowButtonClick(userId: Int, isFollowing: Boolean) {
+        _state.update {
+            it.copy(isFollowing = !isFollowing)
+        }
         _followClickFlow.tryEmit(Pair(userId, isFollowing))
     }
 
@@ -89,22 +93,18 @@ class PlaceDetailViewModel @Inject constructor(
     }
 
     private fun followClick(userId: Int, isFollowing: Boolean) {
-        _state.update {
-            it.copy(
-                isFollowing = !isFollowing
-            )
-        }
         viewModelScope.launch {
             val result = if (isFollowing) {
                 userRepository.unfollowUser(userId = userId)
             } else {
                 userRepository.followUser(userId = userId)
             }
-            result.onFailure {
+            result.onFailure { throwable ->
+                if (throwable is HttpException && throwable.code() == 403) {
+                    return@onFailure
+                }
                 _state.update {
-                    it.copy(
-                        isFollowing = !it.isFollowing
-                    )
+                    it.copy(isFollowing = !it.isFollowing)
                 }
                 _sideEffect.emit(
                     PlaceDetailSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
