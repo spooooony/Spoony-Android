@@ -203,7 +203,7 @@ fun PlaceDetailRoute(
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
                             isFollowing = state.isFollowing,
-                            onFollowButtonClick = { viewModel.followClick(userProfile.userId, state.isFollowing) },
+                            onFollowButtonClick = { viewModel.onFollowButtonClick(userProfile.userId, state.isFollowing) },
                             photoUrlList = data.photoUrlList,
                             date = data.createdAt.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,

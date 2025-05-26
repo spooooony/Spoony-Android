@@ -13,14 +13,19 @@ import com.spoony.spoony.presentation.placeDetail.model.toModel
 import com.spoony.spoony.presentation.placeDetail.navigation.PlaceDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class PlaceDetailViewModel @Inject constructor(
     private val postRepository: PostRepository,
@@ -31,11 +36,13 @@ class PlaceDetailViewModel @Inject constructor(
 ) : ViewModel() {
     private var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
     val state: StateFlow<PlaceDetailState>
-        get() = _state
+        get() = _state.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<PlaceDetailSideEffect>()
     val sideEffect: SharedFlow<PlaceDetailSideEffect>
-        get() = _sideEffect
+        get() = _sideEffect.asSharedFlow()
+
+    private val _followClickFlow = MutableSharedFlow<Pair<Int, Boolean>>(extraBufferCapacity = 1)
 
     init {
         val postArgs = savedStateHandle.toRoute<PlaceDetail>()
@@ -44,6 +51,18 @@ class PlaceDetailViewModel @Inject constructor(
         )
         getPost(postArgs.postId)
         getUserSpoonCount()
+
+        viewModelScope.launch {
+            _followClickFlow
+                .debounce(300)
+                .collect { (userId, isFollowing) ->
+                    followClick(userId, isFollowing)
+                }
+        }
+    }
+
+    fun onFollowButtonClick(userId: Int, isFollowing: Boolean) {
+        _followClickFlow.tryEmit(Pair(userId, isFollowing))
     }
 
     private fun getUserInfo(userId: Int) {
@@ -69,7 +88,7 @@ class PlaceDetailViewModel @Inject constructor(
         }
     }
 
-    fun followClick(userId: Int, isFollowing: Boolean) {
+    private fun followClick(userId: Int, isFollowing: Boolean) {
         _state.update {
             it.copy(
                 isFollowing = !isFollowing
@@ -81,7 +100,6 @@ class PlaceDetailViewModel @Inject constructor(
             } else {
                 userRepository.followUser(userId = userId)
             }
-
             result.onFailure {
                 _state.update {
                     it.copy(
