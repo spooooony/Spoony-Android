@@ -8,4 +8,4 @@ annotation class Auth
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class Token
+annotation class TokenRefresh

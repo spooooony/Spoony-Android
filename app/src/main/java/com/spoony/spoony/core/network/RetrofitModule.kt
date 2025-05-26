@@ -9,6 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
+import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -75,12 +76,18 @@ object RetrofitModule {
 
     @Provides
     @Singleton
+    fun provideTokenAuthenticator(authenticator: TokenAuthenticator): Authenticator = authenticator
+
+    @Provides
+    @Singleton
     fun provideClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        authInterceptor: Interceptor
+        authInterceptor: Interceptor,
+        tokenAuthenticator: TokenAuthenticator
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
+        .authenticator(tokenAuthenticator)
         .build()
 
     @Provides
