@@ -27,6 +27,7 @@ import com.spoony.spoony.presentation.register.navigation.navigateToRegister
 import com.spoony.spoony.presentation.report.ReportType
 import com.spoony.spoony.presentation.report.navigation.navigateToReport
 import com.spoony.spoony.presentation.setting.navigation.navigateToSettingPage
+import com.spoony.spoony.presentation.splash.navigation.Splash
 import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.navigateToOtherPage
 
@@ -35,7 +36,7 @@ const val NAVIGATION_ROOT = 0
 class MainNavigator(
     val navController: NavHostController
 ) {
-    val startDestination = Map()
+    val startDestination = Splash
 
     private val currentDestination: NavDestination?
         @Composable get() = navController

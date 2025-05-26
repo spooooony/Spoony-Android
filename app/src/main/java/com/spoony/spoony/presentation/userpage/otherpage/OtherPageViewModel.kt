@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.ErrorType
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.ReviewRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.follow.FollowManager
@@ -57,7 +58,7 @@ class OtherPageViewModel @Inject constructor(
                     }
                     getOtherUserReviews()
                 }
-                .onFailure {
+                .onLogFailure {
                     _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
@@ -118,7 +119,7 @@ class OtherPageViewModel @Inject constructor(
                         currentState.copy(reviews = reviewEntity.toModel())
                     }
                 }
-                .onFailure {
+                .onLogFailure {
                     _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
