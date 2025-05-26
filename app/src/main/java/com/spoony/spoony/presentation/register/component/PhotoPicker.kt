@@ -59,6 +59,9 @@ data class SelectedPhoto(
     val id: String = UUID.randomUUID().toString()
 )
 
+val SelectedPhoto.isNewPhoto: Boolean
+    get() = !uri.toString().startsWith("http")
+
 @Composable
 fun PhotoPicker(
     selectedPhotosList: PersistentList<SelectedPhoto>,

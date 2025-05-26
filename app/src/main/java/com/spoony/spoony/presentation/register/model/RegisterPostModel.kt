@@ -2,10 +2,7 @@ package com.spoony.spoony.presentation.register.model
 
 import com.spoony.spoony.domain.entity.RegisterPostEntity
 import com.spoony.spoony.domain.entity.UpdatePostEntity
-import com.spoony.spoony.presentation.register.component.SelectedPhoto
-
-val SelectedPhoto.isNewPhoto: Boolean
-    get() = !uri.toString().startsWith("http")
+import com.spoony.spoony.presentation.register.component.isNewPhoto
 
 fun RegisterState.toRegisterPostEntity(): RegisterPostEntity =
     RegisterPostEntity(
