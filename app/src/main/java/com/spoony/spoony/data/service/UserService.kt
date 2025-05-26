@@ -14,9 +14,9 @@ interface UserService {
     @GET("/api/v1/user")
     suspend fun getMyInfo(): BaseResponse<BasicUserInfoResponseDto>
 
-    @GET("/api/v1/user/{userId}")
+    @GET("/api/v1/user/{targetUserId}")
     suspend fun getUserInfoById(
-        @Path("userId") userId: Int
+        @Path("targetUserId") targetUserId: Int
     ): BaseResponse<BasicUserInfoResponseDto>
 
     @POST("/api/v1/user/follow")
