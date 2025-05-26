@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
+import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ import timber.log.Timber
 class MapViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
-    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
@@ -122,15 +123,17 @@ class MapViewModel @Inject constructor(
 
     private fun getUserInfo() {
         viewModelScope.launch {
-            // TODO: 민재오빠가 만들어둔걸로 바꿔두기
-//            authRepository.getUserInfo()
-//                .onSuccess { response ->
-//                    _state.update {
-//                        it.copy(
-//                            userName = UiState.Success(response.userName)
-//                        )
-//                    }
-//                }
+            userRepository.getMyInfo()
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            userName = UiState.Success(response.userName)
+                        )
+                    }
+                }
+                .onLogFailure {
+                    // TODO: 에러 처리
+                }
         }
     }
 
