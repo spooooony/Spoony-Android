@@ -391,5 +391,31 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun deleteReview(reviewId: Int) {
+        viewModelScope.launch {
+            postRepository.deletePost(reviewId)
+                .onSuccess {
+                    _state.update { currentState ->
+                        val currentList = (currentState.placeReviewList as? UiState.Success)?.data ?: persistentListOf()
+                        val updatedList = currentList.filterNot { it.reviewId == reviewId }.toPersistentList()
+
+                        currentState.copy(
+                            placeReviewList = if (updatedList.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(updatedList)
+                            }
+                        )
+                    }
+                    _sideEffect.emit(
+                        ExploreSideEffect.ShowSnackbar("성공적으로 삭제 되었습니다.")
+                    )
+                }
+                .onFailure { e ->
+                    Timber.e(e)
+                    _sideEffect.emit(
+                        ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                    )
+                }
+        }
     }
 }
