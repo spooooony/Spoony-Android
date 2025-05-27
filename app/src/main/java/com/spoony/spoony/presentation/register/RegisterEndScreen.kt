@@ -91,6 +91,14 @@ private fun RegisterEndScreen(
     val focusManager = LocalFocusManager.current
     var isDialogVisible by remember { mutableStateOf(false) }
 
+    val onNextClick = getOnNextClick(
+        registerType = registerType,
+        postId = postId,
+        onRegisterPost = onRegisterPost,
+        onEditComplete = onEditComplete,
+        onShowDialog = { isDialogVisible = true }
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -132,16 +140,8 @@ private fun RegisterEndScreen(
 
         NextButton(
             enabled = isNextButtonEnabled,
-            onClick = {
-                onRegisterPost {
-                    if (registerType == RegisterType.EDIT && postId != null) {
-                        onEditComplete(postId)
-                    } else {
-                        isDialogVisible = true
-                    }
-                }
-            },
-            editText = if (registerType == RegisterType.CREATE) "다음" else "리뷰 수정"
+            onClick = onNextClick,
+            editText = getNextButtonText(registerType)
         )
     }
 
@@ -248,5 +248,27 @@ private fun OptionalReviewSection(
             isAllowEmoji = true,
             isAllowSpecialChars = true
         )
+    }
+}
+
+private fun getNextButtonText(registerType: RegisterType): String =
+    when (registerType) {
+        RegisterType.CREATE -> "다음"
+        RegisterType.EDIT -> "리뷰 수정"
+    }
+
+@Composable
+private fun getOnNextClick(
+    registerType: RegisterType,
+    postId: Int?,
+    onRegisterPost: ((onSuccess: () -> Unit) -> Unit),
+    onEditComplete: (Int) -> Unit,
+    onShowDialog: () -> Unit
+): () -> Unit = {
+    onRegisterPost {
+        when (registerType) {
+            RegisterType.EDIT -> postId?.let(onEditComplete)
+            RegisterType.CREATE -> onShowDialog()
+        }
     }
 }
