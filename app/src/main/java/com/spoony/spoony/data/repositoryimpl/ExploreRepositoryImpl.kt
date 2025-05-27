@@ -1,5 +1,7 @@
 package com.spoony.spoony.data.repositoryimpl
 
+import com.spoony.spoony.core.database.ExploreRecentSearchDao
+import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
 import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.domain.entity.CategoryEntity
@@ -11,7 +13,8 @@ import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 
 class ExploreRepositoryImpl @Inject constructor(
-    private val exploreRemoteDataSource: ExploreRemoteDataSource
+    private val exploreRemoteDataSource: ExploreRemoteDataSource,
+    private val exploreRecentSearchDao: ExploreRecentSearchDao
 ) : ExploreRepository {
     override suspend fun getFeedList(
         categoryId: Int,
@@ -186,4 +189,24 @@ class ExploreRepositoryImpl @Inject constructor(
             query = query
         ).data!!.userSimpleResponseDTO.map { it.toDomain() }
     }
+
+    override suspend fun getExploreRecentSearches(type: ExploreRecentSearchType): Result<List<String>> =
+        runCatching {
+            exploreRecentSearchDao.getQueriesExploreRecentSearch(type).map { it.keyword }
+        }
+
+    override suspend fun deleteExploreRecentSearch(type: ExploreRecentSearchType, searchText: String): Result<Unit> =
+        runCatching {
+            exploreRecentSearchDao.deleteExploreRecentSearch(type, searchText)
+        }
+
+    override suspend fun clearExploreRecentSearch(type: ExploreRecentSearchType): Result<Unit> =
+        runCatching {
+            exploreRecentSearchDao.clearExploreRecentSearch(type)
+        }
+
+    override suspend fun insertExploreRecentSearch(type: ExploreRecentSearchType, searchText: String) =
+        runCatching {
+            exploreRecentSearchDao.insertKeywordWithLimit(type, searchText)
+        }
 }

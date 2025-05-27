@@ -7,27 +7,31 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchEntity
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExploreRecentSearchDao {
 
     @Query("SELECT * FROM explore_recent_search WHERE type = :type ORDER BY timestamp DESC")
-    fun getQueriesByType(type: ExploreRecentSearchType): Flow<List<ExploreRecentSearchEntity>>
+    suspend fun getQueriesExploreRecentSearch(type: ExploreRecentSearchType): List<ExploreRecentSearchEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(exploreRecentEntity: ExploreRecentSearchEntity)
+    suspend fun insertExploreRecentSearch(exploreRecentEntity: ExploreRecentSearchEntity)
 
     @Query("DELETE FROM explore_recent_search WHERE type = :type AND keyword = :keyword")
-    suspend fun deleteByKeyword(type: ExploreRecentSearchType, keyword: String)
+    suspend fun deleteExploreRecentSearch(type: ExploreRecentSearchType, keyword: String)
 
     @Query("DELETE FROM explore_recent_search WHERE type = :type")
-    suspend fun clearByType(type: ExploreRecentSearchType)
+    suspend fun clearExploreRecentSearch(type: ExploreRecentSearchType)
 
     @Query("SELECT COUNT(*) FROM explore_recent_search WHERE type = :type")
-    suspend fun getSearchCountByType(type: ExploreRecentSearchType): Int
+    suspend fun getCountExploreRecentSearch(type: ExploreRecentSearchType): Int
 
-    @Query("""
+    // 특정 검색어 존재 여부 확인
+    @Query("SELECT EXISTS(SELECT 1 FROM explore_recent_search WHERE keyword = :searchText AND type = :type)")
+    suspend fun isExistsExploreRecentSearch(type: ExploreRecentSearchType, searchText: String): Boolean
+
+    @Query(
+        """
         DELETE FROM explore_recent_search
         WHERE keyword IN (
             SELECT keyword FROM explore_recent_search
@@ -35,17 +39,22 @@ interface ExploreRecentSearchDao {
             ORDER BY timestamp ASC
             LIMIT 1
         ) AND type = :type
-    """)
+    """
+    )
     suspend fun deleteOldestSearchByType(type: ExploreRecentSearchType)
 
     @Transaction
-    suspend fun addKeyword(type: ExploreRecentSearchType, keyword: String) {
-        val trimmed = keyword.trim()
-        if (trimmed.isBlank()) return
+    suspend fun insertKeywordWithLimit(type: ExploreRecentSearchType, keyword: String) {
+        val trimmedText = keyword.trim()
+        if (trimmedText.isBlank()) return
 
-        insert(ExploreRecentSearchEntity(keyword = trimmed, type = type))
+        if (isExistsExploreRecentSearch(type, trimmedText)) {
+            deleteExploreRecentSearch(type, trimmedText)
+        }
 
-        if (getSearchCountByType(type) > MAX_RECENT_SEARCHES) {
+        insertExploreRecentSearch(ExploreRecentSearchEntity(keyword = trimmedText, type = type))
+
+        if (getCountExploreRecentSearch(type) > MAX_RECENT_SEARCHES) {
             deleteOldestSearchByType(type)
         }
     }
