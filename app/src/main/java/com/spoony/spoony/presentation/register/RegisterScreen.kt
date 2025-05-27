@@ -58,6 +58,10 @@ fun RegisterRoute(
                 is RegisterSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
+
+                is RegisterSideEffect.ShowError -> {
+                    showSnackBar(effect.errorType.description)
+                }
             }
         }
     }
@@ -97,7 +101,11 @@ private fun RegisterScreen(
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
