@@ -2,8 +2,13 @@ package com.spoony.spoony.data.repositoryimpl
 
 import com.spoony.spoony.data.datasource.UserRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
+import com.spoony.spoony.data.mapper.toDto
 import com.spoony.spoony.domain.entity.BasicUserInfoEntity
 import com.spoony.spoony.domain.entity.FollowListEntity
+import com.spoony.spoony.domain.entity.ProfileImageEntity
+import com.spoony.spoony.domain.entity.ProfileInfoEntity
+import com.spoony.spoony.domain.entity.ProfileUpdateEntity
+import com.spoony.spoony.domain.entity.RegionEntity
 import com.spoony.spoony.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -18,6 +23,16 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfoById(userId: Int): Result<BasicUserInfoEntity> =
         runCatching {
             userRemoteDataSource.getUserInfoById(userId).data!!.toDomain()
+        }
+
+    override suspend fun getRegionList(): Result<List<RegionEntity>> =
+        runCatching {
+            userRemoteDataSource.getRegionList().data!!.regionList.map { it.toDomain() }
+        }
+
+    override suspend fun checkUserNameExist(userName: String): Result<Boolean> =
+        runCatching {
+            userRemoteDataSource.checkUserNameExist(userName).data == true
         }
 
     override suspend fun followUser(userId: Int): Result<Unit> =
@@ -48,5 +63,20 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getOtherFollowers(targetUserId: Int): Result<FollowListEntity> =
         runCatching {
             userRemoteDataSource.getOtherFollowers(targetUserId).data!!.toDomain()
+        }
+
+    override suspend fun getMyProfileInfo(): Result<ProfileInfoEntity> =
+        runCatching {
+            userRemoteDataSource.getMyProfileInfo().data!!.toDomain()
+        }
+
+    override suspend fun getMyProfileImage(): Result<ProfileImageEntity> =
+        runCatching {
+            userRemoteDataSource.getMyProfileImage().data!!.toDomain()
+        }
+
+    override suspend fun updateMyProfileInfo(profileUpdate: ProfileUpdateEntity): Result<Unit> =
+        runCatching {
+            userRemoteDataSource.updateMyProfileInfo(profileUpdate.toDto()).data
         }
 }

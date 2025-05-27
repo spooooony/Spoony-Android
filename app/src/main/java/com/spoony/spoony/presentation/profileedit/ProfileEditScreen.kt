@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.profileedit
 import BirthSelectButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,20 +24,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePickerBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBottomSheet
-import com.spoony.spoony.core.designsystem.component.bottomsheet.regionList
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
-import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyNicknameTextField
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
@@ -44,49 +49,53 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.profileedit.component.ImageHelperBottomSheet
 import com.spoony.spoony.presentation.profileedit.component.ProfileImageList
-import com.spoony.spoony.presentation.profileedit.model.ProfileImageModel
-import kotlinx.collections.immutable.toPersistentList
-
-val profileImageList = (1..6).map { i ->
-    ProfileImageModel(
-        imageLevel = i,
-        imageUrl = "https://avatars.githubusercontent.com/u/160750136?v=$i",
-        name = "Image $i",
-        description = "Description for Image $i",
-        isSelected = i == 1,
-        isUnLocked = i < 4
-    )
-}.toPersistentList()
 
 @Composable
 fun ProfileEditScreen(
     onBackButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProfileEditViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val focusManager = LocalFocusManager.current
+    val showSnackBar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     var isImageBottomSheetVisible by remember { mutableStateOf(false) }
     var isDateBottomSheetVisible by remember { mutableStateOf(false) }
     var isLocationBottomSheetVisible by remember { mutableStateOf(false) }
 
-    var nickname by remember { mutableStateOf("톳시") }
-    var nicknameState by remember { mutableStateOf(NicknameTextFieldState.DEFAULT) }
-    var introduction by remember { mutableStateOf("오타쿠의 패왕") }
-    var selectedLevel by remember { mutableIntStateOf(1) }
-    var selectedYear by remember { mutableStateOf("2000") }
-    var selectedMonth by remember { mutableStateOf("01") }
-    var selectedDay by remember { mutableStateOf("01") }
-    var isBirthSelected by remember { mutableStateOf(false) }
-    var selectedRegion by remember { mutableStateOf("서울 마포구") }
-    var isRegionSelected by remember { mutableStateOf(false) }
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { sideEffect ->
+            when (sideEffect) {
+                is ProfileEditSideEffect.ShowSnackBar -> {
+                    showSnackBar(sideEffect.message)
+                }
 
-    var saveButtonEnabled by remember { mutableStateOf(true) }
+                is ProfileEditSideEffect.ShowError -> {
+                    showSnackBar(sideEffect.errorType.description)
+                }
 
-    val focusManager = LocalFocusManager.current
+                ProfileEditSideEffect.NavigateBack -> {
+                    onBackButtonClick()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(white)
             .addFocusCleaner(focusManager)
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    focusManager.clearFocus()
+                    if (state.nickname.trim().isNotEmpty()) {
+                        viewModel::checkNicknameDuplication
+                    }
+                }
+            }
     ) {
         TitleTopAppBar(
             onBackButtonClick = onBackButtonClick
@@ -115,39 +124,24 @@ fun ProfileEditScreen(
         Spacer(modifier = Modifier.height(13.dp))
 
         ProfileImageList(
-            profileImages = profileImageList,
-            selectedLevel = selectedLevel,
-            onSelectLevel = { level ->
-                selectedLevel = level
-            }
+            profileImages = state.profileImages,
+            selectedLevel = state.selectedImageLevel,
+            onSelectLevel = viewModel::selectImageLevel
+
         )
 
         Spacer(modifier = Modifier.height(41.dp))
 
         SubSection(text = "닉네임을 입력해 주세요") {
             SpoonyNicknameTextField(
-                value = nickname,
-                onValueChanged = {
-                    nickname = it
-                    saveButtonEnabled = if (nicknameState == NicknameTextFieldState.DEFAULT) {
-                        true
-                    } else {
-                        nicknameState == NicknameTextFieldState.AVAILABLE && it.isNotBlank()
-                    }
-                },
-                onStateChanged = {
-                    nicknameState = it
-                    saveButtonEnabled = if (it == NicknameTextFieldState.DEFAULT) {
-                        true
-                    } else {
-                        it == NicknameTextFieldState.AVAILABLE && nickname.isNotBlank()
-                    }
-                },
+                value = state.nickname,
+                onValueChanged = viewModel::updateNickname,
+                onStateChanged = viewModel::updateNicknameState,
                 placeholder = "스푼의 이름을 정해주세요 (한글, 영문, 숫자 입력 가능)",
-                onDoneAction = { },
+                onDoneAction = viewModel::checkNicknameDuplication,
                 maxLength = 10,
                 minLength = 1,
-                state = nicknameState
+                state = state.nicknameState
             )
         }
 
@@ -155,8 +149,8 @@ fun ProfileEditScreen(
 
         SubSection(text = "간단한 자기소개를 입력해 주세요") {
             SpoonyLargeTextField(
-                value = introduction,
-                onValueChanged = { introduction = it },
+                value = state.introduction,
+                onValueChanged = viewModel::updateIntroduction,
                 placeholder = "안녕! 나는 어떤 스푼이냐면...",
                 maxLength = 50,
                 minLength = 0,
@@ -172,10 +166,10 @@ fun ProfileEditScreen(
             BirthSelectButton(
                 onClick = { isDateBottomSheetVisible = true },
                 modifier = Modifier,
-                year = selectedYear,
-                month = selectedMonth,
-                day = selectedDay,
-                isBirthSelected = isBirthSelected
+                year = state.selectedYear,
+                month = state.selectedMonth,
+                day = state.selectedDay,
+                isBirthSelected = state.isBirthSelected
             )
         }
 
@@ -184,16 +178,16 @@ fun ProfileEditScreen(
         SubSection(text = "주로 활동하는 지역을 설정해 주세요") {
             RegionSelectButton(
                 onClick = { isLocationBottomSheetVisible = true },
-                region = selectedRegion,
-                isSelected = isRegionSelected
+                region = state.selectedRegion,
+                isSelected = state.isRegionSelected
             )
         }
 
         Spacer(modifier = Modifier.height(38.dp))
 
         SaveButton(
-            enabled = saveButtonEnabled,
-            onClick = onBackButtonClick,
+            enabled = state.saveButtonEnabled,
+            onClick = viewModel::updateProfileInfo,
             modifier = Modifier.padding(horizontal = 20.dp)
         )
 
@@ -203,7 +197,7 @@ fun ProfileEditScreen(
     if (isImageBottomSheetVisible) {
         ImageHelperBottomSheet(
             onDismiss = { isImageBottomSheetVisible = false },
-            profileImageList = profileImageList
+            profileImageList = state.profileImages
         )
     }
 
@@ -213,25 +207,21 @@ fun ProfileEditScreen(
             onDateSelected = { date ->
                 val parts = date.split("-")
                 if (parts.size == 3) {
-                    selectedYear = parts[0]
-                    selectedMonth = parts[1]
-                    selectedDay = parts[2]
-                    isBirthSelected = true
+                    viewModel.selectDate(parts[0], parts[1], parts[2])
                 }
             },
-            initialYear = selectedYear.toIntOrNull() ?: 2000,
-            initialMonth = selectedMonth.toIntOrNull() ?: 1,
-            initialDay = selectedDay.toIntOrNull() ?: 1
+            initialYear = state.selectedYear.toIntOrNull() ?: 2000,
+            initialMonth = state.selectedMonth.toIntOrNull() ?: 1,
+            initialDay = state.selectedDay.toIntOrNull() ?: 1
         )
     }
 
     if (isLocationBottomSheetVisible) {
         SpoonyRegionBottomSheet(
-            regionList = regionList,
+            regionList = state.regionList,
             onDismiss = { isLocationBottomSheetVisible = false },
             onClick = { region ->
-                selectedRegion = "서울 ${region.regionName}"
-                isRegionSelected = true
+                viewModel.selectRegion(region.regionId, region.regionName)
             }
         )
     }
