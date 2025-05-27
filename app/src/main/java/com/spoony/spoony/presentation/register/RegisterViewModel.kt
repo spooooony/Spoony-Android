@@ -68,7 +68,7 @@ class RegisterViewModel @Inject constructor(
                         }
                     }
                     .onLogFailure {
-                        _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
+                        _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                     }
             }
         }
@@ -132,7 +132,7 @@ class RegisterViewModel @Inject constructor(
                     }
                 }
             }.onLogFailure {
-                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
+                _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
             }
         }
     }
@@ -257,7 +257,7 @@ class RegisterViewModel @Inject constructor(
                             onSuccess()
                         }.onLogFailure {
                             _state.update { it.copy(isLoading = false) }
-                            _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
+                            _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                         }
                 }
                 RegisterType.EDIT -> {
@@ -271,7 +271,7 @@ class RegisterViewModel @Inject constructor(
                                 onSuccess()
                             }.onLogFailure {
                                 _state.update { it.copy(isLoading = false) }
-                                _sideEffect.emit(RegisterSideEffect.ShowSnackbar(ErrorType.UNEXPECTED_ERROR.description))
+                                _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                             }
                     }
                 }
@@ -309,6 +309,7 @@ class RegisterViewModel @Inject constructor(
 
 sealed class RegisterSideEffect {
     data class ShowSnackbar(val message: String) : RegisterSideEffect()
+    data class ShowError(val errorType: ErrorType) : RegisterSideEffect()
 }
 
 enum class RegisterSteps(val step: Float) {
