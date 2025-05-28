@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.model.RegionModel
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.UserRepository
@@ -67,7 +68,8 @@ class OnboardingViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(OnboardingSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    updateNicknameState(NicknameTextFieldState.DEFAULT)
+                    _sideEffect.emit(OnboardingSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -95,7 +97,7 @@ class OnboardingViewModel @Inject constructor(
                 .onLogFailure {
                     _state.update {
                         it.copy(
-                            regionList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                            regionList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                         )
                     }
                 }
@@ -117,7 +119,7 @@ class OnboardingViewModel @Inject constructor(
                     }
                 }.onLogFailure {
                     _state.update {
-                        it.copy(signUpState = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                        it.copy(signUpState = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description))
                     }
                 }
             }
