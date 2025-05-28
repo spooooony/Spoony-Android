@@ -34,6 +34,7 @@ fun NavGraphBuilder.mapNavGraph(
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
     navigateToExplore: () -> Unit,
+    navigateToAttendance: () -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<Map> {
@@ -42,6 +43,7 @@ fun NavGraphBuilder.mapNavGraph(
             navigateToPlaceDetail = navigateToPlaceDetail,
             navigateToMapSearch = navigateToMapSearch,
             navigateToExplore = navigateToExplore,
+            navigateToAttendance = navigateToAttendance,
             navigateUp = navigateUp
         )
     }

@@ -82,6 +82,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
+import com.spoony.spoony.core.designsystem.component.dialog.SpoonDrawDialog
 import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
@@ -122,11 +123,13 @@ fun MapRoute(
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
     navigateToExplore: () -> Unit,
+    navigateToAttendance: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: MapViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showSpoonDraw by viewModel.showSpoonDraw.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     val cameraPositionState = rememberCameraPositionState {
@@ -255,6 +258,16 @@ fun MapRoute(
             }
         }
     )
+
+    if (showSpoonDraw) {
+        viewModel.updateLastEntryDate()
+
+        SpoonDrawDialog(
+            onDismiss = viewModel::checkSpoonDrawn,
+            onSpoonDrawButtonClick = viewModel::drawSpoon,
+            onConfirmButtonClick = navigateToAttendance
+        )
+    }
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
