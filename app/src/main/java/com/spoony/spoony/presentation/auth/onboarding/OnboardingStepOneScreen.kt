@@ -3,11 +3,13 @@ package com.spoony.spoony.presentation.auth.onboarding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -16,6 +18,7 @@ import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyNicknameTextField
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.auth.onboarding.component.OnBoardingButton
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingContent
 
@@ -62,12 +65,16 @@ private fun OnboardingStepOneScreen(
     checkNicknameValid: () -> Unit,
     onButtonClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .background(SpoonyAndroidTheme.colors.white)
+            .fillMaxSize()
             .padding(horizontal = 20.dp)
             .padding(top = 32.dp, bottom = 20.dp)
+            .addFocusCleaner(focusManager)
     ) {
         OnboardingContent("닉네임을 입력해주세요") {
             SpoonyNicknameTextField(

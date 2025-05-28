@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.auth.onboarding.component.OnBoardingButton
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingContent
 
@@ -38,12 +40,15 @@ private fun OnboardingStepThreeScreen(
     onValueChanged: (String) -> Unit,
     onButtonClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .background(SpoonyAndroidTheme.colors.white)
             .padding(horizontal = 20.dp)
             .padding(top = 32.dp, bottom = 20.dp)
+            .addFocusCleaner(focusManager)
     ) {
         OnboardingContent("간단한 자기소개를 입력해 주세요") {
             SpoonyLargeTextField(
