@@ -3,18 +3,16 @@ package com.spoony.spoony.presentation.profileedit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
-import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
-import com.spoony.spoony.core.util.extension.toBirthDate
 import com.spoony.spoony.domain.usecase.CheckNicknameDuplicationUseCase
+import com.spoony.spoony.domain.usecase.FormatBirthDateUseCase
 import com.spoony.spoony.domain.usecase.GetMyProfileImageUseCase
 import com.spoony.spoony.domain.usecase.GetMyProfileInfoUseCase
 import com.spoony.spoony.domain.usecase.GetRegionListUseCase
-import com.spoony.spoony.domain.usecase.MatchRegionIdUseCase
+import com.spoony.spoony.domain.usecase.ProcessProfileEditDataUseCase
 import com.spoony.spoony.domain.usecase.UpdateProfileInfoUseCase
 import com.spoony.spoony.presentation.profileedit.model.toEntity
-import com.spoony.spoony.presentation.profileedit.model.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -33,8 +31,9 @@ class ProfileEditViewModel @Inject constructor(
     private val getMyProfileImageUseCase: GetMyProfileImageUseCase,
     private val getMyProfileInfoUseCase: GetMyProfileInfoUseCase,
     private val getRegionListUseCase: GetRegionListUseCase,
+    private val processProfileEditDataUseCase: ProcessProfileEditDataUseCase,
     private val checkNicknameDuplicationUseCase: CheckNicknameDuplicationUseCase,
-    private val matchRegionIdUseCase: MatchRegionIdUseCase,
+    private val formatBirthDateUseCase: FormatBirthDateUseCase,
     private val updateProfileInfoUseCase: UpdateProfileInfoUseCase
 ) : ViewModel() {
 
@@ -53,61 +52,39 @@ class ProfileEditViewModel @Inject constructor(
     private fun loadProfileEditData() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val profileImageDeferred = async { getMyProfileImageUseCase() }
-            val profileInfoDeferred = async { getMyProfileInfoUseCase() }
-            val regionListDeferred = async { getRegionListUseCase() }
+            runCatching {
+                val profileImageDeferred = async { getMyProfileImageUseCase().getOrThrow() }
+                val profileInfoDeferred = async { getMyProfileInfoUseCase().getOrThrow() }
+                val regionListDeferred = async { getRegionListUseCase().getOrThrow() }
 
-            val profileImageResult = profileImageDeferred.await()
-            val profileInfoResult = profileInfoDeferred.await()
-            val regionListResult = regionListDeferred.await()
+                val processedData = processProfileEditDataUseCase(
+                    profileImage = profileImageDeferred.await(),
+                    profileInfo = profileInfoDeferred.await(),
+                    regionList = regionListDeferred.await(),
+                    selectedImageLevel = _state.value.selectedImageLevel
+                )
 
-            val failedResult = listOf(profileImageResult, profileInfoResult, regionListResult)
-                .firstOrNull { it.isFailure }
-
-            if (failedResult != null) {
+                _state.update { currentState ->
+                    currentState.copy(
+                        isLoading = false,
+                        profileInfo = processedData.profileInfo,
+                        profileImages = processedData.profileImages,
+                        regionList = processedData.regionList,
+                        nickname = processedData.profileInfo.userName,
+                        introduction = processedData.profileInfo.introduction,
+                        selectedImageLevel = processedData.profileInfo.imageLevel,
+                        selectedYear = processedData.selectedYear,
+                        selectedMonth = processedData.selectedMonth,
+                        selectedDay = processedData.selectedDay,
+                        isBirthSelected = processedData.isBirthSelected,
+                        selectedRegion = processedData.profileInfo.regionName,
+                        selectedRegionId = processedData.profileInfo.regionId,
+                        isRegionSelected = processedData.isRegionSelected
+                    )
+                }
+            }.onFailure {
                 _state.update { it.copy(isLoading = false) }
                 _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
-                return@launch
-            }
-
-            val profileImage = profileImageResult.getOrThrow()
-            val profileInfo = profileInfoResult.getOrThrow()
-            val regionList = regionListResult.getOrThrow()
-
-            val profileImageModels = profileImage.toModel(_state.value.selectedImageLevel)
-            val editModel = profileInfo.toModel()
-            val birthDate = editModel.birth?.toBirthDate()
-            val regionModels = regionList.map { entity ->
-                RegionModel(
-                    regionId = entity.regionId,
-                    regionName = entity.regionName
-                )
-            }.toImmutableList()
-
-            _state.update { currentState ->
-                currentState.copy(
-                    isLoading = false,
-                    profileInfo = editModel,
-                    profileImages = profileImageModels,
-                    regionList = regionModels,
-                    nickname = editModel.userName,
-                    introduction = editModel.introduction,
-                    selectedImageLevel = editModel.imageLevel,
-                    selectedYear = birthDate?.year,
-                    selectedMonth = birthDate?.month,
-                    selectedDay = birthDate?.day,
-                    isBirthSelected = birthDate != null,
-                    selectedRegion = editModel.regionName,
-                    selectedRegionId = editModel.regionId,
-                    isRegionSelected = editModel.regionName != null
-                )
-            }
-
-            if (editModel.regionName != null) {
-                val matchedRegionId = matchRegionIdUseCase(editModel.regionName, regionModels)
-                if (matchedRegionId != null) {
-                    _state.update { it.copy(selectedRegionId = matchedRegionId) }
-                }
             }
         }
     }
@@ -213,11 +190,12 @@ class ProfileEditViewModel @Inject constructor(
         _state.update { it.copy(saveButtonEnabled = false) }
         viewModelScope.launch {
             val currentState = _state.value
-            val birthDate = if (currentState.isBirthSelected && currentState.selectedYear != null && currentState.selectedMonth != null && currentState.selectedDay != null) {
-                "${currentState.selectedYear}-${currentState.selectedMonth.padStart(2, '0')}-${currentState.selectedDay.padStart(2, '0')}"
-            } else {
-                null
-            }
+            val birthDate = formatBirthDateUseCase(
+                isBirthSelected = currentState.isBirthSelected,
+                year = currentState.selectedYear,
+                month = currentState.selectedMonth,
+                day = currentState.selectedDay
+            )
 
             val editModel = currentState.profileInfo?.copy(
                 userName = currentState.nickname,
