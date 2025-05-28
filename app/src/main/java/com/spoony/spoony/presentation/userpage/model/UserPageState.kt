@@ -73,7 +73,7 @@ data class UserPageState(
     val userType: UserType,
     val profile: UserProfile,
     val spoonCount: Int = 0,
-    val isLocalReviewOnly: Boolean = true,
+    val isLocalReviewOnly: Boolean = false,
     val reviews: ImmutableList<ReviewData> = persistentListOf()
 ) {
     val profileId get() = profile.profileId

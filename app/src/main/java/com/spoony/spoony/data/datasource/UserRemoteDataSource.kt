@@ -25,4 +25,8 @@ interface UserRemoteDataSource {
     suspend fun getOtherFollowings(targetUserId: Int): BaseResponse<FollowListResponseDto>
 
     suspend fun getOtherFollowers(targetUserId: Int): BaseResponse<FollowListResponseDto>
+
+    suspend fun blockUser(userId: Int): BaseResponse<Unit>
+
+    suspend fun unblockUser(userId: Int): BaseResponse<Unit>
 }

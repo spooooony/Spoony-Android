@@ -19,6 +19,7 @@ import com.spoony.spoony.core.designsystem.theme.main400
 
 @Composable
 fun LocalReviewFilterCheckBox(
+    enabled: Boolean = true,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -26,7 +27,10 @@ fun LocalReviewFilterCheckBox(
     val checkBoxIcon = if (isSelected) R.drawable.ic_checkbox_main400 else R.drawable.ic_checkbox_gray400
 
     Row(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable(
+            onClick = onClick,
+            enabled = enabled
+        ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
 

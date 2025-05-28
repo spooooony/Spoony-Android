@@ -24,4 +24,8 @@ interface UserRepository {
     suspend fun getOtherFollowings(targetUserId: Int): Result<FollowListEntity>
 
     suspend fun getOtherFollowers(targetUserId: Int): Result<FollowListEntity>
+
+    suspend fun blockUser(userId: Int): Result<Unit>
+
+    suspend fun unblockUser(userId: Int): Result<Unit>
 }
