@@ -139,6 +139,12 @@ class ProfileEditViewModel @Inject constructor(
             return
         }
 
+        if (currentNickname == _state.value.profileInfo?.userName) {
+            _state.update { it.copy(nicknameState = NicknameTextFieldState.AVAILABLE) }
+            updateSaveButtonState()
+            return
+        }
+
         viewModelScope.launch {
             checkNicknameDuplicationUseCase(
                 nickname = currentNickname,

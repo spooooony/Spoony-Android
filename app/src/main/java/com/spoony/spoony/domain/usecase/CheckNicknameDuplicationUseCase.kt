@@ -10,10 +10,6 @@ class CheckNicknameDuplicationUseCase @Inject constructor(
         nickname: String,
         originalNickname: String?
     ): Result<Boolean> {
-        if (nickname.isBlank()) {
-            return Result.failure(IllegalArgumentException("닉네임이 비어있습니다"))
-        }
-
         if (nickname == originalNickname) {
             return Result.success(false)
         }
