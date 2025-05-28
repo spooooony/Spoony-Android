@@ -18,7 +18,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.spoony.spoony.core.designsystem.component.topappbar.SpoonyBasicTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingTopAppBar
 import com.spoony.spoony.presentation.auth.onboarding.navigation.OnboardingRoute
 import com.spoony.spoony.presentation.auth.onboarding.navigation.OnboardingRoute.End
@@ -44,6 +46,24 @@ private fun OnboardingScreen(
 ) {
     val navController = rememberNavController()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showSnackbar = LocalSnackBarTrigger.current
+
+    when (state.signUpState) {
+        is UiState.Empty -> {
+            viewModel.updateCurrentStep(OnboardingSteps.END)
+            navController.navigate(
+                route = End,
+                navOptions = navOptions {
+                    popUpTo<StepOne> {
+                        inclusive = true
+                    }
+                }
+            )
+        }
+
+        is UiState.Failure -> showSnackbar((state.signUpState as? UiState.Failure)?.msg.orEmpty())
+        else -> {}
+    }
 
     Column(
         modifier = Modifier
@@ -68,14 +88,7 @@ private fun OnboardingScreen(
                     onBackButtonClick = navController::navigateUp,
                     onSkipButtonClick = {
                         viewModel.skipStep()
-                        navController.navigate(
-                            route = End,
-                            navOptions = navOptions {
-                                popUpTo<StepOne> {
-                                    inclusive = true
-                                }
-                            }
-                        )
+                        viewModel.signUp()
                     }
                 )
             }

@@ -4,6 +4,7 @@ import com.spoony.spoony.data.datasource.UserRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.domain.entity.BasicUserInfoEntity
 import com.spoony.spoony.domain.entity.FollowListEntity
+import com.spoony.spoony.domain.entity.RegionEntity
 import com.spoony.spoony.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -18,6 +19,16 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfoById(userId: Int): Result<BasicUserInfoEntity> =
         runCatching {
             userRemoteDataSource.getUserInfoById(userId).data!!.toDomain()
+        }
+
+    override suspend fun getRegionList(): Result<List<RegionEntity>> =
+        runCatching {
+            userRemoteDataSource.getRegionList().data!!.regionList.map { it.toDomain() }
+        }
+
+    override suspend fun checkUserNameExist(userName: String): Result<Boolean> =
+        runCatching {
+            userRemoteDataSource.checkUserNameExist(userName).data == true
         }
 
     override suspend fun followUser(userId: Int): Result<Unit> =
