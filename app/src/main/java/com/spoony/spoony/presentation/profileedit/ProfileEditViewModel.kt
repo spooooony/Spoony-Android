@@ -63,7 +63,7 @@ class ProfileEditViewModel @Inject constructor(
 
             val failedResult = listOf(profileImageResult, profileInfoResult, regionListResult)
                 .firstOrNull { it.isFailure }
-            
+
             if (failedResult != null) {
                 _state.update { it.copy(isLoading = false) }
                 _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
@@ -207,12 +207,11 @@ class ProfileEditViewModel @Inject constructor(
         _state.update { it.copy(saveButtonEnabled = false) }
         viewModelScope.launch {
             val currentState = _state.value
-            val birthDate = if (currentState.isBirthSelected && 
-                               currentState.selectedYear != null && 
-                               currentState.selectedMonth != null && 
-                               currentState.selectedDay != null) {
+            val birthDate = if (currentState.isBirthSelected && currentState.selectedYear != null && currentState.selectedMonth != null && currentState.selectedDay != null) {
                 "${currentState.selectedYear}-${currentState.selectedMonth.padStart(2, '0')}-${currentState.selectedDay.padStart(2, '0')}"
-            } else null
+            } else {
+                null
+            }
 
             val editModel = currentState.profileInfo?.copy(
                 userName = currentState.nickname,
