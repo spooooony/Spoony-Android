@@ -25,6 +25,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kakao.sdk.user.UserApiClient
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main100
 import com.spoony.spoony.presentation.auth.signin.component.SocialLoginButton
@@ -34,12 +35,12 @@ fun SignInRoute(
     paddingValues: PaddingValues,
     navigateToMap: () -> Unit,
     navigateToTermsOfService: () -> Unit,
-    showSnackBar: (String) -> Unit,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val systemUiController = rememberSystemUiController()
+    val showSnackbar = LocalSnackBarTrigger.current
 
     LaunchedEffect(Unit) {
         systemUiController.setNavigationBarColor(
@@ -51,7 +52,7 @@ fun SignInRoute(
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
-                    is SignInSideEffect.ShowSnackBar -> showSnackBar(sideEffect.message)
+                    is SignInSideEffect.ShowSnackBar -> showSnackbar(sideEffect.message)
                     is SignInSideEffect.NavigateToSignUp -> navigateToTermsOfService()
                     is SignInSideEffect.NavigateToMap -> navigateToMap()
                     is SignInSideEffect.StartKakaoTalkLogin -> {
