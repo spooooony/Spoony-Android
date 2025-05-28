@@ -19,17 +19,17 @@ class SignInUseCase @Inject constructor(
         ).fold(
             onSuccess = { tokenEntity ->
                 try {
-                    tokenRepository.updateCachedAccessToken(tokenEntity?.accessToken ?: token)
-
                     if (tokenEntity != null) {
-                        tokenRepository.updateAccessToken(tokenEntity.accessToken)
-                        tokenRepository.updateRefreshToken(tokenEntity.refreshToken)
+                        tokenRepository.updateTokens(tokenEntity)
+                        return Result.success(tokenEntity)
                     }
+
+                    tokenRepository.updateCachedAccessToken(token)
                 } catch (e: Throwable) {
                     return Result.failure(e)
                 }
 
-                return Result.success(tokenEntity)
+                return Result.success(null)
             },
             onFailure = { e ->
                 Result.failure(e)

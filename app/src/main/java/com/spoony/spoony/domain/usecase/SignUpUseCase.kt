@@ -27,9 +27,7 @@ class SignUpUseCase @Inject constructor(
         ).fold(
             onSuccess = { tokenEntity ->
                 try {
-                    tokenRepository.updateCachedAccessToken(tokenEntity.accessToken)
-                    tokenRepository.updateAccessToken(tokenEntity.accessToken)
-                    tokenRepository.updateRefreshToken(tokenEntity.refreshToken)
+                    tokenRepository.updateTokens(tokenEntity)
                 } catch (e: Throwable) {
                     return Result.failure(e)
                 }

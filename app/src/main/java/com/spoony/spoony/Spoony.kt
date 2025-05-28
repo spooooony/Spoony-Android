@@ -6,9 +6,6 @@ import com.kakao.sdk.common.KakaoSdk
 import com.spoony.spoony.domain.repository.TokenRepository
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltAndroidApp
@@ -22,10 +19,6 @@ class Spoony : Application() {
         initTimber()
         setDayMode()
         initKakaoSdk()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            tokenRepository.initCachedAccessToken()
-        }
     }
 
     private fun initTimber() {
