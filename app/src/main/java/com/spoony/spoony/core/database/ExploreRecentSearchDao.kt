@@ -41,10 +41,7 @@ interface ExploreRecentSearchDao {
 
     @Transaction
     suspend fun insertKeywordWithLimit(type: ExploreRecentSearchType, keyword: String) {
-        val trimmedText = keyword.trim()
-        if (trimmedText.isBlank()) return
-
-        insertExploreRecentSearch(ExploreRecentSearchEntity(keyword = trimmedText, type = type))
+        insertExploreRecentSearch(ExploreRecentSearchEntity(keyword = keyword, type = type))
 
         if (getCountExploreRecentSearch(type) > MAX_RECENT_SEARCHES) {
             deleteOldestSearchByType(type)
