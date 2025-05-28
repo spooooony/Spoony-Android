@@ -28,7 +28,7 @@ class TokenRepositoryImpl @Inject constructor(
     }
 
     override suspend fun initCachedAccessToken() {
-        cachedAccessToken = tokenDataSource.getRefreshToken().firstOrNull().orEmpty()
+        cachedAccessToken = tokenDataSource.getAccessToken().firstOrNull().orEmpty()
     }
 
     override fun updateCachedAccessToken(token: String) {

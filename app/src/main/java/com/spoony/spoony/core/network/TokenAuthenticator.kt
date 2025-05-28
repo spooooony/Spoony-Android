@@ -26,9 +26,7 @@ class TokenAuthenticator @Inject constructor(
                 return@runBlocking null
             }
 
-            tokenRepository.updateCachedAccessToken(newToken.accessToken)
-            tokenRepository.updateAccessToken(newToken.accessToken)
-            tokenRepository.updateRefreshToken(newToken.refreshToken)
+            tokenRepository.updateTokens(newToken)
 
             response.request.newBuilder()
                 .removeHeader(AUTHORIZATION)
