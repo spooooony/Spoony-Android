@@ -2,10 +2,13 @@ package com.spoony.spoony.data.datasourceimpl
 
 import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.datasource.UserRemoteDataSource
+import com.spoony.spoony.data.dto.request.ProfileUpdateRequestDto
 import com.spoony.spoony.data.dto.request.TargetUserRequestDto
 import com.spoony.spoony.data.dto.response.BasicUserInfoResponseDto
 import com.spoony.spoony.data.dto.response.FollowListResponseDto
 import com.spoony.spoony.data.dto.response.GetRegionListDto
+import com.spoony.spoony.data.dto.response.ProfileImageResponseDto
+import com.spoony.spoony.data.dto.response.ProfileInfoResponseDto
 import com.spoony.spoony.data.service.UserService
 import javax.inject.Inject
 
@@ -55,4 +58,13 @@ class UserRemoteDataSourceImpl @Inject constructor(
         userService.unblockUser(
             TargetUserRequestDto(targetUserId = userId)
         )
+
+    override suspend fun getMyProfileInfo(): BaseResponse<ProfileInfoResponseDto> =
+        userService.getMyProfileInfo()
+
+    override suspend fun getMyProfileImage(): BaseResponse<ProfileImageResponseDto> =
+        userService.getMyProfileImages()
+
+    override suspend fun updateMyProfileInfo(profileUpdate: ProfileUpdateRequestDto): BaseResponse<Unit> =
+        userService.updateMyProfileInfo(profileUpdate)
 }

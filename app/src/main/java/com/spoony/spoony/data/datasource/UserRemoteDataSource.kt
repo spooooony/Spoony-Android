@@ -1,9 +1,12 @@
 package com.spoony.spoony.data.datasource
 
 import com.spoony.spoony.core.network.BaseResponse
+import com.spoony.spoony.data.dto.request.ProfileUpdateRequestDto
 import com.spoony.spoony.data.dto.response.BasicUserInfoResponseDto
 import com.spoony.spoony.data.dto.response.FollowListResponseDto
 import com.spoony.spoony.data.dto.response.GetRegionListDto
+import com.spoony.spoony.data.dto.response.ProfileImageResponseDto
+import com.spoony.spoony.data.dto.response.ProfileInfoResponseDto
 
 interface UserRemoteDataSource {
     suspend fun getMyInfo(): BaseResponse<BasicUserInfoResponseDto>
@@ -29,4 +32,10 @@ interface UserRemoteDataSource {
     suspend fun blockUser(userId: Int): BaseResponse<Unit>
 
     suspend fun unblockUser(userId: Int): BaseResponse<Unit>
+
+    suspend fun getMyProfileInfo(): BaseResponse<ProfileInfoResponseDto>
+
+    suspend fun getMyProfileImage(): BaseResponse<ProfileImageResponseDto>
+
+    suspend fun updateMyProfileInfo(profileUpdate: ProfileUpdateRequestDto): BaseResponse<Unit>
 }

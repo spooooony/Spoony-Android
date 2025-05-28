@@ -112,7 +112,7 @@ fun UserPageScreen(
                 userType = state.userType,
                 region = state.region,
                 nickname = state.userName,
-                introduction = state.introduction,
+                introduction = state.introduction ?: "안녕! 나는 어떤 스푼이나면...",
                 onButtonClick = {
                     if (state.isBlocked) {
                         isUserBlockDialogVisible = true
