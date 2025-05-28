@@ -22,7 +22,16 @@ class AccountViewModel @Inject constructor(
     val restartTrigger = MutableSharedFlow<Unit>()
 
     fun signOut() {
-        // Implement sign out logic here
+        viewModelScope.launch {
+            authRepository.signOut(
+                token = accessToken
+            ).onSuccess {
+                tokenRepository.clearTokens()
+                restartTrigger.emit(Unit)
+            }.onLogFailure {
+                // TODO: 언젠가 에러처리 하기
+            }
+        }
     }
 
     fun deleteAccount() {

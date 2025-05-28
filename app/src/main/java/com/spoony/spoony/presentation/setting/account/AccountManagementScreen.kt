@@ -10,14 +10,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jakewharton.processphoenix.ProcessPhoenix
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -28,8 +35,18 @@ import com.spoony.spoony.presentation.setting.SettingRoutes
 @Composable
 internal fun AccountManagementScreen(
     navigateUp: () -> Unit,
-    navigateToDeleteAccount: (SettingRoutes) -> Unit
+    navigateToDeleteAccount: (SettingRoutes) -> Unit,
+    viewModel: AccountViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(viewModel.restartTrigger, lifecycleOwner) {
+        viewModel.restartTrigger.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            ProcessPhoenix.triggerRebirth(context)
+        }
+    }
+
     var isShowDialog by remember { mutableStateOf(false) }
 
     if (isShowDialog) {
@@ -38,7 +55,9 @@ internal fun AccountManagementScreen(
             negativeText = "아니요",
             onClickNegative = { isShowDialog = false },
             positiveText = "네",
-            onClickPositive = { isShowDialog = false },
+            onClickPositive = {
+                viewModel.signOut()
+            },
             onDismiss = { isShowDialog = false }
         )
     }
