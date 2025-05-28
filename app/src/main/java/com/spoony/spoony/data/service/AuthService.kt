@@ -25,12 +25,12 @@ interface AuthService {
 
     @POST("/api/v1/auth/logout")
     suspend fun signOut(
-        @Header("Authorization") authorization: String,
+        @Header("Authorization") authorization: String
     ): BaseResponse<Unit>
 
     @POST("/api/v1/auth/withdraw")
     suspend fun withDraw(
-        @Header("Authorization") authorization: String,
+        @Header("Authorization") authorization: String
     ): BaseResponse<Unit>
 
     @POST("api/v1/auth/refresh")

@@ -6,18 +6,18 @@ import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenRepository: TokenRepository
-): ViewModel() {
+) : ViewModel() {
     val accessToken: String
-        get() =  tokenRepository.getCachedAccessToken()
+        get() = tokenRepository.getCachedAccessToken()
 
     val restartTrigger = MutableSharedFlow<Unit>()
 

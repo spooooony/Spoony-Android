@@ -36,7 +36,7 @@ import com.spoony.spoony.presentation.setting.SettingRoutes
 internal fun AccountManagementScreen(
     navigateUp: () -> Unit,
     navigateToDeleteAccount: (SettingRoutes) -> Unit,
-    viewModel: AccountViewModel = hiltViewModel(),
+    viewModel: AccountViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current

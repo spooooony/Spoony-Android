@@ -21,14 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
@@ -39,13 +37,12 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.constants.BULLET_POINT
-import com.spoony.spoony.presentation.report.ReportSideEffect
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun AccountDeleteScreen(
     navigateUp: () -> Unit,
-    viewModel: AccountViewModel = hiltViewModel(),
+    viewModel: AccountViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -134,7 +131,7 @@ private fun BulletText(
     style: TextStyle,
     color: Color,
     modifier: Modifier = Modifier,
-    textAlign: TextAlign = TextAlign.Start,
+    textAlign: TextAlign = TextAlign.Start
 ) = Text(
     text = "$BULLET_POINT $text",
     style = style,
