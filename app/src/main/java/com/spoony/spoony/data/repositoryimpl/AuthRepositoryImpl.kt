@@ -32,6 +32,10 @@ class AuthRepositoryImpl @Inject constructor(
             ).data!!.jwtTokenDto!!.toDomain()
         }
 
+    override suspend fun signOut(token: String): Result<Unit> = runCatching {
+        authRemoteDataSource.signOut(token).data ?: Unit
+    }
+
     override suspend fun withDraw(token: String): Result<Unit> = runCatching {
         authRemoteDataSource.withDraw(token).data ?: Unit
     }

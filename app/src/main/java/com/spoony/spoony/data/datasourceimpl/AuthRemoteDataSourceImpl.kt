@@ -41,6 +41,9 @@ class AuthRemoteDataSourceImpl @Inject constructor(
             )
         )
 
+    override suspend fun signOut(token: String): BaseResponse<Unit> =
+        authService.signOut("$BEARER $token")
+
     override suspend fun withDraw(token: String): BaseResponse<Unit> = authService.withDraw("$BEARER $token")
 
     override suspend fun refreshToken(token: String): BaseResponse<TokenResponseDto> =
