@@ -17,5 +17,7 @@ interface AuthRepository {
         introduction: String?
     ): Result<TokenEntity>
 
+    suspend fun withDraw(token: String): Result<Unit>
+
     suspend fun refreshToken(token: String): Result<TokenEntity>
 }
