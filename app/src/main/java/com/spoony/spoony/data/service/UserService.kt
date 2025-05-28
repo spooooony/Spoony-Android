@@ -1,14 +1,16 @@
 package com.spoony.spoony.data.service
 
 import com.spoony.spoony.core.network.BaseResponse
-import com.spoony.spoony.data.dto.request.FollowRequestDto
+import com.spoony.spoony.data.dto.request.TargetUserRequestDto
 import com.spoony.spoony.data.dto.response.BasicUserInfoResponseDto
 import com.spoony.spoony.data.dto.response.FollowListResponseDto
+import com.spoony.spoony.data.dto.response.GetRegionListDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface UserService {
     @GET("/api/v1/user")
@@ -19,14 +21,22 @@ interface UserService {
         @Path("targetUserId") targetUserId: Int
     ): BaseResponse<BasicUserInfoResponseDto>
 
+    @GET("/api/v1/user/region")
+    suspend fun getRegionList(): BaseResponse<GetRegionListDto>
+
+    @GET("/api/v1/user/exists")
+    suspend fun checkUserNameExist(
+        @Query("userName") userName: String
+    ): BaseResponse<Boolean>
+
     @POST("/api/v1/user/follow")
     suspend fun followUser(
-        @Body followRequestDto: FollowRequestDto
+        @Body targetUserRequestDto: TargetUserRequestDto
     ): BaseResponse<Unit>
 
     @HTTP(method = "DELETE", path = "/api/v1/user/follow", hasBody = true)
     suspend fun unfollowUser(
-        @Body followRequestDto: FollowRequestDto
+        @Body targetUserRequestDto: TargetUserRequestDto
     ): BaseResponse<Unit>
 
     @GET("/api/v1/user/followings")
@@ -44,4 +54,14 @@ interface UserService {
     suspend fun getOtherFollowers(
         @Path("targetUserId") targetUserId: Int
     ): BaseResponse<FollowListResponseDto>
+
+    @POST("/api/v1/user/block")
+    suspend fun blockUser(
+        @Body targetUserRequestDto: TargetUserRequestDto
+    ): BaseResponse<Unit>
+
+    @HTTP(method = "DELETE", path = "/api/v1/user/block", hasBody = true)
+    suspend fun unblockUser(
+        @Body targetUserRequestDto: TargetUserRequestDto
+    ): BaseResponse<Unit>
 }

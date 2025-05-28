@@ -2,6 +2,8 @@ package com.spoony.spoony.presentation.auth.onboarding
 
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.model.RegionModel
+import com.spoony.spoony.core.state.UiState
+import kotlinx.collections.immutable.ImmutableList
 
 enum class OnboardingSteps() {
     END,
@@ -16,8 +18,10 @@ enum class OnboardingSteps() {
 data class OnboardingState(
     val nickname: String = "",
     val nicknameState: NicknameTextFieldState = NicknameTextFieldState.DEFAULT,
-    val birth: String = "",
-    val region: RegionModel = RegionModel(-1, "마포구"),
-    val introduction: String = "",
-    val currentStep: OnboardingSteps = OnboardingSteps.ONE
+    val birth: String? = null,
+    val region: RegionModel? = null,
+    val introduction: String? = null,
+    val currentStep: OnboardingSteps = OnboardingSteps.ONE,
+    val regionList: UiState<ImmutableList<RegionModel>> = UiState.Loading,
+    val signUpState: UiState<Unit> = UiState.Loading
 )

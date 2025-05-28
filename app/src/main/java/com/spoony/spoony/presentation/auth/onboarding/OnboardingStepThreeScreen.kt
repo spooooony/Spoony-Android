@@ -8,17 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.addFocusCleaner
 import com.spoony.spoony.presentation.auth.onboarding.component.OnBoardingButton
 import com.spoony.spoony.presentation.auth.onboarding.component.OnboardingContent
 
 @Composable
 fun OnboardingStepThreeRoute(
-    viewModel: OnboardingViewModel,
-    onNextButtonClick: () -> Unit
+    viewModel: OnboardingViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -29,26 +30,29 @@ fun OnboardingStepThreeRoute(
     OnboardingStepThreeScreen(
         introduction = state.introduction,
         onValueChanged = viewModel::updateIntroduction,
-        onButtonClick = onNextButtonClick
+        onButtonClick = viewModel::signUp
     )
 }
 
 @Composable
 private fun OnboardingStepThreeScreen(
-    introduction: String,
+    introduction: String?,
     onValueChanged: (String) -> Unit,
     onButtonClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .background(SpoonyAndroidTheme.colors.white)
             .padding(horizontal = 20.dp)
             .padding(top = 32.dp, bottom = 20.dp)
+            .addFocusCleaner(focusManager)
     ) {
         OnboardingContent("간단한 자기소개를 입력해 주세요") {
             SpoonyLargeTextField(
-                value = introduction,
+                value = introduction.orEmpty(),
                 placeholder = "안녕! 나는 어떤 스푼이냐면...",
                 onValueChanged = onValueChanged,
                 minLength = 1,
@@ -60,7 +64,7 @@ private fun OnboardingStepThreeScreen(
 
         OnBoardingButton(
             onClick = onButtonClick,
-            enabled = introduction.trim().isNotBlank()
+            enabled = introduction?.trim()?.isNotBlank() ?: false
         )
     }
 }

@@ -2,12 +2,14 @@ package com.spoony.spoony.core.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.spoony.spoony.BuildConfig.BASE_URL
+import com.spoony.spoony.core.network.qualifier.Auth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
+import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -74,18 +76,46 @@ object RetrofitModule {
 
     @Provides
     @Singleton
+    fun provideTokenAuthenticator(authenticator: TokenAuthenticator): Authenticator = authenticator
+
+    @Provides
+    @Singleton
     fun provideClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        authInterceptor: AuthInterceptor
+        authInterceptor: Interceptor,
+        tokenAuthenticator: TokenAuthenticator
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
+        .authenticator(tokenAuthenticator)
+        .build()
+
+    @Provides
+    @Singleton
+    @Auth
+    fun provideAuthClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ) = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
         .build()
 
     @Provides
     @Singleton
     fun provideRetrofit(
         client: OkHttpClient,
+        factory: Converter.Factory
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(factory)
+            .build()
+
+    @Provides
+    @Singleton
+    @Auth
+    fun provideAuthRetrofit(
+        @Auth client: OkHttpClient,
         factory: Converter.Factory
     ): Retrofit =
         Retrofit.Builder()
