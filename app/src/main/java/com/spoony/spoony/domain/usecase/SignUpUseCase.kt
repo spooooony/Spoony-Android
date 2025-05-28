@@ -24,19 +24,8 @@ class SignUpUseCase @Inject constructor(
             birth = birth,
             regionId = regionId,
             introduction = introduction
-        ).fold(
-            onSuccess = { tokenEntity ->
-                try {
-                    tokenRepository.updateTokens(tokenEntity)
-                } catch (e: Throwable) {
-                    return Result.failure(e)
-                }
-
-                return Result.success(Unit)
-            },
-            onFailure = { e ->
-                Result.failure(e)
-            }
-        )
+        ).mapCatching { tokenEntity ->
+            tokenRepository.updateTokens(tokenEntity)
+        }
     }
 }

@@ -16,24 +16,14 @@ class SignInUseCase @Inject constructor(
         return authRepository.signIn(
             token = token,
             platform = platform
-        ).fold(
-            onSuccess = { tokenEntity ->
-                try {
-                    if (tokenEntity != null) {
-                        tokenRepository.updateTokens(tokenEntity)
-                        return Result.success(tokenEntity)
-                    }
-
-                    tokenRepository.updateCachedAccessToken(token)
-                } catch (e: Throwable) {
-                    return Result.failure(e)
-                }
-
-                return Result.success(null)
-            },
-            onFailure = { e ->
-                Result.failure(e)
+        ).mapCatching { tokenEntity ->
+            if (tokenEntity != null) {
+                tokenRepository.updateTokens(tokenEntity)
+                return Result.success(tokenEntity)
             }
-        )
+
+            tokenRepository.updateCachedAccessToken(token)
+            return Result.success(null)
+        }
     }
 }
