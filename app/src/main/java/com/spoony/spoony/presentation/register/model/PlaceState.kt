@@ -10,7 +10,17 @@ data class PlaceState(
     val placeRoadAddress: String,
     val latitude: Double,
     val longitude: Double
-)
+) {
+    companion object {
+        fun empty(): PlaceState = PlaceState(
+            placeName = "",
+            placeAddress = "",
+            placeRoadAddress = "",
+            latitude = 0.0,
+            longitude = 0.0
+        )
+    }
+}
 
 fun PlaceEntity.toModel(): PlaceState =
     PlaceState(

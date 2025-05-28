@@ -58,19 +58,20 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun loadState() {
-        if (registerType == RegisterType.EDIT && postId != null) {
-            viewModelScope.launch {
-                repository.getPostDetail(postId)
-                    .onSuccess { postDetail ->
-                        val postModel = postDetail.toModel()
-                        _state.update { currentState ->
-                            postModel.toRegisterState(currentState)
-                        }
+        if (registerType != RegisterType.EDIT || postId == null) {
+            return
+        }
+
+        viewModelScope.launch {
+            repository.getPostDetail(postId)
+                .onSuccess { postDetail ->
+                    _state.update {
+                        postDetail.toModel().toRegisterState(it)
                     }
-                    .onLogFailure {
-                        _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
-                    }
-            }
+                }
+                .onLogFailure {
+                    _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                }
         }
     }
 
@@ -140,7 +141,7 @@ class RegisterViewModel @Inject constructor(
     fun clearSelectedPlace() {
         _state.update {
             it.copy(
-                selectedPlace = PlaceState("", "", "", 0.0, 0.0),
+                selectedPlace = PlaceState.empty(),
                 searchQuery = ""
             )
         }
@@ -151,13 +152,12 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun updateMenu(index: Int, value: String) {
-        _state.update { currentState ->
-            val currentMenuList = currentState.menuList
-            if (index >= currentMenuList.size) return@update currentState
+        _state.update {
+            if (index >= it.menuList.size) return@update it
 
-            currentState.copy(
+            it.copy(
                 menuList = buildList {
-                    addAll(currentState.menuList)
+                    addAll(it.menuList)
                     set(index, value)
                 }.toImmutableList()
             )
@@ -165,27 +165,27 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun addMenu() {
-        _state.update { currentState ->
-            if (currentState.menuList.size >= MAX_MENU_COUNT) {
-                return@update currentState
+        _state.update {
+            if (it.menuList.size >= MAX_MENU_COUNT) {
+                return@update it
             }
-            currentState.copy(
-                menuList = (currentState.menuList + "").toImmutableList()
+            it.copy(
+                menuList = (it.menuList + "").toImmutableList()
             )
         }
     }
 
     fun removeMenu(index: Int) {
-        _state.update { currentState ->
-            if (currentState.menuList.size <= MIN_MENU_COUNT) {
-                currentState.copy(
+        _state.update {
+            if (it.menuList.size <= MIN_MENU_COUNT) {
+                it.copy(
                     menuList = persistentListOf("")
                 )
             } else {
-                currentState.copy(
+                it.copy(
                     menuList = buildList {
-                        addAll(currentState.menuList.take(index))
-                        addAll(currentState.menuList.drop(index + 1))
+                        addAll(it.menuList.take(index))
+                        addAll(it.menuList.drop(index + 1))
                     }.toImmutableList()
                 )
             }
@@ -233,13 +233,12 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun calculateDeleteImageUrls(): List<String> {
-        val currentState = _state.value
-        val currentImageUrls = currentState.selectedPhotos
-            .map { it.uri.toString() }
-            .filter { it.startsWith("http") }
+        return with(_state.value) {
+            val serverUris = selectedPhotos
+                .filter { it.isFromServer }
+                .map { it.uri.toString() }
 
-        return currentState.originalPhotoUrls.filter { originalUrl ->
-            originalUrl !in currentImageUrls
+            originalPhotoUrls.filter { it !in serverUris }
         }
     }
 
@@ -249,8 +248,7 @@ class RegisterViewModel @Inject constructor(
 
             when (registerType) {
                 RegisterType.CREATE -> {
-                    val registerPostEntity = state.value.toRegisterPostEntity()
-                    repository.registerPost(registerPostEntity)
+                    repository.registerPost(_state.value.toRegisterPostEntity())
                         .onSuccess {
                             _state.update { it.copy(isLoading = false) }
                             resetState()
@@ -262,9 +260,7 @@ class RegisterViewModel @Inject constructor(
                 }
                 RegisterType.EDIT -> {
                     if (postId != null) {
-                        val deleteImageUrls = calculateDeleteImageUrls()
-                        val updatePostEntity = state.value.toUpdatePostEntity(postId, deleteImageUrls)
-                        repository.updatePost(updatePostEntity)
+                        repository.updatePost(_state.value.toUpdatePostEntity(postId, calculateDeleteImageUrls()))
                             .onSuccess {
                                 _state.update { it.copy(isLoading = false) }
                                 resetState()
@@ -281,9 +277,9 @@ class RegisterViewModel @Inject constructor(
 
     fun resetState() {
         viewModelScope.launch {
-            _state.update { currentState ->
+            _state.update {
                 RegisterState(
-                    categories = currentState.categories,
+                    categories = it.categories,
                     showRegisterSnackBar = false
                 )
             }

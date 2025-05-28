@@ -19,10 +19,10 @@ import com.spoony.spoony.core.designsystem.theme.main400
 
 @Composable
 fun LocalReviewFilterCheckBox(
-    enabled: Boolean = true,
     isSelected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     val checkBoxIcon = if (isSelected) R.drawable.ic_checkbox_main400 else R.drawable.ic_checkbox_gray400
 

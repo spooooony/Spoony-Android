@@ -55,6 +55,6 @@ fun PlaceReviewModel.toRegisterState(currentState: RegisterState): RegisterState
         userSatisfactionValue = value.toFloat(),
         originalPhotoUrls = photoUrls,
         selectedPhotos = photoUrls.map { url ->
-            SelectedPhoto(uri = url.toUri())
+            SelectedPhoto(uri = url.toUri(), isFromServer = true)
         }.toImmutableList()
     )

@@ -32,7 +32,7 @@ fun BasicUserInfoEntity.toModel(): UserProfile = UserProfile(
     imageUrl = this.profileImageUrl,
     nickname = this.userName,
     region = this.regionName ?: "",
-    introduction = this.introduction,
+    introduction = this.introduction ?: "",
     reviewCount = this.reviewCount,
     followerCount = this.followerCount,
     followingCount = this.followingCount,
@@ -63,7 +63,7 @@ fun UserFeedEntity.toModel(): ReviewData = ReviewData(
         backgroundColor = Color.hexToColor(this.categoryInfo.backgroundColor.toValidHexColor())
     ),
     username = this.userName,
-    userRegion = this.userRegion,
+    userRegion = this.userRegion ?: "",
     date = this.createdAt,
     addMapCount = this.zzimCount,
     imageList = this.photoUrlList.toImmutableList()

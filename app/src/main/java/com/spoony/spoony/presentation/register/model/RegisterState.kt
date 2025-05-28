@@ -14,7 +14,7 @@ data class RegisterState(
     val menuList: ImmutableList<String> = persistentListOf(""),
 
     val oneLineReview: String = "",
-    val userSatisfactionValue: Float = 50f,
+    val userSatisfactionValue: Float = DEFAULT,
     val detailReview: String = "",
     val optionalReview: String = "",
     val selectedPhotos: ImmutableList<SelectedPhoto> = persistentListOf(),
@@ -26,4 +26,8 @@ data class RegisterState(
     val error: String? = null,
 
     val showRegisterSnackBar: Boolean = true
-)
+) {
+    companion object {
+        const val DEFAULT = 50f
+    }
+}

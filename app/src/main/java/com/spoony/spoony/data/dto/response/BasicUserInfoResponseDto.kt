@@ -16,7 +16,7 @@ data class BasicUserInfoResponseDto(
     @SerialName("regionName")
     val regionName: String?,
     @SerialName("introduction")
-    val introduction: String,
+    val introduction: String?,
     @SerialName("createdAt")
     val createdAt: String,
     @SerialName("updatedAt")

@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.userpage.mypage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.ErrorType
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.ReviewRepository
 import com.spoony.spoony.domain.repository.SpoonRepository
@@ -53,7 +54,7 @@ class MyPageViewModel @Inject constructor(
                     }
                     getMyReview()
                 }
-                .onFailure {
+                .onLogFailure {
                     _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
@@ -67,7 +68,7 @@ class MyPageViewModel @Inject constructor(
                         currentState.copy(spoonCount = spoonCount)
                     }
                 }
-                .onFailure {
+                .onLogFailure {
                     _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
@@ -81,7 +82,7 @@ class MyPageViewModel @Inject constructor(
                         currentState.copy(reviews = reviewEntity.toModel())
                     }
                 }
-                .onFailure {
+                .onLogFailure {
                     _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
@@ -94,7 +95,7 @@ class MyPageViewModel @Inject constructor(
                     getUserProfile()
                     _sideEffect.emit(MyPageSideEffect.ShowSnackbar("삭제 되었어요!"))
                 }
-                .onFailure {
+                .onLogFailure {
                     _sideEffect.emit(MyPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }

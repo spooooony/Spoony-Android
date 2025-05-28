@@ -6,7 +6,7 @@ data class BasicUserInfoEntity(
     val platformId: String,
     val userName: String,
     val regionName: String?,
-    val introduction: String,
+    val introduction: String?,
     val createdAt: String,
     val updatedAt: String,
     val followerCount: Int,

@@ -56,11 +56,12 @@ const val MIN_PHOTO_COUNT = 2
 
 data class SelectedPhoto(
     val uri: Uri,
-    val id: String = UUID.randomUUID().toString()
+    val id: String = UUID.randomUUID().toString(),
+    val isFromServer: Boolean = false
 )
 
 val SelectedPhoto.isNewPhoto: Boolean
-    get() = !uri.toString().startsWith("http")
+    get() = !isFromServer
 
 @Composable
 fun PhotoPicker(
