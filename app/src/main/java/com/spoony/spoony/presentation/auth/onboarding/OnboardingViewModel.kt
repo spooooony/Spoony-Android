@@ -7,9 +7,12 @@ import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
+import com.spoony.spoony.core.util.extension.toHyphenDate
+import com.spoony.spoony.domain.repository.SpoonLocalRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,7 +27,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val spoonLocalRepository: SpoonLocalRepository
 ) : ViewModel() {
     private val _state: MutableStateFlow<OnboardingState> = MutableStateFlow(OnboardingState())
     val state: StateFlow<OnboardingState>
@@ -117,6 +121,8 @@ class OnboardingViewModel @Inject constructor(
                     _state.update {
                         it.copy(signUpState = UiState.Empty)
                     }
+                    val date = LocalDate.now().toHyphenDate()
+                    spoonLocalRepository.updateLastEntryDate(date)
                 }.onLogFailure {
                     _state.update {
                         it.copy(signUpState = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description))
