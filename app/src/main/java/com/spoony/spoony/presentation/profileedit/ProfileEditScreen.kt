@@ -47,6 +47,7 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
+import com.spoony.spoony.core.util.extension.toBirthDate
 import com.spoony.spoony.presentation.profileedit.component.ImageHelperBottomSheet
 import com.spoony.spoony.presentation.profileedit.component.ProfileImageList
 
@@ -91,8 +92,8 @@ fun ProfileEditScreen(
             .pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
-                    if (state.nickname.trim().isNotEmpty()) {
-                        viewModel::checkNicknameDuplication
+                    if (state.nickname.isNotBlank()) {
+                        viewModel.checkNicknameDuplication()
                     }
                 }
             }
@@ -149,7 +150,7 @@ fun ProfileEditScreen(
 
         SubSection(text = "간단한 자기소개를 입력해 주세요") {
             SpoonyLargeTextField(
-                value = state.introduction,
+                value = state.introduction ?: "",
                 onValueChanged = viewModel::updateIntroduction,
                 placeholder = "안녕! 나는 어떤 스푼이냐면...",
                 maxLength = 50,
@@ -166,9 +167,9 @@ fun ProfileEditScreen(
             BirthSelectButton(
                 onClick = { isDateBottomSheetVisible = true },
                 modifier = Modifier,
-                year = state.selectedYear,
-                month = state.selectedMonth,
-                day = state.selectedDay,
+                year = state.selectedYear ?: "2000",
+                month = state.selectedMonth ?: "01",
+                day = state.selectedDay ?: "01",
                 isBirthSelected = state.isBirthSelected
             )
         }
@@ -178,7 +179,7 @@ fun ProfileEditScreen(
         SubSection(text = "주로 활동하는 지역을 설정해 주세요") {
             RegionSelectButton(
                 onClick = { isLocationBottomSheetVisible = true },
-                region = state.selectedRegion,
+                region = state.selectedRegion ?: "서울 마포구",
                 isSelected = state.isRegionSelected
             )
         }
@@ -205,14 +206,14 @@ fun ProfileEditScreen(
         SpoonyDatePickerBottomSheet(
             onDismiss = { isDateBottomSheetVisible = false },
             onDateSelected = { date ->
-                val parts = date.split("-")
-                if (parts.size == 3) {
-                    viewModel.selectDate(parts[0], parts[1], parts[2])
+                val birthDate = date.toBirthDate()
+                if (birthDate != null) {
+                    viewModel.selectDate(birthDate.year, birthDate.month, birthDate.day)
                 }
             },
-            initialYear = state.selectedYear.toIntOrNull() ?: 2000,
-            initialMonth = state.selectedMonth.toIntOrNull() ?: 1,
-            initialDay = state.selectedDay.toIntOrNull() ?: 1
+            initialYear = state.selectedYear?.toIntOrNull() ?: 2000,
+            initialMonth = state.selectedMonth?.toIntOrNull() ?: 1,
+            initialDay = state.selectedDay?.toIntOrNull() ?: 1
         )
     }
 

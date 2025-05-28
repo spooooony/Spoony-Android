@@ -19,7 +19,7 @@ data class UserProfile(
     val imageUrl: String = "",
     val nickname: String = "",
     val region: String = "",
-    val introduction: String = "",
+    val introduction: String? = "",
     val reviewCount: Int = 0,
     val followerCount: Int = 0,
     val followingCount: Int = 0,
@@ -32,7 +32,7 @@ fun BasicUserInfoEntity.toModel(): UserProfile = UserProfile(
     imageUrl = this.profileImageUrl,
     nickname = this.userName,
     region = this.regionName ?: "",
-    introduction = if (this.introduction.isNullOrBlank()) "안녕! 나는 어떤 스푼이냐면..." else this.introduction,
+    introduction = this.introduction,
     reviewCount = this.reviewCount,
     followerCount = this.followerCount,
     followingCount = this.followingCount,
@@ -63,7 +63,7 @@ fun UserFeedEntity.toModel(): ReviewData = ReviewData(
         backgroundColor = Color.hexToColor(this.categoryInfo.backgroundColor.toValidHexColor())
     ),
     username = this.userName,
-    userRegion = this.userRegion,
+    userRegion = this.userRegion ?: "",
     date = this.createdAt,
     addMapCount = this.zzimCount,
     imageList = this.photoUrlList.toImmutableList()
@@ -73,7 +73,7 @@ data class UserPageState(
     val userType: UserType,
     val profile: UserProfile,
     val spoonCount: Int = 0,
-    val isLocalReviewOnly: Boolean = true,
+    val isLocalReviewOnly: Boolean = false,
     val reviews: ImmutableList<ReviewData> = persistentListOf()
 ) {
     val profileId get() = profile.profileId

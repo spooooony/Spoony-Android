@@ -9,7 +9,6 @@ import com.spoony.spoony.domain.entity.ProfileImageEntity
 import com.spoony.spoony.domain.entity.ProfileInfoEntity
 import com.spoony.spoony.domain.entity.ProfileUpdateEntity
 import com.spoony.spoony.domain.entity.RegionEntity
-import com.spoony.spoony.domain.entity.RegionEntity
 import com.spoony.spoony.domain.repository.UserRepository
 import javax.inject.Inject
 

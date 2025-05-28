@@ -8,11 +8,11 @@ data class ProfileUpdateRequestDto(
     @SerialName("userName")
     val userName: String,
     @SerialName("regionId")
-    val regionId: Int,
+    val regionId: Int?,
     @SerialName("introduction")
-    val introduction: String,
+    val introduction: String?,
     @SerialName("birth")
-    val birth: String,
+    val birth: String?,
     @SerialName("imageLevel")
     val imageLevel: Int
 )

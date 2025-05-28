@@ -7,7 +7,6 @@ import com.spoony.spoony.domain.entity.ProfileInfoEntity
 import com.spoony.spoony.domain.entity.ProfileUpdateEntity
 import com.spoony.spoony.domain.entity.RegionEntity
 
-
 interface UserRepository {
     suspend fun getMyInfo(): Result<BasicUserInfoEntity>
 

@@ -6,12 +6,14 @@ import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextField
 import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
+import com.spoony.spoony.core.util.extension.toBirthDate
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.profileedit.model.toEntity
 import com.spoony.spoony.presentation.profileedit.model.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -35,12 +37,18 @@ class ProfileEditViewModel @Inject constructor(
         get() = _sideEffect.asSharedFlow()
 
     init {
-        getProfileImageInfo()
-        getMyProfileInfo()
-        getRegionList()
+        viewModelScope.launch {
+            val profileImageDeferred = async { getProfileImageInfo() }
+            val profileInfoDeferred = async { getMyProfileInfo() }
+            val regionListDeferred = async { getRegionList() }
+
+            profileImageDeferred.await()
+            profileInfoDeferred.await()
+            regionListDeferred.await()
+        }
     }
 
-    fun getProfileImageInfo() {
+    private fun getProfileImageInfo() {
         viewModelScope.launch {
             userRepository.getMyProfileImage()
                 .onSuccess { profileImageEntity ->
@@ -53,13 +61,13 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
-    fun getMyProfileInfo() {
+    private fun getMyProfileInfo() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             userRepository.getMyProfileInfo()
                 .onSuccess { profileInfo ->
                     val editModel = profileInfo.toModel()
-                    val (year, month, day) = parseBirthDate(editModel.birth)
+                    val birthDate = editModel.birth?.toBirthDate()
 
                     _state.update { currentState ->
                         currentState.copy(
@@ -68,16 +76,17 @@ class ProfileEditViewModel @Inject constructor(
                             nickname = editModel.userName,
                             introduction = editModel.introduction,
                             selectedImageLevel = editModel.imageLevel,
-                            selectedYear = year,
-                            selectedMonth = month,
-                            selectedDay = day,
-                            isBirthSelected = editModel.birth.isNotEmpty(),
+                            selectedYear = birthDate?.year,
+                            selectedMonth = birthDate?.month,
+                            selectedDay = birthDate?.day,
+                            isBirthSelected = birthDate != null,
                             selectedRegion = editModel.regionName,
-                            isRegionSelected = editModel.regionName.isNotEmpty()
+                            selectedRegionId = editModel.regionId,
+                            isRegionSelected = editModel.regionName != null
                         )
                     }
 
-                    if (_state.value.regionList.isNotEmpty()) {
+                    if (_state.value.regionList.isNotEmpty() && editModel.regionId != null) {
                         matchRegionIdForInitialRegion(_state.value.regionList)
                     }
                 }
@@ -88,7 +97,7 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
-    fun getRegionList() {
+    private fun getRegionList() {
         viewModelScope.launch {
             userRepository.getRegionList()
                 .onSuccess { regionEntities ->
@@ -100,7 +109,7 @@ class ProfileEditViewModel @Inject constructor(
                     }.toImmutableList()
                     _state.update { it.copy(regionList = regionModels) }
 
-                    if (_state.value.selectedRegion.isNotEmpty()) {
+                    if (_state.value.selectedRegion?.isNotEmpty() == true && _state.value.selectedRegionId != null) {
                         matchRegionIdForInitialRegion(regionModels)
                     }
                 }
@@ -114,7 +123,7 @@ class ProfileEditViewModel @Inject constructor(
         _state.update { it.copy(saveButtonEnabled = false) }
         val regionName = _state.value.selectedRegion
 
-        if (regionName.isBlank()) return
+        if (regionName.isNullOrBlank()) return
 
         val districtName = regionName.replace("서울 ", "")
 
@@ -150,9 +159,9 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     fun checkNicknameDuplication() {
-        val currentNickname = _state.value.nickname.trim()
+        val currentNickname = _state.value.nickname
 
-        if (currentNickname.isEmpty()) {
+        if (currentNickname.isBlank()) {
             _state.update { it.copy(nicknameState = NicknameTextFieldState.NICKNAME_REQUIRED) }
             return
         }
@@ -174,10 +183,7 @@ class ProfileEditViewModel @Inject constructor(
                         }
                     } else {
                         _state.update {
-                            it.copy(
-                                nicknameState = NicknameTextFieldState.AVAILABLE,
-                                saveButtonEnabled = currentNickname.isNotBlank()
-                            )
+                            it.copy(nicknameState = NicknameTextFieldState.AVAILABLE)
                         }
                     }
                     updateSaveButtonState()
@@ -189,7 +195,7 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     fun updateIntroduction(introduction: String) {
-        _state.update { it.copy(introduction = introduction) }
+        _state.update { it.copy(introduction = introduction.takeIf { it.isNotBlank() }) }
     }
 
     fun selectImageLevel(level: Int) {
@@ -230,13 +236,17 @@ class ProfileEditViewModel @Inject constructor(
         _state.update { it.copy(saveButtonEnabled = false) }
         viewModelScope.launch {
             val currentState = _state.value
-            val birthDate = "${currentState.selectedYear}-${currentState.selectedMonth.padStart(2, '0')}-${currentState.selectedDay.padStart(2, '0')}"
+            val birthDate = if (currentState.isBirthSelected && currentState.selectedYear != null && currentState.selectedMonth != null && currentState.selectedDay != null) {
+                "${currentState.selectedYear}-${currentState.selectedMonth.padStart(2, '0')}-${currentState.selectedDay.padStart(2, '0')}"
+            } else {
+                null
+            }
 
             val editModel = currentState.profileInfo?.copy(
                 userName = currentState.nickname,
                 introduction = currentState.introduction,
                 birth = birthDate,
-                regionId = currentState.selectedRegionId,
+                regionId = if (currentState.isRegionSelected) currentState.selectedRegionId else null,
                 imageLevel = currentState.selectedImageLevel
             ) ?: return@launch
 
@@ -255,24 +265,11 @@ class ProfileEditViewModel @Inject constructor(
     private fun updateSaveButtonState() {
         val isNicknameValid = when (_state.value.nicknameState) {
             NicknameTextFieldState.DEFAULT -> true
-            NicknameTextFieldState.AVAILABLE -> _state.value.nickname.trim().isNotBlank()
+            NicknameTextFieldState.AVAILABLE -> true
             NicknameTextFieldState.DUPLICATE -> false
             else -> false
         }
         _state.update { it.copy(saveButtonEnabled = isNicknameValid) }
-    }
-
-    private fun parseBirthDate(birth: String): Triple<String, String, String> {
-        return if (birth.isNotEmpty()) {
-            val parts = birth.split("-")
-            if (parts.size == 3) {
-                Triple(parts[0], parts[1], parts[2])
-            } else {
-                Triple("2000", "01", "01")
-            }
-        } else {
-            Triple("2000", "01", "01")
-        }
     }
 }
 
