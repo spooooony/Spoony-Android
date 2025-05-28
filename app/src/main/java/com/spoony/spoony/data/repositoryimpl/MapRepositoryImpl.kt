@@ -22,9 +22,9 @@ class MapRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getAddedPlaceList(): Result<AddedPlaceListEntity> =
+    override suspend fun getAddedPlaceList(categoryId: Int): Result<AddedPlaceListEntity> =
         runCatching {
-            postRemoteDataSource.getAddedMap().data!!.toDomain()
+            postRemoteDataSource.getAddedMap(categoryId).data!!.toDomain()
         }
 
     override suspend fun getAddedPlaceListByLocation(locationId: Int): Result<List<AddedPlaceEntity>> =

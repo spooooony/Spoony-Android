@@ -16,6 +16,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface PostService {
     @GET("/api/v1/post/{postId}")
@@ -44,7 +45,9 @@ interface PostService {
     ): BaseResponse<Boolean>
 
     @GET("/api/v1/post/zzim")
-    suspend fun getAddedMap(): BaseResponse<AddedMapListResponseDto>
+    suspend fun getAddedMap(
+        @Query("categoryId") categoryId: Int
+    ): BaseResponse<AddedMapListResponseDto>
 
     @GET("/api/v1/post/zzim/{postId}")
     suspend fun getAddedMapPost(

@@ -32,8 +32,10 @@ class PostRemoteDataSourceImpl @Inject constructor(
             postId = postId
         )
 
-    override suspend fun getAddedMap(): BaseResponse<AddedMapListResponseDto> =
-        postService.getAddedMap()
+    override suspend fun getAddedMap(
+        categoryId: Int
+    ): BaseResponse<AddedMapListResponseDto> =
+        postService.getAddedMap(categoryId)
 
     override suspend fun postAddMapData(postId: Int): BaseResponse<Boolean> =
         postService.postAddMapPost(

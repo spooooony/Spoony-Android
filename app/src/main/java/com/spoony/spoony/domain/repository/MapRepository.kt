@@ -7,7 +7,7 @@ import com.spoony.spoony.domain.entity.LocationEntity
 interface MapRepository {
     suspend fun searchLocation(query: String): Result<List<LocationEntity>>
     suspend fun getAddedPlaceListByLocation(locationId: Int): Result<List<AddedPlaceEntity>>
-    suspend fun getAddedPlaceList(): Result<AddedPlaceListEntity>
+    suspend fun getAddedPlaceList(categoryId: Int): Result<AddedPlaceListEntity>
     suspend fun getRecentSearches(): Result<List<String>>
     suspend fun deleteSearchByText(searchText: String): Result<Unit>
     suspend fun deleteAllSearches(): Result<Unit>
