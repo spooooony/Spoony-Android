@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.core.util.extension.toHyphenDate
@@ -19,8 +20,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -38,6 +42,10 @@ class MapViewModel @Inject constructor(
     private var _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
     val state: StateFlow<MapState>
         get() = _state.asStateFlow()
+
+    private val _sideEffect: MutableSharedFlow<MapSideEffect> = MutableSharedFlow<MapSideEffect>()
+    val sideEffect: SharedFlow<MapSideEffect>
+        get() = _sideEffect.asSharedFlow()
 
     private var _showSpoonDraw: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showSpoonDraw get() = _showSpoonDraw.asStateFlow()
@@ -146,7 +154,9 @@ class MapViewModel @Inject constructor(
                     localDate = localDate
                 )
             }
-        }.onLogFailure { }
+        }.onLogFailure {
+            _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
+        }
         return SpoonDrawModel()
     }
 

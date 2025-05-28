@@ -81,11 +81,11 @@ class AttendanceViewModel @Inject constructor(
                     Timber.e(exception)
                     _state.update {
                         it.copy(
-                            spoonDrawList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                            spoonDrawList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                         )
                     }
                     _sideEffect.emit(
-                        AttendanceSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        AttendanceSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description)
                     )
                 }
         }
@@ -123,7 +123,7 @@ class AttendanceViewModel @Inject constructor(
             Timber.e(e)
             viewModelScope.launch {
                 _sideEffect.emit(
-                    AttendanceSideEffect.ShowSnackBar("예기치 않는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                    AttendanceSideEffect.ShowSnackBar(ErrorType.UNEXPECTED_ERROR.description)
                 )
             }
             return ""
