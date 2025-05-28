@@ -69,9 +69,8 @@ fun AttendanceRoute(
     val showSnackBar = LocalSnackBarTrigger.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showSpoonDraw by viewModel.showSpoonDraw.collectAsStateWithLifecycle()
     val systemUiController = rememberSystemUiController()
-
-    var spoonDrawDialogVisibility by remember { mutableStateOf(true) }
 
     DisposableEffect(Unit) {
         systemUiController.setNavigationBarColor(
@@ -96,7 +95,7 @@ fun AttendanceRoute(
             }
     }
 
-    LaunchedEffect(spoonDrawDialogVisibility) {
+    LaunchedEffect(showSpoonDraw) {
         viewModel.getWeeklySpoonDraw()
     }
 
@@ -109,11 +108,11 @@ fun AttendanceRoute(
         onBackButtonClick = navigateUp
     )
 
-    if (spoonDrawDialogVisibility) {
+    if (showSpoonDraw) {
         SpoonDrawDialog(
-            onDismiss = { spoonDrawDialogVisibility = false },
+            onDismiss = { viewModel.updateShowSpoonDraw(false) },
             onSpoonDrawButtonClick = viewModel::drawSpoon,
-            onConfirmButtonClick = { spoonDrawDialogVisibility = false }
+            onConfirmButtonClick = viewModel::checkSpoonDrawn
         )
     }
 }
