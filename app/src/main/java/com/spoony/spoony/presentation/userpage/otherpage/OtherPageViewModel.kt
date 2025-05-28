@@ -58,7 +58,7 @@ class OtherPageViewModel @Inject constructor(
                     getOtherUserReviews()
                 }
                 .onLogFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -85,7 +85,7 @@ class OtherPageViewModel @Inject constructor(
             getCurrentState = { _state.value.profile.isFollowing },
             onError = {
                 viewModelScope.launch {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                 }
             },
             coroutineScope = viewModelScope
@@ -114,7 +114,7 @@ class OtherPageViewModel @Inject constructor(
                             _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("해당 유저가 차단 해제되었어요."))
                         }
                         .onLogFailure {
-                            _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                            _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                         }
                 }
 
@@ -131,7 +131,7 @@ class OtherPageViewModel @Inject constructor(
                             _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("해당 유저가 차단되었어요."))
                         }
                         .onLogFailure {
-                            _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                            _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                         }
                 }
             }
@@ -147,7 +147,7 @@ class OtherPageViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -160,5 +160,5 @@ class OtherPageViewModel @Inject constructor(
 
 sealed class OtherPageSideEffect {
     data class ShowSnackbar(val message: String) : OtherPageSideEffect()
-    data class ShowError(val errorType: ErrorType) : OtherPageSideEffect()
+    data class ShowErrorSnackbar(val errorType: ErrorType) : OtherPageSideEffect()
 }
