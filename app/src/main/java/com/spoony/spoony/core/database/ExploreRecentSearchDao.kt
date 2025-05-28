@@ -26,10 +26,6 @@ interface ExploreRecentSearchDao {
     @Query("SELECT COUNT(*) FROM explore_recent_search WHERE type = :type")
     suspend fun getCountExploreRecentSearch(type: ExploreRecentSearchType): Int
 
-    // 특정 검색어 존재 여부 확인
-    @Query("SELECT EXISTS(SELECT 1 FROM explore_recent_search WHERE keyword = :searchText AND type = :type)")
-    suspend fun isExistsExploreRecentSearch(type: ExploreRecentSearchType, searchText: String): Boolean
-
     @Query(
         """
         DELETE FROM explore_recent_search
@@ -47,10 +43,6 @@ interface ExploreRecentSearchDao {
     suspend fun insertKeywordWithLimit(type: ExploreRecentSearchType, keyword: String) {
         val trimmedText = keyword.trim()
         if (trimmedText.isBlank()) return
-
-        if (isExistsExploreRecentSearch(type, trimmedText)) {
-            deleteExploreRecentSearch(type, trimmedText)
-        }
 
         insertExploreRecentSearch(ExploreRecentSearchEntity(keyword = trimmedText, type = type))
 
