@@ -7,7 +7,12 @@ import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.core.util.extension.toBirthDate
-import com.spoony.spoony.domain.repository.UserRepository
+import com.spoony.spoony.domain.usecase.CheckNicknameDuplicationUseCase
+import com.spoony.spoony.domain.usecase.GetMyProfileImageUseCase
+import com.spoony.spoony.domain.usecase.GetMyProfileInfoUseCase
+import com.spoony.spoony.domain.usecase.GetRegionListUseCase
+import com.spoony.spoony.domain.usecase.MatchRegionIdUseCase
+import com.spoony.spoony.domain.usecase.UpdateProfileInfoUseCase
 import com.spoony.spoony.presentation.profileedit.model.toEntity
 import com.spoony.spoony.presentation.profileedit.model.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +30,12 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val getMyProfileImageUseCase: GetMyProfileImageUseCase,
+    private val getMyProfileInfoUseCase: GetMyProfileInfoUseCase,
+    private val getRegionListUseCase: GetRegionListUseCase,
+    private val checkNicknameDuplicationUseCase: CheckNicknameDuplicationUseCase,
+    private val matchRegionIdUseCase: MatchRegionIdUseCase,
+    private val updateProfileInfoUseCase: UpdateProfileInfoUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileEditState())
@@ -37,104 +47,67 @@ class ProfileEditViewModel @Inject constructor(
         get() = _sideEffect.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            val profileImageDeferred = async { getProfileImageInfo() }
-            val profileInfoDeferred = async { getMyProfileInfo() }
-            val regionListDeferred = async { getRegionList() }
-
-            profileImageDeferred.await()
-            profileInfoDeferred.await()
-            regionListDeferred.await()
-        }
+        loadProfileEditData()
     }
 
-    private fun getProfileImageInfo() {
-        viewModelScope.launch {
-            userRepository.getMyProfileImage()
-                .onSuccess { profileImageEntity ->
-                    val profileImageModels = profileImageEntity.toModel(_state.value.selectedImageLevel)
-                    _state.update { it.copy(profileImages = profileImageModels) }
-                }
-                .onLogFailure {
-                    _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
-                }
-        }
-    }
-
-    private fun getMyProfileInfo() {
+    private fun loadProfileEditData() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            userRepository.getMyProfileInfo()
-                .onSuccess { profileInfo ->
-                    val editModel = profileInfo.toModel()
-                    val birthDate = editModel.birth?.toBirthDate()
+            val profileImageDeferred = async { getMyProfileImageUseCase() }
+            val profileInfoDeferred = async { getMyProfileInfoUseCase() }
+            val regionListDeferred = async { getRegionListUseCase() }
 
-                    _state.update { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            profileInfo = editModel,
-                            nickname = editModel.userName,
-                            introduction = editModel.introduction,
-                            selectedImageLevel = editModel.imageLevel,
-                            selectedYear = birthDate?.year,
-                            selectedMonth = birthDate?.month,
-                            selectedDay = birthDate?.day,
-                            isBirthSelected = birthDate != null,
-                            selectedRegion = editModel.regionName,
-                            selectedRegionId = editModel.regionId,
-                            isRegionSelected = editModel.regionName != null
-                        )
-                    }
+            val profileImageResult = profileImageDeferred.await()
+            val profileInfoResult = profileInfoDeferred.await()
+            val regionListResult = regionListDeferred.await()
 
-                    if (_state.value.regionList.isNotEmpty() && editModel.regionId != null) {
-                        matchRegionIdForInitialRegion(_state.value.regionList)
-                    }
-                }
-                .onLogFailure {
-                    _state.update { it.copy(isLoading = false) }
-                    _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
-                }
-        }
-    }
+            val failedResult = listOf(profileImageResult, profileInfoResult, regionListResult)
+                .firstOrNull { it.isFailure }
+            
+            if (failedResult != null) {
+                _state.update { it.copy(isLoading = false) }
+                _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                return@launch
+            }
 
-    private fun getRegionList() {
-        viewModelScope.launch {
-            userRepository.getRegionList()
-                .onSuccess { regionEntities ->
-                    val regionModels = regionEntities.map { entity ->
-                        RegionModel(
-                            regionId = entity.regionId,
-                            regionName = entity.regionName
-                        )
-                    }.toImmutableList()
-                    _state.update { it.copy(regionList = regionModels) }
+            val profileImage = profileImageResult.getOrThrow()
+            val profileInfo = profileInfoResult.getOrThrow()
+            val regionList = regionListResult.getOrThrow()
 
-                    if (_state.value.selectedRegion?.isNotEmpty() == true && _state.value.selectedRegionId != null) {
-                        matchRegionIdForInitialRegion(regionModels)
-                    }
-                }
-                .onLogFailure {
-                    _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
-                }
-        }
-    }
-
-    private fun matchRegionIdForInitialRegion(regionList: List<RegionModel>) {
-        _state.update { it.copy(saveButtonEnabled = false) }
-        val regionName = _state.value.selectedRegion
-
-        if (regionName.isNullOrBlank()) return
-
-        val districtName = regionName.replace("서울 ", "")
-
-        val matchingRegion = regionList.find { it.regionName == districtName }
-
-        if (matchingRegion != null) {
-            _state.update { state ->
-                state.copy(
-                    selectedRegionId = matchingRegion.regionId,
-                    saveButtonEnabled = true
+            val profileImageModels = profileImage.toModel(_state.value.selectedImageLevel)
+            val editModel = profileInfo.toModel()
+            val birthDate = editModel.birth?.toBirthDate()
+            val regionModels = regionList.map { entity ->
+                RegionModel(
+                    regionId = entity.regionId,
+                    regionName = entity.regionName
                 )
+            }.toImmutableList()
+
+            _state.update { currentState ->
+                currentState.copy(
+                    isLoading = false,
+                    profileInfo = editModel,
+                    profileImages = profileImageModels,
+                    regionList = regionModels,
+                    nickname = editModel.userName,
+                    introduction = editModel.introduction,
+                    selectedImageLevel = editModel.imageLevel,
+                    selectedYear = birthDate?.year,
+                    selectedMonth = birthDate?.month,
+                    selectedDay = birthDate?.day,
+                    isBirthSelected = birthDate != null,
+                    selectedRegion = editModel.regionName,
+                    selectedRegionId = editModel.regionId,
+                    isRegionSelected = editModel.regionName != null
+                )
+            }
+
+            if (editModel.regionName != null) {
+                val matchedRegionId = matchRegionIdUseCase(editModel.regionName, regionModels)
+                if (matchedRegionId != null) {
+                    _state.update { it.copy(selectedRegionId = matchedRegionId) }
+                }
             }
         }
     }
@@ -166,13 +139,11 @@ class ProfileEditViewModel @Inject constructor(
             return
         }
 
-        if (currentNickname == _state.value.profileInfo?.userName) {
-            _state.update { it.copy(nicknameState = NicknameTextFieldState.AVAILABLE) }
-            return
-        }
-
         viewModelScope.launch {
-            userRepository.checkUserNameExist(currentNickname)
+            checkNicknameDuplicationUseCase(
+                nickname = currentNickname,
+                originalNickname = _state.value.profileInfo?.userName
+            )
                 .onSuccess { isDuplicated ->
                     if (isDuplicated) {
                         _state.update {
@@ -236,11 +207,12 @@ class ProfileEditViewModel @Inject constructor(
         _state.update { it.copy(saveButtonEnabled = false) }
         viewModelScope.launch {
             val currentState = _state.value
-            val birthDate = if (currentState.isBirthSelected && currentState.selectedYear != null && currentState.selectedMonth != null && currentState.selectedDay != null) {
+            val birthDate = if (currentState.isBirthSelected && 
+                               currentState.selectedYear != null && 
+                               currentState.selectedMonth != null && 
+                               currentState.selectedDay != null) {
                 "${currentState.selectedYear}-${currentState.selectedMonth.padStart(2, '0')}-${currentState.selectedDay.padStart(2, '0')}"
-            } else {
-                null
-            }
+            } else null
 
             val editModel = currentState.profileInfo?.copy(
                 userName = currentState.nickname,
@@ -250,7 +222,7 @@ class ProfileEditViewModel @Inject constructor(
                 imageLevel = currentState.selectedImageLevel
             ) ?: return@launch
 
-            userRepository.updateMyProfileInfo(editModel.toEntity())
+            updateProfileInfoUseCase(editModel.toEntity())
                 .onSuccess {
                     _sideEffect.emit(ProfileEditSideEffect.ShowSnackBar("프로필이 저장되었습니다."))
                     _sideEffect.emit(ProfileEditSideEffect.NavigateBack)
