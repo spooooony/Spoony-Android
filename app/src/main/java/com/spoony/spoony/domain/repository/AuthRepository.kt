@@ -1,7 +1,21 @@
 package com.spoony.spoony.domain.repository
 
-import com.spoony.spoony.domain.entity.UserEntity
+import com.spoony.spoony.domain.entity.TokenEntity
 
 interface AuthRepository {
-    suspend fun getUserInfo(): Result<UserEntity>
+    suspend fun signIn(
+        token: String,
+        platform: String
+    ): Result<TokenEntity?>
+
+    suspend fun signUp(
+        token: String,
+        platform: String,
+        userName: String,
+        birth: String?,
+        regionId: Int?,
+        introduction: String?
+    ): Result<TokenEntity>
+
+    suspend fun refreshToken(token: String): Result<TokenEntity>
 }

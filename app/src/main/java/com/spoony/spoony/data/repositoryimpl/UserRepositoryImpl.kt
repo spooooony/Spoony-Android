@@ -9,6 +9,7 @@ import com.spoony.spoony.domain.entity.ProfileImageEntity
 import com.spoony.spoony.domain.entity.ProfileInfoEntity
 import com.spoony.spoony.domain.entity.ProfileUpdateEntity
 import com.spoony.spoony.domain.entity.RegionEntity
+import com.spoony.spoony.domain.entity.RegionEntity
 import com.spoony.spoony.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -63,6 +64,16 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getOtherFollowers(targetUserId: Int): Result<FollowListEntity> =
         runCatching {
             userRemoteDataSource.getOtherFollowers(targetUserId).data!!.toDomain()
+        }
+
+    override suspend fun blockUser(userId: Int): Result<Unit> =
+        runCatching {
+            userRemoteDataSource.blockUser(userId)
+        }
+
+    override suspend fun unblockUser(userId: Int): Result<Unit> =
+        runCatching {
+            userRemoteDataSource.unblockUser(userId)
         }
 
     override suspend fun getMyProfileInfo(): Result<ProfileInfoEntity> =

@@ -61,7 +61,14 @@ fun UserPageScreen(
         modifier = modifier
             .fillMaxSize()
             .background(white)
-            .padding(paddingValues)
+            .then(
+                if (state.userType == UserType.OTHER_PAGE) {
+                    modifier.padding(bottom = paddingValues.calculateBottomPadding())
+                } else {
+                    modifier.padding(paddingValues)
+                }
+            )
+
     ) {
         item {
             when (state.userType) {
@@ -73,6 +80,7 @@ fun UserPageScreen(
                 )
 
                 UserType.OTHER_PAGE -> BackAndMenuTopAppBar(
+                    isMenuIconVisible = !state.isBlocked,
                     menuItemList = topBarMenuItemList,
                     onBackButtonClick = events.onBackButtonClick,
                     onMenuButtonClick = { menuItem ->
@@ -90,9 +98,9 @@ fun UserPageScreen(
 
             ProfileHeaderSection(
                 imageUrl = state.userImageUrl,
-                reviewCount = state.reviewCount,
-                followerCount = state.followerCount,
-                followingCount = state.followingCount,
+                reviewCount = if (state.isBlocked) 0 else state.reviewCount,
+                followerCount = if (state.isBlocked) 0 else state.followerCount,
+                followingCount = if (state.isBlocked) 0 else state.followingCount,
                 onFollowerClick = { events.onFollowClick(FollowType.FOLLOWER, state.profileId) },
                 onFollowingClick = { events.onFollowClick(FollowType.FOLLOWING, state.profileId) },
                 modifier = Modifier.padding(horizontal = 20.dp)
@@ -105,7 +113,13 @@ fun UserPageScreen(
                 region = state.region,
                 nickname = state.userName,
                 introduction = state.introduction,
-                onButtonClick = events.onMainButtonClick,
+                onButtonClick = {
+                    if (state.isBlocked) {
+                        isUserBlockDialogVisible = true
+                    } else {
+                        events.onMainButtonClick()
+                    }
+                },
                 isFollowing = state.isFollowing,
                 isBlocked = state.isBlocked,
                 modifier = Modifier.padding(horizontal = 20.dp)
@@ -127,10 +141,11 @@ fun UserPageScreen(
                     .padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ReviewCounter(reviewCount = state.reviewCount)
+                ReviewCounter(reviewCount = state.reviews.size)
 
                 if (state.userType == UserType.OTHER_PAGE) {
                     LocalReviewFilterCheckBox(
+                        enabled = !state.isBlocked,
                         isSelected = state.isCheckBoxSelected,
                         onClick = events.onCheckBoxClick
                     )
@@ -141,7 +156,7 @@ fun UserPageScreen(
 
             if (isUserBlockDialogVisible) {
                 TwoButtonDialog(
-                    message = "${state.userName} 님을\n차단하시겠습니까?",
+                    message = if (state.isBlocked) "${state.userName} 님을\n차단 해제하시겠습니까?" else "${state.userName} 님을\n차단하시겠습니까?",
                     negativeText = "아니요",
                     positiveText = "네",
                     onClickNegative = { isUserBlockDialogVisible = false },
@@ -185,7 +200,7 @@ fun UserPageScreen(
                 }
             }
         } else {
-            when (state.reviewCount) {
+            when (state.reviews.size) {
                 0 -> item {
                     Spacer(modifier = Modifier.height(54.dp))
                     when (state.userType) {
@@ -196,7 +211,12 @@ fun UserPageScreen(
                             buttonStyle = ButtonStyle.Primary
                         )
 
-                        UserType.OTHER_PAGE -> EmptyContent("아직 등록된 로컬리뷰가 없어요")
+                        UserType.OTHER_PAGE -> EmptyContent(
+                            text = when (state.isLocalReviewOnly) {
+                                true -> "아직 등록된 로컬리뷰가 없어요"
+                                false -> "아직 등록된 리뷰가 없어요"
+                            }
+                        )
                     }
                 }
 

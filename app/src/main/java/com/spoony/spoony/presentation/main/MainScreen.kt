@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.presentation.attendance.navigation.attendanceNavGraph
@@ -33,6 +34,7 @@ import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGrap
 import com.spoony.spoony.presentation.main.component.MainBottomBar
 import com.spoony.spoony.presentation.placeDetail.navigation.placeDetailNavGraph
 import com.spoony.spoony.presentation.profileedit.navigation.profileEditGraph
+import com.spoony.spoony.presentation.register.navigation.Register
 import com.spoony.spoony.presentation.register.navigation.registerNavGraph
 import com.spoony.spoony.presentation.report.navigation.reportNavGraph
 import com.spoony.spoony.presentation.setting.navigation.settingPageNavGraph
@@ -170,7 +172,17 @@ fun MainScreen(
                 registerNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToExplore = navigator::navigateToExplore
+                    navigateToExplore = navigator::navigateToExplore,
+                    navigateToPostDetail = {
+                        navigator.navigateToPlaceDetail(
+                            postId = it,
+                            navOptions = navOptions {
+                                popUpTo<Register> {
+                                    inclusive = true
+                                }
+                            }
+                        )
+                    }
                 )
 
                 myPageNavGraph(

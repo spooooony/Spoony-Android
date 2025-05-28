@@ -44,14 +44,11 @@ android {
             properties.getProperty("dev.base.url")
         )
 
-        buildConfigField(
-            "String",
-            "USER_TOKEN",
-            properties.getProperty("user.token")
-        )
+        manifestPlaceholders["naverClientId"] = properties["naverClientId"] as String
+        buildConfigField("String", "NAVER_CLIENT_ID", properties["naver.client.id"] as String)
 
-        manifestPlaceholders["naverClientId"] = properties.getProperty("naverClientId")
-        buildConfigField("String", "NAVER_CLIENT_ID", properties.getProperty("naver.client.id"))
+        manifestPlaceholders["nativeAppKey"] = properties["nativeAppKey"] as String
+        buildConfigField("String", "NATIVE_APP_KEY", properties["native.app.key"] as String)
     }
 
     buildTypes {
@@ -114,6 +111,9 @@ dependencies {
 
     // Naver Map
     implementation(libs.bundles.naverMap)
+
+    // Kakao
+    implementation(libs.kakao.user)
 
     // Room
     implementation(libs.bundles.room)

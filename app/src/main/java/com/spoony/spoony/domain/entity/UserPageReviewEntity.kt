@@ -7,7 +7,7 @@ data class UserPageReviewEntity(
 data class UserFeedEntity(
     val userId: Int,
     val userName: String,
-    val userRegion: String,
+    val userRegion: String?,
     val postId: Int,
     val description: String,
     val categoryInfo: CategoryEntity,

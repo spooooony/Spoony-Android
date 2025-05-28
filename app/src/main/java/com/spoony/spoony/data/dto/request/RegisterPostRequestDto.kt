@@ -5,10 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RegisterPostRequestDto(
-    @SerialName("title")
-    val title: String,
     @SerialName("description")
     val description: String,
+    @SerialName("value")
+    val value: Float,
+    @SerialName("cons")
+    val cons: String?,
     @SerialName("placeName")
     val placeName: String,
     @SerialName("placeAddress")
