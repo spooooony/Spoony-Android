@@ -2,6 +2,9 @@ package com.spoony.spoony.domain.repository
 
 import com.spoony.spoony.domain.entity.BasicUserInfoEntity
 import com.spoony.spoony.domain.entity.FollowListEntity
+import com.spoony.spoony.domain.entity.ProfileImageEntity
+import com.spoony.spoony.domain.entity.ProfileInfoEntity
+import com.spoony.spoony.domain.entity.ProfileUpdateEntity
 import com.spoony.spoony.domain.entity.RegionEntity
 
 interface UserRepository {
@@ -24,4 +27,14 @@ interface UserRepository {
     suspend fun getOtherFollowings(targetUserId: Int): Result<FollowListEntity>
 
     suspend fun getOtherFollowers(targetUserId: Int): Result<FollowListEntity>
+
+    suspend fun blockUser(userId: Int): Result<Unit>
+
+    suspend fun unblockUser(userId: Int): Result<Unit>
+
+    suspend fun getMyProfileInfo(): Result<ProfileInfoEntity>
+
+    suspend fun getMyProfileImage(): Result<ProfileImageEntity>
+
+    suspend fun updateMyProfileInfo(profileUpdate: ProfileUpdateEntity): Result<Unit>
 }

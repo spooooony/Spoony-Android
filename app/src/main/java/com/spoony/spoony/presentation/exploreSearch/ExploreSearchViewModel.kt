@@ -2,14 +2,14 @@ package com.spoony.spoony.presentation.exploreSearch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.presentation.exploreSearch.model.toModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class ExploreSearchViewModel @Inject constructor(
@@ -35,6 +34,31 @@ class ExploreSearchViewModel @Inject constructor(
         get() = _sideEffect.asSharedFlow()
 
     private var searchJob: Job? = null
+
+    init {
+        getFetchRecentSearchQueries()
+    }
+
+    private fun getFetchRecentSearchQueries() {
+        viewModelScope.launch {
+            listOf(
+                ExploreRecentSearchType.REVIEW to { list: List<String> ->
+                    _state.update {
+                        it.copy(recentReviewSearchQueryList = list.toPersistentList())
+                    }
+                },
+                ExploreRecentSearchType.USER to { list: List<String> ->
+                    _state.update {
+                        it.copy(recentUserSearchQueryList = list.toPersistentList())
+                    }
+                }
+            ).forEach { (type, updateAction) ->
+                exploreRepository.getExploreRecentSearches(type)
+                    .onSuccess { response -> updateAction(response) }
+                    .onLogFailure {}
+            }
+        }
+    }
 
     fun switchSearchType(
         searchType: SearchType
@@ -58,17 +82,6 @@ class ExploreSearchViewModel @Inject constructor(
             )
         }
     }
-    private fun makeSearchHistoryList(
-        filteredKeyword: String,
-        rawList: List<String>,
-        newKeywordList: List<String> = listOf(),
-        maxSize: Int = 6
-    ): ImmutableList<String> {
-        return (newKeywordList + rawList.filterNot { it == filteredKeyword })
-            .take(maxSize)
-            .toPersistentList()
-    }
-
     fun search(keyword: String) {
         val keywordTrim = keyword.trim()
         if (keywordTrim.isBlank()) return
@@ -81,13 +94,13 @@ class ExploreSearchViewModel @Inject constructor(
                             userInfoList = UiState.Loading
                         )
                     }
-                    val updatedList = makeSearchHistoryList(keywordTrim, _state.value.recentUserSearchQueryList, listOf(keywordTrim))
-                    exploreRepository.getUserListByKeyword(keywordTrim)
+                    exploreRepository.insertExploreRecentSearch(type = ExploreRecentSearchType.USER, searchText = keyword)
+                    getFetchRecentSearchQueries()
+                    exploreRepository.getUserListByKeyword(keyword)
                         .onSuccess { response ->
                             _state.update {
                                 it.copy(
-                                    searchKeyword = keywordTrim,
-                                    recentUserSearchQueryList = updatedList,
+                                    searchKeyword = keyword,
                                     userInfoList = if (response.isEmpty()) {
                                         UiState.Empty
                                     } else {
@@ -100,8 +113,7 @@ class ExploreSearchViewModel @Inject constructor(
                                 )
                             }
                         }
-                        .onFailure { exception ->
-                            Timber.e(exception)
+                        .onLogFailure {
                             _state.update {
                                 it.copy(
                                     userInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
@@ -119,13 +131,13 @@ class ExploreSearchViewModel @Inject constructor(
                             placeReviewInfoList = UiState.Loading
                         )
                     }
-                    val updatedList = makeSearchHistoryList(keywordTrim, _state.value.recentReviewSearchQueryList, listOf(keywordTrim))
-                    exploreRepository.getPlaceReviewByKeyword(keywordTrim)
+                    exploreRepository.insertExploreRecentSearch(type = ExploreRecentSearchType.REVIEW, searchText = keyword)
+                    getFetchRecentSearchQueries()
+                    exploreRepository.getPlaceReviewByKeyword(keyword)
                         .onSuccess { response ->
                             _state.update {
                                 it.copy(
-                                    searchKeyword = keywordTrim,
-                                    recentReviewSearchQueryList = updatedList,
+                                    searchKeyword = keyword,
                                     placeReviewInfoList = if (response.isEmpty()) {
                                         UiState.Empty
                                     } else {
@@ -138,8 +150,7 @@ class ExploreSearchViewModel @Inject constructor(
                                 )
                             }
                         }
-                        .onFailure { exception ->
-                            Timber.e(exception)
+                        .onLogFailure {
                             _state.update {
                                 it.copy(
                                     placeReviewInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
@@ -155,40 +166,31 @@ class ExploreSearchViewModel @Inject constructor(
     }
 
     fun removeRecentSearchItem(keyword: String) {
-        when (_state.value.searchType) {
-            SearchType.USER -> {
-                val updatedList = makeSearchHistoryList(keyword, _state.value.recentUserSearchQueryList)
-                _state.update {
-                    it.copy(
-                        recentUserSearchQueryList = updatedList
-                    )
+        viewModelScope.launch {
+            when (_state.value.searchType) {
+                SearchType.USER -> {
+                    exploreRepository.deleteExploreRecentSearch(type = ExploreRecentSearchType.USER, searchText = keyword)
+                    getFetchRecentSearchQueries()
                 }
-            }
-            SearchType.REVIEW -> {
-                val updatedList = makeSearchHistoryList(keyword, _state.value.recentReviewSearchQueryList)
-                _state.update {
-                    it.copy(
-                        recentReviewSearchQueryList = updatedList
-                    )
+
+                SearchType.REVIEW -> {
+                    exploreRepository.deleteExploreRecentSearch(type = ExploreRecentSearchType.REVIEW, searchText = keyword)
+                    getFetchRecentSearchQueries()
                 }
             }
         }
     }
 
     fun clearRecentSearchItem() {
-        when (_state.value.searchType) {
-            SearchType.USER -> {
-                _state.update {
-                    it.copy(
-                        recentUserSearchQueryList = persistentListOf()
-                    )
+        viewModelScope.launch {
+            when (_state.value.searchType) {
+                SearchType.USER -> {
+                    exploreRepository.clearExploreRecentSearch(type = ExploreRecentSearchType.USER)
+                    getFetchRecentSearchQueries()
                 }
-            }
-            SearchType.REVIEW -> {
-                _state.update {
-                    it.copy(
-                        recentReviewSearchQueryList = persistentListOf()
-                    )
+                SearchType.REVIEW -> {
+                    exploreRepository.clearExploreRecentSearch(type = ExploreRecentSearchType.REVIEW)
+                    getFetchRecentSearchQueries()
                 }
             }
         }

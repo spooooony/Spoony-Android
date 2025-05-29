@@ -20,7 +20,7 @@ import com.spoony.spoony.core.designsystem.theme.gray100
 import com.spoony.spoony.core.designsystem.theme.gray500
 import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
-import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.core.util.extension.hapticClick
 import com.spoony.spoony.core.util.extension.spoonyGradient
 
 private enum class FollowButtonState(
@@ -43,8 +43,8 @@ private enum class FollowButtonState(
     ),
     UNBLOCK(
         text = "차단 해제",
-        textColor = white,
-        backgroundColor = Color.Transparent,
+        textColor = gray500,
+        backgroundColor = gray0,
         useGradient = true
     )
 }
@@ -85,7 +85,7 @@ fun FollowButton(
                 Modifier
             }
         )
-        .noRippleClickable(onClick = onClick)
+        .hapticClick(onClick = onClick)
 
     Surface(
         shape = cornerShape,

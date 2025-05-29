@@ -13,5 +13,5 @@ fun UserEntity.toModel(): ExploreSearchUserModel = ExploreSearchUserModel(
     userId = this.userId,
     userName = this.userName,
     userProfileUrl = this.userProfileUrl,
-    userRegion = this.userRegion
+    userRegion = this.userRegion ?: ""
 )
