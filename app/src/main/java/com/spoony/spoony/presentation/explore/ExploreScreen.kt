@@ -475,8 +475,7 @@ private fun ExploreContent(
                 }
                 PullToRefreshContainer(
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .zIndex(1f),
+                        .align(Alignment.TopCenter),
                     state = refreshState,
                     containerColor = SpoonyAndroidTheme.colors.main500.copy(alpha = alpha),
                     contentColor = SpoonyAndroidTheme.colors.white.copy(alpha = alpha)
