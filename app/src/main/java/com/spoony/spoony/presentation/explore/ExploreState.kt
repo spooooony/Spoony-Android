@@ -28,9 +28,7 @@ data class ExploreState(
         categories = ExploreFilterDataProvider.getDefaultCategoryFilter(),
         regions = ExploreFilterDataProvider.getDefaultRegionFilter(),
         ages = ExploreFilterDataProvider.getDefaultAgeFilter()
-    ),
-    val cursor: Int = -1,
-    val size: Int = 5
+    )
 )
 
 data class ExploreFilterState(

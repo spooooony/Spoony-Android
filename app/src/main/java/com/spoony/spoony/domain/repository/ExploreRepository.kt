@@ -21,5 +21,5 @@ interface ExploreRepository {
         sortBy: String?,
         cursor: Int?,
         size: Int?
-    ): Result<Pair<List<PlaceReviewEntity>, Int>>
+    ): Result<Pair<List<PlaceReviewEntity>, Int?>>
 }

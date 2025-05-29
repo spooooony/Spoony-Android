@@ -45,6 +45,7 @@ class ExploreViewModel @Inject constructor(
     val sideEffect: SharedFlow<ExploreSideEffect>
         get() = _sideEffect.asSharedFlow()
 
+    private var currentCursor: Int? = null
     private var allSearchJob: Job? = null
     private var followingSearchJob: Job? = null
 
@@ -125,10 +126,10 @@ class ExploreViewModel @Inject constructor(
                     filterSelectionState = currentFilterState.copy(
                         properties = propertySelectedState.put(2, isLocalReviewSelected)
                     ),
-                    chipItems = updatedFilterOptions,
-                    cursor = -1
+                    chipItems = updatedFilterOptions
                 )
             }
+            currentCursor = null
             getPlaceReviewListFiltered()
         }
     }
@@ -217,10 +218,10 @@ class ExploreViewModel @Inject constructor(
                         regions = regionSelectedState,
                         ages = ageSelectedState
                     ),
-                    chipItems = updatedFilterOptions,
-                    cursor = -1
+                    chipItems = updatedFilterOptions
                 )
             }
+            currentCursor = null
             getPlaceReviewListFiltered()
         }
     }
@@ -245,10 +246,10 @@ class ExploreViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     selectedSortingOption = sortingOption,
-                    placeReviewList = UiState.Loading,
-                    cursor = -1
+                    placeReviewList = UiState.Loading
                 )
             }
+            currentCursor = null
             getPlaceReviewListFiltered()
         }
     }
@@ -282,24 +283,27 @@ class ExploreViewModel @Inject constructor(
                 regionIds = selectedRegionIds,
                 ageGroups = selectedAgeGroups,
                 sortBy = _state.value.selectedSortingOption.stringCode,
-                cursor = _state.value.cursor.takeIf { it != -1 },
-                size = _state.value.size
+                cursor = currentCursor,
+                size = EXPLORE_SEARCH_FETCH_SIZE
             )
                 .onSuccess { (reviews, nextCursor) ->
                     _state.update {
                         val placeReviewList = (it.placeReviewList as? UiState.Success)?.data ?: persistentListOf()
-                        if (it.cursor != -1 && nextCursor == -1) return@launch
+                        if (currentCursor != null && nextCursor == null) return@launch
                         val newItems = reviews.map { placeReview -> placeReview.toModel() }.toPersistentList()
                         val mergedList =
-                            if (it.cursor == -1) newItems
-                            else (placeReviewList + newItems).toPersistentList()
+                            if (currentCursor == null) {
+                                newItems
+                            } else {
+                                (placeReviewList + newItems).toPersistentList()
+                            }
+                        currentCursor = nextCursor
                         it.copy(
                             placeReviewList = if (mergedList.isEmpty()) {
                                 UiState.Empty
                             } else {
                                 UiState.Success(mergedList)
-                            },
-                            cursor = nextCursor
+                            }
                         )
                     }
                 }
@@ -347,11 +351,7 @@ class ExploreViewModel @Inject constructor(
 
     fun refreshExploreScreen() {
         viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    cursor = -1
-                )
-            }
+            currentCursor = null
             if (state.value.exploreType == ExploreType.ALL) {
                 getPlaceReviewListFiltered()
             } else {
@@ -366,10 +366,10 @@ class ExploreViewModel @Inject constructor(
                 it.copy(
                     exploreType = exploreType,
                     placeReviewList = UiState.Loading,
-                    cursor = -1,
                     selectedSortingOption = SortingOption.LATEST
                 )
             }
+            currentCursor = null
         }
         when (exploreType) {
             ExploreType.ALL -> {
@@ -410,5 +410,8 @@ class ExploreViewModel @Inject constructor(
                     )
                 }
         }
+    }
+    companion object {
+        private const val EXPLORE_SEARCH_FETCH_SIZE = 5
     }
 }

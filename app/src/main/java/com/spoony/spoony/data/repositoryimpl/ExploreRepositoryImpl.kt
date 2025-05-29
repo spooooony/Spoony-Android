@@ -26,7 +26,7 @@ class ExploreRepositoryImpl @Inject constructor(
         exploreRemoteDataSource.getPlaceReviewListFollowing().data!!.feedsResponseList.map { it.toDomain() }
     }
 
-    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: Int?, size: Int?): Result<Pair<List<PlaceReviewEntity>, Int>> = runCatching {
+    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: Int?, size: Int?): Result<Pair<List<PlaceReviewEntity>, Int?>> = runCatching {
         val data = exploreRemoteDataSource.getPlaceReviewListFiltered(
             categoryIds = categoryIds,
             regionIds = regionIds,
@@ -37,7 +37,7 @@ class ExploreRepositoryImpl @Inject constructor(
         ).data!!
 
         val reviewList = data.filteredFeedResponseDTOList.map { it.toDomain() }
-        val nextCursor = data.nextCursor ?: -1
+        val nextCursor = data.nextCursor
 
         reviewList to nextCursor
     }
