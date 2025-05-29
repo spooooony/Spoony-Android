@@ -3,16 +3,14 @@ package com.spoony.spoony.presentation.profileedit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
+import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
+import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.domain.usecase.CheckNicknameDuplicationUseCase
 import com.spoony.spoony.domain.usecase.FormatBirthDateUseCase
-import com.spoony.spoony.domain.usecase.GetMyProfileImageUseCase
-import com.spoony.spoony.domain.usecase.GetMyProfileInfoUseCase
-import com.spoony.spoony.domain.usecase.GetRegionListUseCase
-import com.spoony.spoony.domain.usecase.ProcessProfileEditDataUseCase
-import com.spoony.spoony.domain.usecase.UpdateProfileInfoUseCase
 import com.spoony.spoony.presentation.profileedit.model.toEntity
+import com.spoony.spoony.presentation.profileedit.model.toProfileEditModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -28,13 +26,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
-    private val getMyProfileImageUseCase: GetMyProfileImageUseCase,
-    private val getMyProfileInfoUseCase: GetMyProfileInfoUseCase,
-    private val getRegionListUseCase: GetRegionListUseCase,
-    private val processProfileEditDataUseCase: ProcessProfileEditDataUseCase,
+    private val userRepository: UserRepository,
     private val checkNicknameDuplicationUseCase: CheckNicknameDuplicationUseCase,
-    private val formatBirthDateUseCase: FormatBirthDateUseCase,
-    private val updateProfileInfoUseCase: UpdateProfileInfoUseCase
+    private val formatBirthDateUseCase: FormatBirthDateUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileEditState())
@@ -53,38 +47,47 @@ class ProfileEditViewModel @Inject constructor(
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             runCatching {
-                val profileImageDeferred = async { getMyProfileImageUseCase().getOrThrow() }
-                val profileInfoDeferred = async { getMyProfileInfoUseCase().getOrThrow() }
-                val regionListDeferred = async { getRegionListUseCase().getOrThrow() }
+                val profileImageDeferred = async { userRepository.getMyProfileImage().getOrThrow() }
+                val profileInfoDeferred = async { userRepository.getMyProfileInfo().getOrThrow() }
+                val regionListDeferred = async { userRepository.getRegionList().getOrThrow() }
 
-                val processedData = processProfileEditDataUseCase(
-                    profileImage = profileImageDeferred.await(),
-                    profileInfo = profileInfoDeferred.await(),
-                    regionList = regionListDeferred.await(),
+                val profileImageEntity = profileImageDeferred.await()
+                val profileInfoEntity = profileInfoDeferred.await()
+                val regionEntities = regionListDeferred.await()
+
+                val regionModels = regionEntities.map { entity ->
+                    RegionModel(
+                        regionId = entity.regionId,
+                        regionName = entity.regionName
+                    )
+                }
+
+                val profileEditModel = profileInfoEntity.toProfileEditModel(
+                    profileImageEntity = profileImageEntity,
+                    regionList = regionModels,
                     selectedImageLevel = _state.value.selectedImageLevel
                 )
 
                 _state.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        profileInfo = processedData.profileInfo,
-                        profileImages = processedData.profileImages,
-                        regionList = processedData.regionList,
-                        nickname = processedData.profileInfo.userName,
-                        introduction = processedData.profileInfo.introduction,
-                        selectedImageLevel = processedData.profileInfo.imageLevel,
-                        selectedYear = processedData.selectedYear,
-                        selectedMonth = processedData.selectedMonth,
-                        selectedDay = processedData.selectedDay,
-                        isBirthSelected = processedData.isBirthSelected,
-                        selectedRegion = processedData.profileInfo.regionName,
-                        selectedRegionId = processedData.profileInfo.regionId,
-                        isRegionSelected = processedData.isRegionSelected
+                        profileEditModel = profileEditModel,
+                        nickname = profileEditModel.userName,
+                        introduction = profileEditModel.introduction,
+                        selectedImageLevel = profileEditModel.imageLevel,
+                        selectedYear = profileEditModel.selectedYear,
+                        selectedMonth = profileEditModel.selectedMonth,
+                        selectedDay = profileEditModel.selectedDay,
+                        isBirthSelected = profileEditModel.isBirthSelected,
+                        selectedRegion = profileEditModel.regionName,
+                        selectedRegionId = profileEditModel.regionId,
+                        isRegionSelected = profileEditModel.isRegionSelected
                     )
                 }
             }.onFailure {
                 _state.update { it.copy(isLoading = false) }
                 _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                _sideEffect.emit(ProfileEditSideEffect.NavigateBack)
             }
         }
     }
@@ -110,13 +113,14 @@ class ProfileEditViewModel @Inject constructor(
 
     fun checkNicknameDuplication() {
         val currentNickname = _state.value.nickname
+        val originalNickname = _state.value.profileEditModel.userName
 
         if (currentNickname.isBlank()) {
             _state.update { it.copy(nicknameState = NicknameTextFieldState.NICKNAME_REQUIRED) }
             return
         }
 
-        if (currentNickname == _state.value.profileInfo?.userName) {
+        if (currentNickname == originalNickname) {
             _state.update { it.copy(nicknameState = NicknameTextFieldState.AVAILABLE) }
             updateSaveButtonState()
             return
@@ -125,7 +129,7 @@ class ProfileEditViewModel @Inject constructor(
         viewModelScope.launch {
             checkNicknameDuplicationUseCase(
                 nickname = currentNickname,
-                originalNickname = _state.value.profileInfo?.userName
+                originalNickname = originalNickname
             )
                 .onSuccess { isDuplicated ->
                     if (isDuplicated) {
@@ -154,13 +158,14 @@ class ProfileEditViewModel @Inject constructor(
 
     fun selectImageLevel(level: Int) {
         _state.update { currentState ->
-            val updatedImages = currentState.profileImages.map { image ->
+            val profileEditModel = currentState.profileEditModel
+            val updatedImages = profileEditModel.profileImages.map { image ->
                 image.copy(isSelected = image.imageLevel == level)
             }.toImmutableList()
 
             currentState.copy(
                 selectedImageLevel = level,
-                profileImages = updatedImages
+                profileEditModel = profileEditModel.copy(profileImages = updatedImages)
             )
         }
     }
@@ -190,6 +195,8 @@ class ProfileEditViewModel @Inject constructor(
         _state.update { it.copy(saveButtonEnabled = false) }
         viewModelScope.launch {
             val currentState = _state.value
+            val profileEditModel = currentState.profileEditModel
+
             val birthDate = formatBirthDateUseCase(
                 isBirthSelected = currentState.isBirthSelected,
                 year = currentState.selectedYear,
@@ -197,15 +204,15 @@ class ProfileEditViewModel @Inject constructor(
                 day = currentState.selectedDay
             )
 
-            val editModel = currentState.profileInfo?.copy(
+            val updatedModel = profileEditModel.copy(
                 userName = currentState.nickname,
                 introduction = currentState.introduction,
                 birth = birthDate,
                 regionId = if (currentState.isRegionSelected) currentState.selectedRegionId else null,
                 imageLevel = currentState.selectedImageLevel
-            ) ?: return@launch
+            )
 
-            updateProfileInfoUseCase(editModel.toEntity())
+            userRepository.updateMyProfileInfo(updatedModel.toEntity())
                 .onSuccess {
                     _sideEffect.emit(ProfileEditSideEffect.ShowSnackBar("프로필이 저장되었습니다."))
                     _sideEffect.emit(ProfileEditSideEffect.NavigateBack)

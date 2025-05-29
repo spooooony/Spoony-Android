@@ -8,7 +8,7 @@ class CheckNicknameDuplicationUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         nickname: String,
-        originalNickname: String?
+        originalNickname: String
     ): Result<Boolean> {
         if (nickname == originalNickname) {
             return Result.success(false)

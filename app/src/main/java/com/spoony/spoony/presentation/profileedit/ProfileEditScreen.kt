@@ -125,7 +125,7 @@ fun ProfileEditScreen(
         Spacer(modifier = Modifier.height(13.dp))
 
         ProfileImageList(
-            profileImages = state.profileImages,
+            profileImages = state.profileEditModel.profileImages,
             selectedLevel = state.selectedImageLevel,
             onSelectLevel = viewModel::selectImageLevel
 
@@ -198,7 +198,7 @@ fun ProfileEditScreen(
     if (isImageBottomSheetVisible) {
         ImageHelperBottomSheet(
             onDismiss = { isImageBottomSheetVisible = false },
-            profileImageList = state.profileImages
+            profileImageList = state.profileEditModel.profileImages
         )
     }
 
@@ -219,7 +219,7 @@ fun ProfileEditScreen(
 
     if (isLocationBottomSheetVisible) {
         SpoonyRegionBottomSheet(
-            regionList = state.regionList,
+            regionList = state.profileEditModel.regionList,
             onDismiss = { isLocationBottomSheetVisible = false },
             onClick = { region ->
                 viewModel.selectRegion(region.regionId, region.regionName)
@@ -258,19 +258,12 @@ private fun SaveButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isClicked by remember { mutableStateOf(false) }
-
     SpoonyButton(
         text = "저장",
         size = ButtonSize.Xlarge,
         style = ButtonStyle.Primary,
         modifier = modifier.fillMaxWidth(),
-        enabled = enabled && !isClicked,
-        onClick = {
-            if (!isClicked) {
-                isClicked = true
-                onClick()
-            }
-        }
+        enabled = enabled,
+        onClick = onClick
     )
 }
