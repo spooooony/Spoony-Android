@@ -2,6 +2,7 @@ package com.spoony.spoony.data.repositoryimpl
 
 import com.spoony.spoony.data.datasource.ExploreRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
+import com.spoony.spoony.domain.entity.ExplorePlaceReviewResultEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import com.spoony.spoony.domain.entity.UserEntity
 import com.spoony.spoony.domain.repository.ExploreRepository
@@ -26,7 +27,7 @@ class ExploreRepositoryImpl @Inject constructor(
         exploreRemoteDataSource.getPlaceReviewListFollowing().data!!.feedsResponseList.map { it.toDomain() }
     }
 
-    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: Int?, size: Int?): Result<Pair<List<PlaceReviewEntity>, Int?>> = runCatching {
+    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: Int?, size: Int?): Result<ExplorePlaceReviewResultEntity> = runCatching {
         val data = exploreRemoteDataSource.getPlaceReviewListFiltered(
             categoryIds = categoryIds,
             regionIds = regionIds,
@@ -39,6 +40,9 @@ class ExploreRepositoryImpl @Inject constructor(
         val reviewList = data.filteredFeedResponseDTOList.map { it.toDomain() }
         val nextCursor = data.nextCursor
 
-        reviewList to nextCursor
+        ExplorePlaceReviewResultEntity(
+            reviews = reviewList,
+            nextCursor = nextCursor
+        )
     }
 }
