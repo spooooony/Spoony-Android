@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class ExploreSearchViewModel @Inject constructor(
@@ -99,13 +98,13 @@ class ExploreSearchViewModel @Inject constructor(
                             userInfoList = UiState.Loading
                         )
                     }
-                    exploreRepository.insertExploreRecentSearch(type = ExploreRecentSearchType.USER, searchText = keywordTrim)
+                    exploreRepository.insertExploreRecentSearch(type = ExploreRecentSearchType.USER, searchText = keyword)
                     getFetchRecentSearchQueries()
-                    exploreRepository.getUserListByKeyword(keywordTrim)
+                    exploreRepository.getUserListByKeyword(keyword)
                         .onSuccess { response ->
                             _state.update {
                                 it.copy(
-                                    searchKeyword = keywordTrim,
+                                    searchKeyword = keyword,
                                     userInfoList = if (response.isEmpty()) {
                                         UiState.Empty
                                     } else {
@@ -118,8 +117,7 @@ class ExploreSearchViewModel @Inject constructor(
                                 )
                             }
                         }
-                        .onFailure { exception ->
-                            Timber.e(exception)
+                        .onLogFailure {
                             _state.update {
                                 it.copy(
                                     userInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
@@ -137,13 +135,13 @@ class ExploreSearchViewModel @Inject constructor(
                             placeReviewInfoList = UiState.Loading
                         )
                     }
-                    exploreRepository.insertExploreRecentSearch(type = ExploreRecentSearchType.REVIEW, searchText = keywordTrim)
+                    exploreRepository.insertExploreRecentSearch(type = ExploreRecentSearchType.REVIEW, searchText = keyword)
                     getFetchRecentSearchQueries()
-                    exploreRepository.getPlaceReviewByKeyword(keywordTrim)
+                    exploreRepository.getPlaceReviewByKeyword(keyword)
                         .onSuccess { response ->
                             _state.update {
                                 it.copy(
-                                    searchKeyword = keywordTrim,
+                                    searchKeyword = keyword,
                                     placeReviewInfoList = if (response.isEmpty()) {
                                         UiState.Empty
                                     } else {
@@ -156,8 +154,7 @@ class ExploreSearchViewModel @Inject constructor(
                                 )
                             }
                         }
-                        .onFailure { exception ->
-                            Timber.e(exception)
+                        .onLogFailure {
                             _state.update {
                                 it.copy(
                                     placeReviewInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
