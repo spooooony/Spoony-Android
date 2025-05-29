@@ -222,6 +222,7 @@ private fun ExploreScreen(
             },
             onToggleFilter = { id, type ->
                 when (type) {
+                    FilterType.FILTER -> {}
                     FilterType.LOCAL_REVIEW -> {
                         propertyState[id] = !(propertyState[id] ?: false)
                     }
@@ -240,7 +241,6 @@ private fun ExploreScreen(
                             ageState[id] = true
                         }
                     }
-                    else -> Unit
                 }
             },
             propertyItems = propertyItems,
