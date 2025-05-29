@@ -22,7 +22,7 @@ data class PlaceReviewResponseDto(
     @SerialName("description")
     val description: String,
     @SerialName("categoryColorResponse")
-    val categoryColorResponse: CategoryColorResponseDto,
+    val categoryColorResponse: CategoryColorDto,
     @SerialName("zzimCount")
     val zzimCount: Int,
     @SerialName("photoUrlList")

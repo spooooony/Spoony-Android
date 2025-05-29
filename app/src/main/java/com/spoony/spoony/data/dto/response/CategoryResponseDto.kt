@@ -26,3 +26,17 @@ data class CategoryMonoDto(
     @SerialName("iconUrlSelected")
     val iconUrlSelected: String
 )
+
+@Serializable
+data class CategoryColorDto(
+    @SerialName("categoryId")
+    val categoryId: Int,
+    @SerialName("categoryName")
+    val categoryName: String,
+    @SerialName("iconUrl")
+    val iconUrl: String,
+    @SerialName("iconTextColor")
+    val iconTextColor: String,
+    @SerialName("iconBackgroundColor")
+    val iconBackgroundColor: String
+)
