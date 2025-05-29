@@ -354,6 +354,7 @@ private fun ExploreContent(
     var isLoadingMore by remember { mutableStateOf(false) }
     var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
     var targetReviewId by remember { mutableIntStateOf(0) }
+    val loadMoreThreshold = 3
     if (isReviewDeleteDialogVisible) {
         TwoButtonDialog(
             message = "정말로 리뷰를 삭제할까요?",
@@ -376,10 +377,9 @@ private fun ExploreContent(
         }
             .distinctUntilChanged()
             .collect { (lastVisibleItem, totalItems) ->
-                val threshold = 2
                 if (
                     !isLoadingMore &&
-                    lastVisibleItem >= totalItems - threshold &&
+                    lastVisibleItem >= totalItems - loadMoreThreshold &&
                     totalItems > 0
                 ) {
                     isLoadingMore = true
