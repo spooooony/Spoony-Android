@@ -32,6 +32,17 @@ fun RegionEntity.toExploreFilter(): ExploreFilter {
     )
 }
 
+enum class AgeGroupType(val id: Int, val label: String, val apiCode: String) {
+    AGE_10S(10, "10대", "AGE_10S"),
+    AGE_20S(20, "20대", "AGE_20S"),
+    AGE_30S(30, "30대", "AGE_30S"),
+    AGE_ETC(40, "40대+", "AGE_ETC");
+
+    companion object {
+        fun fromId(id: Int): AgeGroupType = entries.find { it.id == id } ?: AGE_ETC
+    }
+}
+
 object ExploreFilterDataProvider {
     fun getDefaultPropertyFilter() = persistentListOf(
         ExploreFilter(
@@ -99,17 +110,10 @@ object ExploreFilterDataProvider {
         }.toImmutableList()
     }
     fun getDefaultAgeFilter(): ImmutableList<ExploreFilter> {
-        val ageData = persistentListOf(
-            Pair(10, "10대"),
-            Pair(20, "20대"),
-            Pair(30, "30대"),
-            Pair(40, "40대+")
-        )
-
-        return ageData.map { (id, name) ->
+        return AgeGroupType.entries.map {
             ExploreFilter(
-                id = id,
-                name = name,
+                id = it.id,
+                name = it.label,
                 type = "age"
             )
         }.toImmutableList()

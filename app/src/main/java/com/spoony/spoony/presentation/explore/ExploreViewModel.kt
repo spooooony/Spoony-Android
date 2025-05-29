@@ -8,6 +8,7 @@ import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.RegionRepository
+import com.spoony.spoony.presentation.explore.model.AgeGroupType
 import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.toExploreFilter
 import com.spoony.spoony.presentation.explore.model.toModel
@@ -263,14 +264,8 @@ class ExploreViewModel @Inject constructor(
         val selectedAgeGroups = currentFilterState.ages
             .filterValues { it }
             .keys
-            .map {
-                when (it) {
-                    10 -> "AGE_10S"
-                    20 -> "AGE_20S"
-                    30 -> "AGE_30S"
-                    else -> "AGE_ETC"
-                }
-            }
+            .map { AgeGroupType.fromId(it).apiCode }
+
         allSearchJob = viewModelScope.launch {
             exploreRepository.getPlaceReviewListFiltered(
                 categoryIds = selectedCategoryIds,
