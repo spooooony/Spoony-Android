@@ -55,11 +55,7 @@ class ExploreSearchViewModel @Inject constructor(
             ).forEach { (type, updateAction) ->
                 exploreRepository.getExploreRecentSearches(type)
                     .onSuccess { response -> updateAction(response) }
-                    .onLogFailure {
-                        _sideEffect.emit(
-                            ExploreSearchSideEffect.ShowSnackBar("최근 검색어를 불러오지 못했습니다.")
-                        )
-                    }
+                    .onLogFailure {}
             }
         }
     }
