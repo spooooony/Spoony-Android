@@ -374,19 +374,19 @@ private fun ExploreContent(
             val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItem to totalItems
         }
-        .distinctUntilChanged()
-        .collect { (lastVisibleItem, totalItems) ->
-            val threshold = 2
-            if (
-                !isLoadingMore &&
-                lastVisibleItem >= totalItems - threshold &&
-                totalItems > 0
-            ) {
-                isLoadingMore = true
-                onLoadNextPage()
-                isLoadingMore = false
+            .distinctUntilChanged()
+            .collect { (lastVisibleItem, totalItems) ->
+                val threshold = 2
+                if (
+                    !isLoadingMore &&
+                    lastVisibleItem >= totalItems - threshold &&
+                    totalItems > 0
+                ) {
+                    isLoadingMore = true
+                    onLoadNextPage()
+                    isLoadingMore = false
+                }
             }
-        }
     }
 
     when (placeReviewList) {
