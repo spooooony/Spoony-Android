@@ -87,12 +87,18 @@ fun ExploreRoute(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val showSnackBar = LocalSnackBarTrigger.current
-
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
             when (effect) {
                 is ExploreSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
+                }
+                is ExploreSideEffect.ScrollToTop -> {
+                    coroutineScope.launch {
+                        listState.scrollToItem(0)
+                    }
                 }
             }
         }
@@ -125,6 +131,7 @@ fun ExploreRoute(
             regionSelectedState = filterSelectionState.regions,
             ageSelectedState = filterSelectionState.ages,
             categorySelectedState = filterSelectionState.categories,
+            listState = listState,
             exploreType = exploreType
         )
     }
@@ -157,22 +164,18 @@ private fun ExploreScreen(
     regionSelectedState: PersistentMap<Int, Boolean>,
     ageSelectedState: PersistentMap<Int, Boolean>,
     categorySelectedState: PersistentMap<Int, Boolean>,
+    listState: LazyListState,
     exploreType: ExploreType
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
-    val coroutineScope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
             onClick = {
                 onSelectSortingOptionButtonClick(it)
-                coroutineScope.launch {
-                    listState.scrollToItem(0)
-                }
             },
             currentSortingOption = selectedSortingOption
         )
@@ -213,9 +216,6 @@ private fun ExploreScreen(
                     regionState.toPersistentMap(),
                     ageState.toPersistentMap()
                 )
-                coroutineScope.launch {
-                    listState.scrollToItem(0)
-                }
             },
             onToggleFilter = { id, type ->
                 when (type) {
@@ -289,9 +289,6 @@ private fun ExploreScreen(
                         filterType = filterType,
                         onLocalReviewButtonClick = {
                             onLocalReviewButtonClick()
-                            coroutineScope.launch {
-                                listState.scrollToItem(0)
-                            }
                         },
                         updateBottomSheetState = { index, isVisible ->
                             exploreFilterBottomSheetTabIndex = index

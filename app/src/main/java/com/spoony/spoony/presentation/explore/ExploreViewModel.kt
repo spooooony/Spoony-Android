@@ -131,6 +131,9 @@ class ExploreViewModel @Inject constructor(
         }
         currentCursor = null
         getPlaceReviewListFiltered()
+        viewModelScope.launch {
+            _sideEffect.emit(ExploreSideEffect.ScrollToTop)
+        }
     }
 
     fun applyExploreFilter(propertySelectedState: PersistentMap<Int, Boolean>, categorySelectedState: PersistentMap<Int, Boolean>, regionSelectedState: PersistentMap<Int, Boolean>, ageSelectedState: PersistentMap<Int, Boolean>) {
@@ -221,6 +224,7 @@ class ExploreViewModel @Inject constructor(
         }
         currentCursor = null
         getPlaceReviewListFiltered()
+        scrollToTop()
     }
 
     fun resetExploreFilter() {
@@ -247,6 +251,7 @@ class ExploreViewModel @Inject constructor(
         }
         currentCursor = null
         getPlaceReviewListFiltered()
+        scrollToTop()
     }
 
     fun getPlaceReviewListFiltered() {
@@ -396,6 +401,13 @@ class ExploreViewModel @Inject constructor(
                 }
         }
     }
+
+    private fun scrollToTop() {
+        viewModelScope.launch {
+            _sideEffect.emit(ExploreSideEffect.ScrollToTop)
+        }
+    }
+
     companion object {
         private const val EXPLORE_SEARCH_FETCH_SIZE = 5
     }
