@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,6 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
@@ -25,35 +28,10 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BlockUserScreen(
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    viewModel: BlockUserViewModel = hiltViewModel()
 ) {
-    var blockUserList by remember {
-        mutableStateOf(
-            persistentListOf(
-                BlockUserState(
-                    userId = 1,
-                    imageUrl = "https://example.com/image.jpg",
-                    userName = "User1",
-                    region = "Region1",
-                    isBlocking = true
-                ),
-                BlockUserState(
-                    userId = 2,
-                    imageUrl = "https://example.com/image.jpg",
-                    userName = "User2",
-                    region = "Region2",
-                    isBlocking = false
-                ),
-                BlockUserState(
-                    userId = 3,
-                    imageUrl = "https://example.com/image.jpg",
-                    userName = "User3",
-                    region = "Region3",
-                    isBlocking = true
-                )
-            )
-        )
-    }
+    val blockUserList by viewModel.blockingList.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -81,9 +59,7 @@ fun BlockUserScreen(
                     region = user.region,
                     isBlocking = user.isBlocking,
                     onBlockButtonClick = {
-                        blockUserList = blockUserList.mutate { list ->
-                            list[index] = list[index].copy(isBlocking = !list[index].isBlocking)
-                        }
+                        viewModel.onClickBlockButton(user.userId, user.isBlocking)
                     },
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)
                 )
