@@ -6,11 +6,11 @@ import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
