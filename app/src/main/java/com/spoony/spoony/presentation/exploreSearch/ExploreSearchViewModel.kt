@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.presentation.exploreSearch.model.toModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
@@ -55,7 +56,7 @@ class ExploreSearchViewModel @Inject constructor(
             ).forEach { (type, updateAction) ->
                 exploreRepository.getExploreRecentSearches(type)
                     .onSuccess { response -> updateAction(response) }
-                    .onFailure {
+                    .onLogFailure {
                         _sideEffect.emit(
                             ExploreSearchSideEffect.ShowSnackBar("최근 검색어를 불러오지 못했습니다.")
                         )

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.kakao.sdk.common.KakaoSdk.type
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchEntity
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
 
@@ -26,25 +27,16 @@ interface ExploreRecentSearchDao {
     @Query("SELECT COUNT(*) FROM explore_recent_search WHERE type = :type")
     suspend fun getCountExploreRecentSearch(type: ExploreRecentSearchType): Int
 
-    @Query(
-        """
-        DELETE FROM explore_recent_search
-        WHERE keyword IN (
-            SELECT keyword FROM explore_recent_search
-            WHERE type = :type
-            ORDER BY timestamp ASC
-            LIMIT 1
-        ) AND type = :type
-    """
-    )
-    suspend fun deleteOldestSearchByType(type: ExploreRecentSearchType)
+    @Query("SELECT keyword FROM explore_recent_search WHERE type = :type ORDER BY timestamp ASC LIMIT 1")
+    suspend fun getOldestKeywordByType(type: ExploreRecentSearchType): String?
 
     @Transaction
     suspend fun insertKeywordWithLimit(type: ExploreRecentSearchType, keyword: String) {
         insertExploreRecentSearch(ExploreRecentSearchEntity(keyword = keyword, type = type))
 
         if (getCountExploreRecentSearch(type) > MAX_RECENT_SEARCHES) {
-            deleteOldestSearchByType(type)
+            val oldestKeyword = getOldestKeywordByType(type)
+            if (oldestKeyword != null) deleteExploreRecentSearch(type, oldestKeyword)
         }
     }
     companion object {

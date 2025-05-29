@@ -6,7 +6,7 @@ import com.spoony.spoony.core.database.entity.ExploreRecentSearchEntity
 
 @Database(
     entities = [ExploreRecentSearchEntity::class],
-    version = 1
+    version = 2
 )
 abstract class ExploreRecentSearchDatabase : RoomDatabase() {
     abstract fun ExploreRecentSearchDao(): ExploreRecentSearchDao
