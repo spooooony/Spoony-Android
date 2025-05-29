@@ -120,18 +120,16 @@ class ExploreViewModel @Inject constructor(
                 else -> option
             }
         }.toImmutableList()
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    filterSelectionState = currentFilterState.copy(
-                        properties = propertySelectedState.put(2, isLocalReviewSelected)
-                    ),
-                    chipItems = updatedFilterOptions
-                )
-            }
-            currentCursor = null
-            getPlaceReviewListFiltered()
+        _state.update {
+            it.copy(
+                filterSelectionState = currentFilterState.copy(
+                    properties = propertySelectedState.put(2, isLocalReviewSelected)
+                ),
+                chipItems = updatedFilterOptions
+            )
         }
+        currentCursor = null
+        getPlaceReviewListFiltered()
     }
 
     fun applyExploreFilter(propertySelectedState: PersistentMap<Int, Boolean>, categorySelectedState: PersistentMap<Int, Boolean>, regionSelectedState: PersistentMap<Int, Boolean>, ageSelectedState: PersistentMap<Int, Boolean>) {
@@ -209,21 +207,19 @@ class ExploreViewModel @Inject constructor(
                 }
             }
         }.toImmutableList()
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    filterSelectionState = currentFilterState.copy(
-                        properties = propertySelectedState,
-                        categories = categorySelectedState,
-                        regions = regionSelectedState,
-                        ages = ageSelectedState
-                    ),
-                    chipItems = updatedFilterOptions
-                )
-            }
-            currentCursor = null
-            getPlaceReviewListFiltered()
+        _state.update {
+            it.copy(
+                filterSelectionState = currentFilterState.copy(
+                    properties = propertySelectedState,
+                    categories = categorySelectedState,
+                    regions = regionSelectedState,
+                    ages = ageSelectedState
+                ),
+                chipItems = updatedFilterOptions
+            )
         }
+        currentCursor = null
+        getPlaceReviewListFiltered()
     }
 
     fun resetExploreFilter() {
@@ -242,16 +238,14 @@ class ExploreViewModel @Inject constructor(
 
     fun updateSelectedSortingOption(sortingOption: SortingOption) {
         allSearchJob?.cancel()
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    selectedSortingOption = sortingOption,
-                    placeReviewList = UiState.Loading
-                )
-            }
-            currentCursor = null
-            getPlaceReviewListFiltered()
+        _state.update {
+            it.copy(
+                selectedSortingOption = sortingOption,
+                placeReviewList = UiState.Loading
+            )
         }
+        currentCursor = null
+        getPlaceReviewListFiltered()
     }
 
     fun getPlaceReviewListFiltered() {
@@ -350,27 +344,23 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun refreshExploreScreen() {
-        viewModelScope.launch {
-            currentCursor = null
-            if (state.value.exploreType == ExploreType.ALL) {
-                getPlaceReviewListFiltered()
-            } else {
-                getPlaceReviewFollowingList()
-            }
+        currentCursor = null
+        if (state.value.exploreType == ExploreType.ALL) {
+            getPlaceReviewListFiltered()
+        } else {
+            getPlaceReviewFollowingList()
         }
     }
     fun updateExploreType(exploreType: ExploreType) {
         if (state.value.exploreType == exploreType) return
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    exploreType = exploreType,
-                    placeReviewList = UiState.Loading,
-                    selectedSortingOption = SortingOption.LATEST
-                )
-            }
-            currentCursor = null
+        _state.update {
+            it.copy(
+                exploreType = exploreType,
+                placeReviewList = UiState.Loading,
+                selectedSortingOption = SortingOption.LATEST
+            )
         }
+        currentCursor = null
         when (exploreType) {
             ExploreType.ALL -> {
                 followingSearchJob?.cancel()
