@@ -71,6 +71,8 @@ import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
+private const val LOAD_MORE_THRESHOLD = 3
+
 @Composable
 fun ExploreRoute(
     paddingValues: PaddingValues,
@@ -354,7 +356,6 @@ private fun ExploreContent(
     var isLoadingMore by remember { mutableStateOf(false) }
     var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
     var targetReviewId by remember { mutableIntStateOf(0) }
-    val loadMoreThreshold = 3
     if (isReviewDeleteDialogVisible) {
         TwoButtonDialog(
             message = "정말로 리뷰를 삭제할까요?",
@@ -379,7 +380,7 @@ private fun ExploreContent(
             .collect { (lastVisibleItem, totalItems) ->
                 if (
                     !isLoadingMore &&
-                    lastVisibleItem >= totalItems - loadMoreThreshold &&
+                    lastVisibleItem >= totalItems - LOAD_MORE_THRESHOLD &&
                     totalItems > 0
                 ) {
                     isLoadingMore = true
