@@ -30,6 +30,7 @@ import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.register.component.RegisterTooltip
 import com.spoony.spoony.presentation.register.component.TopLinearProgressBar
+import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.navigation.RegisterRoute
 import com.spoony.spoony.presentation.register.navigation.registerGraph
 import kotlinx.coroutines.delay
@@ -42,6 +43,7 @@ fun RegisterRoute(
     modifier: Modifier = Modifier,
     navigateUp: () -> Unit,
     navigateToExplore: () -> Unit,
+    navigateToPostDetail: (postId: Int) -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val isTooltipVisible by viewModel.tooltipShownFlow.collectAsStateWithLifecycle(initialValue = false)
@@ -55,6 +57,10 @@ fun RegisterRoute(
             when (effect) {
                 is RegisterSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
+                }
+
+                is RegisterSideEffect.ShowError -> {
+                    showSnackBar(effect.errorType.description)
                 }
             }
         }
@@ -71,6 +77,7 @@ fun RegisterRoute(
         navController = navController,
         onBackButtonClick = navigateUp,
         navigateToExplore = navigateToExplore,
+        navigateToPostDetail = navigateToPostDetail,
         onUpdateProgress = viewModel::updateStep,
         onResetRegisterState = viewModel::resetState,
         hideRegisterSnackBar = viewModel::hideRegisterSnackBar,
@@ -87,13 +94,18 @@ private fun RegisterScreen(
     navController: NavHostController,
     onBackButtonClick: () -> Unit,
     navigateToExplore: () -> Unit,
+    navigateToPostDetail: (postId: Int) -> Unit,
     onUpdateProgress: (RegisterSteps) -> Unit,
     onResetRegisterState: () -> Unit,
     hideRegisterSnackBar: () -> Unit,
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -120,6 +132,7 @@ private fun RegisterScreen(
                 registerGraph(
                     navController = navController,
                     navigateToExplore = navigateToExplore,
+                    navigateToPostDetail = navigateToPostDetail,
                     onUpdateProgress = onUpdateProgress,
                     onResetRegisterState = onResetRegisterState,
                     viewModel = viewModel

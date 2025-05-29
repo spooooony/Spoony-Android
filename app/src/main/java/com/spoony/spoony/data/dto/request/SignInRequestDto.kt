@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FollowRequestDto(
-    @SerialName("targetUserId")
-    val targetUserId: Int
+data class SignInRequestDto(
+    @SerialName("platform")
+    val platform: String
 )

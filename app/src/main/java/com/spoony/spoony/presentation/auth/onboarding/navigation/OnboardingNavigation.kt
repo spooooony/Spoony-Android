@@ -14,7 +14,6 @@ import com.spoony.spoony.presentation.auth.onboarding.OnboardingEndRoute
 import com.spoony.spoony.presentation.auth.onboarding.OnboardingRoute
 import com.spoony.spoony.presentation.auth.onboarding.OnboardingStepThreeRoute
 import com.spoony.spoony.presentation.auth.onboarding.OnboardingStepTwoRoute
-import com.spoony.spoony.presentation.auth.onboarding.OnboardingSteps
 import com.spoony.spoony.presentation.auth.onboarding.OnboardingViewModel
 import com.spoony.spoony.presentation.auth.onboarding.navigation.OnboardingRoute.End
 import com.spoony.spoony.presentation.auth.onboarding.navigation.OnboardingRoute.StepOne
@@ -89,18 +88,7 @@ fun NavGraphBuilder.onboardingGraph(
         }
     ) {
         OnboardingStepThreeRoute(
-            viewModel = viewModel,
-            onNextButtonClick = {
-                viewModel.updateCurrentStep(OnboardingSteps.END)
-                navController.navigate(
-                    route = End,
-                    navOptions = navOptions {
-                        popUpTo<StepOne> {
-                            inclusive = true
-                        }
-                    }
-                )
-            }
+            viewModel = viewModel
         )
     }
 

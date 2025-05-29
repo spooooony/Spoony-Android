@@ -44,7 +44,7 @@ fun OtherPageRoute(
                 is OtherPageSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
-                is OtherPageSideEffect.ShowError -> {
+                is OtherPageSideEffect.ShowErrorSnackbar -> {
                     showSnackBar(effect.errorType.description)
                 }
             }
