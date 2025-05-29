@@ -3,14 +3,14 @@ package com.spoony.spoony.presentation.profileedit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
-import com.spoony.spoony.core.designsystem.model.RegionModel
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.domain.usecase.CheckNicknameDuplicationUseCase
 import com.spoony.spoony.domain.usecase.FormatBirthDateUseCase
+import com.spoony.spoony.presentation.profileedit.model.ProfileEditModel
 import com.spoony.spoony.presentation.profileedit.model.toEntity
-import com.spoony.spoony.presentation.profileedit.model.toProfileEditModel
+import com.spoony.spoony.presentation.profileedit.model.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -31,9 +31,17 @@ class ProfileEditViewModel @Inject constructor(
     private val formatBirthDateUseCase: FormatBirthDateUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(ProfileEditState())
-    val state: StateFlow<ProfileEditState>
-        get() = _state.asStateFlow()
+    private val _profileEditModel = MutableStateFlow(ProfileEditModel.EMPTY)
+    val profileEditModel: StateFlow<ProfileEditModel>
+        get() = _profileEditModel.asStateFlow()
+
+    private val _nicknameState = MutableStateFlow(NicknameTextFieldState.DEFAULT)
+    val nicknameState: StateFlow<NicknameTextFieldState>
+        get() = _nicknameState.asStateFlow()
+
+    private val _saveButtonEnabled = MutableStateFlow(true)
+    val saveButtonEnabled: StateFlow<Boolean>
+        get() = _saveButtonEnabled.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<ProfileEditSideEffect>()
     val sideEffect: SharedFlow<ProfileEditSideEffect>
@@ -44,7 +52,6 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     private fun loadProfileEditData() {
-        _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             runCatching {
                 val profileImageDeferred = async { userRepository.getMyProfileImage().getOrThrow() }
@@ -55,37 +62,15 @@ class ProfileEditViewModel @Inject constructor(
                 val profileInfoEntity = profileInfoDeferred.await()
                 val regionEntities = regionListDeferred.await()
 
-                val regionModels = regionEntities.map { entity ->
-                    RegionModel(
-                        regionId = entity.regionId,
-                        regionName = entity.regionName
-                    )
-                }
+                val regionModels = regionEntities.map { it.toModel() }
 
-                val profileEditModel = profileInfoEntity.toProfileEditModel(
+                val profileEditModel = profileInfoEntity.toModel(
                     profileImageEntity = profileImageEntity,
-                    regionList = regionModels,
-                    selectedImageLevel = _state.value.selectedImageLevel
+                    regionList = regionModels
                 )
 
-                _state.update { currentState ->
-                    currentState.copy(
-                        isLoading = false,
-                        profileEditModel = profileEditModel,
-                        nickname = profileEditModel.userName,
-                        introduction = profileEditModel.introduction,
-                        selectedImageLevel = profileEditModel.imageLevel,
-                        selectedYear = profileEditModel.selectedYear,
-                        selectedMonth = profileEditModel.selectedMonth,
-                        selectedDay = profileEditModel.selectedDay,
-                        isBirthSelected = profileEditModel.isBirthSelected,
-                        selectedRegion = profileEditModel.regionName,
-                        selectedRegionId = profileEditModel.regionId,
-                        isRegionSelected = profileEditModel.isRegionSelected
-                    )
-                }
+                _profileEditModel.update { profileEditModel }
             }.onFailure {
-                _state.update { it.copy(isLoading = false) }
                 _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 _sideEffect.emit(ProfileEditSideEffect.NavigateBack)
             }
@@ -93,35 +78,30 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     fun updateNickname(nickname: String) {
-        _state.update { it.copy(nickname = nickname) }
+        _profileEditModel.update { it.copy(userName = nickname) }
         updateSaveButtonState()
     }
 
     fun updateNicknameState(state: NicknameTextFieldState) {
+        _nicknameState.update { state }
         if (state == NicknameTextFieldState.DUPLICATE) {
-            _state.update {
-                it.copy(
-                    nicknameState = state,
-                    saveButtonEnabled = false
-                )
-            }
+            _saveButtonEnabled.update { false }
         } else {
-            _state.update { it.copy(nicknameState = state) }
             updateSaveButtonState()
         }
     }
 
     fun checkNicknameDuplication() {
-        val currentNickname = _state.value.nickname
-        val originalNickname = _state.value.profileEditModel.userName
+        val currentNickname = _profileEditModel.value.userName
+        val originalNickname = _profileEditModel.value.originalUserName
 
         if (currentNickname.isBlank()) {
-            _state.update { it.copy(nicknameState = NicknameTextFieldState.NICKNAME_REQUIRED) }
+            _nicknameState.update { NicknameTextFieldState.NICKNAME_REQUIRED }
             return
         }
 
         if (currentNickname == originalNickname) {
-            _state.update { it.copy(nicknameState = NicknameTextFieldState.AVAILABLE) }
+            _nicknameState.update { NicknameTextFieldState.AVAILABLE }
             updateSaveButtonState()
             return
         }
@@ -133,16 +113,10 @@ class ProfileEditViewModel @Inject constructor(
             )
                 .onSuccess { isDuplicated ->
                     if (isDuplicated) {
-                        _state.update {
-                            it.copy(
-                                nicknameState = NicknameTextFieldState.DUPLICATE,
-                                saveButtonEnabled = false
-                            )
-                        }
+                        _nicknameState.update { NicknameTextFieldState.DUPLICATE }
+                        _saveButtonEnabled.update { false }
                     } else {
-                        _state.update {
-                            it.copy(nicknameState = NicknameTextFieldState.AVAILABLE)
-                        }
+                        _nicknameState.update { NicknameTextFieldState.AVAILABLE }
                     }
                     updateSaveButtonState()
                 }
@@ -153,25 +127,26 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     fun updateIntroduction(introduction: String) {
-        _state.update { it.copy(introduction = introduction.takeIf { it.isNotBlank() }) }
+        _profileEditModel.update { 
+            it.copy(introduction = introduction.takeIf { it.isNotBlank() })
+        }
     }
 
     fun selectImageLevel(level: Int) {
-        _state.update { currentState ->
-            val profileEditModel = currentState.profileEditModel
-            val updatedImages = profileEditModel.profileImages.map { image ->
+        _profileEditModel.update { currentModel ->
+            val updatedImages = currentModel.profileImages.map { image ->
                 image.copy(isSelected = image.imageLevel == level)
             }.toImmutableList()
 
-            currentState.copy(
-                selectedImageLevel = level,
-                profileEditModel = profileEditModel.copy(profileImages = updatedImages)
+            currentModel.copy(
+                imageLevel = level,
+                profileImages = updatedImages
             )
         }
     }
 
     fun selectDate(year: String, month: String, day: String) {
-        _state.update {
+        _profileEditModel.update {
             it.copy(
                 selectedYear = year,
                 selectedMonth = month,
@@ -182,35 +157,28 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     fun selectRegion(regionId: Int, regionName: String) {
-        _state.update {
+        _profileEditModel.update {
             it.copy(
-                selectedRegionId = regionId,
-                selectedRegion = "서울 $regionName",
+                regionId = regionId,
+                regionName = "서울 $regionName",
                 isRegionSelected = true
             )
         }
     }
 
     fun updateProfileInfo() {
-        _state.update { it.copy(saveButtonEnabled = false) }
+        _saveButtonEnabled.update { false }
         viewModelScope.launch {
-            val currentState = _state.value
-            val profileEditModel = currentState.profileEditModel
+            val currentModel = _profileEditModel.value
 
             val birthDate = formatBirthDateUseCase(
-                isBirthSelected = currentState.isBirthSelected,
-                year = currentState.selectedYear,
-                month = currentState.selectedMonth,
-                day = currentState.selectedDay
+                isBirthSelected = currentModel.isBirthSelected,
+                year = currentModel.selectedYear,
+                month = currentModel.selectedMonth,
+                day = currentModel.selectedDay
             )
 
-            val updatedModel = profileEditModel.copy(
-                userName = currentState.nickname,
-                introduction = currentState.introduction,
-                birth = birthDate,
-                regionId = if (currentState.isRegionSelected) currentState.selectedRegionId else null,
-                imageLevel = currentState.selectedImageLevel
-            )
+            val updatedModel = currentModel.copy(birth = birthDate)
 
             userRepository.updateMyProfileInfo(updatedModel.toEntity())
                 .onSuccess {
@@ -218,20 +186,20 @@ class ProfileEditViewModel @Inject constructor(
                     _sideEffect.emit(ProfileEditSideEffect.NavigateBack)
                 }
                 .onLogFailure {
-                    _state.update { it.copy(saveButtonEnabled = true) }
+                    _saveButtonEnabled.update { true }
                     _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
 
     private fun updateSaveButtonState() {
-        val isNicknameValid = when (_state.value.nicknameState) {
+        val isNicknameValid = when (_nicknameState.value) {
             NicknameTextFieldState.DEFAULT -> true
             NicknameTextFieldState.AVAILABLE -> true
             NicknameTextFieldState.DUPLICATE -> false
             else -> false
         }
-        _state.update { it.copy(saveButtonEnabled = isNicknameValid) }
+        _saveButtonEnabled.update { isNicknameValid }
     }
 }
 

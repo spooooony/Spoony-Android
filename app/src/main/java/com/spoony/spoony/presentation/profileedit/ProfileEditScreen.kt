@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.profileedit
 
-import BirthSelectButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -41,6 +40,7 @@ import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyNicknameTextField
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
+import BirthSelectButton
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
@@ -57,7 +57,9 @@ fun ProfileEditScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileEditViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val profileEditModel by viewModel.profileEditModel.collectAsStateWithLifecycle()
+    val nicknameState by viewModel.nicknameState.collectAsStateWithLifecycle()
+    val saveButtonEnabled by viewModel.saveButtonEnabled.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -92,7 +94,7 @@ fun ProfileEditScreen(
             .pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
-                    if (state.nickname.isNotBlank()) {
+                    if (profileEditModel.userName.isNotBlank()) {
                         viewModel.checkNicknameDuplication()
                     }
                 }
@@ -125,8 +127,8 @@ fun ProfileEditScreen(
         Spacer(modifier = Modifier.height(13.dp))
 
         ProfileImageList(
-            profileImages = state.profileEditModel.profileImages,
-            selectedLevel = state.selectedImageLevel,
+            profileImages = profileEditModel.profileImages,
+            selectedLevel = profileEditModel.imageLevel,
             onSelectLevel = viewModel::selectImageLevel
 
         )
@@ -135,14 +137,14 @@ fun ProfileEditScreen(
 
         SubSection(text = "닉네임을 입력해 주세요") {
             SpoonyNicknameTextField(
-                value = state.nickname,
+                value = profileEditModel.userName,
                 onValueChanged = viewModel::updateNickname,
                 onStateChanged = viewModel::updateNicknameState,
                 placeholder = "스푼의 이름을 정해주세요 (한글, 영문, 숫자 입력 가능)",
                 onDoneAction = viewModel::checkNicknameDuplication,
                 maxLength = 10,
                 minLength = 1,
-                state = state.nicknameState
+                state = nicknameState
             )
         }
 
@@ -150,7 +152,7 @@ fun ProfileEditScreen(
 
         SubSection(text = "간단한 자기소개를 입력해 주세요") {
             SpoonyLargeTextField(
-                value = state.introduction ?: "",
+                value = profileEditModel.introduction ?: "",
                 onValueChanged = viewModel::updateIntroduction,
                 placeholder = "안녕! 나는 어떤 스푼이냐면...",
                 maxLength = 50,
@@ -167,10 +169,10 @@ fun ProfileEditScreen(
             BirthSelectButton(
                 onClick = { isDateBottomSheetVisible = true },
                 modifier = Modifier,
-                year = state.selectedYear ?: "2000",
-                month = state.selectedMonth ?: "01",
-                day = state.selectedDay ?: "01",
-                isBirthSelected = state.isBirthSelected
+                year = profileEditModel.selectedYear ?: "2000",
+                month = profileEditModel.selectedMonth ?: "01",
+                day = profileEditModel.selectedDay ?: "01",
+                isBirthSelected = profileEditModel.isBirthSelected
             )
         }
 
@@ -179,15 +181,15 @@ fun ProfileEditScreen(
         SubSection(text = "주로 활동하는 지역을 설정해 주세요") {
             RegionSelectButton(
                 onClick = { isLocationBottomSheetVisible = true },
-                region = state.selectedRegion ?: "서울 마포구",
-                isSelected = state.isRegionSelected
+                region = profileEditModel.regionName ?: "서울 마포구",
+                isSelected = profileEditModel.isRegionSelected
             )
         }
 
         Spacer(modifier = Modifier.height(38.dp))
 
         SaveButton(
-            enabled = state.saveButtonEnabled,
+            enabled = saveButtonEnabled,
             onClick = viewModel::updateProfileInfo,
             modifier = Modifier.padding(horizontal = 20.dp)
         )
@@ -198,7 +200,7 @@ fun ProfileEditScreen(
     if (isImageBottomSheetVisible) {
         ImageHelperBottomSheet(
             onDismiss = { isImageBottomSheetVisible = false },
-            profileImageList = state.profileEditModel.profileImages
+            profileImageList = profileEditModel.profileImages
         )
     }
 
@@ -211,15 +213,15 @@ fun ProfileEditScreen(
                     viewModel.selectDate(birthDate.year, birthDate.month, birthDate.day)
                 }
             },
-            initialYear = state.selectedYear?.toIntOrNull() ?: 2000,
-            initialMonth = state.selectedMonth?.toIntOrNull() ?: 1,
-            initialDay = state.selectedDay?.toIntOrNull() ?: 1
+            initialYear = profileEditModel.selectedYear?.toIntOrNull() ?: 2000,
+            initialMonth = profileEditModel.selectedMonth?.toIntOrNull() ?: 1,
+            initialDay = profileEditModel.selectedDay?.toIntOrNull() ?: 1
         )
     }
 
     if (isLocationBottomSheetVisible) {
         SpoonyRegionBottomSheet(
-            regionList = state.profileEditModel.regionList,
+            regionList = profileEditModel.regionList,
             onDismiss = { isLocationBottomSheetVisible = false },
             onClick = { region ->
                 viewModel.selectRegion(region.regionId, region.regionName)

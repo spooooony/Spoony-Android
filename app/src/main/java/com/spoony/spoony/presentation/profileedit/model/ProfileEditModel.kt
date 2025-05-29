@@ -5,12 +5,14 @@ import com.spoony.spoony.core.util.extension.toBirthDate
 import com.spoony.spoony.domain.entity.ProfileImageEntity
 import com.spoony.spoony.domain.entity.ProfileInfoEntity
 import com.spoony.spoony.domain.entity.ProfileUpdateEntity
+import com.spoony.spoony.domain.entity.RegionEntity
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 data class ProfileEditModel(
     val userName: String,
+    val originalUserName: String,
     val regionName: String?,
     val regionId: Int?,
     val introduction: String?,
@@ -27,6 +29,7 @@ data class ProfileEditModel(
     companion object {
         val EMPTY = ProfileEditModel(
             userName = "",
+            originalUserName = "",
             regionName = null,
             regionId = null,
             introduction = null,
@@ -52,7 +55,7 @@ data class ProfileImageModel(
     val description: String = ""
 )
 
-fun ProfileInfoEntity.toProfileEditModel(
+fun ProfileInfoEntity.toModel(
     profileImageEntity: ProfileImageEntity,
     regionList: List<RegionModel>,
     selectedImageLevel: Int = this.imageLevel
@@ -76,6 +79,7 @@ fun ProfileInfoEntity.toProfileEditModel(
 
     return ProfileEditModel(
         userName = this.userName,
+        originalUserName = this.userName,
         regionName = fullRegionName,
         regionId = matchedRegionId,
         introduction = this.introduction,
@@ -97,4 +101,9 @@ fun ProfileEditModel.toEntity(): ProfileUpdateEntity = ProfileUpdateEntity(
     introduction = this.introduction?.takeIf { it.isNotBlank() },
     birth = this.birth?.takeIf { it.isNotBlank() },
     imageLevel = this.imageLevel
+)
+
+fun RegionEntity.toModel(): RegionModel = RegionModel(
+    regionId = this.regionId,
+    regionName = this.regionName
 )
