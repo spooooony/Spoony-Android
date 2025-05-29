@@ -127,7 +127,7 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     fun updateIntroduction(introduction: String) {
-        _profileEditModel.update { 
+        _profileEditModel.update {
             it.copy(introduction = introduction.takeIf { it.isNotBlank() })
         }
     }

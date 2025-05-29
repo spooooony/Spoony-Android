@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.profileedit
 
+import BirthSelectButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +43,6 @@ import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyNicknameTextField
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
-import BirthSelectButton
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
@@ -60,6 +62,7 @@ fun ProfileEditScreen(
     val profileEditModel by viewModel.profileEditModel.collectAsStateWithLifecycle()
     val nicknameState by viewModel.nicknameState.collectAsStateWithLifecycle()
     val saveButtonEnabled by viewModel.saveButtonEnabled.collectAsStateWithLifecycle()
+
     val focusManager = LocalFocusManager.current
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -90,6 +93,7 @@ fun ProfileEditScreen(
         modifier = modifier
             .fillMaxSize()
             .background(white)
+            .verticalScroll(rememberScrollState())
             .addFocusCleaner(focusManager)
             .pointerInput(Unit) {
                 detectTapGestures {
