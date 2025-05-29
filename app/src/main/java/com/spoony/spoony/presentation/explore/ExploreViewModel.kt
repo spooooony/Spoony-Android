@@ -17,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
@@ -225,20 +224,6 @@ class ExploreViewModel @Inject constructor(
         currentCursor = null
         getPlaceReviewListFiltered()
         scrollToTop()
-    }
-
-    fun resetExploreFilter() {
-        val currentFilterState = _state.value.filterSelectionState
-        _state.update {
-            it.copy(
-                filterSelectionState = currentFilterState.copy(
-                    properties = persistentMapOf(),
-                    categories = persistentMapOf(),
-                    regions = persistentMapOf(),
-                    ages = persistentMapOf()
-                )
-            )
-        }
     }
 
     fun updateSelectedSortingOption(sortingOption: SortingOption) {

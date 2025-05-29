@@ -113,7 +113,6 @@ fun ExploreRoute(
             onReportButtonClick = navigateToReport,
             onEditButtonClick = navigateToEditReview,
             onFilterApplyButtonClick = viewModel::applyExploreFilter,
-            onResetExploreFilterButtonClick = viewModel::resetExploreFilter,
             onLocalReviewButtonClick = viewModel::localReviewToggle,
             onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
             onTabChange = viewModel::updateExploreType,
@@ -146,7 +145,6 @@ private fun ExploreScreen(
     onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onEditButtonClick: (Int, RegisterType) -> Unit,
     onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
-    onResetExploreFilterButtonClick: () -> Unit,
     onLocalReviewButtonClick: () -> Unit,
     onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
     onTabChange: (ExploreType) -> Unit,
@@ -186,36 +184,41 @@ private fun ExploreScreen(
             if (isFilterBottomSheetVisible) putAll(propertySelectedState)
         }
     }
+
     val categoryState = remember(isFilterBottomSheetVisible, categorySelectedState) {
         mutableStateMapOf<Int, Boolean>().apply {
             if (isFilterBottomSheetVisible) putAll(categorySelectedState)
         }
     }
+
     val regionState = remember(isFilterBottomSheetVisible, regionSelectedState) {
         mutableStateMapOf<Int, Boolean>().apply {
             if (isFilterBottomSheetVisible) putAll(regionSelectedState)
         }
     }
+
     val ageState = remember(isFilterBottomSheetVisible, ageSelectedState) {
         mutableStateMapOf<Int, Boolean>().apply {
             if (isFilterBottomSheetVisible) putAll(ageSelectedState)
         }
     }
 
+    val filterStates = listOf(propertyState, categoryState, regionState, ageState)
+
     if (isFilterBottomSheetVisible) {
         ExploreFilterBottomSheet(
             onDismiss = {
                 isFilterBottomSheetVisible = false
             },
-            onFilterReset = onResetExploreFilterButtonClick,
+            onFilterReset = {
+                filterStates.forEach { it.clear() }
+            },
             onSave = {
                 isFilterBottomSheetVisible = false
-                onFilterApplyButtonClick(
-                    propertyState.toPersistentMap(),
-                    categoryState.toPersistentMap(),
-                    regionState.toPersistentMap(),
-                    ageState.toPersistentMap()
-                )
+
+                val (property, category, region, age) = filterStates.map { it.toPersistentMap() }
+
+                onFilterApplyButtonClick(property, category, region, age)
             },
             onToggleFilter = { id, type ->
                 when (type) {
