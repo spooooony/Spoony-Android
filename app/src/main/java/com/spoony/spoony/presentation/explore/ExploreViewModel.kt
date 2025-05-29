@@ -19,6 +19,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -43,6 +44,9 @@ class ExploreViewModel @Inject constructor(
     private val _sideEffect = MutableSharedFlow<ExploreSideEffect>()
     val sideEffect: SharedFlow<ExploreSideEffect>
         get() = _sideEffect.asSharedFlow()
+
+    private var allSearchJob: Job? = null
+    private var followingSearchJob: Job? = null
 
     init {
         getCategoryList()
@@ -89,6 +93,7 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun localReviewToggle() {
+        allSearchJob?.cancel()
         val chipItems = _state.value.chipItems
         val currentFilterState = _state.value.filterSelectionState
         val propertySelectedState = currentFilterState.properties
@@ -130,6 +135,7 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun applyExploreFilter(propertySelectedState: PersistentMap<Int, Boolean>, categorySelectedState: PersistentMap<Int, Boolean>, regionSelectedState: PersistentMap<Int, Boolean>, ageSelectedState: PersistentMap<Int, Boolean>) {
+        allSearchJob?.cancel()
         val chipItems = _state.value.chipItems
         val currentFilterState = _state.value.filterSelectionState
         val currentFilterItems = _state.value.exploreFilterItems
@@ -236,6 +242,7 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun updateSelectedSortingOption(sortingOption: SortingOption) {
+        allSearchJob?.cancel()
         viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -271,7 +278,7 @@ class ExploreViewModel @Inject constructor(
                     else -> "AGE_ETC"
                 }
             }
-        viewModelScope.launch {
+        allSearchJob = viewModelScope.launch {
             exploreRepository.getPlaceReviewListFiltered(
                 categoryIds = selectedCategoryIds,
                 regionIds = selectedRegionIds,
@@ -308,7 +315,7 @@ class ExploreViewModel @Inject constructor(
     }
 
     private fun getPlaceReviewFollowingList() {
-        viewModelScope.launch {
+        followingSearchJob = viewModelScope.launch {
             exploreRepository.getPlaceReviewListFollowing()
                 .onSuccess { response ->
                     _state.update {
@@ -367,9 +374,11 @@ class ExploreViewModel @Inject constructor(
         }
         when (exploreType) {
             ExploreType.ALL -> {
+                followingSearchJob?.cancel()
                 getPlaceReviewListFiltered()
             }
             ExploreType.FOLLOWING -> {
+                allSearchJob?.cancel()
                 getPlaceReviewFollowingList()
             }
         }
