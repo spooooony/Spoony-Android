@@ -69,7 +69,7 @@ class ProfileEditViewModel @Inject constructor(
                     regionList = regionModels
                 )
 
-                _profileEditModel.update { profileEditModel }
+                _profileEditModel.value = profileEditModel
             }.onFailure {
                 _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 _sideEffect.emit(ProfileEditSideEffect.NavigateBack)
@@ -85,7 +85,7 @@ class ProfileEditViewModel @Inject constructor(
     fun updateNicknameState(state: NicknameTextFieldState) {
         _nicknameState.update { state }
         if (state == NicknameTextFieldState.DUPLICATE) {
-            _saveButtonEnabled.update { false }
+            _saveButtonEnabled.value = false
         } else {
             updateSaveButtonState()
         }
@@ -96,12 +96,12 @@ class ProfileEditViewModel @Inject constructor(
         val originalNickname = _profileEditModel.value.originalUserName
 
         if (currentNickname.isBlank()) {
-            _nicknameState.update { NicknameTextFieldState.NICKNAME_REQUIRED }
+            _nicknameState.value = NicknameTextFieldState.NICKNAME_REQUIRED
             return
         }
 
         if (currentNickname == originalNickname) {
-            _nicknameState.update { NicknameTextFieldState.AVAILABLE }
+            _nicknameState.value = NicknameTextFieldState.AVAILABLE
             updateSaveButtonState()
             return
         }
@@ -113,10 +113,10 @@ class ProfileEditViewModel @Inject constructor(
             )
                 .onSuccess { isDuplicated ->
                     if (isDuplicated) {
-                        _nicknameState.update { NicknameTextFieldState.DUPLICATE }
-                        _saveButtonEnabled.update { false }
+                        _nicknameState.value = NicknameTextFieldState.DUPLICATE
+                        _saveButtonEnabled.value = false
                     } else {
-                        _nicknameState.update { NicknameTextFieldState.AVAILABLE }
+                        _nicknameState.value = NicknameTextFieldState.AVAILABLE
                     }
                     updateSaveButtonState()
                 }
@@ -167,7 +167,7 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     fun updateProfileInfo() {
-        _saveButtonEnabled.update { false }
+        _saveButtonEnabled.value = false
         viewModelScope.launch {
             val currentModel = _profileEditModel.value
 
@@ -186,7 +186,7 @@ class ProfileEditViewModel @Inject constructor(
                     _sideEffect.emit(ProfileEditSideEffect.NavigateBack)
                 }
                 .onLogFailure {
-                    _saveButtonEnabled.update { true }
+                    _saveButtonEnabled.value = true
                     _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                 }
         }

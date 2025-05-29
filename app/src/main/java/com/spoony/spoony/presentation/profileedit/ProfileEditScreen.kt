@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,6 +56,7 @@ import com.spoony.spoony.presentation.profileedit.component.ProfileImageList
 
 @Composable
 fun ProfileEditScreen(
+    paddingValues: PaddingValues,
     onBackButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileEditViewModel = hiltViewModel()
@@ -93,6 +95,7 @@ fun ProfileEditScreen(
         modifier = modifier
             .fillMaxSize()
             .background(white)
+            .padding(paddingValues)
             .verticalScroll(rememberScrollState())
             .addFocusCleaner(focusManager)
             .pointerInput(Unit) {
