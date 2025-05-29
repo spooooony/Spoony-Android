@@ -261,7 +261,7 @@ private fun PlaceDetailScreen(
             UserProfileInfo(
                 imageUrl = userProfileUrl,
                 name = userName,
-                location = "서울 $userRegion 수저"
+                region = userRegion
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

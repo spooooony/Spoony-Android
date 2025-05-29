@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -26,7 +25,7 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 fun UserProfileInfo(
     imageUrl: String,
     name: String,
-    location: String,
+    region: String,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -59,26 +58,16 @@ fun UserProfileInfo(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = location,
-                style = SpoonyAndroidTheme.typography.caption1m,
-                color = SpoonyAndroidTheme.colors.gray400,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (region != "") {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "서울 $region 스푼",
+                    style = SpoonyAndroidTheme.typography.caption1m,
+                    color = SpoonyAndroidTheme.colors.gray400,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun UserProfileInfoPreview() {
-    SpoonyAndroidTheme {
-        UserProfileInfo(
-            imageUrl = "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-            name = "클레오가트라",
-            location = "마포구 수저"
-        )
     }
 }
