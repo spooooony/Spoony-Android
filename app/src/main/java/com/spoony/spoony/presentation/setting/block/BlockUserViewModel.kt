@@ -6,6 +6,7 @@ import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.setting.block.model.BlockUserState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -17,11 +18,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class BlockUserViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _blockingList = MutableStateFlow<ImmutableList<BlockUserState>>(persistentListOf())
     val blockingList: StateFlow<ImmutableList<BlockUserState>> get() = _blockingList.asStateFlow()
@@ -72,7 +72,7 @@ class BlockUserViewModel @Inject constructor(
     private fun observeBlockRequests() {
         viewModelScope.launch {
             blockRequestQueue
-                .debounce(BLOCK_REQUEST_DEBOUNCE_TIME) // API 요청만 debounce
+                .debounce(BLOCK_REQUEST_DEBOUNCE_TIME)
                 .collect { (userId, newIsBlocking) ->
                     val result = if (newIsBlocking) {
                         userRepository.blockUser(userId)
