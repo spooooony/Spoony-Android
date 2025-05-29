@@ -7,10 +7,12 @@ import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
+import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.model.toModel
 import com.spoony.spoony.presentation.gourmet.map.model.toReviewCardModel
 import com.spoony.spoony.presentation.gourmet.map.model.toReviewModel
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
@@ -31,6 +33,7 @@ class MapViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
     private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
@@ -43,6 +46,7 @@ class MapViewModel @Inject constructor(
 
     init {
         getUserInfo()
+        getCategoryInfo()
 
         with(savedStateHandle.toRoute<Map>()) {
             if (locationId == null) return@with
@@ -83,9 +87,9 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun getAddedPlaceList() {
+    fun getAddedPlaceList(categoryId: Int = 1) {
         viewModelScope.launch {
-            mapRepository.getAddedPlaceList(1)
+            mapRepository.getAddedPlaceList(categoryId)
                 .onSuccess { (count, reviewList) ->
                     _state.update {
                         it.copy(
@@ -154,6 +158,26 @@ class MapViewModel @Inject constructor(
                         it.copy(userName = UiState.Failure("유저 정보 조회 실패"))
                     }
                     _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
+                }
+        }
+    }
+
+    private fun getCategoryInfo() {
+        viewModelScope.launch {
+            categoryRepository.getCategories()
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            categoryList = UiState.Success(response.map { it.toModel() }.toImmutableList())
+                        )
+                    }
+                }
+                .onLogFailure {
+                    _state.update {
+                        it.copy(
+                            categoryList = UiState.Failure("카테고리 조회 실패")
+                        )
+                    }
                 }
         }
     }

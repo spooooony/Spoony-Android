@@ -22,14 +22,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -99,6 +96,7 @@ import com.spoony.spoony.presentation.gourmet.map.component.SpoonyMapMarker
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapBottomSheetDragHandle
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapListItem
+import com.spoony.spoony.presentation.gourmet.map.model.CategoryModel
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
 import com.spoony.spoony.presentation.gourmet.map.model.PlaceReviewModel
 import com.spoony.spoony.presentation.gourmet.map.model.ReviewCardModel
@@ -221,6 +219,7 @@ fun MapRoute(
         placeCount = state.placeCount,
         placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<PlaceReviewModel>>)?.data ?: persistentListOf(),
         placeCardList = (state.placeCardInfo as? UiState.Success<ImmutableList<ReviewCardModel>>)?.data ?: persistentListOf(),
+        categoryList = (state.categoryList as? UiState.Success<ImmutableList<CategoryModel>>)?.data ?: persistentListOf(),
         locationInfo = state.locationModel,
         onExploreButtonClick = navigateToExplore,
         onPlaceItemClick = viewModel::getPlaceInfo,
@@ -252,7 +251,8 @@ fun MapRoute(
 
                 locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
             }
-        }
+        },
+        onCategoryClick = viewModel::getAddedPlaceList
     )
 }
 
@@ -266,21 +266,22 @@ private fun MapScreen(
     locationInfo: LocationModel,
     placeList: ImmutableList<PlaceReviewModel>,
     placeCardList: ImmutableList<ReviewCardModel>,
+    categoryList: ImmutableList<CategoryModel>,
     onExploreButtonClick: () -> Unit,
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
     onBackButtonClick: () -> Unit,
     moveCamera: (Double, Double) -> Unit,
-    onGpsButtonClick: () -> Unit
+    onGpsButtonClick: () -> Unit,
+    onCategoryClick: (Int) -> Unit
 ) {
-    val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
     val density = LocalDensity.current
 
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
-            AdvancedSheetState.Collapsed at height(dragHandleHeight.dp + paddingValues.calculateBottomPadding() + systemPaddingValues.calculateBottomPadding())
+            AdvancedSheetState.Collapsed at height(dragHandleHeight.dp + paddingValues.calculateBottomPadding())
             AdvancedSheetState.PartiallyExpanded at height(60)
             AdvancedSheetState.Expanded at height(100)
         }
@@ -291,6 +292,7 @@ private fun MapScreen(
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
+    var selectedCategoryId by remember { mutableIntStateOf(1) }
 
     Box(
         modifier = Modifier
@@ -435,18 +437,23 @@ private fun MapScreen(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
             ) {
-                items(6) { index ->
-                    IconChip(
-                        text = "전체",
-                        selectedIconUrl = "https://avatars.githubusercontent.com/u/200387868?s=48&v=4",
-                        unSelectedIconUrl = "https://avatars.githubusercontent.com/u/200387868?s=48&v=4",
-                        onClick = { },
-                        isSelected = index == 0,
-                        isGradient = true,
-                        secondColor = SpoonyAndroidTheme.colors.white,
-                        mainColor = SpoonyAndroidTheme.colors.main400,
-                        selectedBorderColor = SpoonyAndroidTheme.colors.main200
-                    )
+                items(categoryList) { category ->
+                    with(category) {
+                        IconChip(
+                            text = category.categoryName,
+                            selectedIconUrl = iconUrl,
+                            unSelectedIconUrl = unSelectedIconUrl,
+                            onClick = {
+                                selectedCategoryId = categoryId
+                                onCategoryClick(categoryId)
+                            },
+                            isSelected = categoryId == selectedCategoryId,
+                            isGradient = true,
+                            secondColor = SpoonyAndroidTheme.colors.white,
+                            mainColor = SpoonyAndroidTheme.colors.main400,
+                            selectedBorderColor = SpoonyAndroidTheme.colors.main200
+                        )
+                    }
                 }
             }
 

@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.gourmet.map
 
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.presentation.gourmet.map.model.CategoryModel
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
 import com.spoony.spoony.presentation.gourmet.map.model.PlaceReviewModel
 import com.spoony.spoony.presentation.gourmet.map.model.ReviewCardModel
@@ -14,5 +15,6 @@ data class MapState(
     ),
     val placeCardInfo: UiState<ImmutableList<ReviewCardModel>> = UiState.Loading,
     val addedPlaceList: UiState<ImmutableList<PlaceReviewModel>> = UiState.Loading,
+    val categoryList: UiState<ImmutableList<CategoryModel>> = UiState.Loading,
     val placeCount: Int = 0
 )
