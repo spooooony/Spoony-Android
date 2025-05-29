@@ -1,7 +1,7 @@
 package com.spoony.spoony.domain.repository
 
-import com.spoony.spoony.domain.entity.ExplorePlaceReviewResultEntity
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
+import com.spoony.spoony.domain.entity.ExplorePlaceReviewResultEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import com.spoony.spoony.domain.entity.UserEntity
 
