@@ -248,7 +248,10 @@ private fun ExploreSearchScreen(
                                 ExploreSearchRecentContent(
                                     onRemoveRecentSearchItem = onRemoveRecentSearchItem,
                                     onClearRecentSearchItem = onClearRecentSearchItem,
-                                    onItemClick = onSearch,
+                                    onItemClick = {
+                                        searchText = it
+                                        onSearch(searchText)
+                                    },
                                     recentQueryList = recentReviewSearchQueryList
                                 )
                         }
