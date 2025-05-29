@@ -400,7 +400,7 @@ class ExploreViewModel @Inject constructor(
                         )
                     }
                     _sideEffect.emit(
-                        ExploreSideEffect.ShowSnackbar("성공적으로 삭제 되었습니다.")
+                        ExploreSideEffect.ShowSnackbar("삭제 되었어요!")
                     )
                 }
                 .onFailure { e ->
