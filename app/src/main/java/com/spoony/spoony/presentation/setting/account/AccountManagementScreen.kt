@@ -55,9 +55,7 @@ internal fun AccountManagementScreen(
             negativeText = "아니요",
             onClickNegative = { isShowDialog = false },
             positiveText = "네",
-            onClickPositive = {
-                viewModel.signOut()
-            },
+            onClickPositive = viewModel::signOut,
             onDismiss = { isShowDialog = false }
         )
     }
