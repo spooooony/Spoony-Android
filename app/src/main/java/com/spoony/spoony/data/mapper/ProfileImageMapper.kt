@@ -11,6 +11,7 @@ fun ProfileImageResponseDto.toDomain() = ProfileImageEntity(
 
 fun ImageResponseDto.toDomain() = ImageEntity(
     imageLevel = this.imageLevel,
+    spoonName = this.spoonName,
     unlockCondition = this.unlockCondition,
     imageUrl = this.imageUrl,
     isUnlocked = this.isUnlocked

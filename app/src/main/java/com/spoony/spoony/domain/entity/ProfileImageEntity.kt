@@ -6,6 +6,7 @@ data class ProfileImageEntity(
 
 data class ImageEntity(
     val imageLevel: Int,
+    val spoonName: String,
     val unlockCondition: String,
     val imageUrl: String,
     val isUnlocked: Boolean
