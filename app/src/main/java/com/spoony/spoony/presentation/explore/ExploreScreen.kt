@@ -426,7 +426,6 @@ private fun ExploreContent(
             ) {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier,
                     contentPadding = PaddingValues(bottom = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
