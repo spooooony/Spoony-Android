@@ -6,20 +6,23 @@ import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenRepository: TokenRepository
 ) : ViewModel() {
-    val accessToken: String
+    private val accessToken: String
         get() = tokenRepository.getCachedAccessToken()
 
-    val restartTrigger = MutableSharedFlow<Unit>()
+    private val _restartTrigger = MutableSharedFlow<Unit>()
+    val restartTrigger: SharedFlow<Unit>
+        get() = _restartTrigger.asSharedFlow()
 
     fun signOut() {
         viewModelScope.launch {
@@ -27,7 +30,7 @@ class AccountViewModel @Inject constructor(
                 token = accessToken
             ).onSuccess {
                 tokenRepository.clearTokens()
-                restartTrigger.emit(Unit)
+                _restartTrigger.emit(Unit)
             }.onLogFailure {
                 // TODO: 언젠가 에러처리 하기
             }
@@ -39,11 +42,8 @@ class AccountViewModel @Inject constructor(
             authRepository.withDraw(
                 token = accessToken
             ).onSuccess {
-                async {
-                    tokenRepository.clearTokens()
-                }.await()
-
-                restartTrigger.emit(Unit)
+                tokenRepository.clearTokens()
+                _restartTrigger.emit(Unit)
             }.onLogFailure {
                 // TODO: 언젠가 에러처리 하기
             }
