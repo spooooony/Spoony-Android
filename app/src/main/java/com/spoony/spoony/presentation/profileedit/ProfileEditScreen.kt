@@ -95,7 +95,7 @@ fun ProfileEditScreen(
         modifier = modifier
             .fillMaxSize()
             .background(white)
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
             .verticalScroll(rememberScrollState())
             .addFocusCleaner(focusManager)
             .pointerInput(Unit) {
