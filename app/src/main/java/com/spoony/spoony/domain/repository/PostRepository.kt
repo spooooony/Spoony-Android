@@ -1,6 +1,5 @@
 package com.spoony.spoony.domain.repository
 
-import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 
 interface PostRepository {
@@ -12,7 +11,7 @@ interface PostRepository {
 
     suspend fun deletePinMap(postId: Int): Result<Boolean>
 
-    suspend fun getAddedMapPost(placeId: Int): Result<List<AddedMapPostEntity>>
+    suspend fun getAddedMapPost(placeId: Int): Result<List<PlaceReviewEntity>>
 
     suspend fun deletePost(postId: Int): Result<Unit>
 }

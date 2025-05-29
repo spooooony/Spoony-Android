@@ -5,8 +5,8 @@ package com.spoony.spoony.domain.entity
  */
 
 data class PlaceReviewEntity(
-    val reviewId: Int,
-    val userId: Int,
+    val reviewId: Int? = null,
+    val userId: Int? = null,
     val userName: String? = null,
     val userRegion: String? = null,
     val description: String,
@@ -14,6 +14,7 @@ data class PlaceReviewEntity(
     val cons: String? = null,
     val photoUrlList: List<String>? = listOf(),
     val menuList: List<String>? = listOf(),
+    val placeId: Int? = null,
     val placeName: String? = null,
     val placeAddress: String? = null,
     val latitude: Double? = null,

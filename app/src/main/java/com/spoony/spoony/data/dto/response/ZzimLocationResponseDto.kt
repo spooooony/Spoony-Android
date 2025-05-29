@@ -3,8 +3,14 @@ package com.spoony.spoony.data.dto.response
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * 특정 지역의 북마크 조회 API
+ */
+
 @Serializable
 data class ZzimLocationResponseDto(
+    @SerialName("count")
+    val count: Int,
     @SerialName("zzimCardResponses")
     val zzimCardResponses: List<ZzimCardResponseDto>
 )
@@ -17,8 +23,8 @@ data class ZzimCardResponseDto(
     val placeName: String,
     @SerialName("placeAddress")
     val placeAddress: String,
-    @SerialName("postTitle")
-    val postTitle: String,
+    @SerialName("description")
+    val description: String,
     @SerialName("photoUrl")
     val photoUrl: String,
     @SerialName("latitude")

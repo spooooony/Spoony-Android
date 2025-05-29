@@ -89,9 +89,6 @@ import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.core.util.extension.toValidHexColor
-import com.spoony.spoony.domain.entity.AddedMapPostEntity
-import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.COLLAPSED_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.MIN_PARTIALLY_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.dragHandleHeight
@@ -103,6 +100,8 @@ import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapBotto
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapListItem
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.model.PlaceReviewModel
+import com.spoony.spoony.presentation.gourmet.map.model.ReviewCardModel
 import io.morfly.compose.bottomsheet.material3.BottomSheetState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
@@ -220,8 +219,8 @@ fun MapRoute(
         cameraPositionState = cameraPositionState,
         userName = (state.userName as? UiState.Success<String>)?.data ?: "",
         placeCount = state.placeCount,
-        placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<AddedPlaceEntity>>)?.data ?: persistentListOf(),
-        placeCardList = (state.placeCardInfo as? UiState.Success<ImmutableList<AddedMapPostEntity>>)?.data ?: persistentListOf(),
+        placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<PlaceReviewModel>>)?.data ?: persistentListOf(),
+        placeCardList = (state.placeCardInfo as? UiState.Success<ImmutableList<ReviewCardModel>>)?.data ?: persistentListOf(),
         locationInfo = state.locationModel,
         onExploreButtonClick = navigateToExplore,
         onPlaceItemClick = viewModel::getPlaceInfo,
@@ -265,8 +264,8 @@ private fun MapScreen(
     userName: String,
     placeCount: Int,
     locationInfo: LocationModel,
-    placeList: ImmutableList<AddedPlaceEntity>,
-    placeCardList: ImmutableList<AddedMapPostEntity>,
+    placeList: ImmutableList<PlaceReviewModel>,
+    placeCardList: ImmutableList<ReviewCardModel>,
     onExploreButtonClick: () -> Unit,
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
@@ -369,16 +368,16 @@ private fun MapScreen(
                 with(placeCardList[pageIndex]) {
                     MapPlaceDetailCard(
                         placeName = placeName,
-                        review = "",
-                        imageUrlList = photoUrlList.take(3).toImmutableList(),
-                        categoryIconUrl = categoryEntity.iconUrl,
-                        categoryName = categoryEntity.categoryName,
-                        textColor = Color.hexToColor(categoryEntity.textColor.toValidHexColor()),
-                        backgroundColor = Color.hexToColor(categoryEntity.backgroundColor.toValidHexColor()),
-                        onClick = { onPlaceCardClick(postId) },
-                        username = authorName,
-                        placeSpoon = authorRegionName,
-                        addMapCount = zzimCount
+                        review = description,
+                        imageUrlList = photoUrl.take(3).toImmutableList(),
+                        categoryIconUrl = categoryInfo.iconUrl,
+                        categoryName = categoryInfo.categoryName,
+                        textColor = Color.hexToColor(categoryInfo.textColor),
+                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
+                        onClick = { onPlaceCardClick(reviewId) },
+                        username = userName,
+                        placeSpoon = userRegion,
+                        addMapCount = addMapCount
                     )
                 }
             }
@@ -494,12 +493,12 @@ private fun MapScreen(
                                             MapListItem(
                                                 placeName = placeName,
                                                 address = placeAddress,
-                                                review = "",
+                                                review = description,
                                                 imageUrl = photoUrl,
                                                 categoryIconUrl = categoryInfo.iconUrl,
                                                 categoryName = categoryInfo.categoryName,
-                                                textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
-                                                backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
+                                                textColor = Color.hexToColor(categoryInfo.textColor),
+                                                backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
                                                 onClick = {
                                                     onPlaceItemClick(placeId)
                                                     moveCamera(addedPlace.latitude, addedPlace.longitude)

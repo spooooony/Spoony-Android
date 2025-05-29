@@ -24,8 +24,8 @@ data class ExploreSearchPlaceReviewModel(
 )
 
 fun PlaceReviewEntity.toModel(): ExploreSearchPlaceReviewModel = ExploreSearchPlaceReviewModel(
-    reviewId = this.reviewId,
-    userId = this.userId,
+    reviewId = this.reviewId ?: 0,
+    userId = this.userId ?: 0,
     userName = this.userName ?: "",
     userRegion = this.userRegion ?: "",
     description = this.description,

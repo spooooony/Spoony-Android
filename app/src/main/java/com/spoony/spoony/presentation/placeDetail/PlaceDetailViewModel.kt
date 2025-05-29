@@ -117,7 +117,7 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.getPost(postId = postId)
                 .onSuccess { response ->
-                    getUserInfo(response.userId)
+                    getUserInfo(response.userId ?: -1)
                     _state.update {
                         it.copy(
                             placeDetailModel = UiState.Success(

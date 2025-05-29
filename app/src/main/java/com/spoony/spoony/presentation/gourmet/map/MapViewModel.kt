@@ -10,6 +10,8 @@ import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.model.toReviewCardModel
+import com.spoony.spoony.presentation.gourmet.map.model.toReviewModel
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -60,7 +62,7 @@ class MapViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             placeCardInfo = UiState.Success(
-                                response.toImmutableList()
+                                response.map { review -> review.toReviewCardModel() }.toImmutableList()
                             )
                         )
                     }
@@ -71,24 +73,22 @@ class MapViewModel @Inject constructor(
 
     fun getAddedPlaceList() {
         viewModelScope.launch {
-            mapRepository.getAddedPlaceList()
-                .onSuccess { response ->
+            mapRepository.getAddedPlaceList(1)
+                .onSuccess { (count, reviewList) ->
                     _state.update {
                         it.copy(
-                            placeCount = response.count,
-                            addedPlaceList = if (response.count == 0) {
-                                UiState.Success(
-                                    response.placeList.toImmutableList()
-                                )
+                            placeCount = count,
+                            addedPlaceList = if (count == 0) {
+                                UiState.Empty
                             } else {
                                 UiState.Success(
-                                    response.placeList.toImmutableList()
+                                    reviewList.map { review -> review.toReviewModel() }.toImmutableList()
                                 )
                             }
                         )
                     }
                 }
-                .onFailure {
+                .onLogFailure {
                     _state.update {
                         it.copy(
                             addedPlaceList = UiState.Failure("지도 장소 리스트 조회 실패")
@@ -102,22 +102,26 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             mapRepository.getAddedPlaceListByLocation(
                 locationId = locationId
-            ).onSuccess { response ->
+            ).onSuccess { (count, reviewList) ->
                 _state.update {
                     it.copy(
-                        placeCount = response.size,
-                        addedPlaceList = if (response.isEmpty()) {
-                            UiState.Success(
-                                response.toImmutableList()
-                            )
+                        placeCount = count,
+                        addedPlaceList = if (count == 0) {
+                            UiState.Empty
                         } else {
                             UiState.Success(
-                                response.toImmutableList()
+                                reviewList.map { review -> review.toReviewModel() }.toImmutableList()
                             )
                         }
                     )
                 }
-            }.onFailure(Timber::e)
+            }.onLogFailure {
+                _state.update {
+                    it.copy(
+                        addedPlaceList = UiState.Failure("지도 장소 리스트 조회 실패")
+                    )
+                }
+            }
         }
     }
 

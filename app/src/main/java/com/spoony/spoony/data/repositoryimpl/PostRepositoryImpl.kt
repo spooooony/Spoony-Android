@@ -2,7 +2,6 @@ package com.spoony.spoony.data.repositoryimpl
 
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
-import com.spoony.spoony.domain.entity.AddedMapPostEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import com.spoony.spoony.domain.repository.PostRepository
 import javax.inject.Inject
@@ -30,7 +29,7 @@ class PostRepositoryImpl @Inject constructor(
             postRemoteDataSource.deletePinMap(postId = postId).success
         }
 
-    override suspend fun getAddedMapPost(placeId: Int): Result<List<AddedMapPostEntity>> =
+    override suspend fun getAddedMapPost(placeId: Int): Result<List<PlaceReviewEntity>> =
         runCatching {
             postRemoteDataSource.getAddedMapPost(
                 postId = placeId
