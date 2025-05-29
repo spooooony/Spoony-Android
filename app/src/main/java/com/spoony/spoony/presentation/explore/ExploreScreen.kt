@@ -350,7 +350,7 @@ private fun ExploreContent(
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val isLoadingMore = remember { mutableStateOf(false) }
+    var isLoadingMore by remember { mutableStateOf(false) }
     var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
     var targetReviewId by remember { mutableIntStateOf(0) }
     if (isReviewDeleteDialogVisible) {
@@ -375,13 +375,13 @@ private fun ExploreContent(
         }.collect { (lastVisibleItem, totalItems) ->
             val threshold = 2
             if (
-                !isLoadingMore.value &&
+                !isLoadingMore &&
                 lastVisibleItem >= totalItems - threshold &&
                 totalItems > 0
             ) {
-                isLoadingMore.value = true
+                isLoadingMore = true
                 onLoadNextPage()
-                isLoadingMore.value = false
+                isLoadingMore = false
             }
         }
     }
