@@ -1,6 +1,7 @@
 package com.spoony.spoony.domain.repository
 
 import com.spoony.spoony.domain.entity.BasicUserInfoEntity
+import com.spoony.spoony.domain.entity.BlockingListEntity
 import com.spoony.spoony.domain.entity.FollowListEntity
 import com.spoony.spoony.domain.entity.ProfileImageEntity
 import com.spoony.spoony.domain.entity.ProfileInfoEntity
@@ -31,6 +32,8 @@ interface UserRepository {
     suspend fun blockUser(userId: Int): Result<Unit>
 
     suspend fun unblockUser(userId: Int): Result<Unit>
+
+    suspend fun getBlockingList(): Result<BlockingListEntity>
 
     suspend fun getMyProfileInfo(): Result<ProfileInfoEntity>
 

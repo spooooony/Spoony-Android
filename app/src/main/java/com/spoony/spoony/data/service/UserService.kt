@@ -4,6 +4,7 @@ import com.spoony.spoony.core.network.BaseResponse
 import com.spoony.spoony.data.dto.request.ProfileUpdateRequestDto
 import com.spoony.spoony.data.dto.request.TargetUserRequestDto
 import com.spoony.spoony.data.dto.response.BasicUserInfoResponseDto
+import com.spoony.spoony.data.dto.response.BlockingListResponseDto
 import com.spoony.spoony.data.dto.response.FollowListResponseDto
 import com.spoony.spoony.data.dto.response.GetRegionListDto
 import com.spoony.spoony.data.dto.response.ProfileImageResponseDto
@@ -68,6 +69,9 @@ interface UserService {
     suspend fun unblockUser(
         @Body targetUserRequestDto: TargetUserRequestDto
     ): BaseResponse<Unit>
+
+    @GET("/api/v1/user/blockings")
+    suspend fun getBlockingList(): BaseResponse<BlockingListResponseDto>
 
     @GET("/api/v1/user/profile")
     suspend fun getMyProfileInfo(): BaseResponse<ProfileInfoResponseDto>
