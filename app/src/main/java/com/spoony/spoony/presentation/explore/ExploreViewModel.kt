@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.explore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.ExploreRepository
 import com.spoony.spoony.domain.repository.PostRepository
@@ -62,8 +63,7 @@ class ExploreViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure { e ->
-                    Timber.e(e)
+                .onLogFailure {
                     _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
@@ -82,8 +82,7 @@ class ExploreViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure { e ->
-                    Timber.e(e)
+                .onLogFailure {
                     _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
                 }
         }
@@ -273,90 +272,69 @@ class ExploreViewModel @Inject constructor(
                 }
             }
         viewModelScope.launch {
-            try {
-                exploreRepository.getPlaceReviewListFiltered(
-                    categoryIds = selectedCategoryIds,
-                    regionIds = selectedRegionIds,
-                    ageGroups = selectedAgeGroups,
-                    sortBy = _state.value.selectedSortingOption.stringCode,
-                    cursor = _state.value.cursor.takeIf { it != -1 },
-                    size = _state.value.size
-                )
-                    .onSuccess { (reviews, nextCursor) ->
-                        _state.update {
-                            val placeReviewList = (it.placeReviewList as? UiState.Success)?.data ?: persistentListOf()
-                            val newItems = reviews.map { placeReview -> placeReview.toModel() }.toPersistentList()
-                            val mergedList = (placeReviewList + newItems).toPersistentList()
+            exploreRepository.getPlaceReviewListFiltered(
+                categoryIds = selectedCategoryIds,
+                regionIds = selectedRegionIds,
+                ageGroups = selectedAgeGroups,
+                sortBy = _state.value.selectedSortingOption.stringCode,
+                cursor = _state.value.cursor.takeIf { it != -1 },
+                size = _state.value.size
+            )
+                .onSuccess { (reviews, nextCursor) ->
+                    _state.update {
+                        val placeReviewList = (it.placeReviewList as? UiState.Success)?.data ?: persistentListOf()
+                        val newItems = reviews.map { placeReview -> placeReview.toModel() }.toPersistentList()
+                        val mergedList = (placeReviewList + newItems).toPersistentList()
 
-                            it.copy(
-                                placeReviewList = if (mergedList.isEmpty()) {
-                                    UiState.Empty
-                                } else {
-                                    UiState.Success(mergedList)
-                                },
-                                cursor = nextCursor
-                            )
-                        }
+                        it.copy(
+                            placeReviewList = if (mergedList.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(mergedList)
+                            },
+                            cursor = nextCursor
+                        )
                     }
-                    .onFailure { e ->
-                        Timber.e(e)
-                        _state.update {
-                            it.copy(
-                                placeReviewList = UiState.Failure("버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
-                            )
-                        }
-                        _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
-                    }
-            } catch (e: Exception) {
-                Timber.e(e)
-                _state.update {
-                    it.copy(
-                        placeReviewList = UiState.Failure("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.")
-                    )
                 }
-                _sideEffect.emit(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
-            }
+                .onLogFailure {
+                    _state.update {
+                        it.copy(
+                            placeReviewList = UiState.Failure("버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        )
+                    }
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                }
         }
     }
 
     private fun getPlaceReviewFollowingList() {
         viewModelScope.launch {
-            try {
-                exploreRepository.getPlaceReviewListFollowing()
-                    .onSuccess { response ->
-                        _state.update {
-                            it.copy(
-                                placeReviewList =
-                                if (response.isEmpty()) {
-                                    UiState.Empty
-                                } else {
-                                    UiState.Success(
-                                        response.map { placeReview ->
-                                            placeReview.toModel()
-                                        }.toPersistentList()
-                                    )
-                                }
-                            )
-                        }
+            exploreRepository.getPlaceReviewListFollowing()
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            placeReviewList =
+                            if (response.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(
+                                    response.map { placeReview ->
+                                        placeReview.toModel()
+                                    }.toPersistentList()
+                                )
+                            }
+                        )
                     }
-                    .onFailure { e ->
-                        Timber.e(e)
-                        _state.update {
-                            it.copy(
-                                placeReviewList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
-                            )
-                        }
-                        _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
-                    }
-            } catch (e: Exception) {
-                Timber.e(e)
-                _state.update {
-                    it.copy(
-                        placeReviewList = UiState.Failure("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.")
-                    )
                 }
-                _sideEffect.emit(ExploreSideEffect.ShowSnackbar("예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."))
-            }
+                .onFailure { e ->
+                    Timber.e(e)
+                    _state.update {
+                        it.copy(
+                            placeReviewList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        )
+                    }
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                }
         }
     }
 
