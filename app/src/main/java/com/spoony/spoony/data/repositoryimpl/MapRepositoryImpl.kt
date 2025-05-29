@@ -5,7 +5,7 @@ import com.spoony.spoony.data.datasource.MapRemoteDataSource
 import com.spoony.spoony.data.datasource.PostRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.domain.entity.LocationEntity
-import com.spoony.spoony.domain.entity.PlaceReviewEntity
+import com.spoony.spoony.domain.entity.PlaceReviewList
 import com.spoony.spoony.domain.repository.MapRepository
 import javax.inject.Inject
 
@@ -21,16 +21,22 @@ class MapRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getAddedPlaceList(categoryId: Int): Result<Pair<Int, List<PlaceReviewEntity>>> =
+    override suspend fun getAddedPlaceList(categoryId: Int): Result<PlaceReviewList> =
         runCatching {
             val result = postRemoteDataSource.getAddedMap(categoryId).data!!
-            Pair(result.count, result.zzimCardResponses.map { it.toDomain() })
+            PlaceReviewList(
+                totalCount = result.count,
+                reviews = result.zzimCardResponses.map { it.toDomain() }
+            )
         }
 
-    override suspend fun getAddedPlaceListByLocation(locationId: Int): Result<Pair<Int, List<PlaceReviewEntity>>> =
+    override suspend fun getAddedPlaceListByLocation(locationId: Int): Result<PlaceReviewList> =
         runCatching {
             val result = postRemoteDataSource.getZzimByLocation(locationId).data!!
-            Pair(result.count, result.zzimCardResponses.map { it.toDomain() })
+            PlaceReviewList(
+                totalCount = result.count,
+                reviews = result.zzimCardResponses.map { it.toDomain() }
+            )
         }
 
     override suspend fun getRecentSearches(): Result<List<String>> =

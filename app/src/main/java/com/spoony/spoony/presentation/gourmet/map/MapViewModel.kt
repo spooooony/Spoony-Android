@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.MapRepository
@@ -16,12 +17,14 @@ import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
@@ -33,6 +36,10 @@ class MapViewModel @Inject constructor(
     private var _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
     val state: StateFlow<MapState>
         get() = _state.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<MapSideEffect>()
+    val sideEffect: SharedFlow<MapSideEffect>
+        get() = _sideEffect.asSharedFlow()
 
     init {
         getUserInfo()
@@ -67,7 +74,12 @@ class MapViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure(Timber::e)
+                .onLogFailure {
+                    _state.update {
+                        it.copy(placeCardInfo = UiState.Failure("장소별 리뷰 조회 실패"))
+                    }
+                    _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
+                }
         }
     }
 
@@ -94,6 +106,7 @@ class MapViewModel @Inject constructor(
                             addedPlaceList = UiState.Failure("지도 장소 리스트 조회 실패")
                         )
                     }
+                    _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -121,6 +134,7 @@ class MapViewModel @Inject constructor(
                         addedPlaceList = UiState.Failure("지도 장소 리스트 조회 실패")
                     )
                 }
+                _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
             }
         }
     }
@@ -136,26 +150,11 @@ class MapViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    // TODO: 에러 처리
+                    _state.update {
+                        it.copy(userName = UiState.Failure("유저 정보 조회 실패"))
+                    }
+                    _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
-        }
-    }
-
-    fun updateLocationModel(locationModel: LocationModel) {
-        _state.update {
-            it.copy(
-                locationModel = locationModel
-            )
-        }
-    }
-
-    fun resetSelectedPlace() {
-        _state.update {
-            it.copy(
-                locationModel = it.locationModel.copy(
-                    placeId = null
-                )
-            )
         }
     }
 }
