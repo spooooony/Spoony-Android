@@ -20,18 +20,20 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun UserProfileInfo(
     imageUrl: String,
     name: String,
     region: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
     Row(
-        modifier = modifier,
+        modifier = modifier.noRippleClickable(onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
