@@ -126,7 +126,6 @@ class ExploreViewModel @Inject constructor(
                         properties = propertySelectedState.put(2, isLocalReviewSelected)
                     ),
                     chipItems = updatedFilterOptions,
-                    placeReviewList = UiState.Loading,
                     cursor = -1
                 )
             }
@@ -219,7 +218,6 @@ class ExploreViewModel @Inject constructor(
                         ages = ageSelectedState
                     ),
                     chipItems = updatedFilterOptions,
-                    placeReviewList = UiState.Loading,
                     cursor = -1
                 )
             }
@@ -290,9 +288,11 @@ class ExploreViewModel @Inject constructor(
                 .onSuccess { (reviews, nextCursor) ->
                     _state.update {
                         val placeReviewList = (it.placeReviewList as? UiState.Success)?.data ?: persistentListOf()
+                        if (it.cursor != -1 && nextCursor == -1) return@launch
                         val newItems = reviews.map { placeReview -> placeReview.toModel() }.toPersistentList()
-                        val mergedList = (placeReviewList + newItems).toPersistentList()
-
+                        val mergedList =
+                            if (it.cursor == -1) newItems
+                            else (placeReviewList + newItems).toPersistentList()
                         it.copy(
                             placeReviewList = if (mergedList.isEmpty()) {
                                 UiState.Empty
@@ -349,7 +349,6 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    placeReviewList = UiState.Loading,
                     cursor = -1
                 )
             }
