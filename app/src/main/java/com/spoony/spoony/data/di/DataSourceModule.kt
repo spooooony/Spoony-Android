@@ -49,7 +49,9 @@ abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindAuthRemoteDataSource(authRemoteDataSourceImpl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
+    abstract fun bindAuthRemoteDataSource(
+        authRemoteDataSourceImpl: AuthRemoteDataSourceImpl
+    ): AuthRemoteDataSource
 
     @Binds
     @Singleton

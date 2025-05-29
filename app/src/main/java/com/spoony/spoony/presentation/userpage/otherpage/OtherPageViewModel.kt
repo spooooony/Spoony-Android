@@ -38,8 +38,7 @@ class OtherPageViewModel @Inject constructor(
     private val _state: MutableStateFlow<UserPageState> = MutableStateFlow(
         UserPageState(
             userType = UserType.OTHER_PAGE,
-            profile = UserProfile(),
-            isLocalReviewOnly = true
+            profile = UserProfile()
         )
     )
     val state: StateFlow<UserPageState>
@@ -59,7 +58,7 @@ class OtherPageViewModel @Inject constructor(
                     getOtherUserReviews()
                 }
                 .onLogFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -86,7 +85,7 @@ class OtherPageViewModel @Inject constructor(
             getCurrentState = { _state.value.profile.isFollowing },
             onError = {
                 viewModelScope.launch {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                 }
             },
             coroutineScope = viewModelScope
@@ -100,13 +99,41 @@ class OtherPageViewModel @Inject constructor(
 
     fun blockUser(userId: Int) {
         viewModelScope.launch {
-            _state.update { state ->
-                val currentProfile = state.profile
-                state.copy(
-                    profile = currentProfile.copy(
-                        isBlocked = !currentProfile.isBlocked
-                    )
-                )
+            when (_state.value.isBlocked) {
+                true -> {
+                    userRepository.unblockUser(userId)
+                        .onSuccess {
+                            _state.update { currentState ->
+                                currentState.copy(
+                                    profile = currentState.profile.copy(
+                                        isBlocked = false
+                                    )
+                                )
+                            }
+                            getUserProfile()
+                            _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("해당 유저가 차단 해제되었어요."))
+                        }
+                        .onLogFailure {
+                            _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
+                        }
+                }
+
+                false -> {
+                    userRepository.blockUser(userId)
+                        .onSuccess {
+                            _state.update { currentState ->
+                                currentState.copy(
+                                    profile = currentState.profile.copy(
+                                        isBlocked = true
+                                    )
+                                )
+                            }
+                            _sideEffect.emit(OtherPageSideEffect.ShowSnackbar("해당 유저가 차단되었어요."))
+                        }
+                        .onLogFailure {
+                            _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
+                        }
+                }
             }
         }
     }
@@ -120,7 +147,7 @@ class OtherPageViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(OtherPageSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
+                    _sideEffect.emit(OtherPageSideEffect.ShowErrorSnackbar(ErrorType.UNEXPECTED_ERROR))
                 }
         }
     }
@@ -133,5 +160,5 @@ class OtherPageViewModel @Inject constructor(
 
 sealed class OtherPageSideEffect {
     data class ShowSnackbar(val message: String) : OtherPageSideEffect()
-    data class ShowError(val errorType: ErrorType) : OtherPageSideEffect()
+    data class ShowErrorSnackbar(val errorType: ErrorType) : OtherPageSideEffect()
 }

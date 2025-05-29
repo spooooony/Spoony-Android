@@ -2,16 +2,23 @@ package com.spoony.spoony
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.kakao.sdk.common.KakaoSdk
+import com.spoony.spoony.domain.repository.TokenRepository
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 import timber.log.Timber
 
 @HiltAndroidApp
 class Spoony : Application() {
+    @Inject
+    lateinit var tokenRepository: TokenRepository
+
     override fun onCreate() {
         super.onCreate()
 
         initTimber()
         setDayMode()
+        initKakaoSdk()
     }
 
     private fun initTimber() {
@@ -20,5 +27,9 @@ class Spoony : Application() {
 
     private fun setDayMode() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    }
+
+    private fun initKakaoSdk() {
+        KakaoSdk.init(this, BuildConfig.NATIVE_APP_KEY)
     }
 }

@@ -20,7 +20,7 @@ data class GetPostResponseDto(
     @SerialName("value")
     val value: Double,
     @SerialName("cons")
-    val cons: String,
+    val cons: String?,
     @SerialName("placeName")
     val placeName: String,
     @SerialName("placeAddress")

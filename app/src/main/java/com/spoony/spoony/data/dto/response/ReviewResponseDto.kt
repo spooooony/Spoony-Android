@@ -16,7 +16,7 @@ data class FeedResponse(
     @SerialName("userName")
     val userName: String,
     @SerialName("userRegion")
-    val userRegion: String,
+    val userRegion: String?,
     @SerialName("postId")
     val postId: Int,
     @SerialName("description")

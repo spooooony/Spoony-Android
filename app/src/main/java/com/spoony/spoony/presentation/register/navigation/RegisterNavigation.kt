@@ -30,13 +30,15 @@ fun NavController.navigateToRegister(
 fun NavGraphBuilder.registerNavGraph(
     paddingValues: PaddingValues,
     navigateUp: () -> Unit,
-    navigateToExplore: () -> Unit
+    navigateToExplore: () -> Unit,
+    navigateToPostDetail: (postId: Int) -> Unit
 ) {
     composable<Register> {
         RegisterRoute(
             paddingValues = paddingValues,
             navigateUp = navigateUp,
-            navigateToExplore = navigateToExplore
+            navigateToExplore = navigateToExplore,
+            navigateToPostDetail = navigateToPostDetail
         )
     }
 }
@@ -44,6 +46,7 @@ fun NavGraphBuilder.registerNavGraph(
 fun NavGraphBuilder.registerGraph(
     navController: NavHostController,
     navigateToExplore: () -> Unit,
+    navigateToPostDetail: (postId: Int) -> Unit,
     onUpdateProgress: (RegisterSteps) -> Unit,
     viewModel: RegisterViewModel,
     onResetRegisterState: () -> Unit
@@ -94,6 +97,10 @@ fun NavGraphBuilder.registerGraph(
                 onResetRegisterState()
                 navController.popBackStack(Start, true)
                 navigateToExplore()
+            },
+            onEditComplete = { postId ->
+                onResetRegisterState()
+                navigateToPostDetail(postId)
             }
         )
     }

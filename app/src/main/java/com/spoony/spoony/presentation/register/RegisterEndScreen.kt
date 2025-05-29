@@ -36,6 +36,7 @@ import com.spoony.spoony.presentation.register.RegisterViewModel.Companion.MIN_D
 import com.spoony.spoony.presentation.register.component.NextButton
 import com.spoony.spoony.presentation.register.component.PhotoPicker
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
+import com.spoony.spoony.presentation.register.model.RegisterState
 import com.spoony.spoony.presentation.register.model.RegisterType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -43,6 +44,7 @@ import kotlinx.collections.immutable.toPersistentList
 @Composable
 fun RegisterEndRoute(
     onRegisterComplete: () -> Unit,
+    onEditComplete: (postId: Int) -> Unit,
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -50,7 +52,6 @@ fun RegisterEndRoute(
     val registerType = viewModel.registerType
 
     val isNextButtonEnabled = remember(
-        state.oneLineReview,
         state.detailReview,
         state.selectedPhotos,
         state.isLoading
@@ -67,6 +68,8 @@ fun RegisterEndRoute(
         onOptionalReviewChange = viewModel::updateOptionalReview,
         onRegisterPost = viewModel::registerPost,
         onRegisterComplete = onRegisterComplete,
+        onEditComplete = onEditComplete,
+        postId = viewModel.postId,
         modifier = modifier
     )
 }
@@ -81,10 +84,20 @@ private fun RegisterEndScreen(
     onOptionalReviewChange: (String) -> Unit,
     onRegisterPost: (onSuccess: () -> Unit) -> Unit,
     onRegisterComplete: () -> Unit,
+    onEditComplete: (postId: Int) -> Unit,
+    postId: Int?,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
     var isDialogVisible by remember { mutableStateOf(false) }
+
+    val onNextClick = getOnNextClick(
+        registerType = registerType,
+        postId = postId,
+        onRegisterPost = onRegisterPost,
+        onEditComplete = onEditComplete,
+        onShowDialog = { isDialogVisible = true }
+    )
 
     Column(
         modifier = modifier
@@ -127,16 +140,12 @@ private fun RegisterEndScreen(
 
         NextButton(
             enabled = isNextButtonEnabled,
-            onClick = {
-                onRegisterPost {
-                    isDialogVisible = true
-                }
-            },
-            editText = if (registerType == RegisterType.CREATE) "다음" else "리뷰 수정"
+            onClick = onNextClick,
+            editText = getNextButtonText(registerType)
         )
     }
 
-    if (isDialogVisible) {
+    if (isDialogVisible && registerType == RegisterType.CREATE) {
         SingleButtonDialog(
             message = "수저 1개를 획득했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
             text = "좋아요!",
@@ -239,5 +248,27 @@ private fun OptionalReviewSection(
             isAllowEmoji = true,
             isAllowSpecialChars = true
         )
+    }
+}
+
+private fun getNextButtonText(registerType: RegisterType): String =
+    when (registerType) {
+        RegisterType.CREATE -> "다음"
+        RegisterType.EDIT -> "리뷰 수정"
+    }
+
+@Composable
+private fun getOnNextClick(
+    registerType: RegisterType,
+    postId: Int?,
+    onRegisterPost: ((onSuccess: () -> Unit) -> Unit),
+    onEditComplete: (Int) -> Unit,
+    onShowDialog: () -> Unit
+): () -> Unit = {
+    onRegisterPost {
+        when (registerType) {
+            RegisterType.EDIT -> postId?.let(onEditComplete)
+            RegisterType.CREATE -> onShowDialog()
+        }
     }
 }
