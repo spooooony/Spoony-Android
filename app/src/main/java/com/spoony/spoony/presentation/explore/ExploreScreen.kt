@@ -68,6 +68,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @Composable
@@ -372,7 +373,9 @@ private fun ExploreContent(
             val totalItems = layoutInfo.totalItemsCount
             val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItem to totalItems
-        }.collect { (lastVisibleItem, totalItems) ->
+        }
+        .distinctUntilChanged()
+        .collect { (lastVisibleItem, totalItems) ->
             val threshold = 2
             if (
                 !isLoadingMore &&
