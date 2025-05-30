@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.explore
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,20 +13,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,13 +44,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.core.util.extension.toValidHexColor
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
 import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
@@ -50,12 +59,18 @@ import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
+import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.explore.type.SortingOption
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
+
+private const val LOAD_MORE_THRESHOLD = 3
 
 @Composable
 fun ExploreRoute(
@@ -63,6 +78,7 @@ fun ExploreRoute(
     navigateToExploreSearch: () -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToRegister: () -> Unit,
+    navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
@@ -70,12 +86,18 @@ fun ExploreRoute(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val showSnackBar = LocalSnackBarTrigger.current
-
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
             when (effect) {
                 is ExploreSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
+                }
+                is ExploreSideEffect.ScrollToTop -> {
+                    coroutineScope.launch {
+                        listState.scrollToItem(0)
+                    }
                 }
             }
         }
@@ -88,11 +110,14 @@ fun ExploreRoute(
             onRegisterButtonClick = navigateToRegister,
             onPlaceDetailItemClick = navigateToPlaceDetail,
             onReportButtonClick = navigateToReport,
+            onEditButtonClick = navigateToEditReview,
             onFilterApplyButtonClick = viewModel::applyExploreFilter,
-            onResetExploreFilterButtonClick = viewModel::resetExploreFilter,
             onLocalReviewButtonClick = viewModel::localReviewToggle,
             onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
             onTabChange = viewModel::updateExploreType,
+            onRefresh = viewModel::refreshExploreScreen,
+            onLoadNextPage = viewModel::getPlaceReviewListFiltered,
+            onReviewDeleteButtonClick = viewModel::deleteReview,
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
@@ -104,6 +129,7 @@ fun ExploreRoute(
             regionSelectedState = filterSelectionState.regions,
             ageSelectedState = filterSelectionState.ages,
             categorySelectedState = filterSelectionState.categories,
+            listState = listState,
             exploreType = exploreType
         )
     }
@@ -116,11 +142,14 @@ private fun ExploreScreen(
     onRegisterButtonClick: () -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
     onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
+    onEditButtonClick: (Int, RegisterType) -> Unit,
     onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
-    onResetExploreFilterButtonClick: () -> Unit,
     onLocalReviewButtonClick: () -> Unit,
     onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
     onTabChange: (ExploreType) -> Unit,
+    onRefresh: () -> Unit,
+    onLoadNextPage: () -> Unit,
+    onReviewDeleteButtonClick: (Int) -> Unit,
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -132,18 +161,19 @@ private fun ExploreScreen(
     regionSelectedState: PersistentMap<Int, Boolean>,
     ageSelectedState: PersistentMap<Int, Boolean>,
     categorySelectedState: PersistentMap<Int, Boolean>,
+    listState: LazyListState,
     exploreType: ExploreType
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
-    val selectedTabIndex = remember { mutableIntStateOf(0) }
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
-
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = onSelectSortingOptionButtonClick,
+            onClick = {
+                onSelectSortingOptionButtonClick(it)
+            },
             currentSortingOption = selectedSortingOption
         )
     }
@@ -153,46 +183,64 @@ private fun ExploreScreen(
             if (isFilterBottomSheetVisible) putAll(propertySelectedState)
         }
     }
+
     val categoryState = remember(isFilterBottomSheetVisible, categorySelectedState) {
         mutableStateMapOf<Int, Boolean>().apply {
             if (isFilterBottomSheetVisible) putAll(categorySelectedState)
         }
     }
+
     val regionState = remember(isFilterBottomSheetVisible, regionSelectedState) {
         mutableStateMapOf<Int, Boolean>().apply {
             if (isFilterBottomSheetVisible) putAll(regionSelectedState)
         }
     }
+
     val ageState = remember(isFilterBottomSheetVisible, ageSelectedState) {
         mutableStateMapOf<Int, Boolean>().apply {
             if (isFilterBottomSheetVisible) putAll(ageSelectedState)
         }
     }
 
+    val filterStates = listOf(propertyState, categoryState, regionState, ageState)
+
     if (isFilterBottomSheetVisible) {
         ExploreFilterBottomSheet(
             onDismiss = {
                 isFilterBottomSheetVisible = false
             },
-            onFilterReset = onResetExploreFilterButtonClick,
+            onFilterReset = {
+                filterStates.forEach { it.clear() }
+            },
             onSave = {
                 isFilterBottomSheetVisible = false
-                onFilterApplyButtonClick(
-                    propertyState.toPersistentMap(),
-                    categoryState.toPersistentMap(),
-                    regionState.toPersistentMap(),
-                    ageState.toPersistentMap()
-                )
+
+                val (property, category, region, age) = filterStates.map { it.toPersistentMap() }
+
+                onFilterApplyButtonClick(property, category, region, age)
             },
             onToggleFilter = { id, type ->
-                val stateMap = when (type) {
-                    FilterType.LOCAL_REVIEW -> propertyState
-                    FilterType.CATEGORY -> categoryState
-                    FilterType.REGION -> regionState
-                    FilterType.AGE -> ageState
-                    else -> null
+                when (type) {
+                    FilterType.FILTER -> {}
+                    FilterType.LOCAL_REVIEW -> {
+                        propertyState[id] = !(propertyState[id] ?: false)
+                    }
+                    FilterType.CATEGORY -> {
+                        categoryState[id] = !(categoryState[id] ?: false)
+                    }
+                    FilterType.REGION -> {
+                        regionState[id] = !(regionState[id] ?: false)
+                    }
+                    FilterType.AGE -> {
+                        val alreadySelected = ageState[id] == true
+                        ageState.keys.forEach { key ->
+                            ageState[key] = false
+                        }
+                        if (!alreadySelected) {
+                            ageState[id] = true
+                        }
+                    }
                 }
-                stateMap?.let { it[id] = !(it[id] ?: false) }
             },
             propertyItems = propertyItems,
             regionItems = regionItems,
@@ -223,7 +271,7 @@ private fun ExploreScreen(
             ExploreTabRow(
                 onTabChange = onTabChange,
                 tabList = tabList,
-                selectedTabIndex = selectedTabIndex
+                exploreType = exploreType
             )
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
@@ -241,7 +289,9 @@ private fun ExploreScreen(
                 onFilterClick = { filterType ->
                     handleFilterClick(
                         filterType = filterType,
-                        onLocalReviewButtonClick = onLocalReviewButtonClick,
+                        onLocalReviewButtonClick = {
+                            onLocalReviewButtonClick()
+                        },
                         updateBottomSheetState = { index, isVisible ->
                             exploreFilterBottomSheetTabIndex = index
                             isFilterBottomSheetVisible = isVisible
@@ -260,7 +310,14 @@ private fun ExploreScreen(
             placeReviewList = placeReviewList,
             onRegisterButtonClick = onRegisterButtonClick,
             onPlaceDetailItemClick = onPlaceDetailItemClick,
-            onReportButtonClick = onReportButtonClick
+            onReportButtonClick = onReportButtonClick,
+            onReviewDeleteButtonClick = onReviewDeleteButtonClick,
+            onRefresh = onRefresh,
+            onLoadNextPage = onLoadNextPage,
+            onEditButtonClick = onEditButtonClick,
+            onClickSearch = onClickSearch,
+            exploreType = exploreType,
+            listState = listState
         )
     }
 }
@@ -279,61 +336,149 @@ private fun handleFilterClick(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExploreContent(
     onRegisterButtonClick: () -> Unit,
     onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onPlaceDetailItemClick: (Int) -> Unit,
+    onReviewDeleteButtonClick: (Int) -> Unit,
+    onRefresh: () -> Unit,
+    onLoadNextPage: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
+    onEditButtonClick: (Int, RegisterType) -> Unit,
+    onClickSearch: () -> Unit,
+    exploreType: ExploreType,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val menuItems = persistentListOf(
-        "신고하기"
-    )
+    var isLoadingMore by remember { mutableStateOf(false) }
+    var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
+    var targetReviewId by remember { mutableIntStateOf(0) }
+    if (isReviewDeleteDialogVisible) {
+        TwoButtonDialog(
+            message = "정말로 리뷰를 삭제할까요?",
+            negativeText = "아니요",
+            positiveText = "네",
+            onClickNegative = { isReviewDeleteDialogVisible = false },
+            onClickPositive = {
+                onReviewDeleteButtonClick(targetReviewId)
+                isReviewDeleteDialogVisible = false
+            },
+            onDismiss = { }
+        )
+    }
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val layoutInfo = listState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleItem to totalItems
+        }
+            .distinctUntilChanged()
+            .collect { (lastVisibleItem, totalItems) ->
+                if (
+                    !isLoadingMore &&
+                    lastVisibleItem >= totalItems - LOAD_MORE_THRESHOLD &&
+                    totalItems > 0
+                ) {
+                    isLoadingMore = true
+                    onLoadNextPage()
+                    isLoadingMore = false
+                }
+            }
+    }
+
     when (placeReviewList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
-                onClick = onRegisterButtonClick,
+                onClick = if (exploreType == ExploreType.ALL) onRegisterButtonClick else onClickSearch,
+                exploreType = exploreType,
                 modifier = Modifier
                     .fillMaxSize()
             )
         }
 
         is UiState.Success -> {
-            LazyColumn(
-                modifier = modifier,
-                contentPadding = PaddingValues(bottom = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(
-                    items = placeReviewList.data,
-                    key = { placeReview ->
-                        placeReview.reviewId
+            val refreshState = rememberPullToRefreshState()
+
+            val alpha by remember {
+                derivedStateOf {
+                    if (refreshState.isRefreshing) {
+                        1f
+                    } else {
+                        refreshState.progress.let { it * it * it }
                     }
-                ) { placeReview ->
-                    ReviewCard(
-                        reviewId = placeReview.reviewId,
-                        username = placeReview.userName,
-                        userRegion = placeReview.userRegion,
-                        review = placeReview.description,
-                        addMapCount = placeReview.addMapCount,
-                        date = placeReview.createdAt,
-                        imageList = placeReview.photoUrlList,
-                        category = ReviewCardCategory(
-                            text = placeReview.category.categoryName,
-                            iconUrl = placeReview.category.iconUrl,
-                            backgroundColor = Color.hexToColor(placeReview.category.backgroundColor.toValidHexColor()),
-                            textColor = Color.hexToColor(placeReview.category.textColor.toValidHexColor())
-                        ),
-                        menuItems = menuItems,
-                        onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
-                        onMenuItemClick = { option ->
-                            when (option) {
-                                "신고하기" -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
+                }
+            }
+
+            LaunchedEffect(refreshState.isRefreshing) {
+                if (refreshState.isRefreshing) {
+                    onRefresh()
+                    refreshState.endRefresh()
+                }
+            }
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .nestedScroll(refreshState.nestedScrollConnection)
+            ) {
+                LazyColumn(
+                    state = listState,
+                    contentPadding = PaddingValues(bottom = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(
+                        items = placeReviewList.data
+                    ) { placeReview ->
+                        val menuList = remember {
+                            if (placeReview.isMine) {
+                                persistentListOf(
+                                    ExploreDropdownOption.EDIT.string,
+                                    ExploreDropdownOption.DELETE.string
+                                )
+                            } else {
+                                persistentListOf(
+                                    ExploreDropdownOption.REPORT.string
+                                )
                             }
                         }
-                    )
+                        ReviewCard(
+                            reviewId = placeReview.reviewId,
+                            username = placeReview.userName,
+                            userRegion = placeReview.userRegion,
+                            review = placeReview.description,
+                            addMapCount = placeReview.addMapCount,
+                            date = placeReview.createdAt,
+                            imageList = placeReview.photoUrlList,
+                            category = ReviewCardCategory(
+                                text = placeReview.category.text,
+                                iconUrl = placeReview.category.iconUrl,
+                                backgroundColor = placeReview.category.backgroundColor,
+                                textColor = placeReview.category.textColor
+                            ),
+                            menuItems = menuList,
+                            onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
+                            onMenuItemClick = { option ->
+                                when (option) {
+                                    ExploreDropdownOption.REPORT.string -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
+                                    ExploreDropdownOption.EDIT.string -> onEditButtonClick(placeReview.reviewId, RegisterType.EDIT)
+                                    ExploreDropdownOption.DELETE.string -> {
+                                        targetReviewId = placeReview.reviewId
+                                        isReviewDeleteDialogVisible = true
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
+                PullToRefreshContainer(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter),
+                    state = refreshState,
+                    containerColor = SpoonyAndroidTheme.colors.main500.copy(alpha = alpha),
+                    contentColor = SpoonyAndroidTheme.colors.white.copy(alpha = alpha)
+                )
             }
         }
 

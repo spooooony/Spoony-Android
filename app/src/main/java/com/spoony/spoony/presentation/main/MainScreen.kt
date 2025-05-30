@@ -147,6 +147,7 @@ fun MainScreen(
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateToRegister = navigator::navigateToRegister,
                     navigateToExploreSearch = navigator::navigateToExploreSearch,
+                    navigateToEditReview = navigator::navigateToReviewEdit,
                     navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
                             reportTargetId = reportTargetId,

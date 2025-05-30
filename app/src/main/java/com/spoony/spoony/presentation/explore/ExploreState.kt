@@ -1,7 +1,6 @@
 package com.spoony.spoony.presentation.explore
 
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.ExploreFilterDataProvider
 import com.spoony.spoony.presentation.explore.model.FilterChipOptionProvider
@@ -16,7 +15,6 @@ data class ExploreState(
     val selectedCategoryId: Int = 1,
     val selectedSortingOption: SortingOption = SortingOption.LATEST,
     val chipItems: ImmutableList<FilterOption> = FilterChipOptionProvider.getDefaultFilterOptions(),
-    val categoryList: UiState<ImmutableList<CategoryEntity>> = UiState.Loading,
     val placeReviewList: UiState<ImmutableList<PlaceReviewModel>> = UiState.Loading,
     val exploreType: ExploreType = ExploreType.ALL,
     val filterSelectionState: ExploreFilterState = ExploreFilterState(

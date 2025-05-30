@@ -7,6 +7,7 @@ import com.spoony.spoony.data.service.ExploreService
 import com.spoony.spoony.data.service.MapService
 import com.spoony.spoony.data.service.PlaceService
 import com.spoony.spoony.data.service.PostService
+import com.spoony.spoony.data.service.RegionService
 import com.spoony.spoony.data.service.ReportService
 import com.spoony.spoony.data.service.ReviewService
 import com.spoony.spoony.data.service.SpoonService
@@ -70,4 +71,9 @@ object ServiceModule {
     @Singleton
     fun provideReviewService(retrofit: Retrofit): ReviewService =
         retrofit.create(ReviewService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideRegionService(retrofit: Retrofit): RegionService =
+        retrofit.create(RegionService::class.java)
 }
