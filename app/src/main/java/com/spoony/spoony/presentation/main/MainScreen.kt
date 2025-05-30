@@ -139,6 +139,7 @@ fun MainScreen(
                     },
                     navigateToMapSearch = navigator::navigateToMapSearch,
                     navigateToExplore = navigator::navigateToExplore,
+                    navigateToAttendance = navigator::navigateToAttendance,
                     navigateUp = navigator::navigateUp
                 )
 
