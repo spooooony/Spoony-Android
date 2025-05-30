@@ -7,7 +7,6 @@ import com.spoony.spoony.data.dto.request.PostScoopRequestDto
 import com.spoony.spoony.data.dto.response.AddedMapListResponseDto
 import com.spoony.spoony.data.dto.response.AddedMapPostListDto
 import com.spoony.spoony.data.dto.response.GetPostResponseDto
-import com.spoony.spoony.data.dto.response.ZzimLocationResponseDto
 import com.spoony.spoony.data.service.PostService
 import javax.inject.Inject
 
@@ -32,15 +31,17 @@ class PostRemoteDataSourceImpl @Inject constructor(
             postId = postId
         )
 
-    override suspend fun getAddedMap(): BaseResponse<AddedMapListResponseDto> =
-        postService.getAddedMap()
+    override suspend fun getAddedMap(
+        categoryId: Int
+    ): BaseResponse<AddedMapListResponseDto> =
+        postService.getAddedMap(categoryId)
 
     override suspend fun postAddMapData(postId: Int): BaseResponse<Boolean> =
         postService.postAddMapPost(
             AddMapRequestDto(postId = postId)
         )
 
-    override suspend fun getZzimByLocation(locationId: Int): BaseResponse<ZzimLocationResponseDto> =
+    override suspend fun getZzimByLocation(locationId: Int): BaseResponse<AddedMapListResponseDto> =
         postService.getZzimByLocation(locationId)
 
     override suspend fun deletePost(postId: Int): BaseResponse<Unit> =

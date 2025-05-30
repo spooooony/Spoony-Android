@@ -22,14 +22,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -93,9 +90,6 @@ import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.hexToColor
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.core.util.extension.toValidHexColor
-import com.spoony.spoony.domain.entity.AddedMapPostEntity
-import com.spoony.spoony.domain.entity.AddedPlaceEntity
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.COLLAPSED_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.MIN_PARTIALLY_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.dragHandleHeight
@@ -106,7 +100,10 @@ import com.spoony.spoony.presentation.gourmet.map.component.SpoonyMapMarker
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapBottomSheetDragHandle
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapListItem
+import com.spoony.spoony.presentation.gourmet.map.model.CategoryModel
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.model.PlaceReviewModel
+import com.spoony.spoony.presentation.gourmet.map.model.ReviewCardModel
 import io.morfly.compose.bottomsheet.material3.BottomSheetState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
@@ -114,6 +111,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+private const val DEFAULT_CATEGORY_ID = 1
 private const val DEFAULT_ZOOM = 14.0
 private val LOCATION_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -182,7 +180,7 @@ fun MapRoute(
     with(state.locationModel) {
         LaunchedEffect(placeId) {
             if (placeId == null) {
-                viewModel.getAddedPlaceList()
+                viewModel.getAddedPlaceList(DEFAULT_CATEGORY_ID)
             } else {
                 viewModel.getAddedPlaceListByLocation(locationId = placeId)
             }
@@ -237,8 +235,9 @@ fun MapRoute(
         cameraPositionState = cameraPositionState,
         userName = (state.userName as? UiState.Success<String>)?.data ?: "",
         placeCount = state.placeCount,
-        placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<AddedPlaceEntity>>)?.data ?: persistentListOf(),
-        placeCardList = (state.placeCardInfo as? UiState.Success<ImmutableList<AddedMapPostEntity>>)?.data ?: persistentListOf(),
+        placeList = (state.addedPlaceList as? UiState.Success<ImmutableList<PlaceReviewModel>>)?.data ?: persistentListOf(),
+        placeCardList = (state.placeCardInfo as? UiState.Success<ImmutableList<ReviewCardModel>>)?.data ?: persistentListOf(),
+        categoryList = (state.categoryList as? UiState.Success<ImmutableList<CategoryModel>>)?.data ?: persistentListOf(),
         locationInfo = state.locationModel,
         onExploreButtonClick = navigateToExplore,
         onPlaceItemClick = viewModel::getPlaceInfo,
@@ -270,7 +269,8 @@ fun MapRoute(
 
                 locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
             }
-        }
+        },
+        onCategoryClick = viewModel::getAddedPlaceList
     )
 
     if (showSpoonDraw) {
@@ -295,23 +295,24 @@ private fun MapScreen(
     userName: String,
     placeCount: Int,
     locationInfo: LocationModel,
-    placeList: ImmutableList<AddedPlaceEntity>,
-    placeCardList: ImmutableList<AddedMapPostEntity>,
+    placeList: ImmutableList<PlaceReviewModel>,
+    placeCardList: ImmutableList<ReviewCardModel>,
+    categoryList: ImmutableList<CategoryModel>,
     onExploreButtonClick: () -> Unit,
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
     onBackButtonClick: () -> Unit,
     moveCamera: (Double, Double) -> Unit,
-    onGpsButtonClick: () -> Unit
+    onGpsButtonClick: () -> Unit,
+    onCategoryClick: (Int) -> Unit
 ) {
-    val systemPaddingValues = WindowInsets.systemBars.asPaddingValues()
     val density = LocalDensity.current
 
     val sheetState = rememberBottomSheetState(
         initialValue = AdvancedSheetState.PartiallyExpanded,
         defineValues = {
-            AdvancedSheetState.Collapsed at height(dragHandleHeight.dp + paddingValues.calculateBottomPadding() + systemPaddingValues.calculateBottomPadding())
+            AdvancedSheetState.Collapsed at height(dragHandleHeight.dp + paddingValues.calculateBottomPadding())
             AdvancedSheetState.PartiallyExpanded at height(60)
             AdvancedSheetState.Expanded at height(100)
         }
@@ -322,6 +323,7 @@ private fun MapScreen(
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
+    var selectedCategoryId by remember { mutableIntStateOf(1) }
 
     Box(
         modifier = Modifier
@@ -399,16 +401,16 @@ private fun MapScreen(
                 with(placeCardList[pageIndex]) {
                     MapPlaceDetailCard(
                         placeName = placeName,
-                        review = "",
-                        imageUrlList = photoUrlList.take(3).toImmutableList(),
-                        categoryIconUrl = categoryEntity.iconUrl,
-                        categoryName = categoryEntity.categoryName,
-                        textColor = Color.hexToColor(categoryEntity.textColor.toValidHexColor()),
-                        backgroundColor = Color.hexToColor(categoryEntity.backgroundColor.toValidHexColor()),
-                        onClick = { onPlaceCardClick(postId) },
-                        username = authorName,
-                        placeSpoon = authorRegionName,
-                        addMapCount = zzimCount
+                        review = description,
+                        imageUrlList = photoUrl.take(3).toImmutableList(),
+                        categoryIconUrl = categoryInfo.iconUrl,
+                        categoryName = categoryInfo.categoryName,
+                        textColor = Color.hexToColor(categoryInfo.textColor),
+                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
+                        onClick = { onPlaceCardClick(reviewId) },
+                        username = userName,
+                        placeSpoon = userRegion,
+                        addMapCount = addMapCount
                     )
                 }
             }
@@ -466,18 +468,23 @@ private fun MapScreen(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
             ) {
-                items(6) { index ->
-                    IconChip(
-                        text = "전체",
-                        selectedIconUrl = "https://avatars.githubusercontent.com/u/200387868?s=48&v=4",
-                        unSelectedIconUrl = "https://avatars.githubusercontent.com/u/200387868?s=48&v=4",
-                        onClick = { },
-                        isSelected = index == 0,
-                        isGradient = true,
-                        secondColor = SpoonyAndroidTheme.colors.white,
-                        mainColor = SpoonyAndroidTheme.colors.main400,
-                        selectedBorderColor = SpoonyAndroidTheme.colors.main200
-                    )
+                items(categoryList) { category ->
+                    with(category) {
+                        IconChip(
+                            text = category.categoryName,
+                            selectedIconUrl = iconUrl,
+                            unSelectedIconUrl = unSelectedIconUrl,
+                            onClick = {
+                                selectedCategoryId = categoryId
+                                onCategoryClick(categoryId)
+                            },
+                            isSelected = categoryId == selectedCategoryId,
+                            isGradient = true,
+                            secondColor = SpoonyAndroidTheme.colors.white,
+                            mainColor = SpoonyAndroidTheme.colors.main400,
+                            selectedBorderColor = SpoonyAndroidTheme.colors.main200
+                        )
+                    }
                 }
             }
 
@@ -524,12 +531,12 @@ private fun MapScreen(
                                             MapListItem(
                                                 placeName = placeName,
                                                 address = placeAddress,
-                                                review = "",
+                                                review = description,
                                                 imageUrl = photoUrl,
                                                 categoryIconUrl = categoryInfo.iconUrl,
                                                 categoryName = categoryInfo.categoryName,
-                                                textColor = Color.hexToColor(categoryInfo.textColor.toValidHexColor()),
-                                                backgroundColor = Color.hexToColor(categoryInfo.backgroundColor.toValidHexColor()),
+                                                textColor = Color.hexToColor(categoryInfo.textColor),
+                                                backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
                                                 onClick = {
                                                     onPlaceItemClick(placeId)
                                                     moveCamera(addedPlace.latitude, addedPlace.longitude)

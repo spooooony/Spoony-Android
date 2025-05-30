@@ -1,6 +1,6 @@
 package com.spoony.spoony.data.mapper
 
-import com.spoony.spoony.data.dto.response.CategoryColorResponseDto
+import com.spoony.spoony.data.dto.response.CategoryColorDto
 import com.spoony.spoony.data.dto.response.PlaceReviewResponseDto
 import com.spoony.spoony.domain.entity.CategoryEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
@@ -19,7 +19,7 @@ fun PlaceReviewResponseDto.toDomain(): PlaceReviewEntity =
         isMine = this.isMine
     )
 
-fun CategoryColorResponseDto.toDomain(): CategoryEntity = CategoryEntity(
+fun CategoryColorDto.toDomain(): CategoryEntity = CategoryEntity(
     categoryId = this.categoryId,
     categoryName = this.categoryName,
     iconUrl = this.iconUrl,

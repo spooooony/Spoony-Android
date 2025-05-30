@@ -3,6 +3,10 @@ package com.spoony.spoony.data.dto.response
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * 북마크 조회 API, 특정 지역 북마크 조회 API
+ */
+
 @Serializable
 data class AddedMapResponseDto(
     @SerialName("placeId")
@@ -11,8 +15,10 @@ data class AddedMapResponseDto(
     val placeName: String,
     @SerialName("placeAddress")
     val placeAddress: String,
+    @SerialName("description")
+    val description: String,
     @SerialName("photoUrl")
-    val photoUrlList: String,
+    val photoUrl: String,
     @SerialName("latitude")
     val latitude: Double,
     @SerialName("longitude")

@@ -9,11 +9,15 @@ import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.core.util.extension.toHyphenDate
+import com.spoony.spoony.domain.repository.CategoryRepository
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.domain.repository.SpoonRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
+import com.spoony.spoony.presentation.gourmet.map.model.toModel
+import com.spoony.spoony.presentation.gourmet.map.model.toReviewCardModel
+import com.spoony.spoony.presentation.gourmet.map.model.toReviewModel
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
@@ -28,13 +32,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
     private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository,
     private val spoonRepository: SpoonRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -51,6 +55,7 @@ class MapViewModel @Inject constructor(
 
     init {
         getUserInfo()
+        getCategoryInfo()
         checkSpoonDrawn()
 
         with(savedStateHandle.toRoute<Map>()) {
@@ -78,40 +83,44 @@ class MapViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             placeCardInfo = UiState.Success(
-                                response.toImmutableList()
+                                response.map { review -> review.toReviewCardModel() }.toImmutableList()
                             )
                         )
                     }
                 }
-                .onFailure(Timber::e)
+                .onLogFailure {
+                    _state.update {
+                        it.copy(placeCardInfo = UiState.Failure("장소별 리뷰 조회 실패"))
+                    }
+                    _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
+                }
         }
     }
 
-    fun getAddedPlaceList() {
+    fun getAddedPlaceList(categoryId: Int) {
         viewModelScope.launch {
-            mapRepository.getAddedPlaceList()
-                .onSuccess { response ->
+            mapRepository.getAddedPlaceList(categoryId)
+                .onSuccess { (count, reviewList) ->
                     _state.update {
                         it.copy(
-                            placeCount = response.count,
-                            addedPlaceList = if (response.count == 0) {
-                                UiState.Success(
-                                    response.placeList.toImmutableList()
-                                )
+                            placeCount = count,
+                            addedPlaceList = if (count == 0) {
+                                UiState.Empty
                             } else {
                                 UiState.Success(
-                                    response.placeList.toImmutableList()
+                                    reviewList.map { review -> review.toReviewModel() }.toImmutableList()
                                 )
                             }
                         )
                     }
                 }
-                .onFailure {
+                .onLogFailure {
                     _state.update {
                         it.copy(
                             addedPlaceList = UiState.Failure("지도 장소 리스트 조회 실패")
                         )
                     }
+                    _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -120,22 +129,27 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             mapRepository.getAddedPlaceListByLocation(
                 locationId = locationId
-            ).onSuccess { response ->
+            ).onSuccess { (count, reviewList) ->
                 _state.update {
                     it.copy(
-                        placeCount = response.size,
-                        addedPlaceList = if (response.isEmpty()) {
-                            UiState.Success(
-                                response.toImmutableList()
-                            )
+                        placeCount = count,
+                        addedPlaceList = if (count == 0) {
+                            UiState.Empty
                         } else {
                             UiState.Success(
-                                response.toImmutableList()
+                                reviewList.map { review -> review.toReviewModel() }.toImmutableList()
                             )
                         }
                     )
                 }
-            }.onFailure(Timber::e)
+            }.onLogFailure {
+                _state.update {
+                    it.copy(
+                        addedPlaceList = UiState.Failure("지도 장소 리스트 조회 실패")
+                    )
+                }
+                _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
+            }
         }
     }
 
@@ -193,26 +207,31 @@ class MapViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    // TODO: 에러 처리
+                    _state.update {
+                        it.copy(userName = UiState.Failure("유저 정보 조회 실패"))
+                    }
+                    _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
 
-    fun updateLocationModel(locationModel: LocationModel) {
-        _state.update {
-            it.copy(
-                locationModel = locationModel
-            )
-        }
-    }
-
-    fun resetSelectedPlace() {
-        _state.update {
-            it.copy(
-                locationModel = it.locationModel.copy(
-                    placeId = null
-                )
-            )
+    private fun getCategoryInfo() {
+        viewModelScope.launch {
+            categoryRepository.getCategories()
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            categoryList = UiState.Success(response.map { it.toModel() }.toImmutableList())
+                        )
+                    }
+                }
+                .onLogFailure {
+                    _state.update {
+                        it.copy(
+                            categoryList = UiState.Failure("카테고리 조회 실패")
+                        )
+                    }
+                }
         }
     }
 }

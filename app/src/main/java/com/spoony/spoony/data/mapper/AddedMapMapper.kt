@@ -1,22 +1,16 @@
 package com.spoony.spoony.data.mapper
 
-import com.spoony.spoony.data.dto.response.AddedMapListResponseDto
 import com.spoony.spoony.data.dto.response.AddedMapResponseDto
-import com.spoony.spoony.domain.entity.AddedPlaceEntity
-import com.spoony.spoony.domain.entity.AddedPlaceListEntity
+import com.spoony.spoony.domain.entity.PlaceReviewEntity
 
-fun AddedMapListResponseDto.toDomain(): AddedPlaceListEntity = AddedPlaceListEntity(
-    count = this.count,
-    placeList = this.zzimCardResponses.map { it.toDomain() }
-)
-
-fun AddedMapResponseDto.toDomain(): AddedPlaceEntity =
-    AddedPlaceEntity(
+fun AddedMapResponseDto.toDomain(): PlaceReviewEntity =
+    PlaceReviewEntity(
         placeId = this.placeId,
         placeName = this.placeName,
         placeAddress = this.placeAddress,
-        photoUrl = this.photoUrlList,
+        description = this.description,
+        photoUrlList = listOf(this.photoUrl),
         latitude = this.latitude,
         longitude = this.longitude,
-        categoryInfo = this.categoryColorResponse.toDomain()
+        category = this.categoryColorResponse.toDomain()
     )

@@ -10,12 +10,12 @@ import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.overlay.OverlayImage
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.domain.entity.AddedPlaceEntity
+import com.spoony.spoony.presentation.gourmet.map.model.PlaceReviewModel
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun SpoonyMapMarker(
-    review: AddedPlaceEntity,
+    review: PlaceReviewModel,
     selectedMarkerId: Int,
     onClick: () -> Unit
 ) {

@@ -24,8 +24,8 @@ data class PlaceReviewModel(
 
 fun PlaceReviewEntity.toModel(): PlaceReviewModel =
     PlaceReviewModel(
-        reviewId = reviewId,
-        userId = userId,
+        reviewId = reviewId ?: 0,
+        userId = userId ?: 0,
         photoUrls = (photoUrlList ?: emptyList()).toImmutableList(),
         date = createdAt ?: "",
         menuList = (menuList ?: emptyList()).toImmutableList(),
