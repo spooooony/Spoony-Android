@@ -224,6 +224,7 @@ fun MainScreen(
                             type = type
                         )
                     },
+                    navigateToUserProfile = navigator::navigateToOtherPage,
                     navigateToEditReview = navigator::navigateToReviewEdit
                 )
 
