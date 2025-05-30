@@ -1,18 +1,12 @@
 package com.spoony.spoony.domain.repository
 
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
-import com.spoony.spoony.domain.entity.FeedEntity
+import com.spoony.spoony.domain.entity.ExplorePlaceReviewResultEntity
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
 import com.spoony.spoony.domain.entity.UserEntity
 
 interface ExploreRepository {
-    suspend fun getFeedList(
-        categoryId: Int,
-        locationQuery: String,
-        sortBy: String
-    ): Result<List<FeedEntity>>
-
-    suspend fun getAllFeedList(): Result<List<PlaceReviewEntity>>
+    suspend fun getPlaceReviewListFollowing(): Result<List<PlaceReviewEntity>>
 
     suspend fun getPlaceReviewByKeyword(
         query: String
@@ -39,4 +33,13 @@ interface ExploreRepository {
         type: ExploreRecentSearchType,
         searchText: String
     ): Result<Unit>
+
+    suspend fun getPlaceReviewListFiltered(
+        categoryIds: List<Int>?,
+        regionIds: List<Int>?,
+        ageGroups: List<String>?,
+        sortBy: String?,
+        cursor: Int?,
+        size: Int?
+    ): Result<ExplorePlaceReviewResultEntity>
 }

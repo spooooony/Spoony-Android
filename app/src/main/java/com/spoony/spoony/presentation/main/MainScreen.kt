@@ -148,6 +148,7 @@ fun MainScreen(
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateToRegister = navigator::navigateToRegister,
                     navigateToExploreSearch = navigator::navigateToExploreSearch,
+                    navigateToEditReview = navigator::navigateToReviewEdit,
                     navigateToReport = { reportTargetId, type ->
                         navigator.navigateToReport(
                             reportTargetId = reportTargetId,
@@ -198,6 +199,7 @@ fun MainScreen(
                 )
 
                 profileEditGraph(
+                    paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp
                 )
 

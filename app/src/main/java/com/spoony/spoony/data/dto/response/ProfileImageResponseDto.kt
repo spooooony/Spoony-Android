@@ -13,6 +13,8 @@ data class ProfileImageResponseDto(
 data class ImageResponseDto(
     @SerialName("imageLevel")
     val imageLevel: Int,
+    @SerialName("spoonName")
+    val spoonName: String,
     @SerialName("unlockCondition")
     val unlockCondition: String,
     @SerialName("imageUrl")
