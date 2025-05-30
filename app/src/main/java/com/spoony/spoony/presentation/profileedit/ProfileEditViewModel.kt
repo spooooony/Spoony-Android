@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.state.ErrorType
+import com.spoony.spoony.core.util.extension.formatBirthDate
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.domain.usecase.CheckNicknameDuplicationUseCase
-import com.spoony.spoony.domain.usecase.FormatBirthDateUseCase
 import com.spoony.spoony.presentation.profileedit.model.ProfileEditModel
 import com.spoony.spoony.presentation.profileedit.model.toEntity
 import com.spoony.spoony.presentation.profileedit.model.toModel
@@ -27,8 +27,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val checkNicknameDuplicationUseCase: CheckNicknameDuplicationUseCase,
-    private val formatBirthDateUseCase: FormatBirthDateUseCase
+    private val checkNicknameDuplicationUseCase: CheckNicknameDuplicationUseCase
 ) : ViewModel() {
 
     private val _profileEditModel = MutableStateFlow(ProfileEditModel.EMPTY)
@@ -64,11 +63,11 @@ class ProfileEditViewModel @Inject constructor(
 
                 val regionModels = regionEntities.map { it.toModel() }
 
-                val profileEditModel = profileInfoEntity.toModel(
+                profileInfoEntity.toModel(
                     profileImageEntity = profileImageEntity,
                     regionList = regionModels
                 )
-
+            }.onSuccess { profileEditModel ->
                 _profileEditModel.value = profileEditModel
             }.onFailure {
                 _sideEffect.emit(ProfileEditSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
@@ -171,7 +170,7 @@ class ProfileEditViewModel @Inject constructor(
         viewModelScope.launch {
             val currentModel = _profileEditModel.value
 
-            val birthDate = formatBirthDateUseCase(
+            val birthDate = formatBirthDate(
                 isBirthSelected = currentModel.isBirthSelected,
                 year = currentModel.selectedYear,
                 month = currentModel.selectedMonth,
