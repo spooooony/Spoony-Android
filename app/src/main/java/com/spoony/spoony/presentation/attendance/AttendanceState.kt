@@ -7,6 +7,5 @@ import kotlinx.collections.immutable.ImmutableList
 data class AttendanceState(
     val weeklyStartDate: String = "",
     val totalSpoonCount: Int = 0,
-    val spoonDrawList: UiState<ImmutableList<SpoonDrawModel>> = UiState.Loading,
-    val spoonDraw: UiState<SpoonDrawModel> = UiState.Loading
+    val spoonDrawList: UiState<ImmutableList<SpoonDrawModel>> = UiState.Loading
 )

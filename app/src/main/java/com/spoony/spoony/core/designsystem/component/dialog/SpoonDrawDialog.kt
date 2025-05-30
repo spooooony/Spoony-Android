@@ -1,9 +1,6 @@
 package com.spoony.spoony.core.designsystem.component.dialog
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -17,10 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieAnimatable
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.image.UrlImage
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private enum class SpoonDrawDialogState {
@@ -36,11 +37,17 @@ fun SpoonDrawDialog(
     val coroutineScope = rememberCoroutineScope()
 
     var dialogState by remember { mutableStateOf(SpoonDrawDialogState.DRAW) }
-    var drawResult by remember { mutableStateOf(SpoonDrawModel()) }
+    var drawResult by remember { mutableStateOf(SpoonDrawModel.DEFAULT) }
 
-    LaunchedEffect(dialogState) {
-        if (dialogState == SpoonDrawDialogState.LOADING) {
-            delay(3000)
+    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_spoon_draw_shake))
+    val lottieAnimatable = rememberLottieAnimatable()
+
+    LaunchedEffect(lottieComposition, dialogState) {
+        if (dialogState == SpoonDrawDialogState.LOADING && lottieComposition != null) {
+            lottieAnimatable.animate(
+                composition = lottieComposition,
+                iterations = 2
+            )
             dialogState = SpoonDrawDialogState.RESULT
         }
     }
@@ -60,7 +67,7 @@ fun SpoonDrawDialog(
                 onDismiss = onDismiss
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_launcher_background),
+                    painter = painterResource(R.drawable.img_spoon_draw_pick),
                     contentDescription = null,
                     modifier = Modifier
                         .size(width = 248.dp, height = 168.dp)
@@ -72,11 +79,10 @@ fun SpoonDrawDialog(
             LoadingDialog(
                 title = "스푼을 뽑고 있어요..."
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(226.dp)
-                        .background(color = SpoonyAndroidTheme.colors.gray400)
+                LottieAnimation(
+                    modifier = Modifier.height(226.dp),
+                    composition = lottieComposition,
+                    progress = { lottieAnimatable.progress }
                 )
             }
         }
@@ -89,9 +95,8 @@ fun SpoonDrawDialog(
                 onButtonClick = onConfirmButtonClick,
                 onDismiss = onDismiss
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = null,
+                UrlImage(
+                    imageUrl = drawResult.spoonImage,
                     modifier = Modifier
                         .size(width = 248.dp, height = 168.dp)
                 )

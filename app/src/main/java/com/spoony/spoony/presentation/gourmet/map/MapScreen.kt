@@ -58,7 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -79,7 +81,9 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
+import com.spoony.spoony.core.designsystem.component.dialog.SpoonDrawDialog
 import com.spoony.spoony.core.designsystem.component.topappbar.CloseTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
@@ -119,12 +123,16 @@ fun MapRoute(
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
     navigateToExplore: () -> Unit,
+    navigateToAttendance: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: MapViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showSpoonDraw by viewModel.showSpoonDraw.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val showSnackBar = LocalSnackBarTrigger.current
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition(
@@ -176,6 +184,15 @@ fun MapRoute(
                 viewModel.getAddedPlaceListByLocation(locationId = placeId)
             }
         }
+    }
+
+    LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { sideEffect ->
+                when (sideEffect) {
+                    is MapSideEffect.ShowSnackBar -> showSnackBar(sideEffect.message)
+                }
+            }
     }
 
     LaunchedEffect(Unit) {
@@ -254,6 +271,19 @@ fun MapRoute(
         },
         onCategoryClick = viewModel::getAddedPlaceList
     )
+
+    if (showSpoonDraw) {
+        viewModel.updateLastEntryDate()
+
+        SpoonDrawDialog(
+            onDismiss = viewModel::checkSpoonDrawn,
+            onSpoonDrawButtonClick = viewModel::drawSpoon,
+            onConfirmButtonClick = {
+                viewModel.checkSpoonDrawn()
+                navigateToAttendance()
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

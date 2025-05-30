@@ -20,14 +20,23 @@ import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.presentation.explore.ExploreType
 
 @Composable
 fun ExploreEmptyScreen(
     onClick: () -> Unit,
+    exploreType: ExploreType,
     modifier: Modifier = Modifier
 ) {
     val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_explore_empty))
-
+    val contentDescription = when (exploreType) {
+        ExploreType.ALL -> "아직 발견된 장소가 없어요.\n나만의 리스트를 공유해 볼까요?"
+        ExploreType.FOLLOWING -> "아직 팔로우 한 유저가 없어요.\n관심 있는 유저들을 팔로우해보세요."
+    }
+    val buttonText = when (exploreType) {
+        ExploreType.ALL -> "등록하러 가기"
+        ExploreType.FOLLOWING -> "검색하러 가기"
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -43,7 +52,7 @@ fun ExploreEmptyScreen(
         )
 
         Text(
-            text = "아직 발견된 장소가 없어요.\n나만의 리스트를 공유해 볼까요?",
+            text = contentDescription,
             style = SpoonyAndroidTheme.typography.body2m,
             color = SpoonyAndroidTheme.colors.gray500,
             textAlign = TextAlign.Center,
@@ -55,7 +64,7 @@ fun ExploreEmptyScreen(
         )
 
         SpoonyButton(
-            text = "등록하러 가기",
+            text = buttonText,
             size = ButtonSize.Xsmall,
             style = ButtonStyle.Secondary,
             onClick = onClick

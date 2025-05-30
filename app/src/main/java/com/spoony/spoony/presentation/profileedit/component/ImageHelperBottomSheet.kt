@@ -41,7 +41,7 @@ fun ImageHelperBottomSheet(
                 key(model.imageUrl) {
                     BottomSheetProfileImageCard(
                         imageUrl = model.imageUrl,
-                        name = model.name,
+                        name = model.spoonName,
                         description = model.description
                     )
                 }
