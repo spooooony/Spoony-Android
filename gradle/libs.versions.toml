@@ -48,6 +48,7 @@ coroutine = "1.8.1"
 ktlint = "11.5.1"
 advancedBottomSheet = "0.1.0"
 pebble = "0.1.0"
+phoenix = "3.0.0"
 
 # Naver Map
 naverMapCompose = "1.7.2"
@@ -123,6 +124,7 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
 advanced-bottom-sheet = { group = "io.morfly.compose", name = "advanced-bottomsheet-material3", version.ref = "advancedBottomSheet" }
+jakewharton-process-phoenix= {group = "com.jakewharton", name = "process-phoenix", version.ref="phoenix"}
 
 naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.ref = "naverMapCompose" }
 naver-map-location = { module = "io.github.fornewid:naver-map-location", version.ref = "naverMapLocation" }

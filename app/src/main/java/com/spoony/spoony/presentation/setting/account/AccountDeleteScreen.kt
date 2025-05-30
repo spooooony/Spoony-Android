@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,10 +20,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
+import com.jakewharton.processphoenix.ProcessPhoenix
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -35,8 +41,18 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun AccountDeleteScreen(
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    viewModel: AccountViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(viewModel.restartTrigger, lifecycleOwner) {
+        viewModel.restartTrigger.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            ProcessPhoenix.triggerRebirth(context)
+        }
+    }
+
     val announcementList = remember {
         persistentListOf(
             "회원 탈퇴 시, 즉시 탈퇴 처리되며 서비스 이용이 불가해요.",
@@ -102,7 +118,7 @@ fun AccountDeleteScreen(
                 size = ButtonSize.Large,
                 style = ButtonStyle.Primary,
                 enabled = isNoticeAgreed,
-                onClick = {},
+                onClick = viewModel::deleteAccount,
                 modifier = Modifier.fillMaxWidth()
             )
         }

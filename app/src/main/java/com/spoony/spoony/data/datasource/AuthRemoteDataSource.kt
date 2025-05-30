@@ -20,5 +20,9 @@ interface AuthRemoteDataSource {
         introduction: String?
     ): BaseResponse<SignUpResponseDto>
 
+    suspend fun signOut(token: String): BaseResponse<Unit>
+
+    suspend fun withDraw(token: String): BaseResponse<Unit>
+
     suspend fun refreshToken(token: String): BaseResponse<TokenResponseDto>
 }
