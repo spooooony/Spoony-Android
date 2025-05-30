@@ -83,7 +83,7 @@ fun ReviewCard(
                 style = SpoonyAndroidTheme.typography.body2b,
                 color = SpoonyAndroidTheme.colors.black
             )
-            if (userRegion != "") {
+            if (userRegion.isNotEmpty()) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "서울 $userRegion 스푼",
