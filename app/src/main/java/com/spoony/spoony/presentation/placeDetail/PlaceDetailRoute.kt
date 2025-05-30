@@ -67,6 +67,7 @@ fun PlaceDetailRoute(
     paddingValues: PaddingValues,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToEditReview: (Int, RegisterType) -> Unit,
+    navigateToUserProfile: (Int) -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -198,6 +199,7 @@ fun PlaceDetailRoute(
                             onDeleteReviewClick = {
                                 deleteReviewDialogVisibility = true
                             },
+                            onUserProfileClick = { navigateToUserProfile(userProfile.userId) },
                             onEditReviewClick = { navigateToEditReview(postId, RegisterType.EDIT) },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
@@ -229,6 +231,7 @@ private fun PlaceDetailScreen(
     cons: String,
     onScoopButtonClick: () -> Unit,
     onDeleteReviewClick: () -> Unit,
+    onUserProfileClick: () -> Unit,
     onEditReviewClick: () -> Unit,
     userProfileUrl: String,
     userName: String,
@@ -261,7 +264,9 @@ private fun PlaceDetailScreen(
             UserProfileInfo(
                 imageUrl = userProfileUrl,
                 name = userName,
-                location = "서울 $userRegion 수저"
+                region = userRegion,
+                onClick = onUserProfileClick,
+                modifier = Modifier.weight(1f)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

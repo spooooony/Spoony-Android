@@ -22,6 +22,7 @@ fun NavGraphBuilder.placeDetailNavGraph(
     paddingValues: PaddingValues,
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToEditReview: (Int, RegisterType) -> Unit,
+    navigateToUserProfile: (Int) -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<PlaceDetail> {
@@ -29,6 +30,7 @@ fun NavGraphBuilder.placeDetailNavGraph(
             paddingValues = paddingValues,
             navigateToReport = navigateToReport,
             navigateToEditReview = navigateToEditReview,
+            navigateToUserProfile = navigateToUserProfile,
             navigateUp = navigateUp
         )
     }
