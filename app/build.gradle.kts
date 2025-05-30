@@ -120,6 +120,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.pebble)
+    implementation(libs.jakewharton.process.phoenix)
 
     implementation(libs.accompanist.systemuicontroller)
 }
