@@ -60,7 +60,7 @@ fun UserProfileInfo(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            if (region != "") {
+            if (region.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "서울 $region 스푼",
