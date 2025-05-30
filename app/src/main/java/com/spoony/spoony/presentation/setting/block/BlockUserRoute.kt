@@ -8,14 +8,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
+import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.presentation.setting.block.component.BlockUserItem
@@ -26,6 +30,14 @@ fun BlockUserScreen(
     viewModel: BlockUserViewModel = hiltViewModel()
 ) {
     val blockUserList by viewModel.blockingList.collectAsStateWithLifecycle()
+    val showSnackBar = LocalSnackBarTrigger.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(viewModel.errorEvent, lifecycleOwner) {
+        viewModel.errorEvent.flowWithLifecycle(lifecycleOwner.lifecycle).collect { errorMessage ->
+            showSnackBar(errorMessage)
+        }
+    }
 
     Column(
         modifier = Modifier

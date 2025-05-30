@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.setting.block
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.setting.block.model.BlockUserState
@@ -13,7 +14,9 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
@@ -25,6 +28,10 @@ class BlockUserViewModel @Inject constructor(
 ) : ViewModel() {
     private val _blockingList = MutableStateFlow<ImmutableList<BlockUserState>>(persistentListOf())
     val blockingList: StateFlow<ImmutableList<BlockUserState>> get() = _blockingList.asStateFlow()
+
+    private val _errorEvent = MutableSharedFlow<String>()
+    val errorEvent: SharedFlow<String>
+        get() = _errorEvent.asSharedFlow()
 
     private val blockRequestQueue = MutableSharedFlow<Pair<Int, Boolean>>(extraBufferCapacity = 64)
 
@@ -53,6 +60,7 @@ class BlockUserViewModel @Inject constructor(
                 }
                 .onLogFailure { exception ->
                     // TODO: 에러 뷰 받으면 넣기
+                    _errorEvent.emit(ErrorType.SERVER_CONNECTION_ERROR.description)
                 }
         }
     }
