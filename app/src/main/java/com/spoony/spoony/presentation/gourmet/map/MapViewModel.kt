@@ -11,7 +11,6 @@ import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.core.util.extension.toHyphenDate
 import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.PostRepository
-import com.spoony.spoony.domain.repository.SpoonLocalRepository
 import com.spoony.spoony.domain.repository.SpoonRepository
 import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
@@ -35,7 +34,6 @@ class MapViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val mapRepository: MapRepository,
     private val userRepository: UserRepository,
-    private val spoonLocalRepository: SpoonLocalRepository,
     private val spoonRepository: SpoonRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -142,7 +140,7 @@ class MapViewModel @Inject constructor(
 
     suspend fun drawSpoon(): SpoonDrawModel {
         spoonRepository.drawSpoon().onSuccess { spoon ->
-            spoonLocalRepository.updateSpoonDrawn()
+            spoonRepository.updateSpoonDrawn()
 
             with(spoon) {
                 return SpoonDrawModel(
@@ -162,7 +160,7 @@ class MapViewModel @Inject constructor(
 
     fun checkSpoonDrawn() {
         viewModelScope.launch {
-            val lastEntryDate = spoonLocalRepository.getSpoonDrawLog().first
+            val lastEntryDate = spoonRepository.getSpoonDrawLog().first
             val today = LocalDate.now()
 
             val shouldShowSpoon = try {
@@ -179,7 +177,7 @@ class MapViewModel @Inject constructor(
     fun updateLastEntryDate() {
         val today = LocalDate.now()
         viewModelScope.launch {
-            spoonLocalRepository.updateLastEntryDate(today.toHyphenDate())
+            spoonRepository.updateLastEntryDate(today.toHyphenDate())
         }
     }
 

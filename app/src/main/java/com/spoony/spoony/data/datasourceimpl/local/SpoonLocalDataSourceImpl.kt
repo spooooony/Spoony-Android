@@ -16,8 +16,8 @@ class SpoonLocalDataSourceImpl @Inject constructor(
     override suspend fun getLastEntryDate(): Flow<String?> = dataStore.data
         .map { preferences -> preferences[LAST_ENTRY_DATE] }
 
-    override suspend fun getIsSpoonDrawn(): Flow<Boolean?> = dataStore.data
-        .map { preferences -> preferences[IS_SPOON_DRAWN] }
+    override suspend fun getIsSpoonDrawn(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[IS_SPOON_DRAWN] ?: false }
 
     override suspend fun updateLastEntryDate(date: String) {
         dataStore.edit { preferences ->

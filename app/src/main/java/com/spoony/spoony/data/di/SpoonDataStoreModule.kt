@@ -6,8 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.spoony.spoony.data.datasource.local.SpoonLocalDataSource
 import com.spoony.spoony.data.datasourceimpl.local.SpoonLocalDataSourceImpl
-import com.spoony.spoony.data.repositoryimpl.SpoonLocalRepositoryImpl
-import com.spoony.spoony.domain.repository.SpoonLocalRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,10 +24,4 @@ object SpoonDataStoreModule {
     fun provideSpoonLocalDataSource(
         @ApplicationContext context: Context
     ): SpoonLocalDataSource = SpoonLocalDataSourceImpl(context.spoonDataStore)
-
-    @Provides
-    @Singleton
-    fun provideSpoonLocalRepository(
-        dataSource: SpoonLocalDataSource
-    ): SpoonLocalRepository = SpoonLocalRepositoryImpl(dataSource)
 }

@@ -7,7 +7,6 @@ import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.core.util.extension.toHyphenDate
-import com.spoony.spoony.domain.repository.SpoonLocalRepository
 import com.spoony.spoony.domain.repository.SpoonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.DayOfWeek
@@ -29,8 +28,7 @@ import timber.log.Timber
 
 @HiltViewModel
 class AttendanceViewModel @Inject constructor(
-    private val spoonRepository: SpoonRepository,
-    private val spoonLocalRepository: SpoonLocalRepository
+    private val spoonRepository: SpoonRepository
 ) : ViewModel() {
     private val _state: MutableStateFlow<AttendanceState> = MutableStateFlow(AttendanceState())
     val state: StateFlow<AttendanceState>
@@ -93,7 +91,7 @@ class AttendanceViewModel @Inject constructor(
 
     suspend fun drawSpoon(): SpoonDrawModel {
         spoonRepository.drawSpoon().onSuccess { spoon ->
-            spoonLocalRepository.updateSpoonDrawn()
+            spoonRepository.updateSpoonDrawn()
 
             with(spoon) {
                 return SpoonDrawModel(
@@ -132,11 +130,11 @@ class AttendanceViewModel @Inject constructor(
 
     private fun checkSpoonDrawn(today: LocalDate) {
         viewModelScope.launch {
-            val (lastEntryDate, isSpoonDrawn) = spoonLocalRepository.getSpoonDrawLog()
+            val (lastEntryDate, isSpoonDrawn) = spoonRepository.getSpoonDrawLog()
 
             val shouldShowSpoon = try {
                 val parsedDate = LocalDate.parse(lastEntryDate)
-                !(parsedDate == today && isSpoonDrawn == true)
+                !(parsedDate == today && isSpoonDrawn)
             } catch (e: Exception) {
                 true
             }
