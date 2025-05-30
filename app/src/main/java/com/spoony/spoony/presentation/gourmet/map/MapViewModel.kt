@@ -157,7 +157,7 @@ class MapViewModel @Inject constructor(
         }.onLogFailure {
             _sideEffect.emit(MapSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description))
         }
-        return SpoonDrawModel()
+        return SpoonDrawModel.DEFAULT
     }
 
     fun checkSpoonDrawn() {

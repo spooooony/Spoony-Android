@@ -110,7 +110,7 @@ class AttendanceViewModel @Inject constructor(
                 AttendanceSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description)
             )
         }
-        return SpoonDrawModel()
+        return SpoonDrawModel.DEFAULT
     }
 
     fun getWeeklyDate(startDate: String): String {

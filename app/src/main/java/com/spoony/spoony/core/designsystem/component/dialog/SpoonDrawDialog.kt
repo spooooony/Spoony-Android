@@ -37,7 +37,7 @@ fun SpoonDrawDialog(
     val coroutineScope = rememberCoroutineScope()
 
     var dialogState by remember { mutableStateOf(SpoonDrawDialogState.DRAW) }
-    var drawResult by remember { mutableStateOf(SpoonDrawModel()) }
+    var drawResult by remember { mutableStateOf(SpoonDrawModel.DEFAULT) }
 
     val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_spoon_draw_shake))
     val lottieAnimatable = rememberLottieAnimatable()

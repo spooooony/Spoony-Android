@@ -279,7 +279,10 @@ fun MapRoute(
         SpoonDrawDialog(
             onDismiss = viewModel::checkSpoonDrawn,
             onSpoonDrawButtonClick = viewModel::drawSpoon,
-            onConfirmButtonClick = navigateToAttendance
+            onConfirmButtonClick = {
+                viewModel.checkSpoonDrawn()
+                navigateToAttendance()
+            }
         )
     }
 }
