@@ -53,14 +53,16 @@ fun ExploreSearchUserItem(
                 style = SpoonyAndroidTheme.typography.body2b,
                 color = SpoonyAndroidTheme.colors.black
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "서울 ${userInfo.userRegion} 스푼",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = SpoonyAndroidTheme.typography.caption1m,
-                color = SpoonyAndroidTheme.colors.gray400
-            )
+            if (userInfo.userRegion.isNotBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "서울 ${userInfo.userRegion} 스푼",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = SpoonyAndroidTheme.typography.caption1m,
+                    color = SpoonyAndroidTheme.colors.gray400
+                )
+            }
         }
     }
 }

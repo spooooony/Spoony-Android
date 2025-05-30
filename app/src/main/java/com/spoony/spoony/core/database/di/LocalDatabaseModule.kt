@@ -2,6 +2,7 @@ package com.spoony.spoony.core.database.di
 
 import android.content.Context
 import androidx.room.Room
+import com.spoony.spoony.core.database.ExploreRecentSearchDatabase
 import com.spoony.spoony.core.database.SearchDatabase
 import dagger.Module
 import dagger.Provides
@@ -25,4 +26,17 @@ object LocalDatabaseModule {
     fun providesDao(
         searchDatabase: SearchDatabase
     ) = searchDatabase.SearchDao()
+
+    @Singleton
+    @Provides
+    fun providesExploreRecentSearchDataBase(
+        @ApplicationContext context: Context
+    ): ExploreRecentSearchDatabase =
+        Room.databaseBuilder(context, ExploreRecentSearchDatabase::class.java, "explore-recent-search-database").build()
+
+    @Singleton
+    @Provides
+    fun providesExploreRecentSearchDao(
+        exploreRecentSearchDatabase: ExploreRecentSearchDatabase
+    ) = exploreRecentSearchDatabase.ExploreRecentSearchDao()
 }
