@@ -112,7 +112,7 @@ fun AttendanceRoute(
         SpoonDrawDialog(
             onDismiss = { viewModel.updateShowSpoonDraw(false) },
             onSpoonDrawButtonClick = viewModel::drawSpoon,
-            onConfirmButtonClick = viewModel::checkSpoonDrawn
+            onConfirmButtonClick = { viewModel.updateShowSpoonDraw(false) }
         )
     }
 }

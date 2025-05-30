@@ -52,7 +52,7 @@ class AttendanceViewModel @Inject constructor(
             )
         }
 
-        checkSpoonDrawn()
+        checkSpoonDrawn(today)
     }
 
     fun getWeeklySpoonDraw() {
@@ -130,10 +130,9 @@ class AttendanceViewModel @Inject constructor(
         }
     }
 
-    fun checkSpoonDrawn() {
+    private fun checkSpoonDrawn(today: LocalDate) {
         viewModelScope.launch {
             val (lastEntryDate, isSpoonDrawn) = spoonLocalRepository.getSpoonDrawLog()
-            val today = LocalDate.now()
 
             val shouldShowSpoon = try {
                 val parsedDate = LocalDate.parse(lastEntryDate)
