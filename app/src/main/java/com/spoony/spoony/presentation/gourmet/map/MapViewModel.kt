@@ -17,6 +17,7 @@ import com.spoony.spoony.presentation.gourmet.map.model.LocationModel
 import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -161,7 +162,7 @@ class MapViewModel @Inject constructor(
     fun checkSpoonDrawn() {
         viewModelScope.launch {
             val lastEntryDate = spoonRepository.getSpoonDrawLog().first
-            val today = LocalDate.now()
+            val today = LocalDate.now(ZoneId.of("Asia/Seoul"))
 
             val shouldShowSpoon = try {
                 val parsedDate = LocalDate.parse(lastEntryDate)

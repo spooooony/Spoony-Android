@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.map
 class SpoonLocalDataSourceImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : SpoonLocalDataSource {
-    override suspend fun getLastEntryDate(): Flow<String?> = dataStore.data
+    override fun getLastEntryDate(): Flow<String?> = dataStore.data
         .map { preferences -> preferences[LAST_ENTRY_DATE] }
 
-    override suspend fun getIsSpoonDrawn(): Flow<Boolean> = dataStore.data
+    override fun getIsSpoonDrawn(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[IS_SPOON_DRAWN] ?: false }
 
     override suspend fun updateLastEntryDate(date: String) {

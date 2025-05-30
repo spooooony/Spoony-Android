@@ -11,6 +11,7 @@ import com.spoony.spoony.domain.repository.SpoonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -43,7 +44,7 @@ class AttendanceViewModel @Inject constructor(
         get() = _showSpoonDraw.asStateFlow()
 
     init {
-        val today = LocalDate.now()
+        val today = LocalDate.now(ZoneId.of("Asia/Seoul"))
         _state.update {
             it.copy(
                 weeklyStartDate = today.with(DayOfWeek.MONDAY).toHyphenDate()
@@ -134,7 +135,7 @@ class AttendanceViewModel @Inject constructor(
 
             val shouldShowSpoon = try {
                 val parsedDate = LocalDate.parse(lastEntryDate)
-                !(parsedDate == today && isSpoonDrawn)
+                !(parsedDate.equals(today) && isSpoonDrawn)
             } catch (e: Exception) {
                 true
             }

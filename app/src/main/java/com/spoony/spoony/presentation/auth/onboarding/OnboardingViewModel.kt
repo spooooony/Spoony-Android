@@ -13,6 +13,7 @@ import com.spoony.spoony.domain.repository.UserRepository
 import com.spoony.spoony.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -121,7 +122,7 @@ class OnboardingViewModel @Inject constructor(
                     _state.update {
                         it.copy(signUpState = UiState.Empty)
                     }
-                    val date = LocalDate.now().toHyphenDate()
+                    val date = LocalDate.now(ZoneId.of("Asia/Seoul")).toHyphenDate()
                     spoonRepository.updateLastEntryDate(date)
                 }.onLogFailure {
                     _state.update {
