@@ -97,7 +97,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun getAddedPlaceList(categoryId: Int = 1) {
+    fun getAddedPlaceList(categoryId: Int) {
         viewModelScope.launch {
             mapRepository.getAddedPlaceList(categoryId)
                 .onSuccess { (count, reviewList) ->

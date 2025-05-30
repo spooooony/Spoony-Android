@@ -111,6 +111,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+private const val DEFAULT_CATEGORY_ID = 1
 private const val DEFAULT_ZOOM = 14.0
 private val LOCATION_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -179,7 +180,7 @@ fun MapRoute(
     with(state.locationModel) {
         LaunchedEffect(placeId) {
             if (placeId == null) {
-                viewModel.getAddedPlaceList()
+                viewModel.getAddedPlaceList(DEFAULT_CATEGORY_ID)
             } else {
                 viewModel.getAddedPlaceListByLocation(locationId = placeId)
             }
