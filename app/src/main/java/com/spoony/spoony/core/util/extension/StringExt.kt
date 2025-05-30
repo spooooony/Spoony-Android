@@ -47,3 +47,16 @@ fun String?.toBirthDate(): BirthDate? {
         null
     }
 }
+
+fun formatBirthDate(
+    isBirthSelected: Boolean,
+    year: String?,
+    month: String?,
+    day: String?
+): String? {
+    return if (isBirthSelected && year != null && month != null && day != null) {
+        "$year-${month.padStart(2, '0')}-${day.padStart(2, '0')}"
+    } else {
+        null
+    }
+}

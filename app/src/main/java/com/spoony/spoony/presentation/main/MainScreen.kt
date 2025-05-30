@@ -198,6 +198,7 @@ fun MainScreen(
                 )
 
                 profileEditGraph(
+                    paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp
                 )
 

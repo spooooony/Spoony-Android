@@ -119,7 +119,8 @@ private fun ProfileImageListPrev() {
             imageLevel = level,
             imageUrl = "",
             isSelected = level == 1,
-            isUnLocked = level < 4
+            isUnLocked = level < 4,
+            spoonName = "imageName"
         )
     }.toPersistentList()
 
