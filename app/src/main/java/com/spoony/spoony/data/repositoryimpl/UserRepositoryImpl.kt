@@ -4,6 +4,7 @@ import com.spoony.spoony.data.datasource.UserRemoteDataSource
 import com.spoony.spoony.data.mapper.toDomain
 import com.spoony.spoony.data.mapper.toDto
 import com.spoony.spoony.domain.entity.BasicUserInfoEntity
+import com.spoony.spoony.domain.entity.BlockingListEntity
 import com.spoony.spoony.domain.entity.FollowListEntity
 import com.spoony.spoony.domain.entity.ProfileImageEntity
 import com.spoony.spoony.domain.entity.ProfileInfoEntity
@@ -73,6 +74,11 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun unblockUser(userId: Int): Result<Unit> =
         runCatching {
             userRemoteDataSource.unblockUser(userId)
+        }
+
+    override suspend fun getBlockingList(): Result<BlockingListEntity> =
+        runCatching {
+            userRemoteDataSource.getBlockingList().data!!.toDomain()
         }
 
     override suspend fun getMyProfileInfo(): Result<ProfileInfoEntity> =
