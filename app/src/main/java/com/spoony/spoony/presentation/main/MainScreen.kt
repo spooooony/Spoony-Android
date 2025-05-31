@@ -86,7 +86,6 @@ fun MainScreen(
                 MainBottomBar(
                     visible = navigator.shouldShowBottomBar(),
                     tabs = MainTab.entries.toPersistentList(),
-                    currentTab = navigator.currentTab,
                     onTabSelected = navigator::navigate
                 )
             },
