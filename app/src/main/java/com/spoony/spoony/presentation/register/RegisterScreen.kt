@@ -112,7 +112,9 @@ private fun RegisterScreen(
                 .background(SpoonyAndroidTheme.colors.white)
         ) {
             TitleTopAppBar(
-                onBackButtonClick = onBackButtonClick
+                onBackButtonClick = {
+                    if (state.currentStep == RegisterSteps.FINAL.step) navController.navigateUp() else onBackButtonClick()
+                }
             )
 
             TopLinearProgressBar(
