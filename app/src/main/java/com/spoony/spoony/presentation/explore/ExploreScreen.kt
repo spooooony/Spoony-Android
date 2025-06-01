@@ -220,27 +220,15 @@ private fun ExploreScreen(
                 onFilterApplyButtonClick(property, category, region, age)
             },
             onToggleFilter = { id, type ->
-                when (type) {
-                    FilterType.FILTER -> {}
-                    FilterType.LOCAL_REVIEW -> {
-                        propertyState[id] = !(propertyState[id] ?: false)
-                    }
-                    FilterType.CATEGORY -> {
-                        categoryState[id] = !(categoryState[id] ?: false)
-                    }
-                    FilterType.REGION -> {
-                        regionState[id] = !(regionState[id] ?: false)
-                    }
-                    FilterType.AGE -> {
-                        val alreadySelected = ageState[id] == true
-                        ageState.keys.forEach { key ->
-                            ageState[key] = false
-                        }
-                        if (!alreadySelected) {
-                            ageState[id] = true
-                        }
-                    }
+                val stateMap = when (type) {
+                    FilterType.FILTER -> null
+                    FilterType.LOCAL_REVIEW -> propertyState
+                    FilterType.CATEGORY -> categoryState
+                    FilterType.REGION -> regionState
+                    FilterType.AGE -> ageState
                 }
+
+                stateMap?.let { it[id] = !(it[id] ?: false) }
             },
             propertyItems = propertyItems,
             regionItems = regionItems,
