@@ -104,7 +104,7 @@ private fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         Column(
             modifier = modifier
