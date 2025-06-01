@@ -56,7 +56,9 @@ internal fun AccountManagementScreen(
             onClickNegative = { isShowDialog = false },
             positiveText = "네",
             onClickPositive = viewModel::signOut,
-            onDismiss = { isShowDialog = false }
+            onDismiss = {
+                // Nothing To Do
+            }
         )
     }
 
@@ -80,11 +82,13 @@ internal fun AccountManagementScreen(
         ) {
             Text(
                 text = "간편 로그인",
-                style = SpoonyAndroidTheme.typography.body2m
+                style = SpoonyAndroidTheme.typography.body2m,
+                color = SpoonyAndroidTheme.colors.gray700
             )
             Text(
                 text = "카카오 로그인 사용 중",
-                style = SpoonyAndroidTheme.typography.body2b
+                style = SpoonyAndroidTheme.typography.body2b,
+                color = SpoonyAndroidTheme.colors.gray600
             )
         }
 
