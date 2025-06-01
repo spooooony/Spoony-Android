@@ -28,6 +28,7 @@ fun OtherPageRoute(
     navigateToReviewDetail: (Int) -> Unit,
     navigateToUserReport: (Int, ReportType) -> Unit,
     navigateToReviewReport: (Int, ReportType) -> Unit,
+    navigateToEnterTab: () -> Unit,
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
@@ -52,7 +53,13 @@ fun OtherPageRoute(
     }
 
     val userPageEvents = UserPageEvents(
-        onBackButtonClick = navigateUp,
+        onBackButtonClick = {
+            if (userPageState.isBlocked) {
+                navigateToEnterTab()
+            } else {
+                navigateUp()
+            }
+        },
         onFollowClick = navigateToFollow,
         onReviewClick = navigateToReviewDetail,
         onReportUserClick = navigateToUserReport,

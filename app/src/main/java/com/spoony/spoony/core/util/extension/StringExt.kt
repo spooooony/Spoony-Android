@@ -1,11 +1,11 @@
 package com.spoony.spoony.core.util.extension
 
 import com.spoony.spoony.core.designsystem.model.BirthDate
-import timber.log.Timber
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import timber.log.Timber
 
 private val MICROSECOND_REGEX = Regex("\\.\\d+")
 
