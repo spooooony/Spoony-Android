@@ -462,28 +462,30 @@ private fun MapScreen(
                 )
             }
 
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-            ) {
-                items(categoryList) { category ->
-                    with(category) {
-                        IconChip(
-                            text = category.categoryName,
-                            selectedIconUrl = iconUrl,
-                            unSelectedIconUrl = unSelectedIconUrl,
-                            onClick = {
-                                selectedCategoryId = categoryId
-                                onCategoryClick(categoryId)
-                            },
-                            isSelected = categoryId == selectedCategoryId,
-                            isGradient = true,
-                            secondColor = SpoonyAndroidTheme.colors.white,
-                            mainColor = SpoonyAndroidTheme.colors.main400,
-                            selectedBorderColor = SpoonyAndroidTheme.colors.main200
-                        )
+            if (locationInfo.placeId == null) {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                ) {
+                    items(categoryList) { category ->
+                        with(category) {
+                            IconChip(
+                                text = category.categoryName,
+                                selectedIconUrl = iconUrl,
+                                unSelectedIconUrl = unSelectedIconUrl,
+                                onClick = {
+                                    selectedCategoryId = categoryId
+                                    onCategoryClick(categoryId)
+                                },
+                                isSelected = categoryId == selectedCategoryId,
+                                isGradient = true,
+                                secondColor = SpoonyAndroidTheme.colors.white,
+                                mainColor = SpoonyAndroidTheme.colors.main400,
+                                selectedBorderColor = SpoonyAndroidTheme.colors.main200
+                            )
+                        }
                     }
                 }
             }
