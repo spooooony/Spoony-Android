@@ -356,7 +356,7 @@ private fun ExploreContent(
             onDismiss = { }
         )
     }
-    LaunchedEffect(listState) {
+    LaunchedEffect(listState, exploreType) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
             val totalItems = layoutInfo.totalItemsCount
@@ -365,14 +365,16 @@ private fun ExploreContent(
         }
             .distinctUntilChanged()
             .collect { (lastVisibleItem, totalItems) ->
-                if (
-                    !isLoadingMore &&
-                    lastVisibleItem >= totalItems - LOAD_MORE_THRESHOLD &&
-                    totalItems > 0
-                ) {
-                    isLoadingMore = true
-                    onLoadNextPage()
-                    isLoadingMore = false
+                if (exploreType == ExploreType.ALL) {
+                    if (
+                        !isLoadingMore &&
+                        lastVisibleItem >= totalItems - LOAD_MORE_THRESHOLD &&
+                        totalItems > 0
+                    ) {
+                        isLoadingMore = true
+                        onLoadNextPage()
+                        isLoadingMore = false
+                    }
                 }
             }
     }
