@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +43,7 @@ fun MainBottomBar(
     tabs: ImmutableList<MainTab>,
     onTabSelected: (MainTab) -> Unit
 ) {
-    var currentTab by remember { mutableStateOf(MainTab.MAP) }
+    var currentTab by rememberSaveable { mutableStateOf(MainTab.MAP) }
 
     AnimatedVisibility(
         visible = visible,
