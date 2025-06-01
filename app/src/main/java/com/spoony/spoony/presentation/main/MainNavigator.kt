@@ -3,7 +3,6 @@ package com.spoony.spoony.presentation.main
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -30,8 +29,19 @@ import com.spoony.spoony.presentation.setting.navigation.navigateToSettingPage
 import com.spoony.spoony.presentation.splash.navigation.Splash
 import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.navigateToOtherPage
+import timber.log.Timber
 
 const val NAVIGATION_ROOT = 0
+
+private val bottomNavScreens = listOf(
+    "Map",
+    "Explore",
+    "ExploreSearch",
+    "Follow",
+    "MapSearch",
+    "MyPage",
+    "OtherPage"
+)
 
 class MainNavigator(
     val navController: NavHostController
@@ -42,20 +52,23 @@ class MainNavigator(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val currentTab: MainTab?
-        @Composable get() = MainTab.find { tab ->
-            currentDestination?.hasRoute(tab::class) == true
-        }
-
     @Composable
-    fun shouldShowBottomBar() = MainTab.contains {
-        currentDestination?.hasRoute(it::class) == true
+    fun shouldShowBottomBar(): Boolean {
+        val screenName = currentDestination?.route
+            ?.substringAfterLast(".")
+            ?.substringBefore("?")
+            ?.substringBefore("/")
+            ?: "Unknown"
+
+        Timber.d("screenName: $screenName")
+
+        return screenName in bottomNavScreens
     }
 
     fun navigate(tab: MainTab) {
         val mainTabNavOptions = navOptions {
             navController.currentDestination?.route?.let {
-                popUpTo(it) {
+                popUpTo(NAVIGATION_ROOT) {
                     inclusive = true
                     saveState = true
                 }
