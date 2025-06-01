@@ -408,7 +408,7 @@ private fun MapScreen(
                         textColor = Color.hexToColor(categoryInfo.textColor),
                         backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
                         onClick = { onPlaceCardClick(reviewId) },
-                        username = userName,
+                        username = this.userName,
                         placeSpoon = userRegion,
                         addMapCount = addMapCount
                     )

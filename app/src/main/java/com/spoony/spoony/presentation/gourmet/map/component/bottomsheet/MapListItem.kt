@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.gourmet.map.component.bottomsheet
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,8 @@ fun MapListItem(
     val color = SpoonyAndroidTheme.colors
 
     Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
@@ -45,7 +48,6 @@ fun MapListItem(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 10.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -83,7 +85,7 @@ fun MapListItem(
                 text = review,
                 style = typography.caption1m,
                 color = color.black,
-                maxLines = 1,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .border(

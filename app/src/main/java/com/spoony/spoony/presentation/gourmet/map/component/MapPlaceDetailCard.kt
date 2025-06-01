@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
@@ -87,7 +88,8 @@ fun MapPlaceDetailCard(
                 Text(
                     text = placeName,
                     style = SpoonyAndroidTheme.typography.body1b,
-                    color = SpoonyAndroidTheme.colors.gray900
+                    color = SpoonyAndroidTheme.colors.gray900,
+                    maxLines = 1
                 )
                 IconTag(
                     text = categoryName,
@@ -130,7 +132,7 @@ fun MapPlaceDetailCard(
                     )
                     if (placeSpoon.isNotBlank()) {
                         Text(
-                            text = "서울시 $placeSpoon 수저",
+                            text = "서울시 $placeSpoon 스푼",
                             style = SpoonyAndroidTheme.typography.caption1m,
                             color = SpoonyAndroidTheme.colors.gray600,
                             modifier = Modifier
@@ -142,6 +144,8 @@ fun MapPlaceDetailCard(
                     text = review,
                     style = SpoonyAndroidTheme.typography.caption1m,
                     color = SpoonyAndroidTheme.colors.black,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(top = 6.dp)
                 )
