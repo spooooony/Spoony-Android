@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -336,7 +337,7 @@ private fun ExploreSearchRecentContent(
             .fillMaxWidth()
             .padding(
                 horizontal = 20.dp,
-                vertical = 22.dp
+                vertical = 33.dp
             )
     ) {
         Row(
@@ -354,13 +355,13 @@ private fun ExploreSearchRecentContent(
                 text = "전체삭제",
                 style = SpoonyAndroidTheme.typography.caption1m,
                 color = SpoonyAndroidTheme.colors.gray500,
-                modifier = Modifier.noRippleClickable(onClearRecentSearchItem)
+                modifier = Modifier
+                    .noRippleClickable(onClearRecentSearchItem)
+                    .padding(horizontal = 8.dp)
             )
         }
-        LazyColumn(
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-        ) {
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyColumn {
             itemsIndexed(
                 items = recentQueryList
             ) { index, searchKeyword ->
