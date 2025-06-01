@@ -27,7 +27,7 @@ fun ExploreSearchEmptyScreen(
     modifier: Modifier = Modifier
 ) {
     val text = remember(searchType) {
-        if (searchType == SearchType.USER) "닉네임" else "키워드"
+        if (searchType == SearchType.USER) "닉네임을" else "키워드를"
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,14 +44,14 @@ fun ExploreSearchEmptyScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "검색된 결과가 없어요",
+            text = "검색결과가 없어요",
             style = SpoonyAndroidTheme.typography.body2sb,
             color = SpoonyAndroidTheme.colors.black,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "정확한 ${text}을 입력해 보세요",
+            text = "정확한 $text 입력해 보세요",
             style = SpoonyAndroidTheme.typography.body2m,
             color = SpoonyAndroidTheme.colors.gray500,
             textAlign = TextAlign.Center
