@@ -68,6 +68,7 @@ fun PlaceDetailRoute(
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToUserProfile: (Int) -> Unit,
+    navigateToAttendance: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -165,7 +166,8 @@ fun PlaceDetailRoute(
                         TagTopAppBar(
                             count = spoonAmount,
                             showBackButton = true,
-                            onBackButtonClick = navigateUp
+                            onBackButtonClick = navigateUp,
+                            onLogoTagClick = navigateToAttendance
                         )
                     },
                     bottomBar = {
@@ -342,8 +344,11 @@ private fun PlaceDetailScreen(
                 DisappointItem(
                     cons = cons,
                     onScoopButtonClick = {
-                        if(spoonAmount > 0) onScoopButtonClick()
-                        else onShowSnackBar("남은 스푼이 없어요 ㅠ.ㅠ")
+                        if (spoonAmount > 0) {
+                            onScoopButtonClick()
+                        } else {
+                            onShowSnackBar("남은 스푼이 없어요 ㅠ.ㅠ")
+                        }
                     },
                     isBlurred = !isScooped
                 )
