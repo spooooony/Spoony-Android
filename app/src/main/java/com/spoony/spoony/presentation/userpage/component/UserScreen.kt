@@ -36,6 +36,7 @@ import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.core.util.extension.toRelativeTimeOrDate
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.register.model.RegisterType
@@ -240,7 +241,7 @@ fun UserPageScreen(
                         ),
                         username = review.username,
                         userRegion = review.userRegion,
-                        date = review.date,
+                        date = review.date.toRelativeTimeOrDate(),
                         onMenuItemClick = { menuItem ->
                             when (menuItem) {
                                 "수정하기" -> events.onEditReviewClick(review.reviewId, RegisterType.EDIT)
