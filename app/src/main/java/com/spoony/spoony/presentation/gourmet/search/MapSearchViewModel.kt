@@ -24,14 +24,6 @@ class MapSearchViewModel @Inject constructor(
     val state: StateFlow<MapSearchState>
         get() = _state.asStateFlow()
 
-    fun initRecentSearch() {
-        _state.update {
-            it.copy(
-                recentSearchQueryList = persistentListOf()
-            )
-        }
-    }
-
     fun searchLocation() {
         viewModelScope.launch {
             val searchText = _state.value.searchKeyword.replace(" ", "")
@@ -67,7 +59,8 @@ class MapSearchViewModel @Inject constructor(
     fun updateSearchKeyword(searchKeyword: String) {
         _state.update {
             it.copy(
-                searchKeyword = searchKeyword
+                searchKeyword = searchKeyword,
+                locationModelList = UiState.Loading
             )
         }
     }

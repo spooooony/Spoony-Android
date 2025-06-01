@@ -47,7 +47,9 @@ fun MapSearchRoute(
         recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
         onSearchButtonClick = viewModel::searchLocation,
-        onSearchKeywordChanged = viewModel::updateSearchKeyword,
+        onSearchKeywordChanged = { keyword ->
+            viewModel.updateSearchKeyword(keyword)
+        },
         onBackButtonClick = navigateUp,
         onDeleteButtonClick = viewModel::deleteSearchByText,
         onResultItemClick = navigateToLocationMap,
