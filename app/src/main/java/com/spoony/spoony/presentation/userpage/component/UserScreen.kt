@@ -172,6 +172,7 @@ fun UserPageScreen(
 
         if (state.isBlocked) {
             item {
+                Spacer(modifier = Modifier.height(54.dp))
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
@@ -181,15 +182,16 @@ fun UserPageScreen(
                     Image(
                         painter = painterResource(R.drawable.img_empty_home),
                         modifier = Modifier
-                            .size(100.dp)
-                            .padding(bottom = 16.dp),
+                            .size(100.dp),
                         contentDescription = null
                     )
                     Text(
                         text = "차단된 사용자예요.",
                         style = SpoonyAndroidTheme.typography.body2b,
                         color = SpoonyAndroidTheme.colors.gray500,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
                     )
                     Text(
                         text = "지금은 프로필을 볼 수 없지만, \n" +
