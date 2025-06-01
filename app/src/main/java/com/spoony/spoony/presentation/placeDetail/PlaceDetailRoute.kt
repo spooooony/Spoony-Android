@@ -212,9 +212,11 @@ fun PlaceDetailRoute(
                             placeAddress = data.placeAddress,
                             placeName = data.placeName,
                             isMine = data.isMine,
+                            spoonAmount = spoonAmount,
                             isScooped = state.isScooped || data.isMine,
                             dropdownMenuList = dropDownMenuList,
-                            onReportButtonClick = { navigateToReport(postId, ReportType.POST) }
+                            onReportButtonClick = { navigateToReport(postId, ReportType.POST) },
+                            onShowSnackBar = viewModel::showSnackBar
                         )
                     }
                 )
@@ -244,9 +246,11 @@ private fun PlaceDetailScreen(
     placeAddress: String,
     placeName: String,
     isMine: Boolean,
+    spoonAmount: Int,
     isScooped: Boolean,
     dropdownMenuList: ImmutableList<DropdownOption>,
-    onReportButtonClick: () -> Unit
+    onReportButtonClick: () -> Unit,
+    onShowSnackBar: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -337,7 +341,10 @@ private fun PlaceDetailScreen(
                 Spacer(modifier = Modifier.height(18.dp))
                 DisappointItem(
                     cons = cons,
-                    onScoopButtonClick = onScoopButtonClick,
+                    onScoopButtonClick = {
+                        if(spoonAmount > 0) onScoopButtonClick()
+                        else onShowSnackBar("남은 스푼이 없어요 ㅠ.ㅠ")
+                    },
                     isBlurred = !isScooped
                 )
             }
