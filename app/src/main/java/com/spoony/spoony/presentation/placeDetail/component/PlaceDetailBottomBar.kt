@@ -36,6 +36,7 @@ fun PlaceDetailBottomBar(
     onAddMapButtonClick: () -> Unit,
     onDeletePinMapButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isNotMine: Boolean = true,
     isAddMap: Boolean = false
 ) {
     Row(
@@ -56,38 +57,39 @@ fun PlaceDetailBottomBar(
             size = ButtonSize.Medium,
             modifier = Modifier.weight(1f)
         )
+        if (isNotMine) {
+            Spacer(modifier = Modifier.width(15.dp))
 
-        Spacer(modifier = Modifier.width(15.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .sizeIn(minWidth = 56.dp)
-                .noRippleClickable(
-                    if (isAddMap) {
-                        onDeletePinMapButtonClick
-                    } else {
-                        onAddMapButtonClick
-                    }
-                ),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = if (isAddMap) R.drawable.ic_add_map_main400_24 else R.drawable.ic_add_map_gray400_24),
+            Column(
                 modifier = Modifier
-                    .size(32.dp),
-                contentDescription = null,
-                tint = Color.Unspecified
-            )
+                    .fillMaxHeight()
+                    .sizeIn(minWidth = 56.dp)
+                    .noRippleClickable(
+                        if (isAddMap) {
+                            onDeletePinMapButtonClick
+                        } else {
+                            onAddMapButtonClick
+                        }
+                    ),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = if (isAddMap) R.drawable.ic_add_map_main400_24 else R.drawable.ic_add_map_gray400_24),
+                    modifier = Modifier
+                        .size(32.dp),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
 
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            Text(
-                text = addMapCount.toString(),
-                style = SpoonyAndroidTheme.typography.caption1m,
-                color = if (isAddMap) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray800
-            )
+                Text(
+                    text = addMapCount.toString(),
+                    style = SpoonyAndroidTheme.typography.caption1m,
+                    color = if (isAddMap) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray800
+                )
+            }
         }
     }
 }

@@ -182,6 +182,7 @@ fun PlaceDetailRoute(
                                     context = context
                                 )
                             },
+                            isNotMine = !data.isMine,
                             onAddMapButtonClick = { viewModel.addMyMap(postId) },
                             onDeletePinMapButtonClick = { viewModel.deletePinMap(postId) }
                         )
