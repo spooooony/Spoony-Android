@@ -25,7 +25,7 @@ private val CURRENT_CALENDAR = Calendar.getInstance()
 private val CURRENT_YEAR = CURRENT_CALENDAR.get(Calendar.YEAR)
 private val CURRENT_MONTH = CURRENT_CALENDAR.get(Calendar.MONTH) + 1
 private val CURRENT_DAY = CURRENT_CALENDAR.get(Calendar.DAY_OF_MONTH)
-private val MAX_YEAR = CURRENT_YEAR - 13
+private val MAX_YEAR = CURRENT_YEAR - 14
 private const val MIN_YEAR = 1900
 
 private val YEARS = (MIN_YEAR..MAX_YEAR).map { "$it  년" }.toImmutableList()
