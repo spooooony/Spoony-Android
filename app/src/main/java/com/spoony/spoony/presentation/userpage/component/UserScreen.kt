@@ -111,7 +111,7 @@ fun UserPageScreen(
 
             ProfileIntroSection(
                 userType = state.userType,
-                region = state.region,
+                region = "서울 ${state.region} 스푼",
                 nickname = state.userName,
                 introduction = state.introduction ?: "안녕! 나는 어떤 스푼이나면...",
                 onButtonClick = {
