@@ -72,7 +72,9 @@ fun MainBottomBar(
                             tab = tab,
                             selected = (tab == currentTab),
                             onClick = {
-                                currentTab = tab
+                                if (tab != MainTab.REGISTER) {
+                                    currentTab = tab
+                                }
                                 onTabSelected(tab)
                             }
                         )

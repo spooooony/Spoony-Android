@@ -33,16 +33,14 @@ import timber.log.Timber
 
 const val NAVIGATION_ROOT = 0
 
-private val nonBottomNavScreens = listOf(
-    "Splash",
-    "TermsOfService",
-    "Onboarding",
-    "PlaceDetail",
-    "Report",
-    "Register",
-    "SettingPage",
-    "ProfileEdit",
-    "Attendance"
+private val bottomNavScreens = listOf(
+    "Map",
+    "Explore",
+    "ExploreSearch",
+    "Follow",
+    "MapSearch",
+    "MyPage",
+    "OtherPage"
 )
 
 class MainNavigator(
@@ -64,7 +62,7 @@ class MainNavigator(
 
         Timber.d("screenName: $screenName")
 
-        return screenName !in nonBottomNavScreens
+        return screenName in bottomNavScreens
     }
 
     fun navigate(tab: MainTab) {
