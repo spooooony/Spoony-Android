@@ -517,10 +517,7 @@ private fun MapScreen(
                                 )
                             } else {
                                 LazyColumn(
-                                    contentPadding = PaddingValues(
-                                        top = 6.dp,
-                                        bottom = paddingValues.calculateBottomPadding()
-                                    ),
+                                    contentPadding = PaddingValues(top = 6.dp),
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(bottom = paddingValues.calculateBottomPadding())
