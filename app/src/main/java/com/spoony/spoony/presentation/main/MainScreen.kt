@@ -208,7 +208,8 @@ fun MainScreen(
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToReviewDetail = navigator::navigateToPlaceDetail,
                     navigateToReviewReport = navigator::navigateToReport,
-                    navigateToUserReport = navigator::navigateToReport
+                    navigateToUserReport = navigator::navigateToReport,
+                    navigateToEnterTab = navigator::navigateToEnterTab
                 )
 
                 followNavGraph(
@@ -227,7 +228,8 @@ fun MainScreen(
                         )
                     },
                     navigateToUserProfile = navigator::navigateToOtherPage,
-                    navigateToEditReview = navigator::navigateToReviewEdit
+                    navigateToEditReview = navigator::navigateToReviewEdit,
+                    navigateToAttendance = navigator::navigateToAttendance
                 )
 
                 reportNavGraph(

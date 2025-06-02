@@ -29,6 +29,7 @@ fun TagTopAppBar(
     showBackButton: Boolean = false,
     backgroundColor: Color = SpoonyAndroidTheme.colors.white,
     onBackButtonClick: () -> Unit = {},
+    onLogoTagClick: () -> Unit = {},
     content: @Composable () -> Unit = {}
 ) {
     SpoonyBasicTopAppBar(
@@ -54,7 +55,8 @@ fun TagTopAppBar(
                 count = count,
                 tagSize = tagSize,
                 modifier = Modifier
-                    .padding(end = 20.dp)
+                    .padding(end = 20.dp),
+                onClick = onLogoTagClick
             )
         },
         content = {

@@ -16,7 +16,7 @@ fun DeleteReviewDialog(
         onClickPositive = onClickPositive,
         negativeText = "아니요",
         onClickNegative = onClickNegative,
-        onDismiss = onClickNegative
+        onDismiss = {}
     )
 }
 
