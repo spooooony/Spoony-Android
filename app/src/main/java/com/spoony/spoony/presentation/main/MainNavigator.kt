@@ -48,6 +48,8 @@ class MainNavigator(
 ) {
     val startDestination = Splash
 
+    private var lastMainTab: MainTab = MainTab.MAP
+
     private val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
@@ -79,6 +81,10 @@ class MainNavigator(
 
         val registerNavOptions = navOptions {
             launchSingleTop = true
+        }
+
+        if (tab != MainTab.REGISTER) {
+            lastMainTab = tab
         }
 
         when (tab) {
@@ -246,6 +252,10 @@ class MainNavigator(
         navController.navigateToAttendance(
             navOptions = navOptions
         )
+    }
+
+    fun navigateToEnterTab() {
+        navigate(lastMainTab)
     }
 
     fun navigateUp() {

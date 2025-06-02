@@ -28,7 +28,8 @@ fun NavGraphBuilder.otherPageNavGraph(
     navigateToFollow: (FollowType, Int) -> Unit,
     navigateToReviewDetail: (Int) -> Unit,
     navigateToUserReport: (Int, ReportType) -> Unit,
-    navigateToReviewReport: (Int, ReportType) -> Unit
+    navigateToReviewReport: (Int, ReportType) -> Unit,
+    navigateToEnterTab: () -> Unit
 ) {
     composable<OtherPage>(
         enterTransition = {
@@ -44,7 +45,8 @@ fun NavGraphBuilder.otherPageNavGraph(
             navigateToFollow = navigateToFollow,
             navigateToReviewDetail = navigateToReviewDetail,
             navigateToUserReport = navigateToUserReport,
-            navigateToReviewReport = navigateToReviewReport
+            navigateToReviewReport = navigateToReviewReport,
+            navigateToEnterTab = navigateToEnterTab
         )
     }
 }
