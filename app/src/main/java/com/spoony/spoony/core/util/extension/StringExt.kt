@@ -5,25 +5,31 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import timber.log.Timber
+
+private val MICROSECOND_REGEX = Regex("\\.\\d+")
 
 fun String?.toValidHexColor(): String =
     if (this != null && Regex("^[0-9A-Fa-f]{6}$").matches(this)) this else "FFFFFF"
 
 fun String.formatToYearMonthDay(): String {
     return try {
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
+        val cleanedDate = this.replace(MICROSECOND_REGEX, "")
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val outputFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.getDefault())
-        val dateTime = LocalDateTime.parse(this, inputFormatter)
+        val dateTime = LocalDateTime.parse(cleanedDate, inputFormatter)
         dateTime.format(outputFormatter)
     } catch (e: Exception) {
+        Timber.e(e)
         ""
     }
 }
 
 fun String.toRelativeTimeOrDate(): String {
     return try {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
-        val dateTime = LocalDateTime.parse(this, formatter)
+        val cleanedDate = this.replace(MICROSECOND_REGEX, "")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val dateTime = LocalDateTime.parse(cleanedDate, formatter)
 
         val now = LocalDateTime.now()
         val duration = Duration.between(dateTime, now)
@@ -35,6 +41,7 @@ fun String.toRelativeTimeOrDate(): String {
             else -> this.formatToYearMonthDay()
         }
     } catch (e: Exception) {
+        Timber.e(e)
         ""
     }
 }

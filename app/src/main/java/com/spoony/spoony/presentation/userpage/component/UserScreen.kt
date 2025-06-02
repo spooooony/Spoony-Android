@@ -36,6 +36,7 @@ import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.core.util.extension.toRelativeTimeOrDate
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapEmptyBottomSheetContent
 import com.spoony.spoony.presentation.register.model.RegisterType
@@ -110,7 +111,7 @@ fun UserPageScreen(
 
             ProfileIntroSection(
                 userType = state.userType,
-                region = state.region,
+                region = "서울 ${state.region} 스푼",
                 nickname = state.userName,
                 introduction = state.introduction ?: "안녕! 나는 어떤 스푼이나면...",
                 onButtonClick = {
@@ -171,6 +172,7 @@ fun UserPageScreen(
 
         if (state.isBlocked) {
             item {
+                Spacer(modifier = Modifier.height(54.dp))
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
@@ -180,15 +182,16 @@ fun UserPageScreen(
                     Image(
                         painter = painterResource(R.drawable.img_empty_home),
                         modifier = Modifier
-                            .size(100.dp)
-                            .padding(bottom = 16.dp),
+                            .size(100.dp),
                         contentDescription = null
                     )
                     Text(
                         text = "차단된 사용자예요.",
                         style = SpoonyAndroidTheme.typography.body2b,
                         color = SpoonyAndroidTheme.colors.gray500,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
                     )
                     Text(
                         text = "지금은 프로필을 볼 수 없지만, \n" +
@@ -240,7 +243,7 @@ fun UserPageScreen(
                         ),
                         username = review.username,
                         userRegion = review.userRegion,
-                        date = review.date,
+                        date = review.date.toRelativeTimeOrDate(),
                         onMenuItemClick = { menuItem ->
                             when (menuItem) {
                                 "수정하기" -> events.onEditReviewClick(review.reviewId, RegisterType.EDIT)

@@ -208,7 +208,8 @@ fun MainScreen(
                     navigateToFollow = navigator::navigateToFollow,
                     navigateToReviewDetail = navigator::navigateToPlaceDetail,
                     navigateToReviewReport = navigator::navigateToReport,
-                    navigateToUserReport = navigator::navigateToReport
+                    navigateToUserReport = navigator::navigateToReport,
+                    navigateToEnterTab = navigator::navigateToEnterTab
                 )
 
                 followNavGraph(

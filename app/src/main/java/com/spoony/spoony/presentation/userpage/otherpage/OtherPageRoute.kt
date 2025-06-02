@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.userpage.otherpage
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,11 +29,20 @@ fun OtherPageRoute(
     navigateToReviewDetail: (Int) -> Unit,
     navigateToUserReport: (Int, ReportType) -> Unit,
     navigateToReviewReport: (Int, ReportType) -> Unit,
+    navigateToEnterTab: () -> Unit,
     viewModel: OtherPageViewModel = hiltViewModel()
 ) {
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    BackHandler {
+        if (userPageState.isBlocked) {
+            navigateToEnterTab()
+        } else {
+            navigateUp()
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
@@ -52,7 +62,13 @@ fun OtherPageRoute(
     }
 
     val userPageEvents = UserPageEvents(
-        onBackButtonClick = navigateUp,
+        onBackButtonClick = {
+            if (userPageState.isBlocked) {
+                navigateToEnterTab()
+            } else {
+                navigateUp()
+            }
+        },
         onFollowClick = navigateToFollow,
         onReviewClick = navigateToReviewDetail,
         onReportUserClick = navigateToUserReport,
