@@ -249,4 +249,10 @@ class PlaceDetailViewModel @Inject constructor(
                 }
         }
     }
+
+    fun showSnackBar(text: String) {
+        viewModelScope.launch {
+            _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar(text))
+        }
+    }
 }

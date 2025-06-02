@@ -31,7 +31,7 @@ fun ExploreSearchTopAppbar(
     searchType: SearchType = SearchType.USER
 ) {
     val placeholder = remember(searchType) {
-        if (searchType == SearchType.USER) "유저 닉네임으로 검색" else "리뷰 키워드으로 검색"
+        if (searchType == SearchType.USER) "유저 닉네임으로 검색" else "리뷰 키워드로 검색"
     }
     SpoonyBasicTopAppBar(
         modifier = modifier

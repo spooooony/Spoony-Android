@@ -220,27 +220,15 @@ private fun ExploreScreen(
                 onFilterApplyButtonClick(property, category, region, age)
             },
             onToggleFilter = { id, type ->
-                when (type) {
-                    FilterType.FILTER -> {}
-                    FilterType.LOCAL_REVIEW -> {
-                        propertyState[id] = !(propertyState[id] ?: false)
-                    }
-                    FilterType.CATEGORY -> {
-                        categoryState[id] = !(categoryState[id] ?: false)
-                    }
-                    FilterType.REGION -> {
-                        regionState[id] = !(regionState[id] ?: false)
-                    }
-                    FilterType.AGE -> {
-                        val alreadySelected = ageState[id] == true
-                        ageState.keys.forEach { key ->
-                            ageState[key] = false
-                        }
-                        if (!alreadySelected) {
-                            ageState[id] = true
-                        }
-                    }
+                val stateMap = when (type) {
+                    FilterType.FILTER -> null
+                    FilterType.LOCAL_REVIEW -> propertyState
+                    FilterType.CATEGORY -> categoryState
+                    FilterType.REGION -> regionState
+                    FilterType.AGE -> ageState
                 }
+
+                stateMap?.let { it[id] = !(it[id] ?: false) }
             },
             propertyItems = propertyItems,
             regionItems = regionItems,
@@ -368,7 +356,7 @@ private fun ExploreContent(
             onDismiss = { }
         )
     }
-    LaunchedEffect(listState) {
+    LaunchedEffect(listState, exploreType) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
             val totalItems = layoutInfo.totalItemsCount
@@ -377,14 +365,16 @@ private fun ExploreContent(
         }
             .distinctUntilChanged()
             .collect { (lastVisibleItem, totalItems) ->
-                if (
-                    !isLoadingMore &&
-                    lastVisibleItem >= totalItems - LOAD_MORE_THRESHOLD &&
-                    totalItems > 0
-                ) {
-                    isLoadingMore = true
-                    onLoadNextPage()
-                    isLoadingMore = false
+                if (exploreType == ExploreType.ALL) {
+                    if (
+                        !isLoadingMore &&
+                        lastVisibleItem >= totalItems - LOAD_MORE_THRESHOLD &&
+                        totalItems > 0
+                    ) {
+                        isLoadingMore = true
+                        onLoadNextPage()
+                        isLoadingMore = false
+                    }
                 }
             }
     }

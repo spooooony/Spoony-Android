@@ -26,7 +26,7 @@ fun ExploreSearchRecentItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = 15.dp)
             .noRippleClickable { onItemClick(searchKeyword) },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
