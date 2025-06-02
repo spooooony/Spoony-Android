@@ -107,11 +107,11 @@ fun SpoonyNicknameTextField(
             onDoneAction = {
                 keyboardController?.hide()
                 focusManager.clearFocus()
-                if (state != NicknameTextFieldState.NICKNAME_REQUIRED) onDoneAction()
+                if (value.trim().length >= minLength) onDoneAction()
             },
             singleLine = true,
             trailingIcon = {
-                if (value.isNotEmpty()) {
+                if (value.isNotBlank()) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_delete_filled_24),
                         contentDescription = null,
