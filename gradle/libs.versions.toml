@@ -17,6 +17,7 @@ kotlinParcelize = "1.8.20"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+mockk = "1.14.2"
 
 # AndroidX
 coreSplachscreen = "1.0.1"
@@ -72,6 +73,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 
 # Debug
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -169,6 +172,7 @@ test = [
     "androidx-junit",
     "androidx-ui-test-junit4",
     "androidx-espresso-core",
+    "mockk-android"
 ]
 
 debug = [
