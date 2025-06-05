@@ -62,7 +62,7 @@ fun BlockUserScreen(
                 BlockUserItem(
                     imageUrl = user.imageUrl,
                     userName = user.userName,
-                    region = if(user.region.isNullOrBlank()) "" else "서울 ${user.region} 스푼",
+                    region = if (user.region.isNullOrBlank()) "" else "서울 ${user.region} 스푼",
                     isBlocking = user.isBlocking,
                     onBlockButtonClick = {
                         viewModel.onClickBlockButton(user.userId, user.isBlocking)

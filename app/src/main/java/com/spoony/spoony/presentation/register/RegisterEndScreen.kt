@@ -242,7 +242,7 @@ private fun OptionalReviewSection(
             value = optionalReview,
             onValueChanged = onOptionalReviewChange,
             placeholder = "쉿 사장님 몰래 남기는 솔직 후기! (선택)\n" +
-                    "이 내용은 비공개 처리 돼요.",
+                "이 내용은 비공개 처리 돼요.",
             maxLength = MAX_OPTIONAL_REVIEW_LENGTH,
             maxErrorText = "글자 수 ${MAX_OPTIONAL_REVIEW_LENGTH}자 이하로 입력해 주세요",
             decorationBoxHeight = 80.dp,

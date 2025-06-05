@@ -29,7 +29,7 @@ fun UserListScreen(
             FollowUserItem(
                 imageUrl = user.imageUrl,
                 userName = user.userName,
-                region = if(user.region.isNullOrBlank()) "" else "서울 ${user.region} 스푼",
+                region = if (user.region.isNullOrBlank()) "" else "서울 ${user.region} 스푼",
                 isFollowing = user.isFollowing,
                 onUserClick = { onUserClick(user.userId) },
                 onFollowClick = { onButtonClick(user.userId) },

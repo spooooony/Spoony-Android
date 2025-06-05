@@ -18,6 +18,7 @@ import com.spoony.spoony.presentation.register.model.toRegisterState
 import com.spoony.spoony.presentation.register.model.toUpdatePostEntity
 import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,12 +29,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: RegisterRepository,
+    private val repository: RegisterRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState>
@@ -274,7 +274,7 @@ class RegisterViewModel @Inject constructor(
             _state.update {
                 RegisterState(
                     categories = it.categories,
-                    currentStep = 2f,
+                    currentStep = 2f
                 )
             }
         }
