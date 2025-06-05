@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,7 @@ import com.spoony.spoony.core.designsystem.theme.main400
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -43,20 +46,32 @@ fun SpoonyDatePickerBottomSheet(
     initialDay: Int = 1
 ) {
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
+        skipPartiallyExpanded = true,
+        confirmValueChange = {
+            it != SheetValue.Hidden
+        }
     )
+
+    val coroutineScope = rememberCoroutineScope()
+    val handleDismissRequest: () -> Unit = {
+        coroutineScope.launch {
+            sheetState.hide()
+            onDismiss()
+        }
+    }
+
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
     var selectedYear by remember { mutableIntStateOf(initialYear) }
     var selectedMonth by remember { mutableIntStateOf(initialMonth) }
     var selectedDay by remember { mutableIntStateOf(initialDay) }
 
     SpoonyBasicBottomSheet(
-        onDismiss = onDismiss,
+        onDismiss = handleDismissRequest,
         sheetState = sheetState,
         modifier = modifier,
         dragHandle = {
             SpoonyTitleDragHandle(
-                onClick = onDismiss,
+                onClick = handleDismissRequest,
                 text = "생년월일"
             )
         }
