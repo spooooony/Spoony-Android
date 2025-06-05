@@ -3,7 +3,6 @@ package com.spoony.spoony.presentation.exploreSearch.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,8 +36,7 @@ fun ExploreSearchEmptyScreen(
         Image(
             painter = painterResource(R.drawable.img_empty_explore),
             modifier = Modifier
-                .size(160.dp)
-                .aspectRatio(1f),
+                .size(160.dp),
             contentDescription = null
         )
 
