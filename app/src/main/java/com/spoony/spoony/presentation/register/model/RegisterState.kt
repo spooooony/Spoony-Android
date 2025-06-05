@@ -24,8 +24,6 @@ data class RegisterState(
     val currentStep: Float = 1f,
     val isLoading: Boolean = false,
     val error: String? = null,
-
-    val showRegisterSnackBar: Boolean = true
 ) {
     companion object {
         const val DEFAULT = 50f

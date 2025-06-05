@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.RegisterRepository
-import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.CategoryState
 import com.spoony.spoony.presentation.register.model.PlaceState
@@ -19,10 +18,8 @@ import com.spoony.spoony.presentation.register.model.toRegisterState
 import com.spoony.spoony.presentation.register.model.toUpdatePostEntity
 import com.spoony.spoony.presentation.register.navigation.Register
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -31,16 +28,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: RegisterRepository,
-    private val tooltipPreferencesRepository: TooltipPreferencesRepository
 ) : ViewModel() {
-
-    val tooltipShownFlow: Flow<Boolean> = tooltipPreferencesRepository.isTooltipShown()
-
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState>
         get() = _state.asStateFlow()
@@ -280,15 +274,9 @@ class RegisterViewModel @Inject constructor(
             _state.update {
                 RegisterState(
                     categories = it.categories,
-                    showRegisterSnackBar = false
+                    currentStep = 2f,
                 )
             }
-        }
-    }
-
-    fun hideRegisterSnackBar() {
-        viewModelScope.launch {
-            tooltipPreferencesRepository.disableTooltip()
         }
     }
 
