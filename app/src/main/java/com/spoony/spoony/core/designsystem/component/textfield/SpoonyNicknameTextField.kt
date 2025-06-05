@@ -95,13 +95,14 @@ fun SpoonyNicknameTextField(
             borderColor = borderColor,
             imeAction = ImeAction.Done,
             onFocusChanged = {
-                if (isFirstEntry) {
-                    onStateChanged(NicknameTextFieldState.DEFAULT)
-                    isFirstEntry = false
-                } else if (value.trim().length < minLength) {
-                    onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
-                } else {
-                    onDoneAction()
+                when {
+                    state == NicknameTextFieldState.AVAILABLE -> {}
+                    isFirstEntry -> {
+                        isFirstEntry = false
+                    }
+
+                    value.trim().length < minLength -> onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
+                    else -> onDoneAction()
                 }
             },
             onDoneAction = {
