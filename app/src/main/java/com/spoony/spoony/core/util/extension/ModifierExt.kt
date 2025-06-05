@@ -1,6 +1,9 @@
 package com.spoony.spoony.core.util.extension
 
 import android.graphics.BlurMaskFilter
+import android.graphics.Matrix
+import android.graphics.RadialGradient
+import android.graphics.Shader
 import android.view.HapticFeedbackConstants
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.LinearEasing
@@ -25,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.CornerRadius
@@ -37,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
@@ -285,3 +290,57 @@ fun Modifier.spreadShadow(
         }
     }
 }
+
+@Composable
+fun Modifier.spoonySliderGradient(
+    cornerRadius: Dp = 40.dp,
+    mainColor: Color = Color(0xFFFF5235),
+    secondColor: Color = Color(0xFFFFCEC6)
+) = composed {
+    this.drawWithCache {
+        val roundPath = Path().apply {
+            addRoundRect(
+                RoundRect(
+                    rect = Rect(Offset.Zero, size),
+                    cornerRadius = CornerRadius(cornerRadius.toPx(), cornerRadius.toPx())
+                )
+            )
+        }
+
+        val cx = size.width
+        val cy = 0f
+        val radiusX = size.width * 1.4142f
+        val radiusY = size.height * 1.4142f
+        val scaleY = radiusY / radiusX
+
+        val shader = RadialGradient(
+            cx,
+            cy,
+            radiusX,
+            intArrayOf(mainColor.toArgb(), secondColor.toArgb()),
+            floatArrayOf(0.545f, 1.0f),
+            Shader.TileMode.CLAMP
+        ).apply {
+            val matrix = Matrix().apply {
+                setScale(1f, scaleY, cx, cy)
+            }
+            setLocalMatrix(matrix)
+        }
+
+        val paint = Paint().asFrameworkPaint().apply {
+            isAntiAlias = true
+            this.shader = shader
+        }
+
+        onDrawWithContent {
+            clipPath(roundPath) {
+                drawIntoCanvas { canvas ->
+                    canvas.nativeCanvas.drawPath(roundPath.asAndroidPath(), paint)
+                }
+            }
+            drawContent()
+        }
+    }
+}
+
+
