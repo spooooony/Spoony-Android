@@ -65,13 +65,15 @@ fun FollowUserItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = region,
-                    style = SpoonyAndroidTheme.typography.caption1m,
-                    color = black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (region.isNotBlank()) {
+                    Text(
+                        text = region,
+                        style = SpoonyAndroidTheme.typography.caption1m,
+                        color = black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
 
