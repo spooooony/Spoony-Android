@@ -122,7 +122,7 @@ class RegisterViewModel @Inject constructor(
             ).onSuccess { isDuplicate ->
                 if (isDuplicate) {
                     _state.update { it.copy(searchResults = persistentListOf()) }
-                    _sideEffect.emit(RegisterSideEffect.ShowSnackbar("이미 등록된 장소입니다"))
+                    _sideEffect.emit(RegisterSideEffect.ShowSnackbar("앗! 이미 등록한 맛집이에요"))
                 } else {
                     _state.update {
                         it.copy(
