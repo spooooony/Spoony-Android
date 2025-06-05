@@ -83,8 +83,11 @@ fun SpoonySlider(
                         .height(trackHeight)
                         .then(
                             //  반지름 0이면 앱 터짐
-                            if ((sliderState.value / 100f) > 0.01f) Modifier.spoonySliderGradient()
-                            else Modifier
+                            if ((sliderState.value / 100f) > 0.01f) {
+                                Modifier.spoonySliderGradient()
+                            } else {
+                                Modifier
+                            }
                         )
                         .clip(CircleShape)
                 )

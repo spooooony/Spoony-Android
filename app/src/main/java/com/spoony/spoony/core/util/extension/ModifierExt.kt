@@ -342,5 +342,3 @@ fun Modifier.spoonySliderGradient(
         }
     }
 }
-
-
