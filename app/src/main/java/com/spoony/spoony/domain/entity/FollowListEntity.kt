@@ -8,7 +8,7 @@ data class FollowListEntity(
 data class User(
     val userId: Int,
     val username: String,
-    val regionName: String,
+    val regionName: String?,
     val isFollowing: Boolean,
     val profileImageUrl: String
 )
