@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -94,6 +95,7 @@ fun ExploreSearchRoute(
         onSearch = viewModel::search,
         onEditReviewClick = navigateToEditReview,
         onClearSearchKeyword = viewModel::clearSearchKeyword,
+        onReviewDeleteButtonClick = viewModel::deleteReview,
         recentReviewSearchQueryList = state.recentReviewSearchQueryList,
         recentUserSearchQueryList = state.recentUserSearchQueryList,
         userInfoList = state.userInfoList,
@@ -116,6 +118,7 @@ private fun ExploreSearchScreen(
     onSearch: (String) -> Unit,
     onEditReviewClick: (Int, RegisterType) -> Unit,
     onClearSearchKeyword: () -> Unit,
+    onReviewDeleteButtonClick: (Int) -> Unit,
     recentReviewSearchQueryList: ImmutableList<String>,
     recentUserSearchQueryList: ImmutableList<String>,
     userInfoList: UiState<ImmutableList<ExploreSearchUserModel>>,
@@ -125,6 +128,22 @@ private fun ExploreSearchScreen(
     var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabItems = persistentListOf(SearchType.USER, SearchType.REVIEW)
     var searchText by rememberSaveable { mutableStateOf("") }
+    var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
+    var targetReviewId by remember { mutableIntStateOf(0) }
+    if (isReviewDeleteDialogVisible) {
+        TwoButtonDialog(
+            message = "정말로 리뷰를 삭제할까요?",
+            negativeText = "아니요",
+            positiveText = "네",
+            onClickNegative = { isReviewDeleteDialogVisible = false },
+            onClickPositive = {
+                onReviewDeleteButtonClick(targetReviewId)
+                isReviewDeleteDialogVisible = false
+            },
+            onDismiss = { }
+        )
+    }
+
     LaunchedEffect(Unit) {
         if (searchKeyword.isEmpty()) {
             focusRequester.requestFocus()
@@ -292,7 +311,10 @@ private fun ExploreSearchScreen(
                                                 when (it) {
                                                     ExploreDropdownOption.REPORT.string -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
                                                     ExploreDropdownOption.EDIT.string -> onEditReviewClick(placeReviewInfo.reviewId, RegisterType.EDIT)
-                                                    ExploreDropdownOption.DELETE.string -> {}
+                                                    ExploreDropdownOption.DELETE.string -> {
+                                                        targetReviewId = placeReviewInfo.reviewId
+                                                        isReviewDeleteDialogVisible = true
+                                                    }
                                                 }
                                             },
                                             date = placeReviewInfo.createdAt,

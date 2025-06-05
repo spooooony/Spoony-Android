@@ -6,10 +6,12 @@ import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.ExploreRepository
+import com.spoony.spoony.domain.repository.PostRepository
 import com.spoony.spoony.presentation.exploreSearch.model.toModel
 import com.spoony.spoony.presentation.exploreSearch.type.SearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +25,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ExploreSearchViewModel @Inject constructor(
-    private val exploreRepository: ExploreRepository
+    private val exploreRepository: ExploreRepository,
+    private val postRepository: PostRepository
 ) : ViewModel() {
     private var _state: MutableStateFlow<ExploreSearchState> = MutableStateFlow(ExploreSearchState())
     val state: StateFlow<ExploreSearchState>
@@ -193,6 +196,34 @@ class ExploreSearchViewModel @Inject constructor(
                     getFetchRecentSearchQueries()
                 }
             }
+        }
+    }
+
+    fun deleteReview(reviewId: Int) {
+        viewModelScope.launch {
+            postRepository.deletePost(reviewId)
+                .onSuccess {
+                    _state.update { currentState ->
+                        val currentList = (currentState.placeReviewInfoList as? UiState.Success)?.data ?: persistentListOf()
+                        val updatedList = currentList.filterNot { it.reviewId == reviewId }.toPersistentList()
+
+                        currentState.copy(
+                            placeReviewInfoList = if (updatedList.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(updatedList)
+                            }
+                        )
+                    }
+                    _sideEffect.emit(
+                        ExploreSearchSideEffect.ShowSnackBar("삭제 되었어요!")
+                    )
+                }
+                .onLogFailure {
+                    _sideEffect.emit(
+                        ExploreSearchSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                    )
+                }
         }
     }
 }
