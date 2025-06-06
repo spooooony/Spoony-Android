@@ -31,7 +31,6 @@ import com.spoony.spoony.presentation.auth.termsofservice.navigation.termsOfServ
 import com.spoony.spoony.presentation.explore.navigation.exploreNavGraph
 import com.spoony.spoony.presentation.exploreSearch.navigation.exploreSearchNavGraph
 import com.spoony.spoony.presentation.follow.navigation.followNavGraph
-import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.mapNavGraph
 import com.spoony.spoony.presentation.gourmet.search.navigation.mapSearchNavGraph
 import com.spoony.spoony.presentation.main.component.MainBottomBar
@@ -262,7 +261,7 @@ fun MainScreen(
                             latitude = latitude,
                             longitude = longitude,
                             navOptions = navOptions {
-                                popUpTo(Map()) {
+                                popUpTo(NAVIGATION_ROOT) {
                                     inclusive = true
                                 }
                                 launchSingleTop = true

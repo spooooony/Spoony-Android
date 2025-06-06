@@ -203,6 +203,7 @@ fun MapRoute(
 
     LaunchedEffect(Unit) {
         if (
+            state.locationModel.placeId == null &&
             LOCATION_PERMISSIONS.any { permission ->
                 ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
             }
