@@ -133,9 +133,21 @@ class MainNavigator(
             popUpTo(NAVIGATION_ROOT) {
                 inclusive = true
             }
-        }
+        },
+        locationId: Int? = null,
+        locationName: String? = null,
+        scale: String? = null,
+        latitude: String? = null,
+        longitude: String? = null
     ) {
-        navController.navigateToMap(navOptions = navOptions)
+        navController.navigateToMap(
+            locationId = locationId,
+            locationName = locationName,
+            scale = scale,
+            latitude = latitude,
+            longitude = longitude,
+            navOptions = navOptions
+        )
     }
 
     fun navigateToReport(
@@ -216,26 +228,6 @@ class MainNavigator(
         }
     ) {
         navController.navigateToExploreSearch(navOptions)
-    }
-
-    fun navigateToLocationMap(
-        navOptions: NavOptions = navOptions {
-            popUpTo(Map())
-        },
-        locationId: Int? = null,
-        locationName: String? = null,
-        scale: String? = null,
-        latitude: String? = null,
-        longitude: String? = null
-    ) {
-        navController.navigateToMap(
-            locationId = locationId,
-            locationName = locationName,
-            scale = scale,
-            latitude = latitude,
-            longitude = longitude,
-            navOptions = navOptions
-        )
     }
 
     fun navigateToSettingPage(

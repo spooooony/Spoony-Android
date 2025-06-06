@@ -125,7 +125,6 @@ fun MapRoute(
     navigateToMapSearch: () -> Unit,
     navigateToExplore: () -> Unit,
     navigateToAttendance: () -> Unit,
-    navigateUp: () -> Unit,
     viewModel: MapViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
@@ -243,7 +242,7 @@ fun MapRoute(
         onPlaceItemClick = viewModel::getPlaceInfo,
         onPlaceCardClick = navigateToPlaceDetail,
         navigateToMapSearch = navigateToMapSearch,
-        onBackButtonClick = navigateUp,
+        onCloseButtonClick = { viewModel.updateLocationModel(LocationModel()) },
         moveCamera = { latitude, longitude ->
             moveCamera(
                 cameraPositionState = cameraPositionState,
@@ -302,7 +301,7 @@ private fun MapScreen(
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
-    onBackButtonClick: () -> Unit,
+    onCloseButtonClick: () -> Unit,
     moveCamera: (Double, Double) -> Unit,
     onGpsButtonClick: () -> Unit,
     onCategoryClick: (Int) -> Unit
@@ -349,7 +348,7 @@ private fun MapScreen(
                 isCompassEnabled = false
             ),
             properties = MapProperties(
-                locationTrackingMode = LocationTrackingMode.Follow
+                locationTrackingMode = LocationTrackingMode.NoFollow
             ),
             onMapClick = { _, _ ->
                 if (isMarkerSelected) {
@@ -458,7 +457,7 @@ private fun MapScreen(
             } else {
                 CloseTopAppBar(
                     title = locationInfo.placeName ?: "",
-                    onCloseButtonClick = onBackButtonClick
+                    onCloseButtonClick = onCloseButtonClick
                 )
             }
 

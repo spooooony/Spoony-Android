@@ -239,4 +239,12 @@ class MapViewModel @Inject constructor(
                 }
         }
     }
+
+    fun updateLocationModel(locationModel: LocationModel) {
+        _state.update {
+            it.copy(
+                locationModel = locationModel
+            )
+        }
+    }
 }
