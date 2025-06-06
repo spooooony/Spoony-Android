@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -29,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,16 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.skydoves.balloon.ArrowOrientation
+import com.skydoves.balloon.ArrowOrientationRules
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.Balloon
+import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonHighlightAnimation
+import com.skydoves.balloon.compose.Balloon
+import com.skydoves.balloon.compose.BalloonWindow
+import com.skydoves.balloon.compose.rememberBalloonBuilder
+import com.skydoves.balloon.compose.setBackgroundColor
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dialog.SpoonDrawDialog
 import com.spoony.spoony.core.designsystem.component.image.UrlImage
@@ -102,6 +115,7 @@ fun AttendanceRoute(
     AttendanceScreen(
         paddingValues = paddingValues,
         weeklyDate = viewModel.getWeeklyDate(state.weeklyStartDate),
+        todayDate = viewModel.today,
         spoonDrawList = (state.spoonDrawList as? UiState.Success<ImmutableList<SpoonDrawModel>>)?.data
             ?: persistentListOf(),
         spoonCount = state.totalSpoonCount,
@@ -121,6 +135,7 @@ fun AttendanceRoute(
 private fun AttendanceScreen(
     paddingValues: PaddingValues,
     weeklyDate: String,
+    todayDate: LocalDate,
     spoonDrawList: ImmutableList<SpoonDrawModel>,
     spoonCount: Int,
     onBackButtonClick: () -> Unit
@@ -157,7 +172,10 @@ private fun AttendanceScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        SpoonGrid(spoonDrawList = spoonDrawList)
+        SpoonGrid(
+            spoonDrawList = spoonDrawList,
+            todayDate = todayDate
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -205,8 +223,20 @@ private fun TitleSection(
 
 @Composable
 private fun SpoonGrid(
-    spoonDrawList: ImmutableList<SpoonDrawModel>
+    spoonDrawList: ImmutableList<SpoonDrawModel>,
+    todayDate: LocalDate
 ) {
+    val density = LocalDensity.current
+    val todayDayOfWeek = todayDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
+
+    val balloonYOffsetPx = with(density) { 19.dp.roundToPx() }
+    val balloonBuilder = rememberCustomBalloonBuilder()
+    var todayBalloon by remember { mutableStateOf<BalloonWindow?>(null) }
+
+    LaunchedEffect(Unit) {
+        todayBalloon?.showAlignBottom()
+    }
+
     val weeklyList: Map<String, SpoonDrawModel> = spoonDrawList.associateBy {
         LocalDate.parse(it.localDate, AttendanceViewModel.hyphenFormatter).dayOfWeek.getDisplayName(
             TextStyle.SHORT,
@@ -222,18 +252,75 @@ private fun SpoonGrid(
             .padding(horizontal = 20.dp)
     ) {
         items(daysList) { day ->
-            SpoonItem(
-                day = day,
-                spoonImage = weeklyList[day]?.spoonImage
-            )
+            val amount = weeklyList[day]?.spoonAmount ?: 0
+            val balloonText = buildString {
+                if (day == todayDayOfWeek) append("오늘 ")
+                append("${amount}개 획득")
+            }
+
+            Balloon(
+                key = day,
+                builder = balloonBuilder,
+                balloonContent = { SpoonBalloon(balloonText) }
+            ) { balloon ->
+                if (day == todayDayOfWeek) todayBalloon = balloon
+                SpoonItem(
+                    day = day,
+                    spoonImage = weeklyList[day]?.spoonImage,
+                    modifier = Modifier.noRippleClickable {
+                        if (weeklyList[day] != null) {
+                            balloon.showAlignBottom(yOff = -balloonYOffsetPx)
+                        }
+                    }
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun SpoonBalloon(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.width(IntrinsicSize.Max),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = SpoonyAndroidTheme.typography.body1m,
+            color = SpoonyAndroidTheme.colors.white
+        )
+    }
+}
+
+@Composable
+private fun rememberCustomBalloonBuilder(): Balloon.Builder {
+    val color = SpoonyAndroidTheme.colors
+    return rememberBalloonBuilder {
+        setArrowSize(12)
+        setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+        setArrowOrientationRules(ArrowOrientationRules.ALIGN_FIXED)
+        setArrowOrientation(ArrowOrientation.TOP)
+        setBalloonAnimation(BalloonAnimation.OVERSHOOT)
+        setBalloonHighlightAnimation(BalloonHighlightAnimation.SHAKE)
+        setBackgroundColor(color.black)
+        setPaddingHorizontal(12)
+        setPaddingVertical(10)
+        setCornerRadius(6f)
+        setIsVisibleOverlay(false)
+        setDismissWhenTouchOutside(true)
+        setDismissWhenClicked(true)
+        setAutoDismissDuration(3000)
     }
 }
 
 @Composable
 private fun SpoonItem(
     day: String,
-    spoonImage: String?
+    spoonImage: String?,
+    modifier: Modifier = Modifier
 ) {
     val (borderColor, backgroundColor, textColor) = if (spoonImage == null) {
         Triple(
@@ -251,7 +338,7 @@ private fun SpoonItem(
 
     Box(
         contentAlignment = Alignment.TopStart,
-        modifier = Modifier
+        modifier = modifier
             .size(100.dp)
             .border(
                 width = 8.dp,
