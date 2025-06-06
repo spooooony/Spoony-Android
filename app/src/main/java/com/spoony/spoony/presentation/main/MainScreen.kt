@@ -40,6 +40,7 @@ import com.spoony.spoony.presentation.report.navigation.reportNavGraph
 import com.spoony.spoony.presentation.setting.navigation.settingPageNavGraph
 import com.spoony.spoony.presentation.splash.navigation.splashNavGraph
 import com.spoony.spoony.presentation.userpage.mypage.navigation.myPageNavGraph
+import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.otherPageNavGraph
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
@@ -215,7 +216,8 @@ fun MainScreen(
                 followNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToUserProfile = navigator::navigateToOtherPage
+                    navigateToUserProfile = navigator::navigateToOtherPage,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 placeDetailNavGraph(

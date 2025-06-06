@@ -15,6 +15,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun UserListScreen(
     users: ImmutableList<UserItemUiState>,
     onUserClick: (Int) -> Unit,
+    onMyClick: () -> Unit,
     onButtonClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -29,9 +30,10 @@ fun UserListScreen(
             FollowUserItem(
                 imageUrl = user.imageUrl,
                 userName = user.userName,
+                isMe = user.isMe,
                 region = if (user.region.isNullOrBlank()) "" else "서울 ${user.region} 스푼",
                 isFollowing = user.isFollowing,
-                onUserClick = { onUserClick(user.userId) },
+                onUserClick = { if(user.isMe) onMyClick() else onUserClick(user.userId) },
                 onFollowClick = { onButtonClick(user.userId) },
                 modifier = Modifier.padding(vertical = 10.dp)
             )

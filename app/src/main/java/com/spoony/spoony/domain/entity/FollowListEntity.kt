@@ -10,5 +10,6 @@ data class User(
     val username: String,
     val regionName: String?,
     val isFollowing: Boolean,
-    val profileImageUrl: String
+    val profileImageUrl: String,
+    val isMe: Boolean
 )

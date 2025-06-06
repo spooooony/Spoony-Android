@@ -27,6 +27,7 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 fun FollowUserItem(
     imageUrl: String,
     userName: String,
+    isMe: Boolean,
     region: String,
     isFollowing: Boolean,
     onUserClick: () -> Unit,
@@ -76,12 +77,13 @@ fun FollowUserItem(
                 }
             }
         }
-
-        FollowButton(
-            isFollowing = isFollowing,
-            onClick = onFollowClick,
-            modifier = Modifier.padding(start = 8.dp)
-        )
+        if(!isMe) {
+            FollowButton(
+                isFollowing = isFollowing,
+                onClick = onFollowClick,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
     }
 }
 
@@ -95,6 +97,7 @@ private fun FollowUserItemPreview() {
             region = "우리집 우리집 우리집 우리집 우리집 우리집",
             isFollowing = false,
             onUserClick = { },
+            isMe = true,
             onFollowClick = { }
         )
     }

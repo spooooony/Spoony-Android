@@ -15,5 +15,6 @@ fun UserDto.toDomain() = UserEntity(
     username = this.username,
     regionName = this.regionName,
     isFollowing = this.isFollowing,
-    profileImageUrl = this.profileImageUrl
+    profileImageUrl = this.profileImageUrl,
+    isMe = this.isMe
 )

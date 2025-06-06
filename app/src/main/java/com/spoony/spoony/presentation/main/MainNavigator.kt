@@ -186,6 +186,10 @@ class MainNavigator(
         navController.navigateToOtherPage(userId = userId)
     }
 
+    fun navigateToMyPage() {
+        navController.navigateToMyPage()
+    }
+
     fun navigateToFollow(followType: FollowType, userId: Int) {
         navController.navigateToFollow(followType, userId)
     }
