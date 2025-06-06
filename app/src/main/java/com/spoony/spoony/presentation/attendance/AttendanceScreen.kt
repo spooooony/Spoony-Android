@@ -202,7 +202,7 @@ private fun TitleSection(
             )
 
             Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_error_24),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_info_24),
                 contentDescription = null,
                 tint = SpoonyAndroidTheme.colors.gray400,
                 modifier = Modifier
@@ -359,7 +359,7 @@ private fun SpoonItem(
 
         if (spoonImage == null) {
             Image(
-                painter = painterResource(R.drawable.img_wooden_spoon_grey),
+                painter = painterResource(R.drawable.img_plastic_spoon),
                 contentDescription = null
             )
         } else {
