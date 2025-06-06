@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -318,7 +319,8 @@ private fun MapScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
-    val gpsIconOffset = with(density) { 85.dp.toPx() }
+    // TODO: LazyRow 높이에 따라 offset 달라지게 수정 by.효빈
+    val gpsIconOffset = with(density) { if (locationInfo.placeId == null) 85.dp.toPx() else 45.dp.toPx() }
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -459,6 +461,7 @@ private fun MapScreen(
                     title = locationInfo.placeName ?: "",
                     onCloseButtonClick = onCloseButtonClick
                 )
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             if (locationInfo.placeId == null) {
@@ -662,7 +665,7 @@ private fun getLastLocation(
 
 private object DefaultHeight {
     const val COLLAPSED_HEIGHT = 0.9f
-    const val MIN_PARTIALLY_HEIGHT = 0.55f
+    const val MIN_PARTIALLY_HEIGHT = 0.6f
 
     var dragHandleHeight = 86
 }
