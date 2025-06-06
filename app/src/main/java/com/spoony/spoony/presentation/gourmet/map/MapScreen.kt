@@ -526,49 +526,47 @@ private fun MapScreen(
                         }
                     },
                     sheetContent = {
-                        Box {
-                            if (placeList.isEmpty()) {
-                                MapEmptyBottomSheetContent(
-                                    onClick = onExploreButtonClick,
-                                    modifier = Modifier
-                                        .padding(bottom = paddingValues.calculateBottomPadding())
-                                )
-                            } else {
-                                LazyColumn(
-                                    contentPadding = PaddingValues(top = 6.dp),
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = paddingValues.calculateBottomPadding())
-                                ) {
-                                    items(
-                                        items = placeList,
-                                        key = { it.placeId }
-                                    ) { addedPlace ->
-                                        with(addedPlace) {
-                                            MapListItem(
-                                                placeName = placeName,
-                                                address = placeAddress,
-                                                review = description,
-                                                imageUrl = photoUrl,
-                                                categoryIconUrl = categoryInfo.iconUrl,
-                                                categoryName = categoryInfo.categoryName,
-                                                textColor = Color.hexToColor(categoryInfo.textColor),
-                                                backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
-                                                onClick = {
-                                                    onPlaceItemClick(placeId)
-                                                    moveCamera(addedPlace.latitude, addedPlace.longitude)
-                                                    isMarkerSelected = true
-                                                    selectedMarkerId = placeId
-                                                }
-                                            )
-                                        }
-                                    }
-                                    item {
-                                        Spacer(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
+                        if (placeList.isEmpty()) {
+                            MapEmptyBottomSheetContent(
+                                onClick = onExploreButtonClick,
+                                modifier = Modifier
+                                    .padding(bottom = paddingValues.calculateBottomPadding())
+                            )
+                        } else {
+                            LazyColumn(
+                                contentPadding = PaddingValues(top = 6.dp),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = paddingValues.calculateBottomPadding())
+                            ) {
+                                items(
+                                    items = placeList,
+                                    key = { it.placeId }
+                                ) { addedPlace ->
+                                    with(addedPlace) {
+                                        MapListItem(
+                                            placeName = placeName,
+                                            address = placeAddress,
+                                            review = description,
+                                            imageUrl = photoUrl,
+                                            categoryIconUrl = categoryInfo.iconUrl,
+                                            categoryName = categoryInfo.categoryName,
+                                            textColor = Color.hexToColor(categoryInfo.textColor),
+                                            backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
+                                            onClick = {
+                                                onPlaceItemClick(placeId)
+                                                moveCamera(addedPlace.latitude, addedPlace.longitude)
+                                                isMarkerSelected = true
+                                                selectedMarkerId = placeId
+                                            }
                                         )
                                     }
+                                }
+                                item {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                    )
                                 }
                             }
                         }

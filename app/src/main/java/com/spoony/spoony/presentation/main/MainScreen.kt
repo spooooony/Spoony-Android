@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -67,6 +69,8 @@ fun MainScreen(
         }
     }
 
+    var currentTab by rememberSaveable { mutableStateOf(MainTab.MAP) }
+
     SpoonyBackHandler(
         context = context,
         onShowSnackbar = {
@@ -86,8 +90,14 @@ fun MainScreen(
             bottomBar = {
                 MainBottomBar(
                     visible = navigator.shouldShowBottomBar(),
+                    currentTab = currentTab,
                     tabs = MainTab.entries.toPersistentList(),
-                    onTabSelected = navigator::navigate
+                    onTabSelected = { tab ->
+                        if (tab != MainTab.REGISTER) {
+                            currentTab = tab
+                        }
+                        navigator.navigate(tab)
+                    }
                 )
             },
             modifier = Modifier
@@ -138,7 +148,10 @@ fun MainScreen(
                         )
                     },
                     navigateToMapSearch = navigator::navigateToMapSearch,
-                    navigateToExplore = navigator::navigateToExplore,
+                    navigateToExplore = {
+                        currentTab = MainTab.EXPLORE
+                        navigator.navigateToExplore()
+                    },
                     navigateToAttendance = navigator::navigateToAttendance
                 )
 
