@@ -9,6 +9,7 @@ import android.location.Location
 import android.net.Uri
 import android.provider.Settings
 import android.view.Gravity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -171,7 +172,9 @@ fun MapRoute(
         }
     }
 
-    // TODO: 백핸들러 추가
+    BackHandler(enabled = state.locationModel.placeId != null) {
+        viewModel.updateLocationModel(LocationModel())
+    }
 
     SideEffect {
         systemUiController.setNavigationBarColor(
