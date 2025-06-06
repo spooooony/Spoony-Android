@@ -44,8 +44,6 @@ fun IconChip(
     isSelected: Boolean = false,
     isGradient: Boolean = false
 ) {
-    val context = LocalContext.current
-
     Row(
         modifier = modifier
             .noRippleClickable(onClick)
@@ -78,7 +76,7 @@ fun IconChip(
 
         Text(
             text = text,
-            color = if (isSelected) SpoonyAndroidTheme.colors.white else SpoonyAndroidTheme.colors.gray600,
+            color = if (isSelected) SpoonyAndroidTheme.colors.white else SpoonyAndroidTheme.colors.gray500,
             style = textStyle
         )
     }
