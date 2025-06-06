@@ -181,6 +181,7 @@ fun MainScreen(
                                 popUpTo<Register> {
                                     inclusive = true
                                 }
+                                launchSingleTop = true
                             }
                         )
                     }
