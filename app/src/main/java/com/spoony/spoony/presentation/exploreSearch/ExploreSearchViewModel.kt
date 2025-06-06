@@ -226,4 +226,8 @@ class ExploreSearchViewModel @Inject constructor(
                 }
         }
     }
+
+    fun refresh() {
+        search(_state.value.searchKeyword)
+    }
 }

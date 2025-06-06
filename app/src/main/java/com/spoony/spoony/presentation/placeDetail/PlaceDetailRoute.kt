@@ -107,7 +107,6 @@ fun PlaceDetailRoute(
     }
 
     val lifecycle = lifecycleOwner.lifecycle
-    // 화면 재진입 시
     LaunchedEffect(lifecycle) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.refresh()
