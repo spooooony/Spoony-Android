@@ -100,7 +100,7 @@ class AttendanceViewModel @Inject constructor(
                     drawId = drawId,
                     spoonTypeId = spoonType.spoonTypeId,
                     spoonName = spoonType.spoonName,
-                    spoonImage = spoonType.spoonImage,
+                    spoonImage = spoonType.spoonGetImage,
                     spoonAmount = spoonType.spoonAmount,
                     localDate = localDate
                 )
