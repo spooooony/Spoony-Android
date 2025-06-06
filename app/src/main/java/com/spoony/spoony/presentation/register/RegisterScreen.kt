@@ -62,7 +62,6 @@ fun RegisterRoute(
     }
 
     RegisterScreen(
-        paddingValues = paddingValues,
         state = state,
         navController = navController,
         onBackButtonClick = navigateUp,
@@ -77,7 +76,6 @@ fun RegisterRoute(
 
 @Composable
 private fun RegisterScreen(
-    paddingValues: PaddingValues,
     state: RegisterState,
     navController: NavHostController,
     onBackButtonClick: () -> Unit,
