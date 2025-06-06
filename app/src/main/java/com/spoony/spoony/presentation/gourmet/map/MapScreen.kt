@@ -171,6 +171,8 @@ fun MapRoute(
         }
     }
 
+    // TODO: 백핸들러 추가
+
     SideEffect {
         systemUiController.setNavigationBarColor(
             color = white
@@ -319,8 +321,9 @@ private fun MapScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
-    // TODO: LazyRow 높이에 따라 offset 달라지게 수정 by.효빈
-    val gpsIconOffset = with(density) { if (locationInfo.placeId == null) 85.dp.toPx() else 45.dp.toPx() }
+    var topAppBarHeight by remember { mutableStateOf(0.dp) }
+    var chipHeight by remember { mutableStateOf(0.dp) }
+    val gpsIconOffset = with(density) { 45.dp.plus(chipHeight).toPx() }
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -346,7 +349,7 @@ private fun MapScreen(
             uiSettings = MapUiSettings(
                 isZoomControlEnabled = false,
                 logoGravity = Gravity.TOP or Gravity.END,
-                logoMargin = PaddingValues(end = 20.dp, top = 135.dp),
+                logoMargin = PaddingValues(end = 20.dp, top = topAppBarHeight.plus(chipHeight).plus(42.dp)),
                 isCompassEnabled = false
             ),
             properties = MapProperties(
@@ -455,11 +458,18 @@ private fun MapScreen(
                     onSearchClick = navigateToMapSearch,
                     modifier = Modifier
                         .padding(top = paddingValues.calculateTopPadding())
+                        .onGloballyPositioned {
+                            topAppBarHeight = with(density) { it.size.height.toDp() }
+                        }
                 )
             } else {
                 CloseTopAppBar(
                     title = locationInfo.placeName ?: "",
-                    onCloseButtonClick = onCloseButtonClick
+                    onCloseButtonClick = onCloseButtonClick,
+                    modifier = Modifier
+                        .onGloballyPositioned {
+                            topAppBarHeight = with(density) { it.size.height.toDp().plus(16.dp) }
+                        }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -485,7 +495,10 @@ private fun MapScreen(
                                 isGradient = true,
                                 secondColor = SpoonyAndroidTheme.colors.white,
                                 mainColor = SpoonyAndroidTheme.colors.main400,
-                                selectedBorderColor = SpoonyAndroidTheme.colors.main200
+                                selectedBorderColor = SpoonyAndroidTheme.colors.main200,
+                                modifier = Modifier.onGloballyPositioned {
+                                    chipHeight = with(density) { it.size.height.toDp().plus(8.dp) }
+                                }
                             )
                         }
                     }
