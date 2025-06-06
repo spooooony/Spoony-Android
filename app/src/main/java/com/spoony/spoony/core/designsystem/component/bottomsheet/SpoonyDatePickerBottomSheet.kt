@@ -46,10 +46,7 @@ fun SpoonyDatePickerBottomSheet(
     initialDay: Int = 1
 ) {
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-        confirmValueChange = {
-            it != SheetValue.Hidden
-        }
+        skipPartiallyExpanded = true
     )
 
     val coroutineScope = rememberCoroutineScope()
