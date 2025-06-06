@@ -77,7 +77,7 @@ fun FollowUserItem(
                 }
             }
         }
-        if(!isMe) {
+        if (!isMe) {
             FollowButton(
                 isFollowing = isFollowing,
                 onClick = onFollowClick,

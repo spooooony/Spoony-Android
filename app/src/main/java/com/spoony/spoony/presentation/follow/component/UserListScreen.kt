@@ -33,7 +33,7 @@ fun UserListScreen(
                 isMe = user.isMe,
                 region = if (user.region.isNullOrBlank()) "" else "서울 ${user.region} 스푼",
                 isFollowing = user.isFollowing,
-                onUserClick = { if(user.isMe) onMyClick() else onUserClick(user.userId) },
+                onUserClick = { if (user.isMe) onMyClick() else onUserClick(user.userId) },
                 onFollowClick = { onButtonClick(user.userId) },
                 modifier = Modifier.padding(vertical = 10.dp)
             )
