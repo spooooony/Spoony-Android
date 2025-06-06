@@ -69,6 +69,7 @@ fun PlaceDetailRoute(
     navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToUserProfile: (Int) -> Unit,
     navigateToAttendance: () -> Unit,
+    navigateToMyPage: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -202,7 +203,16 @@ fun PlaceDetailRoute(
                             onDeleteReviewClick = {
                                 deleteReviewDialogVisibility = true
                             },
-                            onUserProfileClick = { navigateToUserProfile(userProfile.userId) },
+                            onUserProfileClick = {
+                                when (data.isMine) {
+                                    true -> {
+                                        navigateToMyPage()
+                                    }
+                                    false -> {
+                                        navigateToUserProfile(userProfile.userId)
+                                    }
+                                }
+                            },
                             onEditReviewClick = { navigateToEditReview(postId, RegisterType.EDIT) },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,

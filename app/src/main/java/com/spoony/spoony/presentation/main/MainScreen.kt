@@ -229,7 +229,8 @@ fun MainScreen(
                     },
                     navigateToUserProfile = navigator::navigateToOtherPage,
                     navigateToEditReview = navigator::navigateToReviewEdit,
-                    navigateToAttendance = navigator::navigateToAttendance
+                    navigateToAttendance = navigator::navigateToAttendance,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 reportNavGraph(
