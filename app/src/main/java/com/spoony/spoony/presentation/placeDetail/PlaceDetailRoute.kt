@@ -213,13 +213,10 @@ fun PlaceDetailRoute(
                                 deleteReviewDialogVisibility = true
                             },
                             onUserProfileClick = {
-                                when (data.isMine) {
-                                    true -> {
-                                        navigateToMyPage()
-                                    }
-                                    false -> {
-                                        navigateToUserProfile(userProfile.userId)
-                                    }
+                                if (data.isMine) {
+                                    navigateToMyPage()
+                                } else {
+                                    navigateToUserProfile(userProfile.userId)
                                 }
                             },
                             onEditReviewClick = { navigateToEditReview(postId, RegisterType.EDIT) },
