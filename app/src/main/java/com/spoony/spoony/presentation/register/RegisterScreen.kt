@@ -70,7 +70,7 @@ fun RegisterRoute(
         onUpdateProgress = viewModel::updateStep,
         onResetRegisterState = viewModel::resetState,
         viewModel = viewModel,
-        modifier = modifier.padding(paddingValues.calculateBottomPadding())
+        modifier = modifier
     )
 }
 
