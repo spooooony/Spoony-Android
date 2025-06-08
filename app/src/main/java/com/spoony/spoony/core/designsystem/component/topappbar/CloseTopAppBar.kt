@@ -17,15 +17,16 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 @Composable
 fun CloseTopAppBar(
     title: String,
-    backgroundColor: Color = SpoonyAndroidTheme.colors.white,
-    onCloseButtonClick: () -> Unit
+    onCloseButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = SpoonyAndroidTheme.colors.white
 ) {
     SpoonyBasicTopAppBar(
         actions = {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_close_24),
                 contentDescription = null,
-                modifier = Modifier
+                modifier = modifier
                     .padding(end = 12.dp)
                     .noRippleClickable(onClick = onCloseButtonClick)
                     .padding(4.dp),

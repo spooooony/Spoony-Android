@@ -18,11 +18,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,11 +36,10 @@ import kotlinx.collections.immutable.toPersistentList
 @Composable
 fun MainBottomBar(
     visible: Boolean,
+    currentTab: MainTab,
     tabs: ImmutableList<MainTab>,
     onTabSelected: (MainTab) -> Unit
 ) {
-    var currentTab by rememberSaveable { mutableStateOf(MainTab.MAP) }
-
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + slideIn { IntOffset(0, it.height) },
@@ -71,12 +66,7 @@ fun MainBottomBar(
                         MainBottomBarItem(
                             tab = tab,
                             selected = (tab == currentTab),
-                            onClick = {
-                                if (tab != MainTab.REGISTER) {
-                                    currentTab = tab
-                                }
-                                onTabSelected(tab)
-                            }
+                            onClick = { onTabSelected(tab) }
                         )
                     }
                 }
@@ -129,6 +119,7 @@ private fun BottomBarPreview() {
         Column(modifier = Modifier) {
             MainBottomBar(
                 visible = true,
+                currentTab = MainTab.MAP,
                 tabs = MainTab.entries.toPersistentList(),
                 onTabSelected = {}
             )

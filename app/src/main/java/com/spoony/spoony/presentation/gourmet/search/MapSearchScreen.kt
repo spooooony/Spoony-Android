@@ -3,7 +3,9 @@ package com.spoony.spoony.presentation.gourmet.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,6 +34,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun MapSearchRoute(
+    paddingValues: PaddingValues,
     navigateUp: () -> Unit,
     navigateToLocationMap: (Int, String, String, String, String) -> Unit,
     viewModel: MapSearchViewModel = hiltViewModel()
@@ -43,6 +46,7 @@ fun MapSearchRoute(
     }
 
     MapSearchScreen(
+        paddingValues = paddingValues,
         searchKeyword = state.searchKeyword,
         recentSearchList = state.recentSearchQueryList,
         locationModelList = state.locationModelList,
@@ -59,6 +63,7 @@ fun MapSearchRoute(
 
 @Composable
 private fun MapSearchScreen(
+    paddingValues: PaddingValues,
     searchKeyword: String,
     recentSearchList: ImmutableList<String>,
     locationModelList: UiState<ImmutableList<LocationModel>>,
@@ -76,7 +81,12 @@ private fun MapSearchScreen(
         focusRequester.requestFocus()
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = paddingValues.calculateBottomPadding())
+            .background(SpoonyAndroidTheme.colors.white)
+    ) {
         MapSearchTopAppBar(
             value = searchKeyword,
             onValueChanged = onSearchKeywordChanged,

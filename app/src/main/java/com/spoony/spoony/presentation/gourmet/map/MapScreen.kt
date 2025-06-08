@@ -9,6 +9,7 @@ import android.location.Location
 import android.net.Uri
 import android.provider.Settings
 import android.view.Gravity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -125,7 +127,6 @@ fun MapRoute(
     navigateToMapSearch: () -> Unit,
     navigateToExplore: () -> Unit,
     navigateToAttendance: () -> Unit,
-    navigateUp: () -> Unit,
     viewModel: MapViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
@@ -171,6 +172,10 @@ fun MapRoute(
         }
     }
 
+    BackHandler(enabled = state.locationModel.placeId != null) {
+        viewModel.updateLocationModel(LocationModel())
+    }
+
     SideEffect {
         systemUiController.setNavigationBarColor(
             color = white
@@ -198,6 +203,7 @@ fun MapRoute(
 
     LaunchedEffect(Unit) {
         if (
+            state.locationModel.placeId == null &&
             LOCATION_PERMISSIONS.any { permission ->
                 ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
             }
@@ -243,7 +249,7 @@ fun MapRoute(
         onPlaceItemClick = viewModel::getPlaceInfo,
         onPlaceCardClick = navigateToPlaceDetail,
         navigateToMapSearch = navigateToMapSearch,
-        onBackButtonClick = navigateUp,
+        onCloseButtonClick = { viewModel.updateLocationModel(LocationModel()) },
         moveCamera = { latitude, longitude ->
             moveCamera(
                 cameraPositionState = cameraPositionState,
@@ -302,7 +308,7 @@ private fun MapScreen(
     onPlaceItemClick: (Int) -> Unit,
     onPlaceCardClick: (Int) -> Unit,
     navigateToMapSearch: () -> Unit,
-    onBackButtonClick: () -> Unit,
+    onCloseButtonClick: () -> Unit,
     moveCamera: (Double, Double) -> Unit,
     onGpsButtonClick: () -> Unit,
     onCategoryClick: (Int) -> Unit
@@ -319,7 +325,9 @@ private fun MapScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
 
-    val gpsIconOffset = with(density) { 85.dp.toPx() }
+    var topAppBarHeight by remember { mutableStateOf(0.dp) }
+    var chipHeight by remember { mutableStateOf(0.dp) }
+    val gpsIconOffset = with(density) { 45.dp.plus(chipHeight).toPx() }
 
     var isMarkerSelected by remember { mutableStateOf(false) }
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
@@ -345,11 +353,11 @@ private fun MapScreen(
             uiSettings = MapUiSettings(
                 isZoomControlEnabled = false,
                 logoGravity = Gravity.TOP or Gravity.END,
-                logoMargin = PaddingValues(end = 20.dp, top = 135.dp),
+                logoMargin = PaddingValues(end = 20.dp, top = topAppBarHeight.plus(chipHeight).plus(42.dp)),
                 isCompassEnabled = false
             ),
             properties = MapProperties(
-                locationTrackingMode = LocationTrackingMode.Follow
+                locationTrackingMode = LocationTrackingMode.NoFollow
             ),
             onMapClick = { _, _ ->
                 if (isMarkerSelected) {
@@ -454,12 +462,20 @@ private fun MapScreen(
                     onSearchClick = navigateToMapSearch,
                     modifier = Modifier
                         .padding(top = paddingValues.calculateTopPadding())
+                        .onGloballyPositioned {
+                            topAppBarHeight = with(density) { it.size.height.toDp() }
+                        }
                 )
             } else {
                 CloseTopAppBar(
                     title = locationInfo.placeName ?: "",
-                    onCloseButtonClick = onBackButtonClick
+                    onCloseButtonClick = onCloseButtonClick,
+                    modifier = Modifier
+                        .onGloballyPositioned {
+                            topAppBarHeight = with(density) { it.size.height.toDp().plus(16.dp) }
+                        }
                 )
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             if (locationInfo.placeId == null) {
@@ -483,7 +499,10 @@ private fun MapScreen(
                                 isGradient = true,
                                 secondColor = SpoonyAndroidTheme.colors.white,
                                 mainColor = SpoonyAndroidTheme.colors.main400,
-                                selectedBorderColor = SpoonyAndroidTheme.colors.main200
+                                selectedBorderColor = SpoonyAndroidTheme.colors.main200,
+                                modifier = Modifier.onGloballyPositioned {
+                                    chipHeight = with(density) { it.size.height.toDp().plus(8.dp) }
+                                }
                             )
                         }
                     }
@@ -508,49 +527,47 @@ private fun MapScreen(
                         }
                     },
                     sheetContent = {
-                        Box {
-                            if (placeList.isEmpty()) {
-                                MapEmptyBottomSheetContent(
-                                    onClick = onExploreButtonClick,
-                                    modifier = Modifier
-                                        .padding(bottom = paddingValues.calculateBottomPadding())
-                                )
-                            } else {
-                                LazyColumn(
-                                    contentPadding = PaddingValues(top = 6.dp),
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = paddingValues.calculateBottomPadding())
-                                ) {
-                                    items(
-                                        items = placeList,
-                                        key = { it.placeId }
-                                    ) { addedPlace ->
-                                        with(addedPlace) {
-                                            MapListItem(
-                                                placeName = placeName,
-                                                address = placeAddress,
-                                                review = description,
-                                                imageUrl = photoUrl,
-                                                categoryIconUrl = categoryInfo.iconUrl,
-                                                categoryName = categoryInfo.categoryName,
-                                                textColor = Color.hexToColor(categoryInfo.textColor),
-                                                backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
-                                                onClick = {
-                                                    onPlaceItemClick(placeId)
-                                                    moveCamera(addedPlace.latitude, addedPlace.longitude)
-                                                    isMarkerSelected = true
-                                                    selectedMarkerId = placeId
-                                                }
-                                            )
-                                        }
-                                    }
-                                    item {
-                                        Spacer(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
+                        if (placeList.isEmpty()) {
+                            MapEmptyBottomSheetContent(
+                                onClick = onExploreButtonClick,
+                                modifier = Modifier
+                                    .padding(bottom = paddingValues.calculateBottomPadding())
+                            )
+                        } else {
+                            LazyColumn(
+                                contentPadding = PaddingValues(top = 6.dp),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = paddingValues.calculateBottomPadding())
+                            ) {
+                                items(
+                                    items = placeList,
+                                    key = { it.placeId }
+                                ) { addedPlace ->
+                                    with(addedPlace) {
+                                        MapListItem(
+                                            placeName = placeName,
+                                            address = placeAddress,
+                                            review = description,
+                                            imageUrl = photoUrl,
+                                            categoryIconUrl = categoryInfo.iconUrl,
+                                            categoryName = categoryInfo.categoryName,
+                                            textColor = Color.hexToColor(categoryInfo.textColor),
+                                            backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
+                                            onClick = {
+                                                onPlaceItemClick(placeId)
+                                                moveCamera(addedPlace.latitude, addedPlace.longitude)
+                                                isMarkerSelected = true
+                                                selectedMarkerId = placeId
+                                            }
                                         )
                                     }
+                                }
+                                item {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                    )
                                 }
                             }
                         }
@@ -663,7 +680,7 @@ private fun getLastLocation(
 
 private object DefaultHeight {
     const val COLLAPSED_HEIGHT = 0.9f
-    const val MIN_PARTIALLY_HEIGHT = 0.55f
+    const val MIN_PARTIALLY_HEIGHT = 0.6f
 
     var dragHandleHeight = 86
 }
