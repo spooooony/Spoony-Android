@@ -11,12 +11,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.spoonySliderGradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,19 +35,12 @@ fun SpoonySlider(
     enabled: Boolean = true,
     thumbIcon: Int = R.drawable.ic_slyder_thumb,
     iconColor: Color = Color.Unspecified,
-    activeTrackColor: Color = SpoonyAndroidTheme.colors.main400,
     inactiveTrackColor: Color = SpoonyAndroidTheme.colors.gray200,
     trackHeight: Dp = 11.dp,
     hapticEnabled: Boolean = true,
     hapticStep: Float = 0.1f
 ) {
-    val defaultBrush = remember {
-        Brush.horizontalGradient(
-            listOf(Color.White, activeTrackColor)
-        )
-    }
-
-    var previousValue by remember { mutableStateOf(value) }
+    var previousValue by remember { mutableFloatStateOf(value) }
     val view = LocalView.current
 
     Slider(
@@ -88,10 +81,15 @@ fun SpoonySlider(
                     modifier = Modifier
                         .fillMaxWidth(sliderState.value / 100f)
                         .height(trackHeight)
-                        .background(
-                            brush = defaultBrush,
-                            shape = CircleShape
+                        .then(
+                            //  반지름 0이면 앱 터짐
+                            if ((sliderState.value / 100f) > 0.01f) {
+                                Modifier.spoonySliderGradient()
+                            } else {
+                                Modifier
+                            }
                         )
+                        .clip(CircleShape)
                 )
             }
         }

@@ -147,7 +147,7 @@ private fun RegisterEndScreen(
 
     if (isDialogVisible && registerType == RegisterType.CREATE) {
         SingleButtonDialog(
-            message = "수저 1개를 획득했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
+            message = "리뷰를 등록했어요!\n이제 새로운 장소를 떠먹으러 가볼까요?",
             text = "좋아요!",
             buttonStyle = ButtonStyle.Primary,
             properties = DialogProperties(
@@ -188,7 +188,7 @@ private fun ReviewSection(
         SpoonyLargeTextField(
             value = detailReview,
             onValueChanged = onDetailReviewChange,
-            placeholder = "장소명 언급은 피해주세요. 우리만의 비밀!",
+            placeholder = "맛, 양, 분위기 등 맛집에 대한 나만의 솔직한 리뷰를 남겨주세요.",
             maxLength = MAX_DETAIL_REVIEW_LENGTH,
             minLength = MIN_DETAIL_REVIEW_LENGTH,
             minErrorText = "자세한 후기는 필수예요",
@@ -241,7 +241,8 @@ private fun OptionalReviewSection(
         SpoonyLargeTextField(
             value = optionalReview,
             onValueChanged = onOptionalReviewChange,
-            placeholder = "사장님 몰래 솔직 후기!\n이 내용은 비공개 처리돼요!(선택)",
+            placeholder = "쉿 사장님 몰래 남기는 솔직 후기! (선택)\n" +
+                "이 내용은 비공개 처리 돼요.",
             maxLength = MAX_OPTIONAL_REVIEW_LENGTH,
             maxErrorText = "글자 수 ${MAX_OPTIONAL_REVIEW_LENGTH}자 이하로 입력해 주세요",
             decorationBoxHeight = 80.dp,
