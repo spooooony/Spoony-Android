@@ -1,5 +1,7 @@
 package com.spoony.spoony.presentation.exploreSearch.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -25,7 +27,20 @@ fun NavGraphBuilder.exploreSearchNavGraph(
     navigateUp: () -> Unit,
     navigateToEditReview: (Int, RegisterType) -> Unit
 ) {
-    composable<ExploreSearch> {
+    composable<ExploreSearch>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        }
+    ) {
         ExploreSearchRoute(
             paddingValues = paddingValues,
             navigateToUserProfile = navigateToUserProfile,

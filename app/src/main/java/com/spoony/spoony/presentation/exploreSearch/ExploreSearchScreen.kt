@@ -167,6 +167,7 @@ private fun ExploreSearchScreen(
 
     Column(
         modifier = Modifier
+            .background(color = SpoonyAndroidTheme.colors.white)
             .padding(
                 bottom = paddingValues.calculateBottomPadding()
             )
