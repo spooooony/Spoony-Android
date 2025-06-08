@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.userpage.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -15,6 +14,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
+import com.spoony.spoony.core.util.extension.noRippleClickable
 
 @Composable
 fun LocalReviewFilterCheckBox(
@@ -27,7 +27,7 @@ fun LocalReviewFilterCheckBox(
     val textColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray400
 
     Row(
-        modifier = modifier.clickable(
+        modifier = modifier.noRippleClickable(
             onClick = onClick,
             enabled = enabled
         ),
