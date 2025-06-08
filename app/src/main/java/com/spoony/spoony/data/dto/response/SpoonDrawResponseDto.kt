@@ -27,6 +27,8 @@ data class SpoonDrawResponseDto(
         @SerialName("probability")
         val probability: Double,
         @SerialName("spoonImage")
-        val spoonImage: String
+        val spoonImage: String,
+        @SerialName("spoonGetImage")
+        val spoonGetImage: String
     )
 }

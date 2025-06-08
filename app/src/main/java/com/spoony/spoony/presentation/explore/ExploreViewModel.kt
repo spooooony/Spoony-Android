@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.explore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.CategoryRepository
@@ -46,6 +47,7 @@ class ExploreViewModel @Inject constructor(
         get() = _sideEffect.asSharedFlow()
 
     private var currentCursor: Int? = null
+    private var reviewCount: Int = 0
     private var allSearchJob: Job? = null
     private var followingSearchJob: Job? = null
 
@@ -69,7 +71,7 @@ class ExploreViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -88,7 +90,7 @@ class ExploreViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -239,7 +241,7 @@ class ExploreViewModel @Inject constructor(
         scrollToTop()
     }
 
-    fun getPlaceReviewListFiltered() {
+    fun getPlaceReviewListFiltered(size: Int = EXPLORE_SEARCH_FETCH_SIZE) {
         val currentFilterState = _state.value.filterSelectionState
         val selectedCategoryIds = (currentFilterState.properties + currentFilterState.categories)
             .filterValues { it }
@@ -263,7 +265,7 @@ class ExploreViewModel @Inject constructor(
                 ageGroups = selectedAgeGroups,
                 sortBy = _state.value.selectedSortingOption.stringCode,
                 cursor = currentCursor,
-                size = EXPLORE_SEARCH_FETCH_SIZE
+                size = size
             )
                 .onSuccess { (reviews, nextCursor) ->
                     _state.update {
@@ -277,22 +279,26 @@ class ExploreViewModel @Inject constructor(
                                 (placeReviewList + newItems).toPersistentList()
                             }
                         currentCursor = nextCursor
+
+                        val newUiState = if (mergedList.isEmpty()) {
+                            UiState.Empty
+                        } else {
+                            UiState.Success(mergedList)
+                        }
+
+                        reviewCount = if (newUiState is UiState.Success) newUiState.data.size else 0
                         it.copy(
-                            placeReviewList = if (mergedList.isEmpty()) {
-                                UiState.Empty
-                            } else {
-                                UiState.Success(mergedList)
-                            }
+                            placeReviewList = newUiState
                         )
                     }
                 }
                 .onLogFailure {
                     _state.update {
                         it.copy(
-                            placeReviewList = UiState.Failure("버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                            placeReviewList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                         )
                     }
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -320,10 +326,10 @@ class ExploreViewModel @Inject constructor(
                     Timber.e(e)
                     _state.update {
                         it.copy(
-                            placeReviewList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                            placeReviewList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                         )
                     }
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -336,6 +342,7 @@ class ExploreViewModel @Inject constructor(
             getPlaceReviewFollowingList()
         }
     }
+
     fun updateExploreType(exploreType: ExploreType) {
         if (state.value.exploreType == exploreType) return
         _state.update {
@@ -381,9 +388,18 @@ class ExploreViewModel @Inject constructor(
                 .onFailure { e ->
                     Timber.e(e)
                     _sideEffect.emit(
-                        ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description)
                     )
                 }
+        }
+    }
+
+    fun refresh() {
+        if (state.value.exploreType == ExploreType.ALL) {
+            currentCursor = null
+            if (reviewCount > 0) getPlaceReviewListFiltered(size = reviewCount)
+        } else {
+            getPlaceReviewFollowingList()
         }
     }
 

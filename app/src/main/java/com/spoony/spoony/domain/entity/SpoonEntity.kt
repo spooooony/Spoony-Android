@@ -18,6 +18,7 @@ data class SpoonEntity(
         val spoonName: String,
         val spoonAmount: Int,
         val probability: Double,
-        val spoonImage: String
+        val spoonImage: String,
+        val spoonGetImage: String
     )
 }

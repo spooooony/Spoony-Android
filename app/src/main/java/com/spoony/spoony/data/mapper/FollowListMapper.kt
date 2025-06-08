@@ -13,7 +13,8 @@ fun FollowListResponseDto.toDomain() = FollowListEntity(
 fun UserDto.toDomain() = UserEntity(
     userId = this.userId,
     username = this.username,
-    regionName = this.regionName ?: "",
+    regionName = this.regionName,
     isFollowing = this.isFollowing,
-    profileImageUrl = this.profileImageUrl
+    profileImageUrl = this.profileImageUrl,
+    isMe = this.isMe
 )

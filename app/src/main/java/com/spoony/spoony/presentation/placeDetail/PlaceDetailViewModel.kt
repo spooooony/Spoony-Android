@@ -33,7 +33,7 @@ class PlaceDetailViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val spoonRepository: SpoonRepository,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var _state: MutableStateFlow<PlaceDetailState> = MutableStateFlow(PlaceDetailState())
     val state: StateFlow<PlaceDetailState>
@@ -254,5 +254,10 @@ class PlaceDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _sideEffect.emit(PlaceDetailSideEffect.ShowSnackbar(text))
         }
+    }
+
+    fun refresh() {
+        val postArgs = savedStateHandle.toRoute<PlaceDetail>()
+        getPost(postArgs.postId)
     }
 }

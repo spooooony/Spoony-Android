@@ -111,9 +111,9 @@ fun UserPageScreen(
 
             ProfileIntroSection(
                 userType = state.userType,
-                region = "서울 ${state.region} 스푼",
+                region = if (state.region.isNullOrBlank()) "" else "서울 ${state.region} 스푼",
                 nickname = state.userName,
-                introduction = state.introduction ?: "안녕! 나는 어떤 스푼이나면...",
+                introduction = if (state.introduction.isNullOrBlank()) "안녕! 나는 어떤 스푼이나면..." else state.introduction!!,
                 onButtonClick = {
                     if (state.isBlocked) {
                         isUserBlockDialogVisible = true
@@ -136,20 +136,21 @@ fun UserPageScreen(
 
             Spacer(modifier = Modifier.height(19.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ReviewCounter(reviewCount = state.reviews.size)
+            if (!state.isBlocked) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ReviewCounter(reviewCount = state.reviews.size)
 
-                if (state.userType == UserType.OTHER_PAGE) {
-                    LocalReviewFilterCheckBox(
-                        enabled = !state.isBlocked,
-                        isSelected = state.isCheckBoxSelected,
-                        onClick = events.onCheckBoxClick
-                    )
+                    if (state.userType == UserType.OTHER_PAGE) {
+                        LocalReviewFilterCheckBox(
+                            isSelected = state.isCheckBoxSelected,
+                            onClick = events.onCheckBoxClick
+                        )
+                    }
                 }
             }
 

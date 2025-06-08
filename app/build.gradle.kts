@@ -121,6 +121,7 @@ dependencies {
 
     implementation(libs.pebble)
     implementation(libs.jakewharton.process.phoenix)
+    implementation(libs.balloon.compose)
 
     implementation(libs.accompanist.systemuicontroller)
 }
