@@ -182,6 +182,7 @@ fun MainScreen(
                                 popUpTo<Register> {
                                     inclusive = true
                                 }
+                                launchSingleTop = true
                             }
                         )
                     }
@@ -231,7 +232,8 @@ fun MainScreen(
                     },
                     navigateToUserProfile = navigator::navigateToOtherPage,
                     navigateToEditReview = navigator::navigateToReviewEdit,
-                    navigateToAttendance = navigator::navigateToAttendance
+                    navigateToAttendance = navigator::navigateToAttendance,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 reportNavGraph(

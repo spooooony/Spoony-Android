@@ -33,9 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.spoony.spoony.core.designsystem.component.button.FollowButton
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
@@ -69,6 +71,7 @@ fun PlaceDetailRoute(
     navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToUserProfile: (Int) -> Unit,
     navigateToAttendance: () -> Unit,
+    navigateToMyPage: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
@@ -100,6 +103,13 @@ fun PlaceDetailRoute(
                 }
                 is PlaceDetailSideEffect.NavigateUp -> navigateUp()
             }
+        }
+    }
+
+    val lifecycle = lifecycleOwner.lifecycle
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.refresh()
         }
     }
 
@@ -202,7 +212,13 @@ fun PlaceDetailRoute(
                             onDeleteReviewClick = {
                                 deleteReviewDialogVisibility = true
                             },
-                            onUserProfileClick = { navigateToUserProfile(userProfile.userId) },
+                            onUserProfileClick = {
+                                if (data.isMine) {
+                                    navigateToMyPage()
+                                } else {
+                                    navigateToUserProfile(userProfile.userId)
+                                }
+                            },
                             onEditReviewClick = { navigateToEditReview(postId, RegisterType.EDIT) },
                             userProfileUrl = userProfile.userProfileUrl,
                             userName = userProfile.userName,
