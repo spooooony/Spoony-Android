@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.explore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.CategoryRepository
@@ -70,7 +71,7 @@ class ExploreViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -89,7 +90,7 @@ class ExploreViewModel @Inject constructor(
                     }
                 }
                 .onLogFailure {
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -294,10 +295,10 @@ class ExploreViewModel @Inject constructor(
                 .onLogFailure {
                     _state.update {
                         it.copy(
-                            placeReviewList = UiState.Failure("버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                            placeReviewList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                         )
                     }
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -325,10 +326,10 @@ class ExploreViewModel @Inject constructor(
                     Timber.e(e)
                     _state.update {
                         it.copy(
-                            placeReviewList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                            placeReviewList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                         )
                     }
-                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."))
+                    _sideEffect.emit(ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description))
                 }
         }
     }
@@ -387,7 +388,7 @@ class ExploreViewModel @Inject constructor(
                 .onFailure { e ->
                     Timber.e(e)
                     _sideEffect.emit(
-                        ExploreSideEffect.ShowSnackbar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        ExploreSideEffect.ShowSnackbar(ErrorType.SERVER_CONNECTION_ERROR.description)
                     )
                 }
         }
