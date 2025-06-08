@@ -224,7 +224,10 @@ class MapViewModel @Inject constructor(
                             // TODO: 데이터 가공 리팩토링하기 by.효빈
                             categoryList = UiState.Success(
                                 response.map { category -> category.toModel() }
-                                    .filterNot { category -> category.categoryId == 2 }
+                                    .filterNot { category ->
+                                        // 로컬리뷰는 제외
+                                        category.categoryId == 2
+                                    }
                                     .toImmutableList()
                             )
                         )
