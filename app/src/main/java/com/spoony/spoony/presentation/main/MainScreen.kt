@@ -180,7 +180,8 @@ fun MainScreen(
                     },
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateUp = navigator::navigateUp,
-                    navigateToEditReview = navigator::navigateToReviewEdit
+                    navigateToEditReview = navigator::navigateToReviewEdit,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 registerNavGraph(

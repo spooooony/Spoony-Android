@@ -24,13 +24,13 @@ import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
 @Composable
 fun ExploreSearchUserItem(
     userInfo: ExploreSearchUserModel,
-    onItemClick: (Int) -> Unit,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .noRippleClickable { onItemClick(userInfo.userId) }
+            .noRippleClickable(onItemClick)
             .padding(
                 vertical = 8.dp,
                 horizontal = 20.dp

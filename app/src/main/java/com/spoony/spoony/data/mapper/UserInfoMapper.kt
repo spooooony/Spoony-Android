@@ -24,5 +24,6 @@ fun UserSimpleResponseDto.toDomain(): UserEntity = UserEntity(
     userId = this.userId,
     userName = this.username,
     userProfileUrl = this.profileImageUrl,
-    userRegion = this.regionName
+    userRegion = this.regionName,
+    isMine = this.isMine
 )

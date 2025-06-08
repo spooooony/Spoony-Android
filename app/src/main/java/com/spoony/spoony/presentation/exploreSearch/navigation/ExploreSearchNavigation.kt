@@ -25,7 +25,8 @@ fun NavGraphBuilder.exploreSearchNavGraph(
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateUp: () -> Unit,
-    navigateToEditReview: (Int, RegisterType) -> Unit
+    navigateToEditReview: (Int, RegisterType) -> Unit,
+    navigateToMyPage: () -> Unit
 ) {
     composable<ExploreSearch>(
         enterTransition = {
@@ -47,6 +48,7 @@ fun NavGraphBuilder.exploreSearchNavGraph(
             navigateToReport = navigateToReport,
             navigateToPlaceDetail = navigateToPlaceDetail,
             navigateToEditReview = navigateToEditReview,
+            navigateToMyPage = navigateToMyPage,
             navigateUp = navigateUp
         )
     }

@@ -6,12 +6,14 @@ data class ExploreSearchUserModel(
     val userId: Int,
     val userName: String,
     val userProfileUrl: String,
-    val userRegion: String
+    val userRegion: String,
+    val isMine: Boolean
 )
 
 fun UserEntity.toModel(): ExploreSearchUserModel = ExploreSearchUserModel(
     userId = this.userId,
     userName = this.userName,
     userProfileUrl = this.userProfileUrl,
-    userRegion = this.userRegion ?: ""
+    userRegion = this.userRegion ?: "",
+    isMine = this.isMine ?: false
 )

@@ -66,6 +66,7 @@ fun ExploreSearchRoute(
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToEditReview: (Int, RegisterType) -> Unit,
+    navigateToMyPage: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: ExploreSearchViewModel = hiltViewModel()
 ) {
@@ -96,6 +97,7 @@ fun ExploreSearchRoute(
         searchType = state.searchType,
         onReviewReportButtonClick = navigateToReport,
         onUserButtonClick = navigateToUserProfile,
+        onMyPageButtonClick = navigateToMyPage,
         onPlaceDetailButtonClick = navigateToPlaceDetail,
         onBackButtonClick = navigateUp,
         onSwitchType = viewModel::switchSearchType,
@@ -120,6 +122,7 @@ private fun ExploreSearchScreen(
     onReviewReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onUserButtonClick: (Int) -> Unit,
     onPlaceDetailButtonClick: (Int) -> Unit,
+    onMyPageButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onRemoveRecentSearchItem: (String) -> Unit,
     onSwitchType: (SearchType) -> Unit,
@@ -255,7 +258,13 @@ private fun ExploreSearchScreen(
                                         items = userInfoList.data
                                     ) { userInfo ->
                                         ExploreSearchUserItem(
-                                            onItemClick = onUserButtonClick,
+                                            onItemClick = {
+                                                if (userInfo.isMine) {
+                                                    onMyPageButtonClick()
+                                                } else {
+                                                    onUserButtonClick(userInfo.userId)
+                                                }
+                                            },
                                             userInfo = userInfo
                                         )
                                     }
