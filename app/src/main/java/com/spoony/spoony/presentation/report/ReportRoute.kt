@@ -93,7 +93,11 @@ fun ReportRoute(
         ReportCompleteDialog(
             onClick = {
                 reportSuccessDialogVisibility = false
-                navigateToExplore()
+                if (state.reportType == ReportType.POST) {
+                    navigateToExplore()
+                } else {
+                    navigateUp()
+                }
             }
         )
     }
