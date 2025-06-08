@@ -3,6 +3,7 @@ package com.spoony.spoony.presentation.exploreSearch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
+import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.ExploreRepository
@@ -119,11 +120,11 @@ class ExploreSearchViewModel @Inject constructor(
                         .onLogFailure {
                             _state.update {
                                 it.copy(
-                                    userInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                                    userInfoList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                                 )
                             }
                             _sideEffect.emit(
-                                ExploreSearchSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                                ExploreSearchSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description)
                             )
                         }
                 }
@@ -156,11 +157,11 @@ class ExploreSearchViewModel @Inject constructor(
                         .onLogFailure {
                             _state.update {
                                 it.copy(
-                                    placeReviewInfoList = UiState.Failure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                                    placeReviewInfoList = UiState.Failure(ErrorType.SERVER_CONNECTION_ERROR.description)
                                 )
                             }
                             _sideEffect.emit(
-                                ExploreSearchSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                                ExploreSearchSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description)
                             )
                         }
                 }
@@ -221,7 +222,7 @@ class ExploreSearchViewModel @Inject constructor(
                 }
                 .onLogFailure {
                     _sideEffect.emit(
-                        ExploreSearchSideEffect.ShowSnackBar("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+                        ExploreSearchSideEffect.ShowSnackBar(ErrorType.SERVER_CONNECTION_ERROR.description)
                     )
                 }
         }
