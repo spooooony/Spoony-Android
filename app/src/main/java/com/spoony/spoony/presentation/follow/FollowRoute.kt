@@ -13,7 +13,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.core.designsystem.component.topappbar.BackAndMenuTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
@@ -44,11 +44,12 @@ fun FollowRoute(
     paddingValues: PaddingValues,
     onBackButtonClick: () -> Unit,
     navigateToUserProfile: (Int) -> Unit,
+    navigateToMyPage: () -> Unit,
     viewModel: FollowViewModel = hiltViewModel()
 ) {
-    val followers by viewModel.followers.collectAsState()
-    val following by viewModel.following.collectAsState()
-    val followType by viewModel.followType.collectAsState()
+    val followers by viewModel.followers.collectAsStateWithLifecycle()
+    val following by viewModel.following.collectAsStateWithLifecycle()
+    val followType by viewModel.followType.collectAsStateWithLifecycle()
 
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -72,6 +73,7 @@ fun FollowRoute(
         followType = followType,
         paddingValues = paddingValues,
         onUserClick = navigateToUserProfile,
+        onMyClick = navigateToMyPage,
         onBackButtonClick = onBackButtonClick,
         onRefresh = viewModel::refresh,
         onFollowButtonClick = viewModel::toggleFollow
@@ -86,6 +88,7 @@ private fun FollowScreen(
     following: ImmutableList<UserItemUiState>,
     followType: FollowType,
     onUserClick: (Int) -> Unit,
+    onMyClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onRefresh: (FollowType) -> Unit,
     onFollowButtonClick: (Int) -> Unit,
@@ -165,6 +168,7 @@ private fun FollowScreen(
                 UserListScreen(
                     users = users,
                     onUserClick = onUserClick,
+                    onMyClick = onMyClick,
                     onButtonClick = onFollowButtonClick
                 )
             }

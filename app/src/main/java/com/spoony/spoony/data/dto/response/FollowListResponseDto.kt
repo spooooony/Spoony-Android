@@ -22,5 +22,7 @@ data class User(
     @SerialName("isFollowing")
     val isFollowing: Boolean,
     @SerialName("profileImageUrl")
-    val profileImageUrl: String
+    val profileImageUrl: String,
+    @SerialName("isMine")
+    val isMe: Boolean
 )
