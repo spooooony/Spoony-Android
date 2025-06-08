@@ -63,12 +63,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 inline fun Modifier.noRippleClickable(
-    crossinline onClick: () -> Unit,
-    enabled: Boolean = true
+    crossinline onClick: () -> Unit
 ): Modifier = composed {
     this.clickable(
         indication = null,
-        enabled = enabled,
         interactionSource = remember { MutableInteractionSource() },
         onClick = { onClick() }
     )

@@ -147,7 +147,6 @@ fun UserPageScreen(
 
                     if (state.userType == UserType.OTHER_PAGE) {
                         LocalReviewFilterCheckBox(
-                            enabled = !state.isBlocked,
                             isSelected = state.isCheckBoxSelected,
                             onClick = events.onCheckBoxClick
                         )

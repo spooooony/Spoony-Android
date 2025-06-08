@@ -20,17 +20,13 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 fun LocalReviewFilterCheckBox(
     isSelected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    modifier: Modifier = Modifier
 ) {
     val checkBoxIcon = if (isSelected) R.drawable.ic_checkbox_main400 else R.drawable.ic_checkbox_gray400
     val textColor = if (isSelected) SpoonyAndroidTheme.colors.main400 else SpoonyAndroidTheme.colors.gray400
 
     Row(
-        modifier = modifier.noRippleClickable(
-            onClick = onClick,
-            enabled = enabled
-        ),
+        modifier = modifier.noRippleClickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
 
