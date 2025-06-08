@@ -27,6 +27,7 @@ import com.spoony.spoony.core.util.extension.noRippleClickable
 fun FollowUserItem(
     imageUrl: String,
     userName: String,
+    isMe: Boolean,
     region: String,
     isFollowing: Boolean,
     onUserClick: () -> Unit,
@@ -65,21 +66,24 @@ fun FollowUserItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = region,
-                    style = SpoonyAndroidTheme.typography.caption1m,
-                    color = black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (region.isNotBlank()) {
+                    Text(
+                        text = region,
+                        style = SpoonyAndroidTheme.typography.caption1m,
+                        color = black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
-
-        FollowButton(
-            isFollowing = isFollowing,
-            onClick = onFollowClick,
-            modifier = Modifier.padding(start = 8.dp)
-        )
+        if (!isMe) {
+            FollowButton(
+                isFollowing = isFollowing,
+                onClick = onFollowClick,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
     }
 }
 
@@ -93,6 +97,7 @@ private fun FollowUserItemPreview() {
             region = "우리집 우리집 우리집 우리집 우리집 우리집",
             isFollowing = false,
             onUserClick = { },
+            isMe = true,
             onFollowClick = { }
         )
     }

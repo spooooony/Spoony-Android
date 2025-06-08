@@ -33,7 +33,7 @@ object FilterChipOptionProvider {
         ),
         FilterOption(
             sort = FilterType.REGION,
-            text = FilterType.CATEGORY.defaultText,
+            text = FilterType.REGION.defaultText,
             isSelected = false,
             rightIconResId = R.drawable.ic_arrow_down_16
         ),

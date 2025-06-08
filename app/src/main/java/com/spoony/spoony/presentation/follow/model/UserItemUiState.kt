@@ -6,8 +6,9 @@ data class UserItemUiState(
     val userId: Int,
     val userName: String,
     val imageUrl: String,
-    val region: String,
-    val isFollowing: Boolean
+    val region: String?,
+    val isFollowing: Boolean,
+    val isMe: Boolean
 )
 
 fun User.toModel(): UserItemUiState = UserItemUiState(
@@ -15,5 +16,6 @@ fun User.toModel(): UserItemUiState = UserItemUiState(
     userName = this.username,
     imageUrl = this.profileImageUrl,
     region = this.regionName,
-    isFollowing = this.isFollowing
+    isFollowing = this.isFollowing,
+    isMe = this.isMe
 )

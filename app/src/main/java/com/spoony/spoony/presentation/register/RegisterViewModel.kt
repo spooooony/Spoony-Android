@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.spoony.spoony.core.state.ErrorType
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.RegisterRepository
-import com.spoony.spoony.domain.repository.TooltipPreferencesRepository
 import com.spoony.spoony.presentation.register.component.SelectedPhoto
 import com.spoony.spoony.presentation.register.model.CategoryState
 import com.spoony.spoony.presentation.register.model.PlaceState
@@ -22,7 +21,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -35,12 +33,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: RegisterRepository,
-    private val tooltipPreferencesRepository: TooltipPreferencesRepository
+    private val repository: RegisterRepository
 ) : ViewModel() {
-
-    val tooltipShownFlow: Flow<Boolean> = tooltipPreferencesRepository.isTooltipShown()
-
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState>
         get() = _state.asStateFlow()
@@ -122,7 +116,7 @@ class RegisterViewModel @Inject constructor(
             ).onSuccess { isDuplicate ->
                 if (isDuplicate) {
                     _state.update { it.copy(searchResults = persistentListOf()) }
-                    _sideEffect.emit(RegisterSideEffect.ShowSnackbar("이미 등록된 장소입니다"))
+                    _sideEffect.emit(RegisterSideEffect.ShowSnackbar("앗! 이미 등록한 맛집이에요"))
                 } else {
                     _state.update {
                         it.copy(
@@ -280,15 +274,9 @@ class RegisterViewModel @Inject constructor(
             _state.update {
                 RegisterState(
                     categories = it.categories,
-                    showRegisterSnackBar = false
+                    currentStep = 2f
                 )
             }
-        }
-    }
-
-    fun hideRegisterSnackBar() {
-        viewModelScope.launch {
-            tooltipPreferencesRepository.disableTooltip()
         }
     }
 

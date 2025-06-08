@@ -24,6 +24,7 @@ fun NavGraphBuilder.placeDetailNavGraph(
     navigateToEditReview: (Int, RegisterType) -> Unit,
     navigateToUserProfile: (Int) -> Unit,
     navigateToAttendance: () -> Unit,
+    navigateToMyPage: () -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<PlaceDetail> {
@@ -33,6 +34,7 @@ fun NavGraphBuilder.placeDetailNavGraph(
             navigateToEditReview = navigateToEditReview,
             navigateToUserProfile = navigateToUserProfile,
             navigateToAttendance = navigateToAttendance,
+            navigateToMyPage = navigateToMyPage,
             navigateUp = navigateUp
         )
     }

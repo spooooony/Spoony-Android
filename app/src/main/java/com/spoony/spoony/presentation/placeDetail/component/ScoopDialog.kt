@@ -19,7 +19,7 @@ fun ScoopDialog(
     onClickPositive: () -> Unit,
     onClickNegative: () -> Unit
 ) {
-    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_detail_use))
+    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_register_get))
 
     TwoButtonDialog(
         message = "수저 1개를 사용하여 떠먹어 볼까요?",

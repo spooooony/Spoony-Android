@@ -28,6 +28,7 @@ fun NavController.navigateToFollow(
 fun NavGraphBuilder.followNavGraph(
     paddingValues: PaddingValues,
     navigateToUserProfile: (Int) -> Unit,
+    navigateToMyPage: () -> Unit,
     navigateUp: () -> Unit
 ) {
     composable<Follow>(
@@ -41,6 +42,7 @@ fun NavGraphBuilder.followNavGraph(
         FollowRoute(
             paddingValues = paddingValues,
             navigateToUserProfile = navigateToUserProfile,
+            navigateToMyPage = navigateToMyPage,
             onBackButtonClick = navigateUp
         )
     }
