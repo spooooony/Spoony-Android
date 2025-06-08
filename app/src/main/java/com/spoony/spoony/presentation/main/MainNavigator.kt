@@ -260,14 +260,6 @@ class MainNavigator(
         )
     }
 
-    fun navigateToMyPage(
-        navOptions: NavOptions? = null
-    ) {
-        navController.navigateToMyPage(
-            navOptions = navOptions
-        )
-    }
-
     fun navigateToEnterTab() {
         navigate(lastMainTab)
     }
