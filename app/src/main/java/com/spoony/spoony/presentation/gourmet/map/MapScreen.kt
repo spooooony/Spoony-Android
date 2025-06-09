@@ -265,11 +265,11 @@ fun MapRoute(
                     )
                 }
             } else {
+                locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
+
                 if (!shouldShowSystemDialog) {
                     isPermissionDialogVisible = true
                 }
-
-                locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
             }
         },
         onCategoryClick = viewModel::getAddedPlaceList
