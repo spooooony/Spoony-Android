@@ -55,7 +55,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun ReportRoute(
     paddingValues: PaddingValues,
     navigateUp: () -> Unit,
-    navigateToExplore: () -> Unit,
+    navigateToEnterTab: () -> Unit,
     viewModel: ReportViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -93,7 +93,7 @@ fun ReportRoute(
         ReportCompleteDialog(
             onClick = {
                 reportSuccessDialogVisibility = false
-                navigateToExplore()
+                navigateToEnterTab()
             }
         )
     }

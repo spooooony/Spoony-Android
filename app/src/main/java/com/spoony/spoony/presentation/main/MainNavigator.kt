@@ -16,7 +16,6 @@ import com.spoony.spoony.presentation.explore.navigation.navigateToExplore
 import com.spoony.spoony.presentation.exploreSearch.navigation.navigateToExploreSearch
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.navigation.navigateToFollow
-import com.spoony.spoony.presentation.gourmet.map.navigaion.Map
 import com.spoony.spoony.presentation.gourmet.map.navigaion.navigateToMap
 import com.spoony.spoony.presentation.gourmet.search.navigation.navigateToMapSearch
 import com.spoony.spoony.presentation.placeDetail.navigation.navigateToPlaceDetail
@@ -133,9 +132,21 @@ class MainNavigator(
             popUpTo(NAVIGATION_ROOT) {
                 inclusive = true
             }
-        }
+        },
+        locationId: Int? = null,
+        locationName: String? = null,
+        scale: String? = null,
+        latitude: String? = null,
+        longitude: String? = null
     ) {
-        navController.navigateToMap(navOptions = navOptions)
+        navController.navigateToMap(
+            locationId = locationId,
+            locationName = locationName,
+            scale = scale,
+            latitude = latitude,
+            longitude = longitude,
+            navOptions = navOptions
+        )
     }
 
     fun navigateToReport(
@@ -186,6 +197,12 @@ class MainNavigator(
         navController.navigateToOtherPage(userId = userId)
     }
 
+    fun navigateToMyPage(
+        navOptions: NavOptions? = null
+    ) {
+        navController.navigateToMyPage(navOptions)
+    }
+
     fun navigateToFollow(followType: FollowType, userId: Int) {
         navController.navigateToFollow(followType, userId)
     }
@@ -216,26 +233,6 @@ class MainNavigator(
         }
     ) {
         navController.navigateToExploreSearch(navOptions)
-    }
-
-    fun navigateToLocationMap(
-        navOptions: NavOptions = navOptions {
-            popUpTo(Map())
-        },
-        locationId: Int? = null,
-        locationName: String? = null,
-        scale: String? = null,
-        latitude: String? = null,
-        longitude: String? = null
-    ) {
-        navController.navigateToMap(
-            locationId = locationId,
-            locationName = locationName,
-            scale = scale,
-            latitude = latitude,
-            longitude = longitude,
-            navOptions = navOptions
-        )
     }
 
     fun navigateToSettingPage(

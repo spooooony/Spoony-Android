@@ -10,7 +10,8 @@ fun SpoonDrawResponseDto.toDomain(): SpoonEntity = SpoonEntity(
         spoonName = this.spoonType.spoonName,
         spoonAmount = this.spoonType.spoonAmount,
         probability = this.spoonType.probability,
-        spoonImage = this.spoonType.spoonImage
+        spoonImage = this.spoonType.spoonImage,
+        spoonGetImage = this.spoonType.spoonGetImage
     ),
     localDate = this.localDate,
     weekStartDate = this.weekStartDate,

@@ -162,7 +162,7 @@ class MapViewModel @Inject constructor(
                     drawId = drawId,
                     spoonTypeId = spoonType.spoonTypeId,
                     spoonName = spoonType.spoonName,
-                    spoonImage = spoonType.spoonImage,
+                    spoonImage = spoonType.spoonGetImage,
                     spoonAmount = spoonType.spoonAmount,
                     localDate = localDate
                 )
@@ -221,7 +221,15 @@ class MapViewModel @Inject constructor(
                 .onSuccess { response ->
                     _state.update {
                         it.copy(
-                            categoryList = UiState.Success(response.map { it.toModel() }.toImmutableList())
+                            // TODO: 데이터 가공 리팩토링하기 by.효빈
+                            categoryList = UiState.Success(
+                                response.map { category -> category.toModel() }
+                                    .filterNot { category ->
+                                        // 로컬리뷰는 제외
+                                        category.categoryId == 2
+                                    }
+                                    .toImmutableList()
+                            )
                         )
                     }
                 }
@@ -232,6 +240,14 @@ class MapViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun updateLocationModel(locationModel: LocationModel) {
+        _state.update {
+            it.copy(
+                locationModel = locationModel
+            )
         }
     }
 }

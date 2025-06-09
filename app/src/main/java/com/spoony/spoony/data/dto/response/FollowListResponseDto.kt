@@ -22,5 +22,24 @@ data class User(
     @SerialName("isFollowing")
     val isFollowing: Boolean,
     @SerialName("profileImageUrl")
-    val profileImageUrl: String
+    val profileImageUrl: String,
+    @SerialName("isMine")
+    val isMe: Boolean
+)
+
+// TODO: 파일 분리하기
+@Serializable
+data class BlockedUser(
+    @SerialName("userId")
+    val userId: Int,
+    @SerialName("username")
+    val username: String,
+    @SerialName("regionName")
+    val regionName: String?,
+    @SerialName("isBlocked")
+    val isBlocked: Boolean,
+    @SerialName("profileImageUrl")
+    val profileImageUrl: String,
+    @SerialName("isMine")
+    val isMe: Boolean
 )

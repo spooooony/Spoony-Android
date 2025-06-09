@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,7 @@ import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,18 +47,27 @@ fun SpoonyDatePickerBottomSheet(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+
+    val coroutineScope = rememberCoroutineScope()
+    val handleDismissRequest: () -> Unit = {
+        coroutineScope.launch {
+            sheetState.hide()
+            onDismiss()
+        }
+    }
+
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
     var selectedYear by remember { mutableIntStateOf(initialYear) }
     var selectedMonth by remember { mutableIntStateOf(initialMonth) }
     var selectedDay by remember { mutableIntStateOf(initialDay) }
 
     SpoonyBasicBottomSheet(
-        onDismiss = onDismiss,
+        onDismiss = handleDismissRequest,
         sheetState = sheetState,
         modifier = modifier,
         dragHandle = {
             SpoonyTitleDragHandle(
-                onClick = onDismiss,
+                onClick = handleDismissRequest,
                 text = "생년월일"
             )
         }

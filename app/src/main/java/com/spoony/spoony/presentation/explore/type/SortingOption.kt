@@ -5,5 +5,5 @@ enum class SortingOption(
     val stringCode: String
 ) {
     LATEST("최신순", "createdAt"),
-    POPULARITY("인기순", "zzimCount")
+    POPULARITY("저장 많은 순", "zzimCount")
 }

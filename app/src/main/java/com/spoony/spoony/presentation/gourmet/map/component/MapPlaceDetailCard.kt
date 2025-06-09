@@ -132,7 +132,7 @@ fun MapPlaceDetailCard(
                     )
                     if (placeSpoon.isNotBlank()) {
                         Text(
-                            text = "서울시 $placeSpoon 스푼",
+                            text = "서울 $placeSpoon 스푼",
                             style = SpoonyAndroidTheme.typography.caption1m,
                             color = SpoonyAndroidTheme.colors.gray600,
                             modifier = Modifier

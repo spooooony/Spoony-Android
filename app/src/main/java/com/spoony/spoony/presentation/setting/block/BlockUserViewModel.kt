@@ -40,7 +40,7 @@ class BlockUserViewModel @Inject constructor(
         observeBlockRequests()
     }
 
-    private fun getBlockingList() {
+    fun getBlockingList() {
         viewModelScope.launch {
             userRepository.getBlockingList()
                 .onSuccess { blockingList ->

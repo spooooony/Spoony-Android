@@ -43,8 +43,9 @@ class AttendanceViewModel @Inject constructor(
     val showSpoonDraw: StateFlow<Boolean>
         get() = _showSpoonDraw.asStateFlow()
 
+    val today: LocalDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
+
     init {
-        val today = LocalDate.now(ZoneId.of("Asia/Seoul"))
         _state.update {
             it.copy(
                 weeklyStartDate = today.with(DayOfWeek.MONDAY).toHyphenDate()
@@ -99,7 +100,7 @@ class AttendanceViewModel @Inject constructor(
                     drawId = drawId,
                     spoonTypeId = spoonType.spoonTypeId,
                     spoonName = spoonType.spoonName,
-                    spoonImage = spoonType.spoonImage,
+                    spoonImage = spoonType.spoonGetImage,
                     spoonAmount = spoonType.spoonAmount,
                     localDate = localDate
                 )

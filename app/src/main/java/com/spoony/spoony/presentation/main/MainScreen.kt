@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +42,7 @@ import com.spoony.spoony.presentation.report.navigation.reportNavGraph
 import com.spoony.spoony.presentation.setting.navigation.settingPageNavGraph
 import com.spoony.spoony.presentation.splash.navigation.splashNavGraph
 import com.spoony.spoony.presentation.userpage.mypage.navigation.myPageNavGraph
+import com.spoony.spoony.presentation.userpage.mypage.navigation.navigateToMyPage
 import com.spoony.spoony.presentation.userpage.otherpage.navigation.otherPageNavGraph
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
@@ -66,6 +69,8 @@ fun MainScreen(
         }
     }
 
+    var currentTab by rememberSaveable { mutableStateOf(MainTab.MAP) }
+
     SpoonyBackHandler(
         context = context,
         onShowSnackbar = {
@@ -85,8 +90,14 @@ fun MainScreen(
             bottomBar = {
                 MainBottomBar(
                     visible = navigator.shouldShowBottomBar(),
+                    currentTab = currentTab,
                     tabs = MainTab.entries.toPersistentList(),
-                    onTabSelected = navigator::navigate
+                    onTabSelected = { tab ->
+                        if (tab != MainTab.REGISTER) {
+                            currentTab = tab
+                        }
+                        navigator.navigate(tab)
+                    }
                 )
             },
             modifier = Modifier
@@ -137,9 +148,11 @@ fun MainScreen(
                         )
                     },
                     navigateToMapSearch = navigator::navigateToMapSearch,
-                    navigateToExplore = navigator::navigateToExplore,
-                    navigateToAttendance = navigator::navigateToAttendance,
-                    navigateUp = navigator::navigateUp
+                    navigateToExplore = {
+                        currentTab = MainTab.EXPLORE
+                        navigator.navigateToExplore()
+                    },
+                    navigateToAttendance = navigator::navigateToAttendance
                 )
 
                 exploreNavGraph(
@@ -167,7 +180,8 @@ fun MainScreen(
                     },
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateUp = navigator::navigateUp,
-                    navigateToEditReview = navigator::navigateToReviewEdit
+                    navigateToEditReview = navigator::navigateToReviewEdit,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 registerNavGraph(
@@ -181,6 +195,7 @@ fun MainScreen(
                                 popUpTo<Register> {
                                     inclusive = true
                                 }
+                                launchSingleTop = true
                             }
                         )
                     }
@@ -215,7 +230,8 @@ fun MainScreen(
                 followNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToUserProfile = navigator::navigateToOtherPage
+                    navigateToUserProfile = navigator::navigateToOtherPage,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 placeDetailNavGraph(
@@ -229,25 +245,32 @@ fun MainScreen(
                     },
                     navigateToUserProfile = navigator::navigateToOtherPage,
                     navigateToEditReview = navigator::navigateToReviewEdit,
-                    navigateToAttendance = navigator::navigateToAttendance
+                    navigateToAttendance = navigator::navigateToAttendance,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 reportNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToExplore = navigator::navigateToExplore
+                    navigateToEnterTab = navigator::navigateToEnterTab
                 )
 
                 mapSearchNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
                     navigateToLocationMap = { locationId, locationName, scale, latitude, longitude ->
-                        navigator.navigateToLocationMap(
+                        navigator.navigateToMap(
                             locationId = locationId,
                             locationName = locationName,
                             scale = scale,
                             latitude = latitude,
-                            longitude = longitude
+                            longitude = longitude,
+                            navOptions = navOptions {
+                                popUpTo(NAVIGATION_ROOT) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         )
                     }
                 )

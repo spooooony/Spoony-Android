@@ -32,10 +32,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
+import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -63,6 +66,7 @@ fun ExploreSearchRoute(
     navigateToReport: (reportTargetId: Int, type: ReportType) -> Unit,
     navigateToPlaceDetail: (Int) -> Unit,
     navigateToEditReview: (Int, RegisterType) -> Unit,
+    navigateToMyPage: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: ExploreSearchViewModel = hiltViewModel()
 ) {
@@ -80,12 +84,20 @@ fun ExploreSearchRoute(
         }
     }
 
+    val lifecycle = lifecycleOwner.lifecycle
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.refresh()
+        }
+    }
+
     ExploreSearchScreen(
         paddingValues = paddingValues,
         searchKeyword = state.searchKeyword,
         searchType = state.searchType,
         onReviewReportButtonClick = navigateToReport,
         onUserButtonClick = navigateToUserProfile,
+        onMyPageButtonClick = navigateToMyPage,
         onPlaceDetailButtonClick = navigateToPlaceDetail,
         onBackButtonClick = navigateUp,
         onSwitchType = viewModel::switchSearchType,
@@ -94,6 +106,7 @@ fun ExploreSearchRoute(
         onSearch = viewModel::search,
         onEditReviewClick = navigateToEditReview,
         onClearSearchKeyword = viewModel::clearSearchKeyword,
+        onReviewDeleteButtonClick = viewModel::deleteReview,
         recentReviewSearchQueryList = state.recentReviewSearchQueryList,
         recentUserSearchQueryList = state.recentUserSearchQueryList,
         userInfoList = state.userInfoList,
@@ -109,6 +122,7 @@ private fun ExploreSearchScreen(
     onReviewReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
     onUserButtonClick: (Int) -> Unit,
     onPlaceDetailButtonClick: (Int) -> Unit,
+    onMyPageButtonClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onRemoveRecentSearchItem: (String) -> Unit,
     onSwitchType: (SearchType) -> Unit,
@@ -116,6 +130,7 @@ private fun ExploreSearchScreen(
     onSearch: (String) -> Unit,
     onEditReviewClick: (Int, RegisterType) -> Unit,
     onClearSearchKeyword: () -> Unit,
+    onReviewDeleteButtonClick: (Int) -> Unit,
     recentReviewSearchQueryList: ImmutableList<String>,
     recentUserSearchQueryList: ImmutableList<String>,
     userInfoList: UiState<ImmutableList<ExploreSearchUserModel>>,
@@ -125,6 +140,22 @@ private fun ExploreSearchScreen(
     var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabItems = persistentListOf(SearchType.USER, SearchType.REVIEW)
     var searchText by rememberSaveable { mutableStateOf("") }
+    var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
+    var targetReviewId by remember { mutableIntStateOf(0) }
+    if (isReviewDeleteDialogVisible) {
+        TwoButtonDialog(
+            message = "정말로 리뷰를 삭제할까요?",
+            negativeText = "아니요",
+            positiveText = "네",
+            onClickNegative = { isReviewDeleteDialogVisible = false },
+            onClickPositive = {
+                onReviewDeleteButtonClick(targetReviewId)
+                isReviewDeleteDialogVisible = false
+            },
+            onDismiss = { }
+        )
+    }
+
     LaunchedEffect(Unit) {
         if (searchKeyword.isEmpty()) {
             focusRequester.requestFocus()
@@ -139,6 +170,7 @@ private fun ExploreSearchScreen(
 
     Column(
         modifier = Modifier
+            .background(color = SpoonyAndroidTheme.colors.white)
             .padding(
                 bottom = paddingValues.calculateBottomPadding()
             )
@@ -226,7 +258,13 @@ private fun ExploreSearchScreen(
                                         items = userInfoList.data
                                     ) { userInfo ->
                                         ExploreSearchUserItem(
-                                            onItemClick = onUserButtonClick,
+                                            onItemClick = {
+                                                if (userInfo.isMine) {
+                                                    onMyPageButtonClick()
+                                                } else {
+                                                    onUserButtonClick(userInfo.userId)
+                                                }
+                                            },
                                             userInfo = userInfo
                                         )
                                     }
@@ -292,7 +330,10 @@ private fun ExploreSearchScreen(
                                                 when (it) {
                                                     ExploreDropdownOption.REPORT.string -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
                                                     ExploreDropdownOption.EDIT.string -> onEditReviewClick(placeReviewInfo.reviewId, RegisterType.EDIT)
-                                                    ExploreDropdownOption.DELETE.string -> {}
+                                                    ExploreDropdownOption.DELETE.string -> {
+                                                        targetReviewId = placeReviewInfo.reviewId
+                                                        isReviewDeleteDialogVisible = true
+                                                    }
                                                 }
                                             },
                                             date = placeReviewInfo.createdAt,

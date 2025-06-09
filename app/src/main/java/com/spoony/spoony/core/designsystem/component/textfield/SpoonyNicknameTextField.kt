@@ -50,6 +50,7 @@ fun SpoonyNicknameTextField(
     state: NicknameTextFieldState = NicknameTextFieldState.DEFAULT
 ) {
     var isFirstEntry by remember { mutableStateOf(true) }
+    var isEmojiEntered by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -73,6 +74,7 @@ fun SpoonyNicknameTextField(
             onValueChanged = { newText ->
                 when {
                     newText.containsEmoji() || !SpoonyValidator.isNotContainsSpecialChars(newText) -> {
+                        isEmojiEntered = true
                         onStateChanged(NicknameTextFieldState.INVALID_CHARACTERS)
                     }
 
@@ -86,8 +88,12 @@ fun SpoonyNicknameTextField(
                     }
 
                     else -> {
-                        onStateChanged(NicknameTextFieldState.DEFAULT)
-                        onValueChanged(newText)
+                        if (isEmojiEntered) {
+                            isEmojiEntered = false
+                        } else {
+                            onStateChanged(NicknameTextFieldState.DEFAULT)
+                            onValueChanged(newText)
+                        }
                     }
                 }
             },
@@ -95,13 +101,14 @@ fun SpoonyNicknameTextField(
             borderColor = borderColor,
             imeAction = ImeAction.Done,
             onFocusChanged = {
-                if (isFirstEntry) {
-                    onStateChanged(NicknameTextFieldState.DEFAULT)
-                    isFirstEntry = false
-                } else if (value.trim().length < minLength) {
-                    onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
-                } else {
-                    onDoneAction()
+                when {
+                    state == NicknameTextFieldState.AVAILABLE -> {}
+                    isFirstEntry -> {
+                        isFirstEntry = false
+                    }
+
+                    value.trim().length < minLength -> onStateChanged(NicknameTextFieldState.NICKNAME_REQUIRED)
+                    else -> onDoneAction()
                 }
             },
             onDoneAction = {

@@ -4,6 +4,6 @@ data class BlockUserState(
     val userId: Int,
     val userName: String,
     val imageUrl: String,
-    val region: String,
+    val region: String?,
     val isBlocking: Boolean
 )

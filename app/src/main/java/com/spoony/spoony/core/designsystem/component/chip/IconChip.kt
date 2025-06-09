@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,8 +43,6 @@ fun IconChip(
     isSelected: Boolean = false,
     isGradient: Boolean = false
 ) {
-    val context = LocalContext.current
-
     Row(
         modifier = modifier
             .noRippleClickable(onClick)
@@ -78,7 +75,7 @@ fun IconChip(
 
         Text(
             text = text,
-            color = if (isSelected) SpoonyAndroidTheme.colors.white else SpoonyAndroidTheme.colors.gray600,
+            color = if (isSelected) SpoonyAndroidTheme.colors.white else SpoonyAndroidTheme.colors.gray500,
             style = textStyle
         )
     }
