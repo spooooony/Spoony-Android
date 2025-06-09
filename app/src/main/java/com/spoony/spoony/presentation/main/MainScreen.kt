@@ -252,7 +252,7 @@ fun MainScreen(
                 reportNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToExplore = navigator::navigateToExplore
+                    navigateToEnterTab = navigator::navigateToEnterTab
                 )
 
                 mapSearchNavGraph(
