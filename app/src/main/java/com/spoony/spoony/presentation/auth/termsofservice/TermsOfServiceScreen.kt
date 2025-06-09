@@ -21,6 +21,9 @@ import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
+import com.spoony.spoony.core.util.constants.LOCATION_TERM
+import com.spoony.spoony.core.util.constants.PRIVACY_TERM
+import com.spoony.spoony.core.util.constants.SPOONY_SERVICE_TERM
 import com.spoony.spoony.presentation.auth.termsofservice.component.AgreeAllButton
 import com.spoony.spoony.presentation.auth.termsofservice.component.AgreeTermsButton
 import kotlinx.collections.immutable.persistentListOf
@@ -34,22 +37,22 @@ private data class SpoonyTerms(
 private val termsList = persistentListOf(
     SpoonyTerms(
         title = "만 14세 이상입니다.",
-        link = "https://github.com/Hyobeen-Park",
+        link = null,
         isRequired = true
     ),
     SpoonyTerms(
         title = "스푸니 서비스 이용약관",
-        link = "https://github.com/angryPodo",
+        link = SPOONY_SERVICE_TERM,
         isRequired = true
     ),
     SpoonyTerms(
         title = "개인정보 처리방침",
-        link = "https://github.com/Roel4990",
+        link = PRIVACY_TERM,
         isRequired = true
     ),
     SpoonyTerms(
         title = "위치기반 서비스 이용약관",
-        link = "https://github.com/chattymin",
+        link = LOCATION_TERM,
         isRequired = true
     )
 )

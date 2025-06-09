@@ -146,13 +146,7 @@ fun MapRoute(
         )
     }
 
-    var shouldShowSystemDialog by remember {
-        mutableStateOf(
-            LOCATION_PERMISSIONS.all { permission ->
-                ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
-            }
-        )
-    }
+    var shouldShowSystemDialog by remember { mutableStateOf(true) }
 
     val fusedLocationProviderClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     var isPermissionDialogVisible by remember { mutableStateOf(false) }
@@ -160,7 +154,7 @@ fun MapRoute(
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) {
-        shouldShowSystemDialog = LOCATION_PERMISSIONS.all { permission ->
+        shouldShowSystemDialog = LOCATION_PERMISSIONS.any { permission ->
             ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
         }
 
@@ -214,6 +208,8 @@ fun MapRoute(
                     latLng = LatLng(location.latitude, location.longitude)
                 )
             }
+        } else {
+            locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
         }
     }
 
@@ -269,11 +265,11 @@ fun MapRoute(
                     )
                 }
             } else {
+                locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
+
                 if (!shouldShowSystemDialog) {
                     isPermissionDialogVisible = true
                 }
-
-                locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
             }
         },
         onCategoryClick = viewModel::getAddedPlaceList
