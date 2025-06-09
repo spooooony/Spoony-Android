@@ -18,5 +18,7 @@ data class UserSimpleResponseDto(
     @SerialName("regionName")
     val regionName: String?,
     @SerialName("profileImageUrl")
-    val profileImageUrl: String
+    val profileImageUrl: String,
+    @SerialName("isMine")
+    val isMine: Boolean
 )
