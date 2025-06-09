@@ -20,13 +20,13 @@ fun NavController.navigateToReport(
 
 fun NavGraphBuilder.reportNavGraph(
     navigateUp: () -> Unit,
-    navigateToExplore: () -> Unit,
+    navigateToEnterTab: () -> Unit,
     paddingValues: PaddingValues
 ) {
     composable<Report> {
         ReportRoute(
             navigateUp = navigateUp,
-            navigateToExplore = navigateToExplore,
+            navigateToEnterTab = navigateToEnterTab,
             paddingValues = paddingValues
         )
     }

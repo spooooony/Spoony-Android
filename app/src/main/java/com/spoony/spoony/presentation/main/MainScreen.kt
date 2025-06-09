@@ -180,7 +180,8 @@ fun MainScreen(
                     },
                     navigateToPlaceDetail = navigator::navigateToPlaceDetail,
                     navigateUp = navigator::navigateUp,
-                    navigateToEditReview = navigator::navigateToReviewEdit
+                    navigateToEditReview = navigator::navigateToReviewEdit,
+                    navigateToMyPage = navigator::navigateToMyPage
                 )
 
                 registerNavGraph(
@@ -251,7 +252,7 @@ fun MainScreen(
                 reportNavGraph(
                     paddingValues = paddingValues,
                     navigateUp = navigator::navigateUp,
-                    navigateToExplore = navigator::navigateToExplore
+                    navigateToEnterTab = navigator::navigateToEnterTab
                 )
 
                 mapSearchNavGraph(

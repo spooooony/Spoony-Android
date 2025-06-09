@@ -17,5 +17,6 @@ data class UserEntity(
     val isFollowing: Boolean? = false,
     val introduction: String? = "",
     val createdAt: String? = "",
-    val updatedAt: String? = ""
+    val updatedAt: String? = "",
+    val isMine: Boolean? = false
 )
