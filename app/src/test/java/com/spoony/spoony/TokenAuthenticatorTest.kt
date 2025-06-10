@@ -48,19 +48,6 @@ class TokenAuthenticatorTest {
     }
 
     @Test
-    fun 이미_토큰이_재발급된_경우_재요청() {
-        coEvery { tokenRepository.getAccessToken() } returns flowOf("newAccessToken")
-
-        val response = createResponseWithToken("oldAccessToken")
-
-        val result = authenticator.authenticate(null, response)
-
-        assertNotNull(result)
-        assertEquals("newAccessToken", result?.header("Authorization"))
-        coVerify(exactly = 0) { authRepository.refreshToken(any()) }
-    }
-
-    @Test
     fun 토큰_재발급_성공시_토큰_저장_후_재요청() {
         val newTokenEntity = TokenEntity(accessToken = "newAccessToken", refreshToken = "newRefreshToken")
 
@@ -74,9 +61,22 @@ class TokenAuthenticatorTest {
         val result = authenticator.authenticate(null, response)
 
         assertNotNull(result)
-        assertEquals("newAccessToken", result?.header("Authorization"))
+        assertEquals("newAccessToken", result?.header("Authorization")?.removePrefix("Bearer")?.trim())
         coVerify { authRepository.refreshToken("oldRefreshToken") }
         coVerify { tokenRepository.updateTokens(newTokenEntity) }
+    }
+
+    @Test
+    fun 이미_토큰이_재발급된_경우_재요청() {
+        coEvery { tokenRepository.getAccessToken() } returns flowOf("newAccessToken")
+
+        val response = createResponseWithToken("oldAccessToken")
+
+        val result = authenticator.authenticate(null, response)
+
+        assertNotNull(result)
+        assertEquals("newAccessToken", result?.header("Authorization")?.removePrefix("Bearer")?.trim())
+        coVerify(exactly = 0) { authRepository.refreshToken(any()) }
     }
 
     @Test
@@ -92,5 +92,18 @@ class TokenAuthenticatorTest {
 
         assertNull(result)
         coVerify { tokenRepository.clearTokens() }
+    }
+
+    @Test
+    fun 이미_토큰_재발급에_실패한_경우_null_반환() {
+        coEvery { tokenRepository.getAccessToken() } returns flowOf("")
+        coEvery { tokenRepository.getRefreshToken() } returns flowOf("")
+
+        val response = createResponseWithToken("oldAccessToken")
+
+        val result = authenticator.authenticate(null, response)
+
+        assertNull(result)
+        coVerify(exactly = 0) { authRepository.refreshToken(any()) }
     }
 }
