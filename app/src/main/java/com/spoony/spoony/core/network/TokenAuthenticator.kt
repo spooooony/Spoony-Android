@@ -35,7 +35,9 @@ class TokenAuthenticator @Inject constructor(
             }
 
             // refreshToken이 없는 경우
-            val refreshToken = tokenRepository.getRefreshToken().firstOrNull() ?: return@withLock null
+            val refreshToken = tokenRepository.getRefreshToken().firstOrNull()
+
+            if (refreshToken.isNullOrBlank()) return@withLock null
 
             val newToken = authRepository.refreshToken(refreshToken).getOrNull()
 
@@ -52,10 +54,10 @@ class TokenAuthenticator @Inject constructor(
     }
 
     private fun getRequestToken(request: Request): String? =
-        request.header(AUTHORIZATION)?.removePrefix("$BEARER ")
+        request.header(AUTHORIZATION)?.removePrefix(BEARER)?.trim()
 
     private fun isTokenRefreshed(requestToken: String?, currentAccessToken: String?): Boolean {
-        if (requestToken == null || currentAccessToken == null) return false
+        if (currentAccessToken.isNullOrBlank()) return false
 
         return requestToken != currentAccessToken
     }
@@ -63,7 +65,7 @@ class TokenAuthenticator @Inject constructor(
     private fun buildRequestWithToken(request: Request, token: String): Request =
         request.newBuilder()
             .removeHeader(AUTHORIZATION)
-            .addHeader(AUTHORIZATION, token)
+            .addHeader(AUTHORIZATION, "$BEARER $token")
             .build()
 
     companion object {
