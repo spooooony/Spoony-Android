@@ -1,5 +1,6 @@
 package com.spoony.spoony.data.mapper
 
+import com.spoony.spoony.data.dto.response.BlockedUser
 import com.spoony.spoony.data.dto.response.FollowListResponseDto
 import com.spoony.spoony.data.dto.response.User as UserDto
 import com.spoony.spoony.domain.entity.FollowListEntity
@@ -15,6 +16,16 @@ fun UserDto.toDomain() = UserEntity(
     username = this.username,
     regionName = this.regionName,
     isFollowing = this.isFollowing,
+    profileImageUrl = this.profileImageUrl,
+    isMe = this.isMe
+)
+
+// TODO: 파일 분리하기
+fun BlockedUser.toDomain() = UserEntity(
+    userId = this.userId,
+    username = this.username,
+    regionName = this.regionName,
+    isFollowing = false,
     profileImageUrl = this.profileImageUrl,
     isMe = this.isMe
 )
