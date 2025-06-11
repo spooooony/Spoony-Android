@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -75,11 +76,12 @@ fun DisappointItem(
                         end = 12.dp
                     )
             )
+            val blurColorInt = SpoonyAndroidTheme.colors.gray100.toArgb()
             if (isBlurred && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 Canvas(modifier = Modifier.matchParentSize()) {
                     drawIntoCanvas { canvas ->
                         val paint = android.graphics.Paint().apply {
-                            color = android.graphics.Color.LTGRAY
+                            color = blurColorInt
                             maskFilter = BlurMaskFilter(30f, BlurMaskFilter.Blur.NORMAL)
                         }
                         canvas.nativeCanvas.drawRect(
