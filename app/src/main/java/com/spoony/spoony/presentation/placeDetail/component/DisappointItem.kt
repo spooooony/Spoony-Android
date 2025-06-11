@@ -1,5 +1,9 @@
 package com.spoony.spoony.presentation.placeDetail.component
 
+import android.graphics.BlurMaskFilter
+import android.graphics.Paint
+import android.os.Build
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -70,6 +77,24 @@ fun DisappointItem(
                         end = 12.dp
                     )
             )
+            val blurColorInt = SpoonyAndroidTheme.colors.gray100.toArgb()
+            if (isBlurred && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                Canvas(modifier = Modifier.matchParentSize()) {
+                    drawIntoCanvas { canvas ->
+                        val paint = Paint().apply {
+                            color = blurColorInt
+                            maskFilter = BlurMaskFilter(30f, BlurMaskFilter.Blur.NORMAL)
+                        }
+                        canvas.nativeCanvas.drawRect(
+                            0f,
+                            0f,
+                            size.width,
+                            size.height,
+                            paint
+                        )
+                    }
+                }
+            }
             if (isBlurred) {
                 Box(
                     modifier = Modifier
