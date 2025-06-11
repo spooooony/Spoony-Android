@@ -1,6 +1,7 @@
 package com.spoony.spoony.presentation.placeDetail.component
 
 import android.graphics.BlurMaskFilter
+import android.graphics.Paint
 import android.os.Build
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -80,7 +81,7 @@ fun DisappointItem(
             if (isBlurred && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 Canvas(modifier = Modifier.matchParentSize()) {
                     drawIntoCanvas { canvas ->
-                        val paint = android.graphics.Paint().apply {
+                        val paint = Paint().apply {
                             color = blurColorInt
                             maskFilter = BlurMaskFilter(30f, BlurMaskFilter.Blur.NORMAL)
                         }
