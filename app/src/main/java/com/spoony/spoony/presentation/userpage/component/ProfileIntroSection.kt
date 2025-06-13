@@ -57,7 +57,7 @@ fun ProfileIntroSection(
                     text = text,
                     style = style,
                     color = color,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
             }
