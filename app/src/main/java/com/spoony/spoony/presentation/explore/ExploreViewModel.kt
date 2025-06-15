@@ -46,7 +46,7 @@ class ExploreViewModel @Inject constructor(
     val sideEffect: SharedFlow<ExploreSideEffect>
         get() = _sideEffect.asSharedFlow()
 
-    private var currentCursor: Int? = null
+    private var currentCursor: String? = null
     private var reviewCount: Int = 0
     private var allSearchJob: Job? = null
     private var followingSearchJob: Job? = null

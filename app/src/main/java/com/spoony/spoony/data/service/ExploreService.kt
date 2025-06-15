@@ -15,7 +15,7 @@ interface ExploreService {
         @Query("regionIds") regionIds: List<Int>?,
         @Query("ageGroups") ageGroups: List<String>?,
         @Query("sortBy") sortBy: String?,
-        @Query("cursor") cursor: Int?,
+        @Query("cursor") cursor: String?,
         @Query("size") size: Int?
     ): BaseResponse<ExplorePlaceReviewFilteredResponseDto>
 
