@@ -88,7 +88,7 @@ fun BlockUserScreen(
             }
             is UiState.Empty -> {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     EmptyContent(
                         text = "차단한 유저가 없어요.",
