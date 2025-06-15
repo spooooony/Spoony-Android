@@ -11,14 +11,14 @@ import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -32,6 +32,8 @@ class BlockUserViewModel @Inject constructor(
     private val _errorEvent = MutableSharedFlow<String>()
     val errorEvent: SharedFlow<String>
         get() = _errorEvent.asSharedFlow()
+
+    private val blockRequestJobs = mutableMapOf<Int, Job>()
 
     private val blockRequestQueue = MutableSharedFlow<Pair<Int, Boolean>>(extraBufferCapacity = 64)
 
@@ -76,12 +78,14 @@ class BlockUserViewModel @Inject constructor(
         blockRequestQueue.tryEmit(userId to newIsBlocking)
     }
 
-    @OptIn(FlowPreview::class)
     private fun observeBlockRequests() {
         viewModelScope.launch {
-            blockRequestQueue
-                .debounce(BLOCK_REQUEST_DEBOUNCE_TIME)
-                .collect { (userId, newIsBlocking) ->
+            blockRequestQueue.collect { (userId, newIsBlocking) ->
+                blockRequestJobs[userId]?.cancel()
+
+                blockRequestJobs[userId] = viewModelScope.launch {
+                    delay(BLOCK_REQUEST_DEBOUNCE_TIME)
+
                     val result = if (newIsBlocking) {
                         userRepository.blockUser(userId)
                     } else {
@@ -96,6 +100,7 @@ class BlockUserViewModel @Inject constructor(
                         }
                     }
                 }
+            }
         }
     }
 

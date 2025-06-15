@@ -72,10 +72,10 @@ internal fun SettingMainRoute(
             title = "기타",
             items = persistentListOf(
                 SettingItem("차단한 유저 관리", SettingRoutes.BlockUser),
-                SettingItem("서비스 이용약관", SettingRoutes.Web("https://github.com/Hyobeen-Park")),
-                SettingItem("개인정보 처리 방침", SettingRoutes.Web("https://github.com/angryPodo")),
-                SettingItem("위치기반서비스 이용약관", SettingRoutes.Web("https://github.com/Roel4990")),
-                SettingItem("1:1 문의", SettingRoutes.Web("https://github.com/chattymin"))
+                SettingItem("서비스 이용약관", SettingRoutes.Web("https://creative-suede-cad.notion.site/20c7f334bdc48014a149e83d52006014?source=copy_link")),
+                SettingItem("개인정보 처리 방침", SettingRoutes.Web("https://creative-suede-cad.notion.site/20c7f334bdc4808a945ec2bfece2bf51?source=copy_link")),
+                SettingItem("위치기반서비스 이용약관", SettingRoutes.Web("https://creative-suede-cad.notion.site/Spoony-20c7f334bdc480068a7cd3e354afebf7?source=copy_link")),
+                SettingItem("1:1 문의", SettingRoutes.Web("https://tally.so/r/nPWzAx"))
             ),
             onClick = eventFlow::tryEmit
         )

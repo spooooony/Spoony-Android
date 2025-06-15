@@ -60,13 +60,16 @@ fun BlockUserItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = region,
-                    style = SpoonyAndroidTheme.typography.caption1m,
-                    color = black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+
+                if (region.isNotEmpty()) {
+                    Text(
+                        text = region,
+                        style = SpoonyAndroidTheme.typography.caption1m,
+                        color = black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
 
