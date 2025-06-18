@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
+import com.spoony.spoony.core.designsystem.component.screen.EmptyContent
 import com.spoony.spoony.core.designsystem.component.topappbar.BackAndMenuTopAppBar
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -279,32 +280,5 @@ fun UserPageScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun EmptyContent(
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .padding(vertical = 24.dp)
-            .fillMaxWidth()
-    ) {
-        Image(
-            painter = painterResource(R.drawable.img_empty_home),
-            modifier = Modifier.size(100.dp),
-            contentDescription = null
-        )
-        Text(
-            text = text,
-            style = SpoonyAndroidTheme.typography.body2m,
-            color = SpoonyAndroidTheme.colors.gray500,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-        )
     }
 }
