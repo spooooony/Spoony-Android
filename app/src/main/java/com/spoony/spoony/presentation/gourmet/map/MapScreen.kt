@@ -196,20 +196,27 @@ fun MapRoute(
     }
 
     LaunchedEffect(Unit) {
-        if (
-            state.locationModel.placeId == null &&
-            LOCATION_PERMISSIONS.any { permission ->
-                ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-            }
-        ) {
-            getLastLocation(fusedLocationProviderClient) { location ->
+        when {
+            state.locationModel.placeId != null -> {
                 moveCamera(
                     cameraPositionState = cameraPositionState,
-                    latLng = LatLng(location.latitude, location.longitude)
+                    latLng = LatLng(state.locationModel.latitude, state.locationModel.longitude),
+                    scale = state.locationModel.scale
                 )
             }
-        } else {
-            locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
+
+            LOCATION_PERMISSIONS.any { permission ->
+                ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+            } -> {
+                getLastLocation(fusedLocationProviderClient) { location ->
+                    moveCamera(
+                        cameraPositionState = cameraPositionState,
+                        latLng = LatLng(location.latitude, location.longitude)
+                    )
+                }
+            }
+
+            else -> locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
         }
     }
 
@@ -650,13 +657,14 @@ private fun rememberCustomLocationSource(
 @OptIn(ExperimentalNaverMapApi::class)
 private fun moveCamera(
     cameraPositionState: CameraPositionState,
-    latLng: LatLng
+    latLng: LatLng,
+    scale: Double = DEFAULT_ZOOM
 ) {
     cameraPositionState.move(
         CameraUpdate
             .scrollAndZoomTo(
                 latLng,
-                DEFAULT_ZOOM
+                scale
             )
             .animate(CameraAnimation.Easing)
     )
