@@ -106,4 +106,20 @@ class TokenAuthenticatorTest {
         assertNull(result)
         coVerify(exactly = 0) { authRepository.refreshToken(any()) }
     }
+
+    @Test
+    fun 토큰이_이미_없을_때() {
+        coEvery { tokenRepository.getAccessToken() } returns flowOf("")
+        coEvery { tokenRepository.getRefreshToken() } returns flowOf("")
+
+        val nullResponse = createResponseWithToken(null)
+        val nullResult = authenticator.authenticate(null, nullResponse)
+
+        val blankResponse = createResponseWithToken("")
+        val blankResult = authenticator.authenticate(null, blankResponse)
+
+        assertNull(nullResult)
+        assertNull(blankResult)
+        coVerify(exactly = 0) { authRepository.refreshToken(any()) }
+    }
 }
