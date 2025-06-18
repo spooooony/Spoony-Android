@@ -47,7 +47,7 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     override suspend fun withDraw(token: String): BaseResponse<Unit> = authService.withDraw("$BEARER $token")
 
     override suspend fun refreshToken(token: String): BaseResponse<TokenResponseDto> =
-        authService.refreshToken(token)
+        authService.refreshToken("$BEARER $token")
 
     companion object {
         private const val BEARER = "Bearer"
