@@ -22,7 +22,7 @@ interface ExploreRemoteDataSource {
         regionIds: List<Int>?,
         ageGroups: List<String>?,
         sortBy: String?,
-        cursor: Int?,
+        cursor: String?,
         size: Int?
     ): BaseResponse<ExplorePlaceReviewFilteredResponseDto>
 }

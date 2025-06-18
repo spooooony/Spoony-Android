@@ -8,5 +8,5 @@ data class ExplorePlaceReviewFilteredResponseDto(
     @SerialName("filteredFeedResponseDTOList")
     val filteredFeedResponseDTOList: List<PlaceReviewResponseDto>,
     @SerialName("nextCursor")
-    val nextCursor: Int?
+    val nextCursor: String?
 )

@@ -39,7 +39,7 @@ interface ExploreRepository {
         regionIds: List<Int>?,
         ageGroups: List<String>?,
         sortBy: String?,
-        cursor: Int?,
+        cursor: String?,
         size: Int?
     ): Result<ExplorePlaceReviewResultEntity>
 }
