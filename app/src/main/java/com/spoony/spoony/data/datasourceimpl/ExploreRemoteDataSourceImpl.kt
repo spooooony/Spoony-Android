@@ -23,7 +23,7 @@ class ExploreRemoteDataSourceImpl @Inject constructor(
         query = query
     )
 
-    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: Int?, size: Int?): BaseResponse<ExplorePlaceReviewFilteredResponseDto> =
+    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: String?, size: Int?): BaseResponse<ExplorePlaceReviewFilteredResponseDto> =
         exploreService.getPlaceReviewListFiltered(
             categoryIds = categoryIds,
             regionIds = regionIds,

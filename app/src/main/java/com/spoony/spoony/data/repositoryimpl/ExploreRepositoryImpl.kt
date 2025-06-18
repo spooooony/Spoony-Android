@@ -30,7 +30,7 @@ class ExploreRepositoryImpl @Inject constructor(
         exploreRemoteDataSource.getPlaceReviewListFollowing().data!!.feedsResponseList.map { it.toDomain() }
     }
 
-    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: Int?, size: Int?): Result<ExplorePlaceReviewResultEntity> = runCatching {
+    override suspend fun getPlaceReviewListFiltered(categoryIds: List<Int>?, regionIds: List<Int>?, ageGroups: List<String>?, sortBy: String?, cursor: String?, size: Int?): Result<ExplorePlaceReviewResultEntity> = runCatching {
         val data = exploreRemoteDataSource.getPlaceReviewListFiltered(
             categoryIds = categoryIds,
             regionIds = regionIds,
