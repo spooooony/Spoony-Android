@@ -117,7 +117,7 @@ fun Modifier.advancedImePadding() = composed {
         val rootCoordinate = coordinates.findRootCoordinates()
         val bottom = coordinates.positionInWindow().y + coordinates.size.height
 
-        consumePadding = (rootCoordinate.size.height - bottom).toInt()
+        consumePadding = (rootCoordinate.size.height - bottom).toInt().coerceAtLeast(0)
     }
         .consumeWindowInsets(PaddingValues(bottom = (consumePadding / LocalDensity.current.density).dp))
         .imePadding()
