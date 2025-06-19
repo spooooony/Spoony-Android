@@ -333,6 +333,10 @@ private fun MapScreen(
     var selectedMarkerId by remember { mutableIntStateOf(-1) }
     var selectedCategoryId by remember { mutableIntStateOf(1) }
 
+    LaunchedEffect(placeList.isEmpty()) {
+        if (placeList.isEmpty()) scaffoldState.sheetState.animateTo(AdvancedSheetState.PartiallyExpanded)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

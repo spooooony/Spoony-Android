@@ -26,7 +26,7 @@ import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.SpoonyTypography
 import com.spoony.spoony.core.designsystem.type.TagSize
-import com.spoony.spoony.core.util.extension.rotateClick
+import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
 
 @Composable
@@ -47,7 +47,7 @@ fun LogoTag(
 
     Row(
         modifier = modifier
-            .rotateClick(onClick = onClick)
+            .noRippleClickable(onClick = onClick)
             .clip(RoundedCornerShape(20.dp))
             .spoonyGradient(20.dp)
             .padding(paddingValues),

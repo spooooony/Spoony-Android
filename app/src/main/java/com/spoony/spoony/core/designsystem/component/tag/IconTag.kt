@@ -50,7 +50,7 @@ fun IconTag(
                 .crossfade(true)
                 .build(),
             modifier = Modifier.size(16.dp),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(4.dp))

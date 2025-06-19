@@ -148,6 +148,7 @@ private fun AttendanceScreen(
 
     Column(
         modifier = Modifier
+            .background(SpoonyAndroidTheme.colors.white)
             .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         TagTopAppBar(

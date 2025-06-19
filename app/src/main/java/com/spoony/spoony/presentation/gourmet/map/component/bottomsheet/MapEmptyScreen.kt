@@ -2,6 +2,7 @@ package com.spoony.spoony.presentation.gourmet.map.component.bottomsheet
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,6 +53,7 @@ fun MapEmptyBottomSheetContent(
             style = buttonStyle,
             onClick = onClick
         )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
