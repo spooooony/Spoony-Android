@@ -178,8 +178,9 @@ private fun FollowScreen(
                     .align(Alignment.TopCenter)
                     .zIndex(1f),
                 state = refreshState,
-                containerColor = SpoonyAndroidTheme.colors.main500.copy(alpha = alpha),
-                contentColor = SpoonyAndroidTheme.colors.white.copy(alpha = alpha)
+                containerColor = SpoonyAndroidTheme.colors.main500,
+                contentColor = SpoonyAndroidTheme.colors.white,
+                alpha = { alpha }
             )
         }
     }

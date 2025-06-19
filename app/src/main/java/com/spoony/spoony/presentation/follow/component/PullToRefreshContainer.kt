@@ -28,7 +28,8 @@ fun PullToRefreshContainer(
     shape: Shape = PullToRefreshDefaults.shape,
     containerColor: Color = PullToRefreshDefaults.containerColor,
     contentColor: Color = PullToRefreshDefaults.contentColor,
-    spinnerContainerSize: Dp = 40.dp
+    spinnerContainerSize: Dp = 40.dp,
+    alpha: () -> Float = { 1f }
 ) {
     CompositionLocalProvider(LocalContentColor provides contentColor) {
         Box(
@@ -36,6 +37,7 @@ fun PullToRefreshContainer(
                 .size(spinnerContainerSize)
                 .graphicsLayer {
                     translationY = state.verticalOffset - size.height
+                    this.alpha = alpha()
                 }
                 .background(color = containerColor, shape = shape)
         ) {
