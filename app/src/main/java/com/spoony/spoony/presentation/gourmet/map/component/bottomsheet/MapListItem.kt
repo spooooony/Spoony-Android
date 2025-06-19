@@ -83,7 +83,7 @@ fun MapListItem(
 
             Text(
                 text = review,
-                style = typography.caption1m,
+                style = typography.body2m,
                 color = color.black,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
