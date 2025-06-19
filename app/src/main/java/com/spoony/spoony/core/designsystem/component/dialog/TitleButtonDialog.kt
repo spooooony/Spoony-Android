@@ -99,7 +99,7 @@ fun TitleButtonDialog(
                 SpoonyButton(
                     text = buttonText,
                     size = ButtonSize.Medium,
-                    style = ButtonStyle.Primary,
+                    style = ButtonStyle.Secondary,
                     onClick = onButtonClick,
                     modifier = Modifier
                         .fillMaxWidth()

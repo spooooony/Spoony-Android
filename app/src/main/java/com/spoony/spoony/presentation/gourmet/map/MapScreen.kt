@@ -32,8 +32,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -96,7 +94,7 @@ import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.COLLAPSED_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.MIN_PARTIALLY_HEIGHT
 import com.spoony.spoony.presentation.gourmet.map.DefaultHeight.dragHandleHeight
 import com.spoony.spoony.presentation.gourmet.map.component.LocationPermissionDialog
-import com.spoony.spoony.presentation.gourmet.map.component.MapPlaceDetailCard
+import com.spoony.spoony.presentation.gourmet.map.component.MapCardPager
 import com.spoony.spoony.presentation.gourmet.map.component.MapTopAppBar
 import com.spoony.spoony.presentation.gourmet.map.component.SpoonyMapMarker
 import com.spoony.spoony.presentation.gourmet.map.component.bottomsheet.MapBottomSheetDragHandle
@@ -111,7 +109,6 @@ import io.morfly.compose.bottomsheet.material3.rememberBottomSheetScaffoldState
 import io.morfly.compose.bottomsheet.material3.rememberBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 
 private const val DEFAULT_CATEGORY_ID = 1
 private const val DEFAULT_ZOOM = 14.0
@@ -196,20 +193,27 @@ fun MapRoute(
     }
 
     LaunchedEffect(Unit) {
-        if (
-            state.locationModel.placeId == null &&
-            LOCATION_PERMISSIONS.any { permission ->
-                ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-            }
-        ) {
-            getLastLocation(fusedLocationProviderClient) { location ->
+        when {
+            state.locationModel.placeId != null -> {
                 moveCamera(
                     cameraPositionState = cameraPositionState,
-                    latLng = LatLng(location.latitude, location.longitude)
+                    latLng = LatLng(state.locationModel.latitude, state.locationModel.longitude),
+                    scale = state.locationModel.scale
                 )
             }
-        } else {
-            locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
+
+            LOCATION_PERMISSIONS.any { permission ->
+                ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+            } -> {
+                getLastLocation(fusedLocationProviderClient) { location ->
+                    moveCamera(
+                        cameraPositionState = cameraPositionState,
+                        latLng = LatLng(location.latitude, location.longitude)
+                    )
+                }
+            }
+
+            else -> locationPermissionLauncher.launch(LOCATION_PERMISSIONS)
         }
     }
 
@@ -386,38 +390,15 @@ private fun MapScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = paddingValues.calculateBottomPadding())
-                .padding(vertical = 5.dp, horizontal = 26.dp),
+                .padding(vertical = 5.dp),
             visible = isMarkerSelected,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOut(targetOffset = { IntOffset(0, it.height) })
         ) {
-            val pagerState = rememberPagerState(
-                initialPage = 0,
-                pageCount = { placeCardList.size }
+            MapCardPager(
+                placeCardList = placeCardList,
+                onPlaceCardClick = onPlaceCardClick
             )
-
-            HorizontalPager(
-                state = pagerState,
-                beyondViewportPageCount = 1
-            ) { currentPage ->
-                val pageIndex = currentPage % placeCardList.size
-
-                with(placeCardList[pageIndex]) {
-                    MapPlaceDetailCard(
-                        placeName = placeName,
-                        review = description,
-                        imageUrlList = photoUrl.take(3).toImmutableList(),
-                        categoryIconUrl = categoryInfo.iconUrl,
-                        categoryName = categoryInfo.categoryName,
-                        textColor = Color.hexToColor(categoryInfo.textColor),
-                        backgroundColor = Color.hexToColor(categoryInfo.backgroundColor),
-                        onClick = { onPlaceCardClick(reviewId) },
-                        username = this.userName,
-                        placeSpoon = userRegion,
-                        addMapCount = addMapCount
-                    )
-                }
-            }
         }
 
         AnimatedVisibility(
@@ -650,13 +631,14 @@ private fun rememberCustomLocationSource(
 @OptIn(ExperimentalNaverMapApi::class)
 private fun moveCamera(
     cameraPositionState: CameraPositionState,
-    latLng: LatLng
+    latLng: LatLng,
+    scale: Double = DEFAULT_ZOOM
 ) {
     cameraPositionState.move(
         CameraUpdate
             .scrollAndZoomTo(
                 latLng,
-                DEFAULT_ZOOM
+                scale
             )
             .animate(CameraAnimation.Easing)
     )
