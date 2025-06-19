@@ -22,10 +22,10 @@ fun ScoopDialog(
     val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_register_get))
 
     TwoButtonDialog(
-        message = "수저 1개를 사용하여 떠먹어 볼까요?",
+        message = "스푼 1개를 사용하여 확인해 볼까요?",
         negativeText = "아니요",
         onClickNegative = onClickNegative,
-        positiveText = "떠먹을래요",
+        positiveText = "확인할래요",
         onClickPositive = onClickPositive,
         onDismiss = onClickNegative,
         content = {
