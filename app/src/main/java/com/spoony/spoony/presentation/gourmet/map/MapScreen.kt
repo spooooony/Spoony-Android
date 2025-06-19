@@ -640,7 +640,7 @@ private fun moveCamera(
                 latLng,
                 scale
             )
-            .animate(CameraAnimation.Easing)
+            .animate(CameraAnimation.Fly)
     )
 }
 
