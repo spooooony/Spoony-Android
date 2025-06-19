@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -137,6 +138,7 @@ private fun ExploreSearchScreen(
     placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>
 ) {
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabItems = persistentListOf(SearchType.USER, SearchType.REVIEW)
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -239,6 +241,7 @@ private fun ExploreSearchScreen(
                                     onItemClick = {
                                         searchText = it
                                         onSearch(searchText)
+                                        focusManager.clearFocus()
                                     },
                                     recentQueryList = recentUserSearchQueryList
                                 )
@@ -290,6 +293,7 @@ private fun ExploreSearchScreen(
                                     onItemClick = {
                                         searchText = it
                                         onSearch(searchText)
+                                        focusManager.clearFocus()
                                     },
                                     recentQueryList = recentReviewSearchQueryList
                                 )
