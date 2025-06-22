@@ -32,9 +32,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
-import com.spoony.spoony.core.util.extension.ShadowSpread
+import com.spoony.spoony.core.util.extension.dropShadow
 import com.spoony.spoony.core.util.extension.noRippleClickable
-import com.spoony.spoony.core.util.extension.spreadShadow
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.FilterType
 import kotlinx.collections.immutable.ImmutableList
@@ -129,13 +128,13 @@ fun FilterChipRow(
                 }
                 .offset { IntOffset((sortFilterWidth / 2).roundToPx(), 0.dp.roundToPx()) }
                 .height(if (lazyRowHeight > 0.dp) lazyRowHeight else 36.dp)
-                .spreadShadow(
-                    color = SpoonyAndroidTheme.colors.gray500.copy(alpha = 0.3f),
-                    borderRadius = 12.dp,
-                    blurRadius = 12.dp,
-                    spread = ShadowSpread(
-                        left = 10f
-                    )
+                .dropShadow(
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFF82848D).copy(alpha = 0.3f),
+                    offsetX = (-8).dp,
+                    offsetY = 0.dp,
+                    blur = 10.dp,
+                    spread = 0.dp
                 )
                 .noRippleClickable(onSortFilterClick)
                 .background(
