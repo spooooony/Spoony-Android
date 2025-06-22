@@ -10,6 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.oss.licenses.OssLicensesActivity
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.spoony.spoony.presentation.setting.account.AccountDeleteScreen
 import com.spoony.spoony.presentation.setting.account.AccountManagementScreen
 import com.spoony.spoony.presentation.setting.block.BlockUserScreen
@@ -86,6 +88,8 @@ internal sealed interface SettingRoutes {
 
     @Serializable
     data object AccountDelete : SettingRoutes
+
+    data object OssLicense : SettingRoutes
 
     data class Web(val url: String) : SettingRoutes
 }

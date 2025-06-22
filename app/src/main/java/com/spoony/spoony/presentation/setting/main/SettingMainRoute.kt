@@ -1,5 +1,6 @@
 package com.spoony.spoony.presentation.setting.main
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +18,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -35,6 +38,7 @@ internal fun SettingMainRoute(
     navigateToSettingRoute: (SettingRoutes) -> Unit,
     navigateToWebView: (String) -> Unit
 ) {
+    val context = LocalContext.current
     val eventFlow = remember {
         MutableSharedFlow<SettingRoutes>(
             extraBufferCapacity = 1,
@@ -46,6 +50,10 @@ internal fun SettingMainRoute(
         eventFlow.collect { route ->
             when (route) {
                 is SettingRoutes.Web -> navigateToWebView(route.url)
+                is SettingRoutes.OssLicense -> {
+                    val ossIntent = Intent(context, OssLicensesMenuActivity::class.java)
+                    context.startActivity(ossIntent)
+                }
                 else -> navigateToSettingRoute(route)
             }
         }
@@ -75,7 +83,8 @@ internal fun SettingMainRoute(
                 SettingItem("서비스 이용약관", SettingRoutes.Web("https://creative-suede-cad.notion.site/20c7f334bdc48014a149e83d52006014?source=copy_link")),
                 SettingItem("개인정보 처리 방침", SettingRoutes.Web("https://creative-suede-cad.notion.site/20c7f334bdc4808a945ec2bfece2bf51?source=copy_link")),
                 SettingItem("위치기반서비스 이용약관", SettingRoutes.Web("https://creative-suede-cad.notion.site/Spoony-20c7f334bdc480068a7cd3e354afebf7?source=copy_link")),
-                SettingItem("1:1 문의", SettingRoutes.Web("https://tally.so/r/nPWzAx"))
+                SettingItem("1:1 문의", SettingRoutes.Web("https://tally.so/r/nPWzAx")),
+                SettingItem("오픈소스 라이선스", SettingRoutes.OssLicense)
             ),
             onClick = eventFlow::tryEmit
         )

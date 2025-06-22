@@ -6,6 +6,10 @@ buildscript {
             url = uri("https://repository.map.naver.com/archive/maven")
         )
     }
+
+    dependencies {
+        classpath(libs.oss.licenses.plugin)
+    }
 }
 
 plugins {
