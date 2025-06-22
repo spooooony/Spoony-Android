@@ -33,8 +33,6 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.presentation.setting.block.component.BlockUserItem
-import com.spoony.spoony.presentation.setting.block.model.BlockUserState
-import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
