@@ -26,13 +26,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.designsystem.component.pullToRefresh.SpoonyPullToRefreshContainer
 import com.spoony.spoony.core.designsystem.component.topappbar.BackAndMenuTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.gray0
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.presentation.follow.component.FollowTabRow
-import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
 import com.spoony.spoony.presentation.follow.component.UserListScreen
 import com.spoony.spoony.presentation.follow.model.FollowType
 import com.spoony.spoony.presentation.follow.model.UserItemUiState
@@ -173,7 +173,7 @@ private fun FollowScreen(
                 )
             }
 
-            PullToRefreshContainer(
+            SpoonyPullToRefreshContainer(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .zIndex(1f),

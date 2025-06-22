@@ -1,4 +1,4 @@
-package com.spoony.spoony.presentation.follow.component
+package com.spoony.spoony.core.designsystem.component.pullToRefresh
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 @ExperimentalMaterial3Api
-fun PullToRefreshContainer(
+fun SpoonyPullToRefreshContainer(
     state: PullToRefreshState,
     modifier: Modifier = Modifier,
     indicator: @Composable (PullToRefreshState) -> Unit = { pullRefreshState ->

@@ -1,6 +1,5 @@
 package com.spoony.spoony.presentation.setting.block
 
-import android.R.attr.data
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,16 +25,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.designsystem.component.pullToRefresh.SpoonyPullToRefreshContainer
 import com.spoony.spoony.core.designsystem.component.screen.EmptyContent
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.presentation.follow.component.PullToRefreshContainer
 import com.spoony.spoony.presentation.setting.block.component.BlockUserItem
-import com.spoony.spoony.presentation.setting.block.model.BlockUserState
-import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +79,7 @@ fun BlockUserScreen(
             onBackButtonClick = navigateUp
         )
 
-        when (blockUserList) {
+        when (val list = blockUserList) {
             is UiState.Loading -> {
                 // TODO: Show loading indicator
             }
@@ -114,7 +111,7 @@ fun BlockUserScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         itemsIndexed(
-                            items = (blockUserList as UiState.Success<ImmutableList<BlockUserState>>).data,
+                            items = list.data,
                             key = { _, item -> item.userId }
                         ) { index, user ->
                             BlockUserItem(
@@ -134,7 +131,7 @@ fun BlockUserScreen(
                         }
                     }
 
-                    PullToRefreshContainer(
+                    SpoonyPullToRefreshContainer(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .zIndex(1f),
