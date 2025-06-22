@@ -87,5 +87,7 @@ internal sealed interface SettingRoutes {
     @Serializable
     data object AccountDelete : SettingRoutes
 
+    data object OssLicense : SettingRoutes
+
     data class Web(val url: String) : SettingRoutes
 }
