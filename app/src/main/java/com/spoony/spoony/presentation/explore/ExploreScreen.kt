@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -47,6 +47,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
+import com.spoony.spoony.core.designsystem.component.pullToRefresh.SpoonyPullToRefreshContainer
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -471,12 +472,14 @@ private fun ExploreContent(
                         )
                     }
                 }
-                PullToRefreshContainer(
+                SpoonyPullToRefreshContainer(
                     modifier = Modifier
-                        .align(Alignment.TopCenter),
+                        .align(Alignment.TopCenter)
+                        .zIndex(1f),
                     state = refreshState,
-                    containerColor = SpoonyAndroidTheme.colors.main500.copy(alpha = alpha),
-                    contentColor = SpoonyAndroidTheme.colors.white.copy(alpha = alpha)
+                    containerColor = SpoonyAndroidTheme.colors.main500,
+                    contentColor = SpoonyAndroidTheme.colors.white,
+                    alpha = { alpha }
                 )
             }
         }
