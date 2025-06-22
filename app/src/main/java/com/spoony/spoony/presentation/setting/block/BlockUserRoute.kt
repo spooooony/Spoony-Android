@@ -82,7 +82,7 @@ fun BlockUserScreen(
             onBackButtonClick = navigateUp
         )
 
-        when (blockUserList) {
+        when (val list = blockUserList) {
             is UiState.Loading -> {
                 // TODO: Show loading indicator
             }
@@ -114,7 +114,7 @@ fun BlockUserScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         itemsIndexed(
-                            items = (blockUserList as UiState.Success<ImmutableList<BlockUserState>>).data,
+                            items = list.data,
                             key = { _, item -> item.userId }
                         ) { index, user ->
                             BlockUserItem(
