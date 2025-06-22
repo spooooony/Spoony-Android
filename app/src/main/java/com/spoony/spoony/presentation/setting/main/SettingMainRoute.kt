@@ -50,10 +50,7 @@ internal fun SettingMainRoute(
         eventFlow.collect { route ->
             when (route) {
                 is SettingRoutes.Web -> navigateToWebView(route.url)
-                is SettingRoutes.OssLicense -> {
-                    val ossIntent = Intent(context, OssLicensesMenuActivity::class.java)
-                    context.startActivity(ossIntent)
-                }
+                is SettingRoutes.OssLicense -> Intent(context, OssLicensesMenuActivity::class.java).also { context.startActivity(it) }
                 else -> navigateToSettingRoute(route)
             }
         }
