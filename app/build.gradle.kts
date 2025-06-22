@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.oss.licenses.plugin)
 }
 
 val properties = Properties().apply {
@@ -127,6 +128,8 @@ dependencies {
     implementation(libs.balloon.compose)
 
     implementation(libs.accompanist.systemuicontroller)
+
+    implementation(libs.play.services.oss.licenses)
 }
 
 ktlint {
