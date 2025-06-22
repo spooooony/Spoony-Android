@@ -2,8 +2,11 @@ package com.spoony.spoony.presentation.setting.account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spoony.spoony.core.database.entity.ExploreRecentSearchType
 import com.spoony.spoony.core.util.extension.onLogFailure
 import com.spoony.spoony.domain.repository.AuthRepository
+import com.spoony.spoony.domain.repository.ExploreRepository
+import com.spoony.spoony.domain.repository.MapRepository
 import com.spoony.spoony.domain.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,7 +18,9 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AccountViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val tokenRepository: TokenRepository
+    private val tokenRepository: TokenRepository,
+    private val exploreRepository: ExploreRepository,
+    private val mapRepository: MapRepository
 ) : ViewModel() {
     private val accessToken: String
         get() = tokenRepository.getCachedAccessToken()
@@ -30,6 +35,10 @@ class AccountViewModel @Inject constructor(
                 token = accessToken
             ).onSuccess {
                 tokenRepository.clearTokens()
+                ExploreRecentSearchType.entries.forEach { type ->
+                    exploreRepository.clearExploreRecentSearch(type)
+                }
+                mapRepository.deleteAllSearches()
                 _restartTrigger.emit(Unit)
             }.onLogFailure {
                 // TODO: 언젠가 에러처리 하기
@@ -43,6 +52,10 @@ class AccountViewModel @Inject constructor(
                 token = accessToken
             ).onSuccess {
                 tokenRepository.clearTokens()
+                ExploreRecentSearchType.entries.forEach { type ->
+                    exploreRepository.clearExploreRecentSearch(type)
+                }
+                mapRepository.deleteAllSearches()
                 _restartTrigger.emit(Unit)
             }.onLogFailure {
                 // TODO: 언젠가 에러처리 하기
