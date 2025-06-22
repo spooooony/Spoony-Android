@@ -35,13 +35,16 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asAndroidPath
+import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
@@ -250,45 +253,46 @@ data class ShadowSpread(
     @FloatRange(from = 0.0) val bottom: Float = 0f
 )
 
-fun Modifier.spreadShadow(
-    color: Color = Color.Black,
-    borderRadius: Dp = 0.dp,
-    blurRadius: Dp = 0.dp,
-    spread: ShadowSpread = ShadowSpread()
-): Modifier = composed {
-    val paint = remember {
-        Paint().asFrameworkPaint().apply {
-            this.color = color.toArgb()
+@Composable
+fun Modifier.dropShadow(
+    shape: Shape,
+    color: Color = Color.Black.copy(0.25f),
+    blur: Dp = 1.dp,
+    offsetY: Dp = 1.dp,
+    offsetX: Dp = 1.dp,
+    spread: Dp = 1.dp
+) = composed {
+    val density = LocalDensity.current
+
+    val paint = remember(color, blur) {
+        Paint().apply {
+            this.color = color
+            val blurPx = with(density) { blur.toPx() }
+            if (blurPx > 0f) {
+                this.asFrameworkPaint().maskFilter =
+                    BlurMaskFilter(blurPx, BlurMaskFilter.Blur.NORMAL)
+            }
         }
     }
 
-    val (spreadLeftPx, spreadTopPx, spreadRightPx, spreadBottomPx) = with(LocalDensity.current) {
-        with(spread) {
-            listOf(
-                left.coerceAtLeast(0f).dp.toPx(),
-                top.coerceAtLeast(0f).dp.toPx(),
-                right.coerceAtLeast(0f).dp.toPx(),
-                bottom.coerceAtLeast(0f).dp.toPx()
-            )
-        }
-    }
-    val borderRadiusPx = with(LocalDensity.current) { borderRadius.toPx() }
-    val blurRadiusPx = with(LocalDensity.current) { blurRadius.toPx() }
     drawBehind {
+        val spreadPx = spread.toPx()
+        val offsetXPx = offsetX.toPx()
+        val offsetYPx = offsetY.toPx()
+
+        val shadowWidth = size.width + spreadPx
+        val shadowHeight = size.height + spreadPx
+
+        if (shadowWidth <= 0f || shadowHeight <= 0f) return@drawBehind
+
+        val shadowSize = Size(shadowWidth, shadowHeight)
+        val shadowOutline = shape.createOutline(shadowSize, layoutDirection, this)
+
         drawIntoCanvas { canvas ->
-            val rectF = android.graphics.RectF(
-                0f - spreadLeftPx,
-                0f - spreadTopPx,
-                size.width + spreadRightPx,
-                size.height + spreadBottomPx
-            )
-            paint.maskFilter = if (blurRadius != 0.dp) BlurMaskFilter(blurRadiusPx, BlurMaskFilter.Blur.NORMAL) else null
-            canvas.nativeCanvas.drawRoundRect(
-                rectF,
-                borderRadiusPx,
-                borderRadiusPx,
-                paint
-            )
+            canvas.save()
+            canvas.translate(offsetXPx, offsetYPx)
+            canvas.drawOutline(shadowOutline, paint)
+            canvas.restore()
         }
     }
 }
