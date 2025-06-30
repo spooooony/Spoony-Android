@@ -57,9 +57,9 @@ phoenix = "3.0.0"
 balloonCompose = "1.6.5"
 
 # Naver Map
-naverMapCompose = "1.7.2"
+naverMapCompose = "1.8.2"
 naverMapLocation = "21.0.2"
-playServicesLocation = "21.0.1"
+playServicesLocation = "21.3.0"
 
 # Kakao
 kakaoVersion = "2.20.6"
