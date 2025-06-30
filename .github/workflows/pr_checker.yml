@@ -40,6 +40,7 @@ jobs:
 
       - name: Access Local Properties
         env:
+          PROD_BASE_URL: ${{ secrets.PROD_BASE_URL }}
           DEV_BASE_URL: ${{ secrets.DEV_BASE_URL }}
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
@@ -47,6 +48,7 @@ jobs:
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           NATIVE_APP_KEY: ${{ secrets.NATIVE_APP_KEY }}
         run: |
+          echo prod.base.url=\"$PROD_BASE_URL\" >> local.properties
           echo dev.base.url=\"$DEV_BASE_URL\" >> local.properties
           echo naver.client.id=\"$NAVER_CLIENT_ID\" >> local.properties
           echo naverClientId=$NAVER_CLIENT_ID >> local.properties
