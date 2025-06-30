@@ -39,12 +39,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField(
-            "String",
-            "BASE_URL",
-            properties.getProperty("dev.base.url")
-        )
-
         manifestPlaceholders["naverClientId"] = properties["naverClientId"] as String
         buildConfigField("String", "NAVER_CLIENT_ID", properties["naver.client.id"] as String)
 
@@ -55,9 +49,20 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                properties.getProperty("dev.base.url")
+            )
         }
 
         release {
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                properties.getProperty("prod.base.url")
+            )
+
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
