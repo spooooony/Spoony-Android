@@ -72,6 +72,9 @@ playServicesMaps = "19.0.0"
 ## Room
 room = "2.6.1"
 
+## mixpanel
+mixpanel = "7.+"
+
 [libraries]
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -149,6 +152,9 @@ kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakaoVe
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
+## Mixpanel
+mixpanel = { group = "com.mixpanel.android", name = "mixpanel-android", version.ref = "mixpanel"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
