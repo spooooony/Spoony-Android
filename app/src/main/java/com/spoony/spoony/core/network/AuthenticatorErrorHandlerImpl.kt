@@ -6,15 +6,17 @@ import android.os.Looper
 import android.widget.Toast
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.spoony.spoony.domain.repository.TokenRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class AuthenticatorErrorHandlerImpl @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val tokenRepository: TokenRepository
 ) : AuthenticatorErrorHandler {
-    private val handler = Handler(Looper.getMainLooper())
+    private val handler by lazy { Handler(Looper.getMainLooper()) }
 
-    override fun handleTokenNullError() {
+    override suspend fun handleTokenNullError() {
+        tokenRepository.clearTokens()
         restartApp(RETRY_SIGN_IN)
     }
 
