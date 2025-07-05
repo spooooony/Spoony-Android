@@ -28,7 +28,7 @@ class MixPanelTracker @Inject constructor(
     }
 
     fun track(eventName: String, properties: String) {
-        Timber.tag("mixpanel").d("$mixpanel $properties")
+        Timber.tag("mixpanel").d("$eventName $properties")
         mixpanel.track(eventName, properties.toJsonObject())
     }
 

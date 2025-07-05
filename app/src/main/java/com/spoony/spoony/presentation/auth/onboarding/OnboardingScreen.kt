@@ -49,13 +49,9 @@ private fun OnboardingScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showSnackbar = LocalSnackBarTrigger.current
 
-    val tracker = LocalTracker.current
-
     when (state.signUpState) {
         is UiState.Empty -> {
             viewModel.updateCurrentStep(OnboardingSteps.END)
-
-            tracker.track("signup_completed", "\"signup_method\" : \"kakao\"")
 
             navController.navigate(
                 route = End,
