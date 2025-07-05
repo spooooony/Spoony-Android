@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.component.topappbar.SpoonyBasicTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -48,9 +49,14 @@ private fun OnboardingScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showSnackbar = LocalSnackBarTrigger.current
 
+    val tracker = LocalTracker.current
+
     when (state.signUpState) {
         is UiState.Empty -> {
             viewModel.updateCurrentStep(OnboardingSteps.END)
+
+            tracker.track("signup_completed", "\"signup_method\" : \"kakao\"")
+
             navController.navigate(
                 route = End,
                 navOptions = navOptions {

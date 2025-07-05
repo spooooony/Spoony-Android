@@ -7,6 +7,7 @@ import com.spoony.spoony.BuildConfig.MIXPANEL_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.json.JSONObject
+import timber.log.Timber
 
 val LocalTracker = staticCompositionLocalOf<MixPanelTracker> {
     error("No MixpanelTracker provided")
@@ -22,10 +23,12 @@ class MixPanelTracker @Inject constructor(
     )
 
     fun track(eventName: String) {
+        Timber.tag("mixpanel").d(eventName)
         mixpanel.track(eventName)
     }
 
     fun track(eventName: String, properties: String) {
+        Timber.tag("mixpanel").d("$mixpanel $properties")
         mixpanel.track(eventName, properties.toJsonObject())
     }
 

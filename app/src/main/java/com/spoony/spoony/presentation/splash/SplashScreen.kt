@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main400
 
@@ -28,11 +29,14 @@ fun SplashRoute(
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
+    val tracker = LocalTracker.current
 
     LaunchedEffect(Unit) {
         systemUiController.setNavigationBarColor(
             color = main400
         )
+
+        tracker.track("app_open")
 
         if (viewModel.hasAccessToken()) {
             navigateToMap()
