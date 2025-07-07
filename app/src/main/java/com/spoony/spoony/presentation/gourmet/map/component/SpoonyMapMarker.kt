@@ -16,12 +16,13 @@ import com.spoony.spoony.presentation.gourmet.map.model.PlaceReviewModel
 @Composable
 fun SpoonyMapMarker(
     review: PlaceReviewModel,
+    captionText: String,
     selectedMarkerId: Int,
     onClick: () -> Unit
 ) {
     Marker(
         state = MarkerState(LatLng(review.latitude, review.longitude)),
-        captionText = review.placeName,
+        captionText = captionText,
         captionColor = SpoonyAndroidTheme.colors.black,
         captionHaloColor = SpoonyAndroidTheme.colors.white,
         captionRequestedWidth = 10.dp,
