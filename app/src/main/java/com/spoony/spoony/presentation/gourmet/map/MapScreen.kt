@@ -78,6 +78,7 @@ import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.location.FusedLocationSource
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
@@ -132,6 +133,7 @@ fun MapRoute(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val showSnackBar = LocalSnackBarTrigger.current
+    val tracker = LocalTracker.current
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition(
@@ -193,6 +195,7 @@ fun MapRoute(
     }
 
     LaunchedEffect(Unit) {
+        tracker.track("tab_entered", "{\"tab_name\" : \"map\"}")
         when {
             state.locationModel.placeId != null -> {
                 moveCamera(
