@@ -374,6 +374,7 @@ private fun MapScreen(
                 key(place.placeId) {
                     SpoonyMapMarker(
                         review = place,
+                        captionText = if (cameraPositionState.position.zoom > 10.0) place.placeName else "",
                         selectedMarkerId = selectedMarkerId,
                         onClick = {
                             if (selectedMarkerId == place.placeId) {

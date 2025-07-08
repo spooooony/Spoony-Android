@@ -1,11 +1,13 @@
 package com.spoony.spoony
 
+import com.spoony.spoony.core.network.AuthenticatorErrorHandler
 import com.spoony.spoony.core.network.TokenAuthenticator
 import com.spoony.spoony.domain.entity.TokenEntity
 import com.spoony.spoony.domain.repository.AuthRepository
 import com.spoony.spoony.domain.repository.TokenRepository
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
@@ -15,7 +17,6 @@ import okhttp3.Request
 import okhttp3.Response
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,12 +27,14 @@ class TokenAuthenticatorTest {
     private lateinit var tokenRepository: TokenRepository
     private lateinit var authRepository: AuthRepository
     private lateinit var authenticator: TokenAuthenticator
+    private lateinit var errorHandler: AuthenticatorErrorHandler
 
     @Before
     fun setUp() {
         tokenRepository = mockk()
         authRepository = mockk()
-        authenticator = TokenAuthenticator(tokenRepository, authRepository)
+        errorHandler = mockk()
+        authenticator = TokenAuthenticator(tokenRepository, authRepository, errorHandler)
     }
 
     private fun createResponseWithToken(token: String?): Response {
@@ -80,30 +83,30 @@ class TokenAuthenticatorTest {
     }
 
     @Test
-    fun 재발급_실패시_토큰_초기화_후_null_반환() {
+    fun 재발급_실패시_에러_핸들링() {
         coEvery { tokenRepository.getAccessToken() } returns flowOf("oldAccessToken")
         coEvery { tokenRepository.getRefreshToken() } returns flowOf("oldRefreshToken")
         coEvery { authRepository.refreshToken("oldRefreshToken") } returns Result.failure(Exception("fail"))
-        coEvery { tokenRepository.clearTokens() } just Runs
+        coJustRun { errorHandler.handleTokenReissueError() }
 
         val response = createResponseWithToken("oldAccessToken")
 
-        val result = authenticator.authenticate(null, response)
+        authenticator.authenticate(null, response)
 
-        assertNull(result)
-        coVerify { tokenRepository.clearTokens() }
+        coVerify { errorHandler.handleTokenReissueError() }
     }
 
     @Test
-    fun 이미_토큰_재발급에_실패한_경우_null_반환() {
+    fun 이미_토큰_재발급에_실패한_경우_에러_핸들링() {
         coEvery { tokenRepository.getAccessToken() } returns flowOf("")
         coEvery { tokenRepository.getRefreshToken() } returns flowOf("")
+        coJustRun { errorHandler.handleTokenNullError() }
 
         val response = createResponseWithToken("oldAccessToken")
 
-        val result = authenticator.authenticate(null, response)
+        authenticator.authenticate(null, response)
 
-        assertNull(result)
+        coVerify { errorHandler.handleTokenNullError() }
         coVerify(exactly = 0) { authRepository.refreshToken(any()) }
     }
 
@@ -111,15 +114,15 @@ class TokenAuthenticatorTest {
     fun 토큰이_이미_없을_때() {
         coEvery { tokenRepository.getAccessToken() } returns flowOf("")
         coEvery { tokenRepository.getRefreshToken() } returns flowOf("")
+        coJustRun { errorHandler.handleTokenNullError() }
 
         val nullResponse = createResponseWithToken(null)
-        val nullResult = authenticator.authenticate(null, nullResponse)
+        authenticator.authenticate(null, nullResponse)
 
         val blankResponse = createResponseWithToken("")
-        val blankResult = authenticator.authenticate(null, blankResponse)
+        authenticator.authenticate(null, blankResponse)
 
-        assertNull(nullResult)
-        assertNull(blankResult)
+        coVerify { errorHandler.handleTokenNullError() }
         coVerify(exactly = 0) { authRepository.refreshToken(any()) }
     }
 }

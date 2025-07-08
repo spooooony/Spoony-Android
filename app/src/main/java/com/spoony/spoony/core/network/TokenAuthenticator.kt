@@ -14,7 +14,8 @@ import okhttp3.Route
 
 class TokenAuthenticator @Inject constructor(
     private val tokenRepository: TokenRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val authenticatorErrorHandler: AuthenticatorErrorHandler
 ) : Authenticator {
     private val tokenRefreshMutex = Mutex()
 
@@ -34,16 +35,19 @@ class TokenAuthenticator @Inject constructor(
                 return@withLock buildRequestWithToken(response.request, currentAccessToken.orEmpty())
             }
 
-            // refreshToken이 없는 경우
             val refreshToken = tokenRepository.getRefreshToken().firstOrNull()
 
-            if (refreshToken.isNullOrBlank()) return@withLock null
+            // refreshToken이 없는 경우
+            if (refreshToken.isNullOrBlank()) {
+                authenticatorErrorHandler.handleTokenNullError()
+                return@withLock null
+            }
 
             val newToken = authRepository.refreshToken(refreshToken).getOrNull()
 
             // 토큰 재발급에 실패한 경우
             if (newToken == null) {
-                tokenRepository.clearTokens()
+                authenticatorErrorHandler.handleTokenReissueError()
                 return@withLock null
             }
 
