@@ -7,6 +7,8 @@ import com.spoony.spoony.presentation.explore.model.FilterChipOptionProvider
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
+import com.spoony.spoony.presentation.register.model.RegisterType
+import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
@@ -44,6 +46,21 @@ data class ExploreFilterItems(
     val regions: ImmutableList<ExploreFilter>,
     val ages: ImmutableList<ExploreFilter>
 )
+
+sealed interface ExploreAction {
+    data object ClickSearch : ExploreAction
+    data object ClickRegister : ExploreAction
+    data class ClickPlaceDetail(val id: Int) : ExploreAction
+    data class ClickReport(val targetId: Int, val type: ReportType) : ExploreAction
+    data class ClickEdit(val id: Int, val type: RegisterType) : ExploreAction
+    data object ClickLocalReview : ExploreAction
+    data class ChangeSorting(val option: SortingOption) : ExploreAction
+    data class ChangeTab(val type: ExploreType) : ExploreAction
+    data object Refresh : ExploreAction
+    data object LoadNextPage : ExploreAction
+    data class DeleteReview(val id: Int) : ExploreAction
+    data class ApplyFilter(val state: ExploreFilterState) : ExploreAction
+}
 
 enum class ExploreType {
     ALL, FOLLOWING

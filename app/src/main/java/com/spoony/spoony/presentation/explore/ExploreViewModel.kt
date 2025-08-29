@@ -16,7 +16,6 @@ import com.spoony.spoony.presentation.explore.model.toModel
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -57,6 +56,25 @@ class ExploreViewModel @Inject constructor(
         getPlaceReviewListFiltered()
     }
 
+    fun onAction(action: ExploreAction) {
+        viewModelScope.launch {
+            when (action) {
+                is ExploreAction.ClickSearch -> _sideEffect.emit(ExploreSideEffect.NavigateToSearch)
+                is ExploreAction.ClickRegister -> _sideEffect.emit(ExploreSideEffect.NavigateToRegister)
+                is ExploreAction.ClickPlaceDetail -> _sideEffect.emit(ExploreSideEffect.NavigateToPlaceDetail(action.id))
+                is ExploreAction.ClickReport -> _sideEffect.emit(ExploreSideEffect.NavigateToReport(action.targetId, action.type))
+                is ExploreAction.ClickEdit -> _sideEffect.emit(ExploreSideEffect.NavigateToEdit(action.id, action.type))
+                is ExploreAction.ClickLocalReview -> localReviewToggle()
+                is ExploreAction.ChangeSorting -> updateSelectedSortingOption(action.option)
+                is ExploreAction.ChangeTab -> updateExploreType(action.type)
+                is ExploreAction.Refresh -> refreshExploreScreen()
+                is ExploreAction.LoadNextPage -> getPlaceReviewListFiltered()
+                is ExploreAction.DeleteReview -> deleteReview(action.id)
+                is ExploreAction.ApplyFilter -> applyExploreFilter(action.state)
+            }
+        }
+    }
+
     private fun getCategoryList() {
         viewModelScope.launch {
             categoryRepository.getFoodCategories()
@@ -95,7 +113,7 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun localReviewToggle() {
+    private fun localReviewToggle() {
         allSearchJob?.cancel()
         val chipItems = _state.value.chipItems
         val currentFilterState = _state.value.filterSelectionState
@@ -137,7 +155,7 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun applyExploreFilter(propertySelectedState: PersistentMap<Int, Boolean>, categorySelectedState: PersistentMap<Int, Boolean>, regionSelectedState: PersistentMap<Int, Boolean>, ageSelectedState: PersistentMap<Int, Boolean>) {
+    private fun applyExploreFilter(filterState: ExploreFilterState) {
         allSearchJob?.cancel()
         val chipItems = _state.value.chipItems
         val currentFilterState = _state.value.filterSelectionState
@@ -148,12 +166,12 @@ class ExploreViewModel @Inject constructor(
         val updatedFilterOptions = chipItems.map { option ->
             when (option.sort) {
                 FilterType.LOCAL_REVIEW -> {
-                    val isSelected = propertySelectedState[2] ?: false
+                    val isSelected = filterState.properties[2] ?: false
                     option.copy(isSelected = isSelected)
                 }
 
                 FilterType.CATEGORY -> {
-                    val selectedCategories = categorySelectedState.filter { it.value }
+                    val selectedCategories = filterState.categories.filter { it.value }
                     val isSelected = selectedCategories.isNotEmpty()
                     val updatedText = when {
                         !isSelected -> option.sort.defaultText
@@ -170,7 +188,7 @@ class ExploreViewModel @Inject constructor(
                 }
 
                 FilterType.REGION -> {
-                    val selectedRegions = regionSelectedState.filter { it.value }
+                    val selectedRegions = filterState.regions.filter { it.value }
                     val isSelected = selectedRegions.isNotEmpty()
                     val updatedText = when {
                         !isSelected -> option.sort.defaultText
@@ -187,7 +205,7 @@ class ExploreViewModel @Inject constructor(
                 }
 
                 FilterType.AGE -> {
-                    val selectedAges = ageSelectedState.filter { it.value }
+                    val selectedAges = filterState.ages.filter { it.value }
                     val isSelected = selectedAges.isNotEmpty()
                     val updatedText = when {
                         !isSelected -> option.sort.defaultText
@@ -204,10 +222,10 @@ class ExploreViewModel @Inject constructor(
                 }
 
                 FilterType.FILTER -> {
-                    val isSelected = propertySelectedState.any { (_, selected) -> selected } ||
-                        categorySelectedState.any { (_, selected) -> selected } ||
-                        regionSelectedState.any { (_, selected) -> selected } ||
-                        ageSelectedState.any { (_, selected) -> selected }
+                    val isSelected = filterState.properties.any { (_, selected) -> selected } ||
+                        filterState.categories.any { (_, selected) -> selected } ||
+                        filterState.regions.any { (_, selected) -> selected } ||
+                        filterState.ages.any { (_, selected) -> selected }
                     option.copy(isSelected = isSelected)
                 }
             }
@@ -215,10 +233,10 @@ class ExploreViewModel @Inject constructor(
         _state.update {
             it.copy(
                 filterSelectionState = currentFilterState.copy(
-                    properties = propertySelectedState,
-                    categories = categorySelectedState,
-                    regions = regionSelectedState,
-                    ages = ageSelectedState
+                    properties = filterState.properties,
+                    categories = filterState.categories,
+                    regions = filterState.regions,
+                    ages = filterState.ages
                 ),
                 chipItems = updatedFilterOptions
             )
@@ -228,7 +246,7 @@ class ExploreViewModel @Inject constructor(
         scrollToTop()
     }
 
-    fun updateSelectedSortingOption(sortingOption: SortingOption) {
+    private fun updateSelectedSortingOption(sortingOption: SortingOption) {
         allSearchJob?.cancel()
         _state.update {
             it.copy(
@@ -241,7 +259,7 @@ class ExploreViewModel @Inject constructor(
         scrollToTop()
     }
 
-    fun getPlaceReviewListFiltered(size: Int = EXPLORE_SEARCH_FETCH_SIZE) {
+    private fun getPlaceReviewListFiltered(size: Int = EXPLORE_SEARCH_FETCH_SIZE) {
         val currentFilterState = _state.value.filterSelectionState
         val selectedCategoryIds = (currentFilterState.properties + currentFilterState.categories)
             .filterValues { it }
@@ -334,7 +352,7 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun refreshExploreScreen() {
+    private fun refreshExploreScreen() {
         currentCursor = null
         if (state.value.exploreType == ExploreType.ALL) {
             getPlaceReviewListFiltered()
@@ -343,7 +361,7 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun updateExploreType(exploreType: ExploreType) {
+    private fun updateExploreType(exploreType: ExploreType) {
         if (state.value.exploreType == exploreType) return
         _state.update {
             it.copy(
@@ -365,7 +383,7 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    fun deleteReview(reviewId: Int) {
+    private fun deleteReview(reviewId: Int) {
         viewModelScope.launch {
             postRepository.deletePost(reviewId)
                 .onSuccess {

@@ -102,6 +102,11 @@ fun ExploreRoute(
                         listState.scrollToItem(0)
                     }
                 }
+                is ExploreSideEffect.NavigateToSearch -> navigateToExploreSearch()
+                is ExploreSideEffect.NavigateToRegister -> navigateToRegister()
+                is ExploreSideEffect.NavigateToPlaceDetail -> navigateToPlaceDetail(effect.id)
+                is ExploreSideEffect.NavigateToEdit -> navigateToEditReview(effect.id, effect.type)
+                is ExploreSideEffect.NavigateToReport -> navigateToReport(effect.targetId, effect.type)
             }
         }
     }
@@ -116,18 +121,6 @@ fun ExploreRoute(
     with(state) {
         ExploreScreen(
             paddingValues = paddingValues,
-            onClickSearch = navigateToExploreSearch,
-            onRegisterButtonClick = navigateToRegister,
-            onPlaceDetailItemClick = navigateToPlaceDetail,
-            onReportButtonClick = navigateToReport,
-            onEditButtonClick = navigateToEditReview,
-            onFilterApplyButtonClick = viewModel::applyExploreFilter,
-            onLocalReviewButtonClick = viewModel::localReviewToggle,
-            onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
-            onTabChange = viewModel::updateExploreType,
-            onRefresh = viewModel::refreshExploreScreen,
-            onLoadNextPage = viewModel::getPlaceReviewListFiltered,
-            onReviewDeleteButtonClick = viewModel::deleteReview,
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
@@ -140,7 +133,8 @@ fun ExploreRoute(
             ageSelectedState = filterSelectionState.ages,
             categorySelectedState = filterSelectionState.categories,
             listState = listState,
-            exploreType = exploreType
+            exploreType = exploreType,
+            onAction = viewModel::onAction
         )
     }
 }
@@ -148,18 +142,7 @@ fun ExploreRoute(
 @Composable
 private fun ExploreScreen(
     paddingValues: PaddingValues,
-    onClickSearch: () -> Unit,
-    onRegisterButtonClick: () -> Unit,
-    onPlaceDetailItemClick: (Int) -> Unit,
-    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
-    onEditButtonClick: (Int, RegisterType) -> Unit,
-    onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
-    onLocalReviewButtonClick: () -> Unit,
-    onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
-    onTabChange: (ExploreType) -> Unit,
-    onRefresh: () -> Unit,
-    onLoadNextPage: () -> Unit,
-    onReviewDeleteButtonClick: (Int) -> Unit,
+    onAction: (ExploreAction) -> Unit,
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
@@ -182,7 +165,7 @@ private fun ExploreScreen(
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
             onClick = {
-                onSelectSortingOptionButtonClick(it)
+                onAction(ExploreAction.ChangeSorting(it))
             },
             currentSortingOption = selectedSortingOption
         )
@@ -227,7 +210,7 @@ private fun ExploreScreen(
 
                 val (property, category, region, age) = filterStates.map { it.toPersistentMap() }
 
-                onFilterApplyButtonClick(property, category, region, age)
+                onAction(ExploreAction.ApplyFilter(ExploreFilterState(property, category, region, age)))
             },
             onToggleFilter = { id, type ->
                 val stateMap = when (type) {
@@ -267,7 +250,7 @@ private fun ExploreScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ExploreTabRow(
-                onTabChange = onTabChange,
+                onTabChange = { onAction(ExploreAction.ChangeTab(it)) },
                 tabList = tabList,
                 exploreType = exploreType
             )
@@ -275,7 +258,7 @@ private fun ExploreScreen(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
                 modifier = Modifier
                     .size(20.dp)
-                    .noRippleClickable(onClickSearch),
+                    .noRippleClickable { onAction(ExploreAction.ClickSearch) },
                 contentDescription = null,
                 tint = Color.Unspecified
             )
@@ -288,7 +271,7 @@ private fun ExploreScreen(
                     handleFilterClick(
                         filterType = filterType,
                         onLocalReviewButtonClick = {
-                            onLocalReviewButtonClick()
+                            onAction(ExploreAction.ClickLocalReview)
                         },
                         updateBottomSheetState = { index, isVisible ->
                             exploreFilterBottomSheetTabIndex = index
@@ -306,16 +289,9 @@ private fun ExploreScreen(
             modifier = Modifier
                 .padding(horizontal = 20.dp),
             placeReviewList = placeReviewList,
-            onRegisterButtonClick = onRegisterButtonClick,
-            onPlaceDetailItemClick = onPlaceDetailItemClick,
-            onReportButtonClick = onReportButtonClick,
-            onReviewDeleteButtonClick = onReviewDeleteButtonClick,
-            onRefresh = onRefresh,
-            onLoadNextPage = onLoadNextPage,
-            onEditButtonClick = onEditButtonClick,
-            onClickSearch = onClickSearch,
             exploreType = exploreType,
-            listState = listState
+            listState = listState,
+            onAction = onAction
         )
     }
 }
@@ -337,17 +313,10 @@ private fun handleFilterClick(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExploreContent(
-    onRegisterButtonClick: () -> Unit,
-    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
-    onPlaceDetailItemClick: (Int) -> Unit,
-    onReviewDeleteButtonClick: (Int) -> Unit,
-    onRefresh: () -> Unit,
-    onLoadNextPage: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
-    onEditButtonClick: (Int, RegisterType) -> Unit,
-    onClickSearch: () -> Unit,
     exploreType: ExploreType,
     listState: LazyListState,
+    onAction: (ExploreAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isLoadingMore by remember { mutableStateOf(false) }
@@ -360,7 +329,7 @@ private fun ExploreContent(
             positiveText = "네",
             onClickNegative = { isReviewDeleteDialogVisible = false },
             onClickPositive = {
-                onReviewDeleteButtonClick(targetReviewId)
+                onAction(ExploreAction.DeleteReview(targetReviewId))
                 isReviewDeleteDialogVisible = false
             },
             onDismiss = { }
@@ -382,7 +351,7 @@ private fun ExploreContent(
                         totalItems > 0
                     ) {
                         isLoadingMore = true
-                        onLoadNextPage()
+                        onAction(ExploreAction.LoadNextPage)
                         isLoadingMore = false
                     }
                 }
@@ -392,7 +361,13 @@ private fun ExploreContent(
     when (placeReviewList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
-                onClick = if (exploreType == ExploreType.ALL) onRegisterButtonClick else onClickSearch,
+                onClick = {
+                    if (exploreType == ExploreType.ALL) {
+                        onAction(ExploreAction.ClickRegister)
+                    } else {
+                        onAction(ExploreAction.ClickSearch)
+                    }
+                },
                 exploreType = exploreType,
                 modifier = Modifier
                     .fillMaxSize()
@@ -414,7 +389,7 @@ private fun ExploreContent(
 
             LaunchedEffect(refreshState.isRefreshing) {
                 if (refreshState.isRefreshing) {
-                    onRefresh()
+                    onAction(ExploreAction.Refresh)
                     refreshState.endRefresh()
                 }
             }
@@ -458,11 +433,11 @@ private fun ExploreContent(
                                 textColor = placeReview.category.textColor
                             ),
                             menuItems = menuList,
-                            onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
+                            onClick = { onAction(ExploreAction.ClickPlaceDetail(placeReview.reviewId)) },
                             onMenuItemClick = { option ->
                                 when (option) {
-                                    ExploreDropdownOption.REPORT.string -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
-                                    ExploreDropdownOption.EDIT.string -> onEditButtonClick(placeReview.reviewId, RegisterType.EDIT)
+                                    ExploreDropdownOption.REPORT.string -> onAction(ExploreAction.ClickReport(placeReview.reviewId, ReportType.POST))
+                                    ExploreDropdownOption.EDIT.string -> onAction(ExploreAction.ClickEdit(placeReview.reviewId, RegisterType.EDIT))
                                     ExploreDropdownOption.DELETE.string -> {
                                         targetReviewId = placeReview.reviewId
                                         isReviewDeleteDialogVisible = true
