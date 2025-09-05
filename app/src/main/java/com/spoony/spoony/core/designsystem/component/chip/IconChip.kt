@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.spoonyGradient
@@ -66,8 +66,8 @@ fun IconChip(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        UrlImage(
-            imageUrl = if (isSelected) selectedIconUrl else unSelectedIconUrl,
+        SpoonyImage(
+            model = if (isSelected) selectedIconUrl else unSelectedIconUrl,
             modifier = Modifier.size(16.dp)
         )
 

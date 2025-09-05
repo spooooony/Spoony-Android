@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.oss.licenses.plugin)
 }
@@ -113,7 +112,8 @@ dependencies {
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
 
-    implementation(libs.coil.compose)
+    implementation(platform(libs.coil3.bom))
+    implementation(libs.bundles.coil3)
     implementation(libs.timber)
     implementation(libs.lottie)
     implementation(libs.advanced.bottom.sheet)

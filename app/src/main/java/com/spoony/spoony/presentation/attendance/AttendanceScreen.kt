@@ -50,7 +50,7 @@ import com.skydoves.balloon.compose.rememberBalloonBuilder
 import com.skydoves.balloon.compose.setBackgroundColor
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.dialog.SpoonDrawDialog
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
@@ -364,8 +364,8 @@ private fun SpoonItem(
                 contentDescription = null
             )
         } else {
-            UrlImage(
-                imageUrl = spoonImage
+            SpoonyImage(
+                model = spoonImage
             )
         }
     }
