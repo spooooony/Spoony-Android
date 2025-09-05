@@ -5,19 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,10 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,23 +36,17 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.component.pullToRefresh.SpoonyPullToRefreshContainer
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
-import com.spoony.spoony.presentation.explore.component.ExploreTabRow
-import com.spoony.spoony.presentation.explore.component.FilterChipRow
-import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreFilterBottomSheet
-import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
+import com.spoony.spoony.presentation.explore.component.ExploreFilterSection
+import com.spoony.spoony.presentation.explore.component.ExploreHeaderSection
 import com.spoony.spoony.presentation.explore.component.dialog.ReviewDeleteDialog
-import com.spoony.spoony.presentation.explore.extension.toggle
 import com.spoony.spoony.presentation.explore.model.FilterOption
-import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.explore.type.SortingOption
@@ -143,54 +130,6 @@ private fun ExploreScreen(
     exploreType: ExploreType
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
-    var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
-    var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
-    var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
-    if (isSortingBottomSheetVisible) {
-        ExploreSortingBottomSheet(
-            onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = {
-                onAction(ExploreAction.ChangeSorting(it))
-            },
-            currentSortingOption = selectedSortingOption
-        )
-    }
-
-    val tempFilterState = remember(isFilterBottomSheetVisible) {
-        if (isFilterBottomSheetVisible) {
-            selectedFilterState.toMutable()
-        } else {
-            MutableExploreFilterState()
-        }
-    }
-
-    if (isFilterBottomSheetVisible) {
-        ExploreFilterBottomSheet(
-            onDismiss = {
-                isFilterBottomSheetVisible = false
-            },
-            onFilterReset = {
-                tempFilterState.reset()
-            },
-            onSave = {
-                isFilterBottomSheetVisible = false
-
-                onAction(ExploreAction.ApplyFilter(tempFilterState.toPersistent()))
-            },
-            onToggleFilter = { id, type ->
-                when (type) {
-                    FilterType.LOCAL_REVIEW -> tempFilterState.properties.toggle(id)
-                    FilterType.CATEGORY -> tempFilterState.categories.toggle(id)
-                    FilterType.REGION -> tempFilterState.regions.toggle(id)
-                    FilterType.AGE -> tempFilterState.ages.toggle(id)
-                    else -> {}
-                }
-            },
-            filterItems = filterItems,
-            filterState = tempFilterState,
-            tabIndex = exploreFilterBottomSheetTabIndex
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -199,71 +138,33 @@ private fun ExploreScreen(
             .background(SpoonyAndroidTheme.colors.white)
     ) {
         Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ExploreTabRow(
-                onTabChange = { onAction(ExploreAction.ChangeTab(it)) },
-                tabList = tabList,
-                exploreType = exploreType
-            )
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
-                modifier = Modifier
-                    .size(20.dp)
-                    .noRippleClickable { onAction(ExploreAction.ClickSearch) },
-                contentDescription = null,
-                tint = Color.Unspecified
-            )
-        }
+
+        ExploreHeaderSection(
+            tabList = tabList,
+            exploreType = exploreType,
+            onChangeTab = { onAction(ExploreAction.ChangeTab(it)) },
+            onClickSearch = { onAction(ExploreAction.ClickSearch) }
+        )
+
         Spacer(modifier = Modifier.height(24.dp))
         if (exploreType == ExploreType.ALL) {
-            FilterChipRow(
-                chipItems,
-                onFilterClick = { filterType ->
-                    handleFilterClick(
-                        filterType = filterType,
-                        onLocalReviewButtonClick = {
-                            onAction(ExploreAction.ClickLocalReview)
-                        },
-                        updateBottomSheetState = { index, isVisible ->
-                            exploreFilterBottomSheetTabIndex = index
-                            isFilterBottomSheetVisible = isVisible
-                        }
-                    )
-                },
-                onSortFilterClick = {
-                    isSortingBottomSheetVisible = true
-                }
+            ExploreFilterSection(
+                exploreType = exploreType,
+                chipItems = chipItems,
+                selectedSortingOption = selectedSortingOption,
+                selectedFilterState = selectedFilterState,
+                filterItems = filterItems,
+                onAction = onAction
             )
             Spacer(modifier = Modifier.height(24.dp))
         }
         ExploreContent(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
+            modifier = Modifier.padding(horizontal = 20.dp),
             placeReviewList = placeReviewList,
             exploreType = exploreType,
             listState = listState,
             onAction = onAction
         )
-    }
-}
-
-private fun handleFilterClick(
-    filterType: FilterType,
-    onLocalReviewButtonClick: () -> Unit,
-    updateBottomSheetState: (Int, Boolean) -> Unit
-) {
-    when (filterType) {
-        FilterType.FILTER -> updateBottomSheetState(0, true)
-        FilterType.LOCAL_REVIEW -> onLocalReviewButtonClick()
-        FilterType.CATEGORY -> updateBottomSheetState(1, true)
-        FilterType.REGION -> updateBottomSheetState(2, true)
-        FilterType.AGE -> updateBottomSheetState(3, true)
     }
 }
 
