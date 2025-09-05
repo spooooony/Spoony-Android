@@ -6,6 +6,7 @@ import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.allowRgb565
 import coil3.request.crossfade
 import com.spoony.spoony.core.network.qualifier.CoilClient
 import dagger.Module
@@ -42,6 +43,7 @@ object CoilModule {
                     .build()
             }
             .crossfade(true)
+            .allowRgb565(true)
             .build()
     }
 }
