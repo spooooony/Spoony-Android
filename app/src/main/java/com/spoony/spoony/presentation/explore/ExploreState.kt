@@ -1,6 +1,9 @@
 package com.spoony.spoony.presentation.explore
 
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.spoony.spoony.core.state.UiState
+import com.spoony.spoony.presentation.explore.extension.toMutableStateMap
 import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.ExploreFilterDataProvider
 import com.spoony.spoony.presentation.explore.model.FilterChipOptionProvider
@@ -12,6 +15,7 @@ import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentMap
 
 data class ExploreState(
     val selectedCategoryId: Int = 1,
@@ -39,6 +43,38 @@ data class ExploreFilterState(
     val regions: PersistentMap<Int, Boolean>,
     val ages: PersistentMap<Int, Boolean>
 )
+
+fun ExploreFilterState.toMutable(): MutableExploreFilterState {
+    return MutableExploreFilterState(
+        properties = properties.toMutableStateMap(),
+        categories = categories.toMutableStateMap(),
+        regions = regions.toMutableStateMap(),
+        ages = ages.toMutableStateMap()
+    )
+}
+
+data class MutableExploreFilterState(
+    val properties: SnapshotStateMap<Int, Boolean> = mutableStateMapOf(),
+    val categories: SnapshotStateMap<Int, Boolean> = mutableStateMapOf(),
+    val regions: SnapshotStateMap<Int, Boolean> = mutableStateMapOf(),
+    val ages: SnapshotStateMap<Int, Boolean> = mutableStateMapOf()
+) {
+    fun toPersistent(): ExploreFilterState {
+        return ExploreFilterState(
+            properties = properties.toPersistentMap(),
+            categories = categories.toPersistentMap(),
+            regions = regions.toPersistentMap(),
+            ages = ages.toPersistentMap()
+        )
+    }
+
+    fun reset() {
+        properties.clear()
+        categories.clear()
+        regions.clear()
+        ages.clear()
+    }
+}
 
 data class ExploreFilterItems(
     val properties: ImmutableList<ExploreFilter>,

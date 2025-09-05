@@ -24,7 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,7 +45,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.spoony.spoony.R
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
-import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.pullToRefresh.SpoonyPullToRefreshContainer
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
@@ -58,7 +56,8 @@ import com.spoony.spoony.presentation.explore.component.ExploreTabRow
 import com.spoony.spoony.presentation.explore.component.FilterChipRow
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreFilterBottomSheet
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
-import com.spoony.spoony.presentation.explore.model.ExploreFilter
+import com.spoony.spoony.presentation.explore.component.dialog.ReviewDeleteDialog
+import com.spoony.spoony.presentation.explore.extension.toggle
 import com.spoony.spoony.presentation.explore.model.FilterOption
 import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
@@ -67,9 +66,7 @@ import com.spoony.spoony.presentation.explore.type.SortingOption
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -124,14 +121,8 @@ fun ExploreRoute(
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
-            propertyItems = exploreFilterItems.properties,
-            regionItems = exploreFilterItems.regions,
-            ageItems = exploreFilterItems.ages,
-            categoryItems = exploreFilterItems.categories,
-            propertySelectedState = filterSelectionState.properties,
-            regionSelectedState = filterSelectionState.regions,
-            ageSelectedState = filterSelectionState.ages,
-            categorySelectedState = filterSelectionState.categories,
+            filterItems = exploreFilterItems,
+            selectedFilterState = filterSelectionState,
             listState = listState,
             exploreType = exploreType,
             onAction = viewModel::onAction
@@ -146,14 +137,8 @@ private fun ExploreScreen(
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
-    propertyItems: ImmutableList<ExploreFilter>,
-    regionItems: ImmutableList<ExploreFilter>,
-    ageItems: ImmutableList<ExploreFilter>,
-    categoryItems: ImmutableList<ExploreFilter>,
-    propertySelectedState: PersistentMap<Int, Boolean>,
-    regionSelectedState: PersistentMap<Int, Boolean>,
-    ageSelectedState: PersistentMap<Int, Boolean>,
-    categorySelectedState: PersistentMap<Int, Boolean>,
+    filterItems: ExploreFilterItems,
+    selectedFilterState: ExploreFilterState,
     listState: LazyListState,
     exploreType: ExploreType
 ) {
@@ -171,31 +156,13 @@ private fun ExploreScreen(
         )
     }
 
-    val propertyState = remember(isFilterBottomSheetVisible, propertySelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(propertySelectedState)
+    val tempFilterState = remember(isFilterBottomSheetVisible) {
+        if (isFilterBottomSheetVisible) {
+            selectedFilterState.toMutable()
+        } else {
+            MutableExploreFilterState()
         }
     }
-
-    val categoryState = remember(isFilterBottomSheetVisible, categorySelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(categorySelectedState)
-        }
-    }
-
-    val regionState = remember(isFilterBottomSheetVisible, regionSelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(regionSelectedState)
-        }
-    }
-
-    val ageState = remember(isFilterBottomSheetVisible, ageSelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(ageSelectedState)
-        }
-    }
-
-    val filterStates = listOf(propertyState, categoryState, regionState, ageState)
 
     if (isFilterBottomSheetVisible) {
         ExploreFilterBottomSheet(
@@ -203,34 +170,24 @@ private fun ExploreScreen(
                 isFilterBottomSheetVisible = false
             },
             onFilterReset = {
-                filterStates.forEach { it.clear() }
+                tempFilterState.reset()
             },
             onSave = {
                 isFilterBottomSheetVisible = false
 
-                val (property, category, region, age) = filterStates.map { it.toPersistentMap() }
-
-                onAction(ExploreAction.ApplyFilter(ExploreFilterState(property, category, region, age)))
+                onAction(ExploreAction.ApplyFilter(tempFilterState.toPersistent()))
             },
             onToggleFilter = { id, type ->
-                val stateMap = when (type) {
-                    FilterType.FILTER -> null
-                    FilterType.LOCAL_REVIEW -> propertyState
-                    FilterType.CATEGORY -> categoryState
-                    FilterType.REGION -> regionState
-                    FilterType.AGE -> ageState
+                when (type) {
+                    FilterType.LOCAL_REVIEW -> tempFilterState.properties.toggle(id)
+                    FilterType.CATEGORY -> tempFilterState.categories.toggle(id)
+                    FilterType.REGION -> tempFilterState.regions.toggle(id)
+                    FilterType.AGE -> tempFilterState.ages.toggle(id)
+                    else -> {}
                 }
-
-                stateMap?.let { it[id] = !(it[id] ?: false) }
             },
-            propertyItems = propertyItems,
-            regionItems = regionItems,
-            ageItems = ageItems,
-            categoryItems = categoryItems,
-            propertySelectedState = propertyState,
-            regionSelectedState = regionState,
-            ageSelectedState = ageState,
-            categorySelectedState = categoryState,
+            filterItems = filterItems,
+            filterState = tempFilterState,
             tabIndex = exploreFilterBottomSheetTabIndex
         )
     }
@@ -322,19 +279,12 @@ private fun ExploreContent(
     var isLoadingMore by remember { mutableStateOf(false) }
     var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
     var targetReviewId by remember { mutableIntStateOf(0) }
-    if (isReviewDeleteDialogVisible) {
-        TwoButtonDialog(
-            message = "정말로 리뷰를 삭제할까요?",
-            negativeText = "아니요",
-            positiveText = "네",
-            onClickNegative = { isReviewDeleteDialogVisible = false },
-            onClickPositive = {
-                onAction(ExploreAction.DeleteReview(targetReviewId))
-                isReviewDeleteDialogVisible = false
-            },
-            onDismiss = { }
-        )
-    }
+
+    ReviewDeleteDialog(
+        visible = isReviewDeleteDialogVisible,
+        onConfirm = { onAction(ExploreAction.DeleteReview(targetReviewId)) },
+        onDismiss = { isReviewDeleteDialogVisible = false }
+    )
     LaunchedEffect(listState, exploreType) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
