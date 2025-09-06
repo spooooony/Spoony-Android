@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -86,7 +85,7 @@ private fun OnboardingEndScreen(
                 .padding(top = 2.dp)
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.weight(66f))
 
         LottieAnimation(
             composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.spoony_onboarding)).value,
@@ -95,7 +94,7 @@ private fun OnboardingEndScreen(
                 .clip(RoundedCornerShape(8.dp))
         )
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(79f))
 
         Text(
             text = "내 프로필 정보는 마이페이지에서 변경할 수 있어요",
