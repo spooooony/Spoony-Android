@@ -98,14 +98,16 @@ fun ProfileEditScreen(
             .padding(bottom = paddingValues.calculateBottomPadding())
             .verticalScroll(rememberScrollState())
             .addFocusCleaner(focusManager)
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    focusManager.clearFocus()
-                    if (profileEditModel.userName.isNotBlank()) {
-                        viewModel.checkNicknameDuplication()
-                    }
-                }
-            }
+        //TODO: 이 코드 왜 있는건지 확인 필요(focus 바뀌면 중복 체크하는 로직이 텍필에 있어서!)
+
+//            .pointerInput(Unit) {
+//                detectTapGestures {
+//                    focusManager.clearFocus()
+//                    if (profileEditModel.userName.isNotBlank()) {
+//                        viewModel.checkNicknameDuplication()
+//                    }
+//                }
+//            }
     ) {
         TitleTopAppBar(
             onBackButtonClick = onBackButtonClick
