@@ -43,6 +43,48 @@ class ExploreSearchViewModel @Inject constructor(
         getFetchRecentSearchQueries()
     }
 
+    fun onAction(action: ExploreSearchAction) {
+        viewModelScope.launch {
+            when (action) {
+                is ExploreSearchAction.ClickReviewReport ->
+                    _sideEffect.emit(ExploreSearchSideEffect.NavigateToReport(action.targetId, action.type))
+
+                is ExploreSearchAction.ClickUser ->
+                    _sideEffect.emit(ExploreSearchSideEffect.NavigateToUserProfile(action.userId))
+
+                ExploreSearchAction.ClickMyPage ->
+                    _sideEffect.emit(ExploreSearchSideEffect.NavigateToMyPage)
+
+                is ExploreSearchAction.ClickPlaceDetail ->
+                    _sideEffect.emit(ExploreSearchSideEffect.NavigateToPlaceDetail(action.placeId))
+
+                ExploreSearchAction.ClickBack ->
+                    _sideEffect.emit(ExploreSearchSideEffect.NavigateBack)
+
+                is ExploreSearchAction.RemoveRecentSearch ->
+                    removeRecentSearchItem(action.keyword)
+
+                is ExploreSearchAction.SwitchType ->
+                    switchSearchType(action.type)
+
+                ExploreSearchAction.ClearRecentSearch ->
+                    clearRecentSearchItem()
+
+                is ExploreSearchAction.Search ->
+                    search(action.keyword)
+
+                is ExploreSearchAction.ClickEditReview ->
+                    _sideEffect.emit(ExploreSearchSideEffect.NavigateToEdit(action.reviewId, action.type))
+
+                ExploreSearchAction.ClearSearchKeyword ->
+                    clearSearchKeyword()
+
+                is ExploreSearchAction.DeleteReview ->
+                    deleteReview(action.reviewId)
+            }
+        }
+    }
+
     private fun getFetchRecentSearchQueries() {
         viewModelScope.launch {
             listOf(
@@ -64,7 +106,7 @@ class ExploreSearchViewModel @Inject constructor(
         }
     }
 
-    fun switchSearchType(
+    private fun switchSearchType(
         searchType: SearchType
     ) {
         searchJob?.cancel()
@@ -78,7 +120,7 @@ class ExploreSearchViewModel @Inject constructor(
         search(_state.value.searchKeyword)
     }
 
-    fun clearSearchKeyword() {
+    private fun clearSearchKeyword() {
         searchJob?.cancel()
         _state.update {
             it.copy(
@@ -169,7 +211,7 @@ class ExploreSearchViewModel @Inject constructor(
         }
     }
 
-    fun removeRecentSearchItem(keyword: String) {
+    private fun removeRecentSearchItem(keyword: String) {
         viewModelScope.launch {
             when (_state.value.searchType) {
                 SearchType.USER -> {
@@ -185,7 +227,7 @@ class ExploreSearchViewModel @Inject constructor(
         }
     }
 
-    fun clearRecentSearchItem() {
+    private fun clearRecentSearchItem() {
         viewModelScope.launch {
             when (_state.value.searchType) {
                 SearchType.USER -> {
@@ -200,7 +242,7 @@ class ExploreSearchViewModel @Inject constructor(
         }
     }
 
-    fun deleteReview(reviewId: Int) {
+    private fun deleteReview(reviewId: Int) {
         viewModelScope.launch {
             postRepository.deletePost(reviewId)
                 .onSuccess {
