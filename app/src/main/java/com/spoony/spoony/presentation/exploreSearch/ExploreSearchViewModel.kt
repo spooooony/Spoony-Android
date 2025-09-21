@@ -52,14 +52,17 @@ class ExploreSearchViewModel @Inject constructor(
                 is ExploreSearchAction.ClickUser ->
                     _sideEffect.emit(ExploreSearchSideEffect.NavigateToUserProfile(action.userId))
 
-                ExploreSearchAction.ClickMyPage ->
+                is ExploreSearchAction.ClickMyPage ->
                     _sideEffect.emit(ExploreSearchSideEffect.NavigateToMyPage)
 
                 is ExploreSearchAction.ClickPlaceDetail ->
                     _sideEffect.emit(ExploreSearchSideEffect.NavigateToPlaceDetail(action.placeId))
 
-                ExploreSearchAction.ClickBack ->
+                is ExploreSearchAction.ClickBack ->
                     _sideEffect.emit(ExploreSearchSideEffect.NavigateBack)
+
+                is ExploreSearchAction.ClickEditReview ->
+                    _sideEffect.emit(ExploreSearchSideEffect.NavigateToEdit(action.reviewId, action.type))
 
                 is ExploreSearchAction.RemoveRecentSearch ->
                     removeRecentSearchItem(action.keyword)
@@ -67,16 +70,13 @@ class ExploreSearchViewModel @Inject constructor(
                 is ExploreSearchAction.SwitchType ->
                     switchSearchType(action.type)
 
-                ExploreSearchAction.ClearRecentSearch ->
+                is ExploreSearchAction.ClearRecentSearch ->
                     clearRecentSearchItem()
 
                 is ExploreSearchAction.Search ->
                     search(action.keyword)
 
-                is ExploreSearchAction.ClickEditReview ->
-                    _sideEffect.emit(ExploreSearchSideEffect.NavigateToEdit(action.reviewId, action.type))
-
-                ExploreSearchAction.ClearSearchKeyword ->
+                is ExploreSearchAction.ClearSearchKeyword ->
                     clearSearchKeyword()
 
                 is ExploreSearchAction.DeleteReview ->
