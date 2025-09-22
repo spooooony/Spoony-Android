@@ -143,7 +143,7 @@ private fun ExploreScreen(
             tabList = tabList,
             exploreType = exploreType,
             onChangeTab = { onAction(ExploreAction.ChangeTab(it)) },
-            onClickSearch = { onAction(ExploreAction.ClickSearch) }
+            onClickSearch = { onAction(ExploreAction.Click.Search) }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -214,9 +214,9 @@ private fun ExploreContent(
             ExploreEmptyScreen(
                 onClick = {
                     if (exploreType == ExploreType.ALL) {
-                        onAction(ExploreAction.ClickRegister)
+                        onAction(ExploreAction.Click.Register)
                     } else {
-                        onAction(ExploreAction.ClickSearch)
+                        onAction(ExploreAction.Click.Search)
                     }
                 },
                 exploreType = exploreType,
@@ -284,11 +284,11 @@ private fun ExploreContent(
                                 textColor = placeReview.category.textColor
                             ),
                             menuItems = menuList,
-                            onClick = { onAction(ExploreAction.ClickPlaceDetail(placeReview.reviewId)) },
+                            onClick = { onAction(ExploreAction.Click.PlaceDetail(placeReview.reviewId)) },
                             onMenuItemClick = { option ->
                                 when (option) {
-                                    ExploreDropdownOption.REPORT.string -> onAction(ExploreAction.ClickReport(placeReview.reviewId, ReportType.POST))
-                                    ExploreDropdownOption.EDIT.string -> onAction(ExploreAction.ClickEdit(placeReview.reviewId, RegisterType.EDIT))
+                                    ExploreDropdownOption.REPORT.string -> onAction(ExploreAction.Click.Report(placeReview.reviewId, ReportType.POST))
+                                    ExploreDropdownOption.EDIT.string -> onAction(ExploreAction.Click.Edit(placeReview.reviewId, RegisterType.EDIT))
                                     ExploreDropdownOption.DELETE.string -> {
                                         targetReviewId = placeReview.reviewId
                                         isReviewDeleteDialogVisible = true
