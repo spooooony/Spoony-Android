@@ -84,11 +84,13 @@ data class ExploreFilterItems(
 )
 
 sealed interface ExploreAction {
-    data object ClickSearch : ExploreAction
-    data object ClickRegister : ExploreAction
-    data class ClickPlaceDetail(val id: Int) : ExploreAction
-    data class ClickReport(val targetId: Int, val type: ReportType) : ExploreAction
-    data class ClickEdit(val id: Int, val type: RegisterType) : ExploreAction
+    sealed interface Click : ExploreAction {
+        data object Search : Click
+        data object Register : Click
+        data class PlaceDetail(val id: Int) : Click
+        data class Report(val targetId: Int, val type: ReportType) : Click
+        data class Edit(val id: Int, val type: RegisterType) : Click
+    }
     data object ClickLocalReview : ExploreAction
     data class ChangeSorting(val option: SortingOption) : ExploreAction
     data class ChangeTab(val type: ExploreType) : ExploreAction

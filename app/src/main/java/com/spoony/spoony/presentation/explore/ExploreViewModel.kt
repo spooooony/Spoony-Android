@@ -56,19 +56,25 @@ class ExploreViewModel @Inject constructor(
         getPlaceReviewListFiltered()
     }
 
+    private suspend fun handleClickAction(action: ExploreAction.Click) {
+        when (action) {
+            ExploreAction.Click.Search -> _sideEffect.emit(ExploreSideEffect.NavigateToSearch)
+            ExploreAction.Click.Register -> _sideEffect.emit(ExploreSideEffect.NavigateToRegister)
+            is ExploreAction.Click.PlaceDetail -> _sideEffect.emit(ExploreSideEffect.NavigateToPlaceDetail(action.id))
+            is ExploreAction.Click.Report -> _sideEffect.emit(ExploreSideEffect.NavigateToReport(action.targetId, action.type))
+            is ExploreAction.Click.Edit -> _sideEffect.emit(ExploreSideEffect.NavigateToEdit(action.id, action.type))
+        }
+    }
+
     fun onAction(action: ExploreAction) {
         viewModelScope.launch {
             when (action) {
-                is ExploreAction.ClickSearch -> _sideEffect.emit(ExploreSideEffect.NavigateToSearch)
-                is ExploreAction.ClickRegister -> _sideEffect.emit(ExploreSideEffect.NavigateToRegister)
-                is ExploreAction.ClickPlaceDetail -> _sideEffect.emit(ExploreSideEffect.NavigateToPlaceDetail(action.id))
-                is ExploreAction.ClickReport -> _sideEffect.emit(ExploreSideEffect.NavigateToReport(action.targetId, action.type))
-                is ExploreAction.ClickEdit -> _sideEffect.emit(ExploreSideEffect.NavigateToEdit(action.id, action.type))
-                is ExploreAction.ClickLocalReview -> localReviewToggle()
+                is ExploreAction.Click -> handleClickAction(action)
+                ExploreAction.ClickLocalReview -> localReviewToggle()
                 is ExploreAction.ChangeSorting -> updateSelectedSortingOption(action.option)
                 is ExploreAction.ChangeTab -> updateExploreType(action.type)
-                is ExploreAction.Refresh -> refreshExploreScreen()
-                is ExploreAction.LoadNextPage -> getPlaceReviewListFiltered()
+                ExploreAction.Refresh -> refreshExploreScreen()
+                ExploreAction.LoadNextPage -> getPlaceReviewListFiltered()
                 is ExploreAction.DeleteReview -> deleteReview(action.id)
                 is ExploreAction.ApplyFilter -> applyExploreFilter(action.state)
             }
