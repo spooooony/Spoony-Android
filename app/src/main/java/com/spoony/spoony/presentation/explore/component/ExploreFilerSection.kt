@@ -15,8 +15,8 @@ import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreFilte
 import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
 import com.spoony.spoony.presentation.explore.extension.handleFilterClick
 import com.spoony.spoony.presentation.explore.extension.toggle
+import com.spoony.spoony.presentation.explore.model.FilterCategory
 import com.spoony.spoony.presentation.explore.model.FilterOption
-import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.toMutable
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import kotlinx.collections.immutable.ImmutableList
@@ -76,12 +76,13 @@ fun ExploreFilterSection(
                 onAction(ExploreAction.ApplyFilter(tempFilterState.toPersistent()))
             },
             onToggleFilter = { id, type ->
-                when (type) {
-                    FilterType.LOCAL_REVIEW -> tempFilterState.properties.toggle(id)
-                    FilterType.CATEGORY -> tempFilterState.categories.toggle(id)
-                    FilterType.REGION -> tempFilterState.regions.toggle(id)
-                    FilterType.AGE -> tempFilterState.ages.toggle(id)
-                    else -> {}
+                FilterCategory.fromFilterType(type)?.let { filterCategory ->
+                    when (filterCategory) {
+                        FilterCategory.LOCAL_REVIEW -> tempFilterState.properties.toggle(id)
+                        FilterCategory.CATEGORY -> tempFilterState.categories.toggle(id)
+                        FilterCategory.REGION -> tempFilterState.regions.toggle(id)
+                        FilterCategory.AGE -> tempFilterState.ages.toggle(id)
+                    }
                 }
             },
             filterItems = filterItems,
