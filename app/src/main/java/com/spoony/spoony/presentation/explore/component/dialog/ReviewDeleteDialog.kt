@@ -5,11 +5,11 @@ import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 
 @Composable
 fun ReviewDeleteDialog(
-    visible: Boolean,
+    isVisible: Boolean,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    if (visible) {
+    if (isVisible) {
         TwoButtonDialog(
             message = "정말로 리뷰를 삭제할까요?",
             negativeText = "아니요",
@@ -19,7 +19,7 @@ fun ReviewDeleteDialog(
                 onConfirm()
                 onDismiss()
             },
-            onDismiss = { onDismiss() }
+            onDismiss = onDismiss
         )
     }
 }
