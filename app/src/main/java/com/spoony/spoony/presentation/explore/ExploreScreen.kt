@@ -182,7 +182,7 @@ private fun ExploreContent(
     var targetReviewId by remember { mutableIntStateOf(0) }
 
     ReviewDeleteDialog(
-        visible = isReviewDeleteDialogVisible,
+        isVisible = isReviewDeleteDialogVisible,
         onConfirm = { onAction(ExploreAction.DeleteReview(targetReviewId)) },
         onDismiss = { isReviewDeleteDialogVisible = false }
     )
