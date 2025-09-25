@@ -15,14 +15,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.profileedit.model.ProfileImageModel
 import kotlinx.collections.immutable.ImmutableList
@@ -84,8 +86,8 @@ private fun ProfileImage(
         )
 
     Box(modifier = modifier) {
-        UrlImage(
-            imageUrl = imageUrl,
+        SpoonyImage(
+            model = imageUrl,
             modifier = imageModifier,
             shape = CircleShape
         )
@@ -112,7 +114,7 @@ private fun ProfileImage(
 @Preview
 @Composable
 private fun ProfileImageListPrev() {
-    val selectedLevel = remember { mutableIntStateOf(1) }
+    var selectedLevel by remember { mutableIntStateOf(1) }
 
     val sampleImages = (1..4).map { level ->
         ProfileImageModel(
@@ -127,9 +129,9 @@ private fun ProfileImageListPrev() {
     SpoonyAndroidTheme {
         ProfileImageList(
             profileImages = sampleImages,
-            selectedLevel = selectedLevel.value,
+            selectedLevel = selectedLevel,
             onSelectLevel = { level ->
-                selectedLevel.value = level
+                selectedLevel = level
             }
         )
     }

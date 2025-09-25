@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.core.designsystem.component.button.FollowButton
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.black
 import com.spoony.spoony.core.util.extension.noRippleClickable
@@ -45,8 +45,8 @@ fun FollowUserItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
         ) {
-            UrlImage(
-                imageUrl = imageUrl,
+            SpoonyImage(
+                model = imageUrl,
                 modifier = Modifier.size(60.dp),
                 shape = CircleShape,
                 contentScale = ContentScale.Crop

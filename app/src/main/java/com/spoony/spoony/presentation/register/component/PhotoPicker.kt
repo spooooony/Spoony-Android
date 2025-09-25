@@ -41,8 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.spoony.spoony.R
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import java.util.UUID
@@ -155,12 +155,10 @@ fun PhotoPicker(
                 Box(
                     modifier = Modifier.size(80.dp)
                 ) {
-                    AsyncImage(
+                    SpoonyImage(
                         model = photo.uri,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(8.dp)),
+                        modifier = Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(8.dp),
                         contentScale = ContentScale.Crop
                     )
                     Icon(
