@@ -19,6 +19,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -34,6 +35,7 @@ fun SpoonDrawDialog(
     onSpoonDrawButtonClick: suspend () -> SpoonDrawModel,
     onConfirmButtonClick: () -> Unit
 ) {
+    val tracker = LocalTracker.current
     val coroutineScope = rememberCoroutineScope()
 
     var dialogState by remember { mutableStateOf(SpoonDrawDialogState.DRAW) }
@@ -88,6 +90,11 @@ fun SpoonDrawDialog(
         }
 
         SpoonDrawDialogState.RESULT -> {
+            tracker.track(
+                eventName = "spoon_received",
+                properties = "{\"spoon_count\" : ${drawResult.spoonAmount}}"
+            )
+
             TitleButtonDialog(
                 title = "${drawResult.spoonName} 획득",
                 description = "축하해요!\n총 ${drawResult.spoonAmount}개의 스푼을 적립했어요.",
