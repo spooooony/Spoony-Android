@@ -24,6 +24,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.component.dialog.SingleButtonDialog
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -48,6 +49,8 @@ fun RegisterEndRoute(
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
+    val tracker = LocalTracker.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val registerType = viewModel.registerType
 
@@ -68,7 +71,20 @@ fun RegisterEndRoute(
         onOptionalReviewChange = viewModel::updateOptionalReview,
         onRegisterPost = viewModel::registerPost,
         onRegisterComplete = onRegisterComplete,
-        onEditComplete = onEditComplete,
+        onEditComplete = { postId ->
+            onEditComplete(postId)
+            tracker.track(
+                eventName = "review_edited",
+                properties = "{\"review_id\" : \"$postId\", " +
+                    "\"place_name\" : \"${state.selectedPlace.placeName}\", " +
+                    "\"category\" : \"${state.selectedCategory.categoryName}\", " +
+                    "\"menu_count\" : ${state.menuList.size}, " +
+                    "\"satisfaction_score\" : ${state.userSatisfactionValue}, " +
+                    "\"review_length\" : ${state.detailReview.length}, " +
+                    "\"photo_count\" : ${state.selectedPhotos.size}, " +
+                    "\"has_disappointment\" : ${state.optionalReview.isNotEmpty()}}"
+            )
+        },
         postId = viewModel.postId,
         modifier = modifier
     )
