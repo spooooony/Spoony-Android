@@ -38,6 +38,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.component.button.FollowButton
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
@@ -76,6 +77,7 @@ fun PlaceDetailRoute(
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = LocalTracker.current
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
 
@@ -101,6 +103,7 @@ fun PlaceDetailRoute(
                 is PlaceDetailSideEffect.ShowSnackbar -> {
                     onShowSnackBar(effect.message)
                 }
+
                 is PlaceDetailSideEffect.NavigateUp -> navigateUp()
             }
         }
@@ -130,12 +133,29 @@ fun PlaceDetailRoute(
         )
     }
 
-    when (state.placeDetailModel) {
+    when (val uiState = state.placeDetailModel) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
             val postId = (state.reviewId as? UiState.Success)?.data ?: return
+
+            tracker.track(
+                eventName = "review_viewed",
+                properties = "{\"review_id\" : \"$postId\"," +
+                    "\"author_user_id\" : \"${userProfile.userId}\"," +
+                    "\"place_name\" : \"${uiState.data.placeName}\"," +
+                    "\"menu_count\" : ${uiState.data.menuList.size}," +
+                    "\"satisfaction_score\" : ${uiState.data.value}," +
+                    "\"review_length\" : ${uiState.data.description.length}," +
+                    "\"photo_count\" : ${uiState.data.photoUrlList.size}," +
+                    "\"has_disappointment\" : ${uiState.data.cons.isNotEmpty()}," +
+                    "\"saved_count\" : ${state.addMapCount}," +
+                    "\"is_self_review\" : ${uiState.data.isMine}," +
+                    "\"is_followed_user_review\" : ${state.isFollowing}," +
+                    "\"is_saved_review\" : ${state.isAddMap}}"
+            )
+
             if (scoopDialogVisibility) {
                 ScoopDialog(
                     onClickPositive = {
@@ -164,6 +184,7 @@ fun PlaceDetailRoute(
                         DropdownOption.EDIT,
                         DropdownOption.DELETE
                     )
+
                     false -> persistentListOf(DropdownOption.REPORT)
                 }
                 Scaffold(
@@ -309,9 +330,11 @@ private fun PlaceDetailScreen(
                                 DropdownOption.REPORT.name -> {
                                     onReportButtonClick()
                                 }
+
                                 DropdownOption.EDIT.name -> {
                                     onEditReviewClick()
                                 }
+
                                 DropdownOption.DELETE.name -> {
                                     onDeleteReviewClick()
                                 }

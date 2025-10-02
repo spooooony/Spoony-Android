@@ -65,7 +65,7 @@ fun RegisterRoute(
 
     LaunchedEffect(Unit) {
         viewModel.loadState()
-        if(viewModel.registerType == RegisterType.CREATE) {
+        if (viewModel.registerType == RegisterType.CREATE) {
             tracker.track("tab_entered", "{\"tab_name\" : \"upload\"}")
         }
     }

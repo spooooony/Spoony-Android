@@ -36,6 +36,7 @@ class MixPanelTracker @Inject constructor(
         return try {
             JSONObject(this)
         } catch (e: Exception) {
+            Timber.e(e)
             JSONObject()
         }
     }

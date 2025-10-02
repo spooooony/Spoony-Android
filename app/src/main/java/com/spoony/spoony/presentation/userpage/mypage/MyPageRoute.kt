@@ -42,7 +42,7 @@ fun MyPageRoute(
         viewModel.getUserProfile()
         viewModel.getSpoonCount()
 
-        if(userPageState.userType == UserType.MY_PAGE) {
+        if (userPageState.userType == UserType.MY_PAGE) {
             tracker.track("tab_entered", "{\"tab_name\" : \"mypage\"}")
         }
     }
