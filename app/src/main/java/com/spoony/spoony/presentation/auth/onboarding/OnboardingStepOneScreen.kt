@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyNicknameTextField
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
@@ -30,6 +31,7 @@ fun OnBoardingStepOneRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val showSnackbar = LocalSnackBarTrigger.current
+    val tracker = LocalTracker.current
 
     LaunchedEffect(Unit) {
         viewModel.updateCurrentStep(OnboardingSteps.ONE)
@@ -52,7 +54,10 @@ fun OnBoardingStepOneRoute(
         onNicknameChanged = viewModel::updateNickname,
         onStateChanged = viewModel::updateNicknameState,
         checkNicknameValid = viewModel::checkUserNameExist,
-        onButtonClick = onNextButtonClick
+        onButtonClick = {
+            onNextButtonClick()
+            tracker.track("onboard_1_completed")
+        }
     )
 }
 
