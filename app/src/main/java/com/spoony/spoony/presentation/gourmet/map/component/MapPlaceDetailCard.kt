@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
@@ -63,8 +63,8 @@ fun MapPlaceDetailCard(
         ) {
             imageUrlList.forEachIndexed { index, url ->
                 key(index) {
-                    UrlImage(
-                        imageUrl = url,
+                    SpoonyImage(
+                        model = url,
                         modifier = Modifier
                             .height(103.dp)
                             .weight(1f)
