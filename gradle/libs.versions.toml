@@ -14,7 +14,6 @@ kotlinxImmutable = "0.4.0"
 # Test
 junit = "4.13.2"
 junitVersion = "1.3.0"
-espressoCore = "3.7.0"
 mockk = "1.14.5"
 
 # AndroidX
@@ -34,8 +33,8 @@ accompanistPager = "0.36.0"
 accompanistSystemuicontroller = "0.36.0"
 
 # Google
-ossLicensesPlugin = "0.10.9"
-playServicesOssLicenses = "17.3.0"
+ossLicensesPlugin = "0.10.4"
+playServicesOssLicenses = "17.0.0"
 
 # Third Party
 okhttp = "4.11.0"
@@ -74,7 +73,6 @@ room = "2.8.1"
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
@@ -180,7 +178,6 @@ coil3 = ["coil3-compose", "coil3-network-okhttp"]
 test = [
     "androidx-junit",
     "androidx-ui-test-junit4",
-    "androidx-espresso-core",
     "mockk-android"
 ]
 
