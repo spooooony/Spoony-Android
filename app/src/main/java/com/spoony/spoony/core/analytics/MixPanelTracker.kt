@@ -22,6 +22,13 @@ class MixPanelTracker @Inject constructor(
         false
     )
 
+    fun setUserProfile(userId: String, properties: Map<String, Any>) {
+        mixpanel.identify(userId)
+        properties.forEach { (key, value) ->
+            mixpanel.people.set(key, value)
+        }
+    }
+
     fun track(eventName: String) {
         Timber.tag("mixpanel").d(eventName)
         mixpanel.track(eventName)

@@ -178,6 +178,7 @@ fun MapRoute(
     with(state.locationModel) {
         LaunchedEffect(placeId) {
             if (placeId == null) {
+                tracker.track("tab_entered", "{\"tab_name\" : \"map\"}")
                 viewModel.getAddedPlaceList(DEFAULT_CATEGORY_ID)
             } else {
                 viewModel.getAddedPlaceListByLocation(locationId = placeId)
@@ -195,7 +196,6 @@ fun MapRoute(
     }
 
     LaunchedEffect(Unit) {
-        tracker.track("tab_entered", "{\"tab_name\" : \"map\"}")
         when {
             state.locationModel.placeId != null -> {
                 moveCamera(
