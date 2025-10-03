@@ -25,7 +25,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kakao.sdk.user.UserApiClient
 import com.spoony.spoony.R
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main100
@@ -58,10 +58,11 @@ fun SignInRoute(
                     is SignInSideEffect.ShowSnackBar -> showSnackbar(sideEffect.message)
                     is SignInSideEffect.NavigateToSignUp -> navigateToTermsOfService()
                     is SignInSideEffect.NavigateToMap -> {
-                        tracker.track("login_success")
+                        tracker.analyticsEvents.loginSuccess()
 
                         navigateToMap()
                     }
+
                     is SignInSideEffect.StartKakaoTalkLogin -> {
                         UserApiClient.instance.loginWithKakaoTalk(
                             context = context,

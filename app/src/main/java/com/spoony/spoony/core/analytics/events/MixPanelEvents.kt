@@ -1,0 +1,13 @@
+package com.spoony.spoony.core.analytics.events
+
+import androidx.compose.runtime.staticCompositionLocalOf
+import jakarta.inject.Inject
+
+val LocalTracker = staticCompositionLocalOf<MixPanelEvents> {
+    error("No MixPanelEvents provided")
+}
+
+class MixPanelEvents @Inject constructor(
+    val userProperties: MixPanelUserProperties,
+    val analyticsEvents: AnalyticsEvents
+)

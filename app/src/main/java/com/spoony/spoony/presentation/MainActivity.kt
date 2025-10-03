@@ -7,8 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
-import com.spoony.spoony.core.analytics.LocalTracker
-import com.spoony.spoony.core.analytics.MixPanelTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
+import com.spoony.spoony.core.analytics.events.MixPanelEvents
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.main.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var tracker: MixPanelTracker
+    lateinit var mixPanelEvents: MixPanelEvents
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SpoonyAndroidTheme {
-                CompositionLocalProvider(LocalTracker provides tracker) {
+                CompositionLocalProvider(LocalTracker provides mixPanelEvents) {
                     MainScreen()
                 }
             }

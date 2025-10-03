@@ -22,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.spoony.spoony.R
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.theme.main400
 
@@ -43,7 +43,7 @@ fun SplashRoute(
             color = main400
         )
 
-        tracker.track("app_open")
+        tracker.analyticsEvents.appOpen()
     }
 
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
@@ -54,7 +54,7 @@ fun SplashRoute(
                         navigateToMap()
 
                         state?.let {
-                            tracker.setUserProfile(
+                            tracker.userProperties.setUserProfile(
                                 userId = it.userId.toString(),
                                 properties = mapOf(
                                     Pair<String, Any>("login_method", it.platform),

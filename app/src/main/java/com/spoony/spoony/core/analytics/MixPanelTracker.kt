@@ -3,15 +3,11 @@ package com.spoony.spoony.core.analytics
 import android.content.Context
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.mixpanel.android.mpmetrics.MixpanelAPI
-import com.spoony.spoony.BuildConfig.MIXPANEL_KEY
+import com.spoony.spoony.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.json.JSONObject
 import timber.log.Timber
-
-val LocalTracker = staticCompositionLocalOf<MixPanelTracker> {
-    error("No MixpanelTracker provided")
-}
 
 class MixPanelTracker @Inject constructor(
     @ApplicationContext private val context: Context
