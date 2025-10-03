@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.spoony.spoony.core.analytics.LocalTracker
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
 import com.spoony.spoony.core.designsystem.component.slider.SpoonySlider
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyIconButtonTextField
@@ -62,6 +63,8 @@ fun RegisterStartRoute(
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
+    val tracker = LocalTracker.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val registerType = viewModel.registerType
 
@@ -80,7 +83,15 @@ fun RegisterStartRoute(
     RegisterStartScreen(
         state = state,
         isNextButtonEnabled = isNextButtonEnabled,
-        onNextClick = onNextClick,
+        onNextClick = {
+            onNextClick()
+            tracker.track(
+                eventName = "review_1_completed",
+                properties = "{\"placeName\" : \"${state.selectedPlace.placeName}\", " +
+                        "\"category\" : \"${state.selectedCategory}\", " +
+                        "\"menu_count\" : ${state.menuList.size}}"
+            )
+        },
         onSearchQueryChange = viewModel::updateSearchQuery,
         onSearchAction = viewModel::searchPlace,
         onPlaceSelect = viewModel::selectPlace,

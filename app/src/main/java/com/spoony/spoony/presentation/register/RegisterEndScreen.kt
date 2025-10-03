@@ -69,7 +69,16 @@ fun RegisterEndRoute(
         onDetailReviewChange = viewModel::updateDetailReview,
         onPhotosSelected = viewModel::updatePhotos,
         onOptionalReviewChange = viewModel::updateOptionalReview,
-        onRegisterPost = viewModel::registerPost,
+        onRegisterPost = {
+            viewModel.registerPost(it)
+
+            tracker.track(
+                eventName = "review_2_completed",
+                properties = "{\"review_length\" : ${state.detailReview.length}, " +
+                    "\"photo_count\" : ${state.selectedPhotos.size}, " +
+                    "\"has_disappointment\" : ${state.optionalReview.isNotEmpty()}}"
+            )
+        },
         onRegisterComplete = onRegisterComplete,
         onEditComplete = { postId ->
             onEditComplete(postId)
