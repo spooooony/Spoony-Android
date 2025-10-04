@@ -16,5 +16,6 @@ class MixPanelEvents @Inject constructor(
     val mapEvents: MapEvents,
     val exploreEvents: ExploreEvents,
     val registerEvents: RegisterEvents,
-    val mypageEvents: MypageEvents
+    val mypageEvents: MypageEvents,
+    val reviewDetailEvents: ReviewDetailEvents
 )
