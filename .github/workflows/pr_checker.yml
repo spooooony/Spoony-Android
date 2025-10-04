@@ -47,6 +47,7 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           NATIVE_APP_KEY: ${{ secrets.NATIVE_APP_KEY }}
+          MIXPANEL_KEY: ${{ secrets.MIXPANEL_KEY }}
         run: |
           echo prod.base.url=\"$PROD_BASE_URL\" >> local.properties
           echo dev.base.url=\"$DEV_BASE_URL\" >> local.properties
@@ -57,6 +58,8 @@ jobs:
           echo storePassword=$RELEASE_STORE_PASSWORD >> local.properties
           echo native.app.key=\"$NATIVE_APP_KEY\" >> local.properties
           echo nativeAppKey=$NATIVE_APP_KEY >> local.properties
+          echo mixpanelDevKey=\"$MIXPANEL_KEY\" >> local.properties
+          echo mixpanelProdKey=\"$MIXPANEL_KEY\" >> local.properties
 
       - name: Lint Check
         run: ./gradlew ktlintCheck -PcompileSdkVersion=35
