@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.screen.EmptyContent
@@ -63,13 +63,12 @@ fun UserPageScreen(
     var isUserBlockDialogVisible by remember { mutableStateOf(false) }
     val topBarMenuItemList = persistentListOf("차단하기", "신고하기")
 
-    LaunchedEffect(state.profileId != 0) {
+    LaunchedEffect(state.profileId) {
         if (state.profileId != 0) {
-            tracker.track(
-                eventName = "profile_viewed",
-                properties = "{\"profile_user_id\" : \"${state.profileId}\", " +
-                    "\"is_self_profile\" : ${state.userType == UserType.MY_PAGE}, " +
-                    "\"is_following_profile_user\" : \"${state.profile.isFollowing}\"}"
+            tracker.commonEvents.profileViewed(
+                profileUserId = state.profileId,
+                isSelfProfile = state.userType == UserType.MY_PAGE,
+                isFollowingProfileUser = state.profile.isFollowing
             )
         }
     }
@@ -212,7 +211,7 @@ fun UserPageScreen(
                     )
                     Text(
                         text = "지금은 프로필을 볼 수 없지만, \n" +
-                            "원하시면 차단을 해제할 수 있어요.",
+                                "원하시면 차단을 해제할 수 있어요.",
                         style = SpoonyAndroidTheme.typography.body2m,
                         color = SpoonyAndroidTheme.colors.gray500,
                         textAlign = TextAlign.Center

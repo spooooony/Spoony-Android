@@ -23,7 +23,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -66,7 +66,7 @@ fun RegisterRoute(
     LaunchedEffect(Unit) {
         viewModel.loadState()
         if (viewModel.registerType == RegisterType.CREATE) {
-            tracker.track("tab_entered", "{\"tab_name\" : \"upload\"}")
+            tracker.commonEvents.tabEntered("upload")
         }
     }
 

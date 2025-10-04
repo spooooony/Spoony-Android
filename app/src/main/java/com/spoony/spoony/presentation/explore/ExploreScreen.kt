@@ -45,7 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.spoony.spoony.R
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.pullToRefresh.SpoonyPullToRefreshContainer
@@ -95,7 +95,7 @@ fun ExploreRoute(
     val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
-        tracker.track("review_viewed", "{\"tab_name\" : \"explore\"}")
+        tracker.commonEvents.tabEntered("explore")
     }
 
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
@@ -104,6 +104,7 @@ fun ExploreRoute(
                 is ExploreSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
+
                 is ExploreSideEffect.ScrollToTop -> {
                     coroutineScope.launch {
                         listState.scrollToItem(0)
@@ -118,10 +119,6 @@ fun ExploreRoute(
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.refresh()
         }
-    }
-
-    LaunchedEffect(Unit) {
-        tracker.track("tab_entered", "{\"tab_name\" : \"explore\"}")
     }
 
     with(state) {

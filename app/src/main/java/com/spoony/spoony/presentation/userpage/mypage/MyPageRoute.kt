@@ -10,7 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
@@ -43,7 +43,7 @@ fun MyPageRoute(
         viewModel.getSpoonCount()
 
         if (userPageState.userType == UserType.MY_PAGE) {
-            tracker.track("tab_entered", "{\"tab_name\" : \"mypage\"}")
+            tracker.commonEvents.tabEntered("mypage")
         }
     }
 
@@ -53,6 +53,7 @@ fun MyPageRoute(
                 is MyPageSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
+
                 is MyPageSideEffect.ShowError -> {
                     showSnackBar(effect.errorType.description)
                 }

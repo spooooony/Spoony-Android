@@ -38,7 +38,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.button.FollowButton
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
@@ -140,20 +140,19 @@ fun PlaceDetailRoute(
         is UiState.Success -> {
             val postId = (state.reviewId as? UiState.Success)?.data ?: return
 
-            tracker.track(
-                eventName = "review_viewed",
-                properties = "{\"review_id\" : \"$postId\"," +
-                    "\"author_user_id\" : \"${userProfile.userId}\"," +
-                    "\"place_name\" : \"${uiState.data.placeName}\"," +
-                    "\"menu_count\" : ${uiState.data.menuList.size}," +
-                    "\"satisfaction_score\" : ${uiState.data.value}," +
-                    "\"review_length\" : ${uiState.data.description.length}," +
-                    "\"photo_count\" : ${uiState.data.photoUrlList.size}," +
-                    "\"has_disappointment\" : ${uiState.data.cons.isNotEmpty()}," +
-                    "\"saved_count\" : ${state.addMapCount}," +
-                    "\"is_self_review\" : ${uiState.data.isMine}," +
-                    "\"is_followed_user_review\" : ${state.isFollowing}," +
-                    "\"is_saved_review\" : ${state.isAddMap}}"
+            tracker.commonEvents.reviewViewed(
+                reviewId = postId,
+                authorUserId = userProfile.userId,
+                placeName = uiState.data.placeName,
+                menuCount = uiState.data.menuList.size,
+                satisfactionScore = uiState.data.value,
+                reviewLength = uiState.data.description.length,
+                photoCount = uiState.data.photoUrlList.size,
+                hasDisappointment = uiState.data.cons.isNotEmpty(),
+                savedCount = state.addMapCount,
+                isSelfReview = uiState.data.isMine,
+                isFollowedUserReview = state.isFollowing,
+                isSavedReview = state.isAddMap
             )
 
             if (scoopDialogVisibility) {
@@ -245,7 +244,35 @@ fun PlaceDetailRoute(
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
                             isFollowing = state.isFollowing,
-                            onFollowButtonClick = { viewModel.onFollowButtonClick(userProfile.userId, state.isFollowing) },
+                            onFollowButtonClick = {
+                                viewModel.onFollowButtonClick(userProfile.userId, state.isFollowing)
+
+                                if (state.isFollowing) {
+                                    tracker.commonEvents.unfollowUserFromReview(
+                                        reviewId = postId,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    )
+                                } else {
+                                    tracker.commonEvents.followUserFromReview(
+                                        reviewId = postId,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    )
+                                }
+                            },
                             photoUrlList = data.photoUrlList,
                             date = data.createdAt.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,

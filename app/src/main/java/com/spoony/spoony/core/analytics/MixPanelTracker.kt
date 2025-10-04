@@ -1,9 +1,8 @@
 package com.spoony.spoony.core.analytics
 
 import android.content.Context
-import androidx.compose.runtime.staticCompositionLocalOf
 import com.mixpanel.android.mpmetrics.MixpanelAPI
-import com.spoony.spoony.BuildConfig
+import com.spoony.spoony.BuildConfig.MIXPANEL_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.json.JSONObject

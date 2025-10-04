@@ -11,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
@@ -35,6 +36,7 @@ fun OtherPageRoute(
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = LocalTracker.current
 
     BackHandler {
         if (userPageState.isBlocked) {
@@ -54,6 +56,7 @@ fun OtherPageRoute(
                 is OtherPageSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
+
                 is OtherPageSideEffect.ShowErrorSnackbar -> {
                     showSnackBar(effect.errorType.description)
                 }
@@ -73,9 +76,30 @@ fun OtherPageRoute(
         onReviewClick = navigateToReviewDetail,
         onReportUserClick = navigateToUserReport,
         onUserBlockClick = viewModel::blockUser,
-        onMainButtonClick = viewModel::toggleFollow,
+        onMainButtonClick = {
+            if (userPageState.isFollowing) {
+                tracker.commonEvents.unfollowUser(
+                    unfollowedUserId = userPageState.profile.profileId,
+                    entryPoint = "user_profile"
+                )
+            } else {
+                tracker.commonEvents.followUser(
+                    followedUserId = userPageState.profile.profileId,
+                    entryPoint = "user_profile"
+                )
+            }
+
+            viewModel.toggleFollow()
+        },
         onReportReviewClick = navigateToReviewReport,
-        onCheckBoxClick = viewModel::toggleLocalReviewOnly
+        onCheckBoxClick = {
+            tracker.commonEvents.filterApplied(
+                pageApplied = "user_profile",
+                localReviewFilter = userPageState.isLocalReviewOnly,
+            )
+
+            viewModel.toggleLocalReviewOnly()
+        }
     )
 
     UserPageScreen(
