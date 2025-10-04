@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.textfield.NicknameTextFieldState
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyNicknameTextField
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
@@ -56,7 +56,7 @@ fun OnBoardingStepOneRoute(
         checkNicknameValid = viewModel::checkUserNameExist,
         onButtonClick = {
             onNextButtonClick()
-            tracker.track("onboard_1_completed")
+            tracker.onboardingEvents.onboard1Completed()
         }
     )
 }

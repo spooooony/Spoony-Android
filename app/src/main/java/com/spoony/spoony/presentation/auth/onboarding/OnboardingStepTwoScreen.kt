@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePickerBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBottomSheet
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
@@ -70,10 +70,9 @@ fun OnboardingStepTwoRoute(
         },
         onNextButtonClick = {
             onNextButtonClick()
-            tracker.track(
-                "onboard_2_completed",
-                properties = "{\"birthdate_entered\" : ${!state.birth.isNullOrBlank()}," +
-                    "\"region_entered\" : ${state.region != null}}"
+            tracker.onboardingEvents.onboard2Completed(
+                isBirthdateEntered = !state.birth.isNullOrBlank(),
+                isActiveRegionEntered = state.region != null
             )
         }
     )

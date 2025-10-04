@@ -10,5 +10,6 @@ val LocalTracker = staticCompositionLocalOf<MixPanelEvents> {
 class MixPanelEvents @Inject constructor(
     val userProperties: MixPanelUserProperties,
     val analyticsEvents: AnalyticsEvents,
-    val commonEvents: CommonEvents
+    val commonEvents: CommonEvents,
+    val onboardingEvents: OnboardingEvents
 )

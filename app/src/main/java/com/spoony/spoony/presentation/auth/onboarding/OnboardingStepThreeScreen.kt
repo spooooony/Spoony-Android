@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
@@ -34,10 +34,7 @@ fun OnboardingStepThreeRoute(
         onValueChanged = viewModel::updateIntroduction,
         onButtonClick = {
             viewModel.signUp()
-            tracker.track(
-                "onboard_3_completed",
-                properties = "{\"bio_length\" : ${state.introduction?.length ?: 0}}"
-            )
+            tracker.onboardingEvents.onboard3Completed(state.introduction?.length ?: 0)
         }
     )
 }
