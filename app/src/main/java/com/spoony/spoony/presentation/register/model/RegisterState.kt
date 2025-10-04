@@ -23,6 +23,7 @@ data class RegisterState(
 
     val currentStep: Float = 1f,
     val isLoading: Boolean = false,
+    val isSubmitting: Boolean = false,
     val error: String? = null
 ) {
     companion object {
