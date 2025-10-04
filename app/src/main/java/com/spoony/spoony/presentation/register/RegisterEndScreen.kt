@@ -57,9 +57,9 @@ fun RegisterEndRoute(
     val isNextButtonEnabled = remember(
         state.detailReview,
         state.selectedPhotos,
-        state.isLoading
+        state.isSubmitting
     ) {
-        viewModel.checkSecondStepValidation() && !state.isLoading
+        viewModel.checkSecondStepValidation() && !state.isSubmitting
     }
 
     RegisterEndScreen(
