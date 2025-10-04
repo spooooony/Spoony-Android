@@ -91,6 +91,7 @@ fun ExploreRoute(
     val lifecycleOwner = LocalLifecycleOwner.current
     val showSnackBar = LocalSnackBarTrigger.current
     val tracker = LocalTracker.current
+
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
@@ -131,7 +132,10 @@ fun ExploreRoute(
             onEditButtonClick = navigateToEditReview,
             onFilterApplyButtonClick = viewModel::applyExploreFilter,
             onLocalReviewButtonClick = viewModel::localReviewToggle,
-            onSelectSortingOptionButtonClick = viewModel::updateSelectedSortingOption,
+            onSelectSortingOptionButtonClick = { sortingOption ->
+                viewModel.updateSelectedSortingOption(sortingOption)
+                tracker.exploreEvents.sortSelected(sortingOption.trackingCode)
+            },
             onTabChange = viewModel::updateExploreType,
             onRefresh = viewModel::refreshExploreScreen,
             onLoadNextPage = viewModel::getPlaceReviewListFiltered,
