@@ -70,7 +70,7 @@ playServicesMaps = "19.2.0"
 room = "2.8.1"
 
 ## mixpanel
-mixpanel = "7.+"
+mixpanel = "8.2.4"
 
 [libraries]
 # Test
