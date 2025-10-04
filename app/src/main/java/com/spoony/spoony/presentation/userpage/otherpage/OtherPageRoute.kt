@@ -95,7 +95,7 @@ fun OtherPageRoute(
         onCheckBoxClick = {
             tracker.commonEvents.filterApplied(
                 pageApplied = "user_profile",
-                localReviewFilter = userPageState.isLocalReviewOnly,
+                localReviewFilter = userPageState.isLocalReviewOnly
             )
 
             viewModel.toggleLocalReviewOnly()

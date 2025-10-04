@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
 import com.spoony.spoony.core.util.extension.noRippleClickable
@@ -76,6 +77,7 @@ private fun MapSearchScreen(
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+    val tracker = LocalTracker.current
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -168,6 +170,11 @@ private fun MapSearchScreen(
                                     modifier = Modifier
                                         .background(SpoonyAndroidTheme.colors.white)
                                         .noRippleClickable {
+                                            tracker.mapEvents.mapSearched(
+                                                locationType = locationInfo.locationType.orEmpty(),
+                                                searchTerm = searchKeyword
+                                            )
+
                                             onResultItemClick(
                                                 locationInfo.placeId ?: 0,
                                                 locationInfo.placeName ?: "",

@@ -38,7 +38,7 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             tokenRepository.initCachedAccessToken()
 
-            if(hasAccessToken()) {
+            if (hasAccessToken()) {
                 getUserInfo()
             } else {
                 _sideEffect.emit(SplashSideEffect.NavigateToSignIn)

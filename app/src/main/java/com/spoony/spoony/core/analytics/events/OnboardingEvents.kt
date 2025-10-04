@@ -12,7 +12,7 @@ class OnboardingEvents @Inject constructor(
 
     fun onboard2Completed(
         isBirthdateEntered: Boolean,
-        isActiveRegionEntered: Boolean,
+        isActiveRegionEntered: Boolean
     ) {
         tracker.track(
             eventName = "onboard_2_completed",

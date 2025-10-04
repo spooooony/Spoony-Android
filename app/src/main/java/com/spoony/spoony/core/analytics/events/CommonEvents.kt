@@ -207,7 +207,7 @@ class CommonEvents @Inject constructor(
             properties = """
                 {
                     "page_applied": "$pageApplied",
-                    "local_review_filter": ${localReviewFilter},
+                    "local_review_filter": $localReviewFilter,
                     "region_filters": ${JSONArray(regionFilters)},
                     "category_filters": ${JSONArray(categoryFilters)},
                     "age_group_filters": ${JSONArray(ageGroupFilters)}
