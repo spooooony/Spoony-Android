@@ -35,6 +35,11 @@ accompanistSystemuicontroller = "0.36.0"
 # Google
 ossLicensesPlugin = "0.10.4"
 playServicesOssLicenses = "17.0.0"
+googleServices = "4.4.3"
+
+# Firebase
+firebaseBom = "34.3.0"
+firebaseCrashlyticsPlugin = "3.0.6"
 
 # Third Party
 okhttp = "4.11.0"
@@ -147,6 +152,10 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -156,6 +165,10 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 oss-licenses-plugin = { id = "com.google.android.gms.oss-licenses-plugin"}
+
+# Firebase
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 [bundles]
 androidx = [
