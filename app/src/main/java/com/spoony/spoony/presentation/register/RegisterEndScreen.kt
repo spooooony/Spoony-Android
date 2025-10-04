@@ -24,7 +24,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.dialog.SingleButtonDialog
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -72,26 +72,25 @@ fun RegisterEndRoute(
         onRegisterPost = {
             viewModel.registerPost(it)
 
-            tracker.track(
-                eventName = "review_2_completed",
-                properties = "{\"review_length\" : ${state.detailReview.length}, " +
-                    "\"photo_count\" : ${state.selectedPhotos.size}, " +
-                    "\"has_disappointment\" : ${state.optionalReview.isNotEmpty()}}"
+            tracker.registerEvents.review2Completed(
+                reviewLength = state.detailReview.length,
+                photoCount = state.selectedPhotos.size,
+                hasDisappointment = state.optionalReview.isNotEmpty()
             )
         },
         onRegisterComplete = onRegisterComplete,
         onEditComplete = { postId ->
             onEditComplete(postId)
-            tracker.track(
-                eventName = "review_edited",
-                properties = "{\"review_id\" : \"$postId\", " +
-                    "\"place_name\" : \"${state.selectedPlace.placeName}\", " +
-                    "\"category\" : \"${state.selectedCategory.categoryName}\", " +
-                    "\"menu_count\" : ${state.menuList.size}, " +
-                    "\"satisfaction_score\" : ${state.userSatisfactionValue}, " +
-                    "\"review_length\" : ${state.detailReview.length}, " +
-                    "\"photo_count\" : ${state.selectedPhotos.size}, " +
-                    "\"has_disappointment\" : ${state.optionalReview.isNotEmpty()}}"
+
+            tracker.commonEvents.reviewEdited(
+                reviewId = postId,
+                placeName = state.selectedPlace.placeName,
+                category = state.selectedCategory.categoryName,
+                menuCount = state.menuList.size,
+                satisfactionScore = state.userSatisfactionValue,
+                reviewLength = state.detailReview.length,
+                photoCount = state.selectedPhotos.size,
+                hasDisappointment = state.optionalReview.isNotEmpty()
             )
         },
         postId = viewModel.postId,
@@ -267,7 +266,7 @@ private fun OptionalReviewSection(
             value = optionalReview,
             onValueChanged = onOptionalReviewChange,
             placeholder = "쉿 사장님 몰래 남기는 솔직 후기! (선택)\n" +
-                "이 내용은 비공개 처리 돼요.",
+                    "이 내용은 비공개 처리 돼요.",
             maxLength = MAX_OPTIONAL_REVIEW_LENGTH,
             maxErrorText = "글자 수 ${MAX_OPTIONAL_REVIEW_LENGTH}자 이하로 입력해 주세요",
             decorationBoxHeight = 80.dp,

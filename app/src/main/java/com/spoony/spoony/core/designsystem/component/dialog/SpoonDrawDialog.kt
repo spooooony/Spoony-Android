@@ -19,7 +19,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
-import com.spoony.spoony.core.analytics.LocalTracker
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -90,10 +90,7 @@ fun SpoonDrawDialog(
         }
 
         SpoonDrawDialogState.RESULT -> {
-            tracker.track(
-                eventName = "spoon_received",
-                properties = "{\"spoon_count\" : ${drawResult.spoonAmount}}"
-            )
+            tracker.spoonDrawEvents.spoonReceived(drawResult.spoonAmount)
 
             TitleButtonDialog(
                 title = "${drawResult.spoonName} 획득",
