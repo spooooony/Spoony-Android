@@ -16,11 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.hexToColor
 
@@ -32,7 +30,6 @@ fun IconTag(
     iconUrl: String,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     Row(
         modifier = modifier
             .clip(CircleShape)
@@ -44,11 +41,8 @@ fun IconTag(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(iconUrl)
-                .crossfade(true)
-                .build(),
+        SpoonyImage(
+            model = iconUrl,
             modifier = Modifier.size(16.dp),
             contentScale = ContentScale.Fit,
             contentDescription = null

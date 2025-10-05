@@ -3,6 +3,7 @@ package com.spoony.spoony.core.network
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.spoony.spoony.BuildConfig.BASE_URL
 import com.spoony.spoony.core.network.qualifier.Auth
+import com.spoony.spoony.core.network.qualifier.CoilClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -94,6 +95,15 @@ object RetrofitModule {
     @Singleton
     @Auth
     fun provideAuthClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ) = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    @Provides
+    @Singleton
+    @CoilClient
+    fun provideCoilClient(
         loggingInterceptor: HttpLoggingInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)

@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 
@@ -27,16 +27,16 @@ fun ProfileHeaderSection(
     reviewCount: Int,
     followerCount: Int,
     followingCount: Int,
+    modifier: Modifier = Modifier,
     onFollowerClick: () -> Unit = {},
-    onFollowingClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    onFollowingClick: () -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth()
     ) {
-        UrlImage(
-            imageUrl = imageUrl,
+        SpoonyImage(
+            model = imageUrl,
             shape = CircleShape,
             contentScale = ContentScale.Crop,
             modifier = Modifier.size(85.dp)
