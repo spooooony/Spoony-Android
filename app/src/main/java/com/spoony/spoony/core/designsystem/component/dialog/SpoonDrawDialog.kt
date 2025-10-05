@@ -19,7 +19,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.model.SpoonDrawModel
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import kotlinx.coroutines.launch
@@ -95,8 +95,8 @@ fun SpoonDrawDialog(
                 onButtonClick = onConfirmButtonClick,
                 onDismiss = onDismiss
             ) {
-                UrlImage(
-                    imageUrl = drawResult.spoonImage,
+                SpoonyImage(
+                    model = drawResult.spoonImage,
                     modifier = Modifier
                         .size(width = 248.dp, height = 168.dp)
                 )

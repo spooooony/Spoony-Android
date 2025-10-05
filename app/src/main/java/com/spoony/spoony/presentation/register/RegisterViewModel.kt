@@ -237,30 +237,36 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun registerPost(onSuccess: () -> Unit) {
+        if (state.value.isSubmitting) return
+
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, isSubmitting = true) }
 
             when (registerType) {
                 RegisterType.CREATE -> {
                     repository.registerPost(_state.value.toRegisterPostEntity())
                         .onSuccess {
                             _state.update { it.copy(isLoading = false) }
-                            resetState()
                             onSuccess()
                         }.onLogFailure {
-                            _state.update { it.copy(isLoading = false) }
+                            _state.update { it.copy(isLoading = false, isSubmitting = false) }
                             _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                         }
                 }
+
                 RegisterType.EDIT -> {
                     if (postId != null) {
-                        repository.updatePost(_state.value.toUpdatePostEntity(postId, calculateDeleteImageUrls()))
+                        repository.updatePost(
+                            _state.value.toUpdatePostEntity(
+                                postId,
+                                calculateDeleteImageUrls()
+                            )
+                        )
                             .onSuccess {
                                 _state.update { it.copy(isLoading = false) }
-                                resetState()
                                 onSuccess()
                             }.onLogFailure {
-                                _state.update { it.copy(isLoading = false) }
+                                _state.update { it.copy(isLoading = false, isSubmitting = false) }
                                 _sideEffect.emit(RegisterSideEffect.ShowError(ErrorType.UNEXPECTED_ERROR))
                             }
                     }

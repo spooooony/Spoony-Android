@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.exploreSearch.model.ExploreSearchUserModel
@@ -37,8 +37,8 @@ fun ExploreSearchUserItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        UrlImage(
-            imageUrl = userInfo.userProfileUrl,
+        SpoonyImage(
+            model = userInfo.userProfileUrl,
             modifier = Modifier.size(48.dp),
             shape = CircleShape,
             contentScale = ContentScale.Crop,

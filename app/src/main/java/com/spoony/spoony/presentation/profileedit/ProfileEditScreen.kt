@@ -2,7 +2,6 @@ package com.spoony.spoony.presentation.profileedit
 
 import BirthSelectButton
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,6 +49,7 @@ import com.spoony.spoony.core.designsystem.theme.white
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.addFocusCleaner
+import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.core.util.extension.toBirthDate
 import com.spoony.spoony.presentation.profileedit.component.ImageHelperBottomSheet
 import com.spoony.spoony.presentation.profileedit.component.ProfileImageList
@@ -125,7 +125,7 @@ fun ProfileEditScreen(
             )
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_question_24),
-                modifier = Modifier.clickable { isImageBottomSheetVisible = true },
+                modifier = Modifier.noRippleClickable { isImageBottomSheetVisible = true },
                 tint = Color.Unspecified,
                 contentDescription = null
             )

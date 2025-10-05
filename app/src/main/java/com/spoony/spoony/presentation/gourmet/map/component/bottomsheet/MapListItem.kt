@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.spoony.spoony.core.designsystem.component.image.UrlImage
+import com.spoony.spoony.core.designsystem.component.image.SpoonyImage
 import com.spoony.spoony.core.designsystem.component.tag.IconTag
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 
@@ -97,8 +97,8 @@ fun MapListItem(
             )
         }
 
-        UrlImage(
-            imageUrl = imageUrl,
+        SpoonyImage(
+            model = imageUrl,
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .size(98.dp)

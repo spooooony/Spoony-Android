@@ -8,16 +8,14 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.vectorResource
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
 import com.spoony.spoony.R
 
 @Composable
-fun UrlImage(
-    imageUrl: String,
+fun SpoonyImage(
+    model: Any?,
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
     contentScale: ContentScale = ContentScale.Crop,
@@ -29,14 +27,10 @@ fun UrlImage(
             contentDescription = contentDescription,
             contentScale = contentScale,
             modifier = modifier.clip(shape)
-
         )
     } else {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
+            model = model,
             contentDescription = contentDescription,
             contentScale = contentScale,
             modifier = modifier.clip(shape)
