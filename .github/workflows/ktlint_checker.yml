@@ -35,5 +35,28 @@ jobs:
       - name: Change gradlew permissions
         run: chmod +x ./gradlew
 
+      - name: Touch local properties
+        run: touch local.properties
+
+      - name: Access Local Properties
+        env:
+          PROD_BASE_URL: ${{ secrets.PROD_BASE_URL }}
+          DEV_BASE_URL: ${{ secrets.DEV_BASE_URL }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          NATIVE_APP_KEY: ${{ secrets.NATIVE_APP_KEY }}
+        run: |
+          echo prod.base.url=\"$PROD_BASE_URL\" >> local.properties
+          echo dev.base.url=\"$DEV_BASE_URL\" >> local.properties
+          echo naver.client.id=\"$NAVER_CLIENT_ID\" >> local.properties
+          echo naverClientId=$NAVER_CLIENT_ID >> local.properties
+          echo keyAlias=$RELEASE_KEY_ALIAS >> local.properties
+          echo keyPassword=$RELEASE_KEY_PASSWORD >> local.properties
+          echo storePassword=$RELEASE_STORE_PASSWORD >> local.properties
+          echo native.app.key=\"$NATIVE_APP_KEY\" >> local.properties 
+          echo nativeAppKey=$NATIVE_APP_KEY >> local.properties
+
       - name: Lint Check
         run: ./gradlew ktlintCheck -PcompileSdkVersion=35
