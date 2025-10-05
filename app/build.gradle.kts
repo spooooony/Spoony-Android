@@ -1,4 +1,5 @@
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -9,6 +10,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.oss.licenses.plugin)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 val properties = Properties().apply {
@@ -75,12 +78,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = libs.versions.jvmTarget.get()
-    }
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(libs.versions.jvmTarget.get()))
     }
 }
 
@@ -128,12 +134,17 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
 
-    implementation(libs.pebble)
-    implementation(libs.jakewharton.process.phoenix)
+    // UI
     implementation(libs.balloon.compose)
-
     implementation(libs.accompanist.systemuicontroller)
 
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+
+    // Third Party
+    implementation(libs.pebble)
+    implementation(libs.jakewharton.process.phoenix)
     implementation(libs.play.services.oss.licenses)
 }
 
