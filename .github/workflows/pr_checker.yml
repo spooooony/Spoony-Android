@@ -61,6 +61,11 @@ jobs:
           echo mixpanelDevKey=\"$MIXPANEL_KEY\" >> local.properties
           echo mixpanelProdKey=\"$MIXPANEL_KEY\" >> local.properties
 
+      - name: Create Google Services JSON
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+
       - name: Lint Check
         run: ./gradlew ktlintCheck -PcompileSdkVersion=35
 

@@ -5,26 +5,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,10 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,33 +36,25 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.spoony.spoony.R
 import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
-import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.pullToRefresh.SpoonyPullToRefreshContainer
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.model.ReviewCardCategory
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.state.UiState
-import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.explore.component.ExploreEmptyScreen
-import com.spoony.spoony.presentation.explore.component.ExploreTabRow
-import com.spoony.spoony.presentation.explore.component.FilterChipRow
-import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreFilterBottomSheet
-import com.spoony.spoony.presentation.explore.component.bottomsheet.ExploreSortingBottomSheet
-import com.spoony.spoony.presentation.explore.model.ExploreFilter
+import com.spoony.spoony.presentation.explore.component.ExploreFilterSection
+import com.spoony.spoony.presentation.explore.component.ExploreHeaderSection
+import com.spoony.spoony.presentation.explore.component.dialog.ReviewDeleteDialog
 import com.spoony.spoony.presentation.explore.model.FilterOption
-import com.spoony.spoony.presentation.explore.model.FilterType
 import com.spoony.spoony.presentation.explore.model.PlaceReviewModel
 import com.spoony.spoony.presentation.explore.type.ExploreDropdownOption
 import com.spoony.spoony.presentation.explore.type.SortingOption
 import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.report.ReportType
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -111,6 +95,12 @@ fun ExploreRoute(
                         listState.scrollToItem(0)
                     }
                 }
+
+                is ExploreSideEffect.NavigateToSearch -> navigateToExploreSearch()
+                is ExploreSideEffect.NavigateToRegister -> navigateToRegister()
+                is ExploreSideEffect.NavigateToPlaceDetail -> navigateToPlaceDetail(effect.id)
+                is ExploreSideEffect.NavigateToEdit -> navigateToEditReview(effect.id, effect.type)
+                is ExploreSideEffect.NavigateToReport -> navigateToReport(effect.targetId, effect.type)
             }
         }
     }
@@ -121,38 +111,18 @@ fun ExploreRoute(
             viewModel.refresh()
         }
     }
-
+    // TODO:
     with(state) {
         ExploreScreen(
             paddingValues = paddingValues,
-            onClickSearch = navigateToExploreSearch,
-            onRegisterButtonClick = navigateToRegister,
-            onPlaceDetailItemClick = navigateToPlaceDetail,
-            onReportButtonClick = navigateToReport,
-            onEditButtonClick = navigateToEditReview,
-            onFilterApplyButtonClick = viewModel::applyExploreFilter,
-            onLocalReviewButtonClick = viewModel::localReviewToggle,
-            onSelectSortingOptionButtonClick = { sortingOption ->
-                viewModel.updateSelectedSortingOption(sortingOption)
-                tracker.exploreEvents.sortSelected(sortingOption.trackingCode)
-            },
-            onTabChange = viewModel::updateExploreType,
-            onRefresh = viewModel::refreshExploreScreen,
-            onLoadNextPage = viewModel::getPlaceReviewListFiltered,
-            onReviewDeleteButtonClick = viewModel::deleteReview,
             selectedSortingOption = selectedSortingOption,
             chipItems = chipItems,
             placeReviewList = placeReviewList,
-            propertyItems = exploreFilterItems.properties,
-            regionItems = exploreFilterItems.regions,
-            ageItems = exploreFilterItems.ages,
-            categoryItems = exploreFilterItems.categories,
-            propertySelectedState = filterSelectionState.properties,
-            regionSelectedState = filterSelectionState.regions,
-            ageSelectedState = filterSelectionState.ages,
-            categorySelectedState = filterSelectionState.categories,
+            filterItems = exploreFilterItems,
+            selectedFilterState = filterSelectionState,
             listState = listState,
-            exploreType = exploreType
+            exploreType = exploreType,
+            onAction = viewModel::onAction
         )
     }
 }
@@ -160,109 +130,16 @@ fun ExploreRoute(
 @Composable
 private fun ExploreScreen(
     paddingValues: PaddingValues,
-    onClickSearch: () -> Unit,
-    onRegisterButtonClick: () -> Unit,
-    onPlaceDetailItemClick: (Int) -> Unit,
-    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
-    onEditButtonClick: (Int, RegisterType) -> Unit,
-    onFilterApplyButtonClick: (PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>, PersistentMap<Int, Boolean>) -> Unit,
-    onLocalReviewButtonClick: () -> Unit,
-    onSelectSortingOptionButtonClick: (SortingOption) -> Unit,
-    onTabChange: (ExploreType) -> Unit,
-    onRefresh: () -> Unit,
-    onLoadNextPage: () -> Unit,
-    onReviewDeleteButtonClick: (Int) -> Unit,
+    onAction: (ExploreAction) -> Unit,
     selectedSortingOption: SortingOption,
     chipItems: ImmutableList<FilterOption>,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
-    propertyItems: ImmutableList<ExploreFilter>,
-    regionItems: ImmutableList<ExploreFilter>,
-    ageItems: ImmutableList<ExploreFilter>,
-    categoryItems: ImmutableList<ExploreFilter>,
-    propertySelectedState: PersistentMap<Int, Boolean>,
-    regionSelectedState: PersistentMap<Int, Boolean>,
-    ageSelectedState: PersistentMap<Int, Boolean>,
-    categorySelectedState: PersistentMap<Int, Boolean>,
+    filterItems: ExploreFilterItems,
+    selectedFilterState: ExploreFilterState,
     listState: LazyListState,
     exploreType: ExploreType
 ) {
     val tabList = persistentListOf("전체", "팔로잉")
-    var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
-    var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
-    var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
-    if (isSortingBottomSheetVisible) {
-        ExploreSortingBottomSheet(
-            onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = {
-                onSelectSortingOptionButtonClick(it)
-            },
-            currentSortingOption = selectedSortingOption
-        )
-    }
-
-    val propertyState = remember(isFilterBottomSheetVisible, propertySelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(propertySelectedState)
-        }
-    }
-
-    val categoryState = remember(isFilterBottomSheetVisible, categorySelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(categorySelectedState)
-        }
-    }
-
-    val regionState = remember(isFilterBottomSheetVisible, regionSelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(regionSelectedState)
-        }
-    }
-
-    val ageState = remember(isFilterBottomSheetVisible, ageSelectedState) {
-        mutableStateMapOf<Int, Boolean>().apply {
-            if (isFilterBottomSheetVisible) putAll(ageSelectedState)
-        }
-    }
-
-    val filterStates = listOf(propertyState, categoryState, regionState, ageState)
-
-    if (isFilterBottomSheetVisible) {
-        ExploreFilterBottomSheet(
-            onDismiss = {
-                isFilterBottomSheetVisible = false
-            },
-            onFilterReset = {
-                filterStates.forEach { it.clear() }
-            },
-            onSave = {
-                isFilterBottomSheetVisible = false
-
-                val (property, category, region, age) = filterStates.map { it.toPersistentMap() }
-
-                onFilterApplyButtonClick(property, category, region, age)
-            },
-            onToggleFilter = { id, type ->
-                val stateMap = when (type) {
-                    FilterType.FILTER -> null
-                    FilterType.LOCAL_REVIEW -> propertyState
-                    FilterType.CATEGORY -> categoryState
-                    FilterType.REGION -> regionState
-                    FilterType.AGE -> ageState
-                }
-
-                stateMap?.let { it[id] = !(it[id] ?: false) }
-            },
-            propertyItems = propertyItems,
-            regionItems = regionItems,
-            ageItems = ageItems,
-            categoryItems = categoryItems,
-            propertySelectedState = propertyState,
-            regionSelectedState = regionState,
-            ageSelectedState = ageState,
-            categorySelectedState = categoryState,
-            tabIndex = exploreFilterBottomSheetTabIndex
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -271,113 +148,54 @@ private fun ExploreScreen(
             .background(SpoonyAndroidTheme.colors.white)
     ) {
         Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ExploreTabRow(
-                onTabChange = onTabChange,
-                tabList = tabList,
-                exploreType = exploreType
-            )
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_search_20),
-                modifier = Modifier
-                    .size(20.dp)
-                    .noRippleClickable(onClickSearch),
-                contentDescription = null,
-                tint = Color.Unspecified
-            )
-        }
+
+        ExploreHeaderSection(
+            tabList = tabList,
+            exploreType = exploreType,
+            onChangeTab = { onAction(ExploreAction.ChangeTab(it)) },
+            onClickSearch = { onAction(ExploreAction.Click.Search) }
+        )
+
         Spacer(modifier = Modifier.height(24.dp))
         if (exploreType == ExploreType.ALL) {
-            FilterChipRow(
-                chipItems,
-                onFilterClick = { filterType ->
-                    handleFilterClick(
-                        filterType = filterType,
-                        onLocalReviewButtonClick = {
-                            onLocalReviewButtonClick()
-                        },
-                        updateBottomSheetState = { index, isVisible ->
-                            exploreFilterBottomSheetTabIndex = index
-                            isFilterBottomSheetVisible = isVisible
-                        }
-                    )
-                },
-                onSortFilterClick = {
-                    isSortingBottomSheetVisible = true
-                }
+            ExploreFilterSection(
+                exploreType = exploreType,
+                chipItems = chipItems,
+                selectedSortingOption = selectedSortingOption,
+                selectedFilterState = selectedFilterState,
+                filterItems = filterItems,
+                onAction = onAction
             )
             Spacer(modifier = Modifier.height(24.dp))
         }
         ExploreContent(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
+            modifier = Modifier.padding(horizontal = 20.dp),
             placeReviewList = placeReviewList,
-            onRegisterButtonClick = onRegisterButtonClick,
-            onPlaceDetailItemClick = onPlaceDetailItemClick,
-            onReportButtonClick = onReportButtonClick,
-            onReviewDeleteButtonClick = onReviewDeleteButtonClick,
-            onRefresh = onRefresh,
-            onLoadNextPage = onLoadNextPage,
-            onEditButtonClick = onEditButtonClick,
-            onClickSearch = onClickSearch,
             exploreType = exploreType,
-            listState = listState
+            listState = listState,
+            onAction = onAction
         )
-    }
-}
-
-private fun handleFilterClick(
-    filterType: FilterType,
-    onLocalReviewButtonClick: () -> Unit,
-    updateBottomSheetState: (Int, Boolean) -> Unit
-) {
-    when (filterType) {
-        FilterType.FILTER -> updateBottomSheetState(0, true)
-        FilterType.LOCAL_REVIEW -> onLocalReviewButtonClick()
-        FilterType.CATEGORY -> updateBottomSheetState(1, true)
-        FilterType.REGION -> updateBottomSheetState(2, true)
-        FilterType.AGE -> updateBottomSheetState(3, true)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExploreContent(
-    onRegisterButtonClick: () -> Unit,
-    onReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
-    onPlaceDetailItemClick: (Int) -> Unit,
-    onReviewDeleteButtonClick: (Int) -> Unit,
-    onRefresh: () -> Unit,
-    onLoadNextPage: () -> Unit,
     placeReviewList: UiState<ImmutableList<PlaceReviewModel>>,
-    onEditButtonClick: (Int, RegisterType) -> Unit,
-    onClickSearch: () -> Unit,
     exploreType: ExploreType,
     listState: LazyListState,
+    onAction: (ExploreAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isLoadingMore by remember { mutableStateOf(false) }
     var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
     var targetReviewId by remember { mutableIntStateOf(0) }
-    if (isReviewDeleteDialogVisible) {
-        TwoButtonDialog(
-            message = "정말로 리뷰를 삭제할까요?",
-            negativeText = "아니요",
-            positiveText = "네",
-            onClickNegative = { isReviewDeleteDialogVisible = false },
-            onClickPositive = {
-                onReviewDeleteButtonClick(targetReviewId)
-                isReviewDeleteDialogVisible = false
-            },
-            onDismiss = { }
-        )
-    }
+
+    ReviewDeleteDialog(
+        isVisible = isReviewDeleteDialogVisible,
+        onConfirm = { onAction(ExploreAction.DeleteReview(targetReviewId)) },
+        onDismiss = { isReviewDeleteDialogVisible = false }
+    )
     LaunchedEffect(listState, exploreType) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
@@ -394,7 +212,7 @@ private fun ExploreContent(
                         totalItems > 0
                     ) {
                         isLoadingMore = true
-                        onLoadNextPage()
+                        onAction(ExploreAction.LoadNextPage)
                         isLoadingMore = false
                     }
                 }
@@ -404,7 +222,13 @@ private fun ExploreContent(
     when (placeReviewList) {
         is UiState.Empty -> {
             ExploreEmptyScreen(
-                onClick = if (exploreType == ExploreType.ALL) onRegisterButtonClick else onClickSearch,
+                onClick = {
+                    if (exploreType == ExploreType.ALL) {
+                        onAction(ExploreAction.Click.Register)
+                    } else {
+                        onAction(ExploreAction.Click.Search)
+                    }
+                },
                 exploreType = exploreType,
                 modifier = Modifier
                     .fillMaxSize()
@@ -426,7 +250,7 @@ private fun ExploreContent(
 
             LaunchedEffect(refreshState.isRefreshing) {
                 if (refreshState.isRefreshing) {
-                    onRefresh()
+                    onAction(ExploreAction.Refresh)
                     refreshState.endRefresh()
                 }
             }
@@ -470,11 +294,11 @@ private fun ExploreContent(
                                 textColor = placeReview.category.textColor
                             ),
                             menuItems = menuList,
-                            onClick = { onPlaceDetailItemClick(placeReview.reviewId) },
+                            onClick = { onAction(ExploreAction.Click.PlaceDetail(placeReview.reviewId)) },
                             onMenuItemClick = { option ->
                                 when (option) {
-                                    ExploreDropdownOption.REPORT.string -> onReportButtonClick(placeReview.reviewId, ReportType.POST)
-                                    ExploreDropdownOption.EDIT.string -> onEditButtonClick(placeReview.reviewId, RegisterType.EDIT)
+                                    ExploreDropdownOption.REPORT.string -> onAction(ExploreAction.Click.Report(placeReview.reviewId, ReportType.POST))
+                                    ExploreDropdownOption.EDIT.string -> onAction(ExploreAction.Click.Edit(placeReview.reviewId, RegisterType.EDIT))
                                     ExploreDropdownOption.DELETE.string -> {
                                         targetReviewId = placeReview.reviewId
                                         isReviewDeleteDialogVisible = true

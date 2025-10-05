@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,8 +47,9 @@ import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
 import com.spoony.spoony.core.designsystem.type.ButtonStyle
 import com.spoony.spoony.core.util.extension.noRippleClickable
+import com.spoony.spoony.presentation.explore.ExploreFilterItems
+import com.spoony.spoony.presentation.explore.MutableExploreFilterState
 import com.spoony.spoony.presentation.explore.component.ExploreFilterChip
-import com.spoony.spoony.presentation.explore.model.ExploreFilter
 import com.spoony.spoony.presentation.explore.model.FilterType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -63,15 +62,9 @@ fun ExploreFilterBottomSheet(
     onDismiss: () -> Unit,
     onFilterReset: () -> Unit,
     onSave: () -> Unit,
-    propertyItems: ImmutableList<ExploreFilter>,
     onToggleFilter: (Int, FilterType) -> Unit,
-    categoryItems: ImmutableList<ExploreFilter>,
-    regionItems: ImmutableList<ExploreFilter>,
-    ageItems: ImmutableList<ExploreFilter>,
-    propertySelectedState: SnapshotStateMap<Int, Boolean>,
-    regionSelectedState: SnapshotStateMap<Int, Boolean>,
-    categorySelectedState: SnapshotStateMap<Int, Boolean>,
-    ageSelectedState: SnapshotStateMap<Int, Boolean>,
+    filterItems: ExploreFilterItems,
+    filterState: MutableExploreFilterState,
     modifier: Modifier = Modifier,
     tabIndex: Int = 0
 ) {
@@ -106,14 +99,8 @@ fun ExploreFilterBottomSheet(
             ExploreFilterBottomSheetContent(
                 tabIndex = tabIndex,
                 onFilterSelected = onToggleFilter,
-                propertySelectedState = propertySelectedState,
-                regionSelectedState = regionSelectedState,
-                categorySelectedState = categorySelectedState,
-                ageSelectedState = ageSelectedState,
-                propertyItems = propertyItems,
-                categoryItems = categoryItems,
-                regionItems = regionItems,
-                ageItems = ageItems
+                filterItems = filterItems,
+                filterState = filterState
             )
             SpoonyButton(
                 text = "필터 적용하기",
@@ -189,19 +176,12 @@ private enum class FilterSectionMap(val tabIndex: Int, val headerIndex: Int) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ExploreFilterBottomSheetContent(
     tabIndex: Int,
     onFilterSelected: (Int, FilterType) -> Unit,
-    propertyItems: ImmutableList<ExploreFilter>,
-    categoryItems: ImmutableList<ExploreFilter>,
-    regionItems: ImmutableList<ExploreFilter>,
-    ageItems: ImmutableList<ExploreFilter>,
-    propertySelectedState: SnapshotStateMap<Int, Boolean>,
-    regionSelectedState: SnapshotStateMap<Int, Boolean>,
-    categorySelectedState: SnapshotStateMap<Int, Boolean>,
-    ageSelectedState: SnapshotStateMap<Int, Boolean>
+    filterItems: ExploreFilterItems,
+    filterState: MutableExploreFilterState
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
     val tabs = remember { persistentListOf("속성", "카테고리", "지역", "연령대") }
@@ -256,10 +236,10 @@ private fun ExploreFilterBottomSheetContent(
         }
 
         item {
-            propertyItems.forEach { item ->
+            filterItems.properties.forEach { item ->
                 ExploreFilterChip(
                     text = item.name,
-                    isSelected = propertySelectedState[item.id] == true,
+                    isSelected = filterState.properties[item.id] == true,
                     onClick = { onFilterSelected(item.id, FilterType.LOCAL_REVIEW) },
                     modifier = Modifier.padding(top = 12.dp, bottom = 24.dp)
                 )
@@ -278,11 +258,11 @@ private fun ExploreFilterBottomSheetContent(
                     .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 24.dp)
             ) {
-                categoryItems.forEach { item ->
+                filterItems.categories.forEach { item ->
                     IconChip(
                         text = item.name,
                         onClick = { onFilterSelected(item.id, FilterType.CATEGORY) },
-                        isSelected = categorySelectedState[item.id] == true,
+                        isSelected = filterState.categories[item.id] == true,
                         unSelectedIconUrl = item.unSelectedIconUrl,
                         selectedIconUrl = item.selectedIconUrl,
                         textStyle = SpoonyAndroidTheme.typography.caption1m
@@ -303,10 +283,10 @@ private fun ExploreFilterBottomSheetContent(
                     .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 24.dp)
             ) {
-                regionItems.forEach { item ->
+                filterItems.regions.forEach { item ->
                     ExploreFilterChip(
                         text = item.name,
-                        isSelected = regionSelectedState[item.id] == true,
+                        isSelected = filterState.regions[item.id] == true,
                         onClick = { onFilterSelected(item.id, FilterType.REGION) }
                     )
                 }
@@ -325,10 +305,10 @@ private fun ExploreFilterBottomSheetContent(
                     .fillMaxWidth()
                     .padding(top = 12.dp)
             ) {
-                ageItems.forEach { item ->
+                filterItems.ages.forEach { item ->
                     ExploreFilterChip(
                         text = item.name,
-                        isSelected = ageSelectedState[item.id] == true,
+                        isSelected = filterState.ages[item.id] == true,
                         onClick = { onFilterSelected(item.id, FilterType.AGE) }
                     )
                 }
