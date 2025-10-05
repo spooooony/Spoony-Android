@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -78,9 +79,13 @@ fun ExploreSearchRoute(
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
             when (effect) {
-                is ExploreSearchSideEffect.ShowSnackBar -> {
-                    showSnackBar(effect.message)
-                }
+                is ExploreSearchSideEffect.ShowSnackBar -> showSnackBar(effect.message)
+                is ExploreSearchSideEffect.NavigateToUserProfile -> navigateToUserProfile(effect.userId)
+                is ExploreSearchSideEffect.NavigateToMyPage -> navigateToMyPage()
+                is ExploreSearchSideEffect.NavigateToPlaceDetail -> navigateToPlaceDetail(effect.placeId)
+                is ExploreSearchSideEffect.NavigateBack -> navigateUp()
+                is ExploreSearchSideEffect.NavigateToReport -> navigateToReport(effect.targetId, effect.type)
+                is ExploreSearchSideEffect.NavigateToEdit -> navigateToEditReview(effect.reviewId, effect.type)
             }
         }
     }
@@ -96,22 +101,11 @@ fun ExploreSearchRoute(
         paddingValues = paddingValues,
         searchKeyword = state.searchKeyword,
         searchType = state.searchType,
-        onReviewReportButtonClick = navigateToReport,
-        onUserButtonClick = navigateToUserProfile,
-        onMyPageButtonClick = navigateToMyPage,
-        onPlaceDetailButtonClick = navigateToPlaceDetail,
-        onBackButtonClick = navigateUp,
-        onSwitchType = viewModel::switchSearchType,
-        onRemoveRecentSearchItem = viewModel::removeRecentSearchItem,
-        onClearRecentSearchItem = viewModel::clearRecentSearchItem,
-        onSearch = viewModel::search,
-        onEditReviewClick = navigateToEditReview,
-        onClearSearchKeyword = viewModel::clearSearchKeyword,
-        onReviewDeleteButtonClick = viewModel::deleteReview,
         recentReviewSearchQueryList = state.recentReviewSearchQueryList,
         recentUserSearchQueryList = state.recentUserSearchQueryList,
         userInfoList = state.userInfoList,
-        placeReviewInfoList = state.placeReviewInfoList
+        placeReviewInfoList = state.placeReviewInfoList,
+        onAction = viewModel::onAction
     )
 }
 
@@ -120,22 +114,11 @@ private fun ExploreSearchScreen(
     paddingValues: PaddingValues,
     searchKeyword: String,
     searchType: SearchType,
-    onReviewReportButtonClick: (reportTargetId: Int, type: ReportType) -> Unit,
-    onUserButtonClick: (Int) -> Unit,
-    onPlaceDetailButtonClick: (Int) -> Unit,
-    onMyPageButtonClick: () -> Unit,
-    onBackButtonClick: () -> Unit,
-    onRemoveRecentSearchItem: (String) -> Unit,
-    onSwitchType: (SearchType) -> Unit,
-    onClearRecentSearchItem: () -> Unit,
-    onSearch: (String) -> Unit,
-    onEditReviewClick: (Int, RegisterType) -> Unit,
-    onClearSearchKeyword: () -> Unit,
-    onReviewDeleteButtonClick: (Int) -> Unit,
     recentReviewSearchQueryList: ImmutableList<String>,
     recentUserSearchQueryList: ImmutableList<String>,
     userInfoList: UiState<ImmutableList<ExploreSearchUserModel>>,
-    placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>
+    placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>,
+    onAction: (ExploreSearchAction) -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -151,7 +134,7 @@ private fun ExploreSearchScreen(
             positiveText = "네",
             onClickNegative = { isReviewDeleteDialogVisible = false },
             onClickPositive = {
-                onReviewDeleteButtonClick(targetReviewId)
+                onAction(ExploreSearchAction.DeleteReview(targetReviewId))
                 isReviewDeleteDialogVisible = false
             },
             onDismiss = { }
@@ -166,25 +149,24 @@ private fun ExploreSearchScreen(
 
     LaunchedEffect(searchText) {
         if (searchText.isEmpty()) {
-            onClearSearchKeyword()
+            onAction(ExploreSearchAction.ClearSearchKeyword)
         }
     }
 
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .background(color = SpoonyAndroidTheme.colors.white)
-            .padding(
-                bottom = paddingValues.calculateBottomPadding()
-            )
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         ExploreSearchTopAppbar(
             value = searchText,
             onValueChanged = {
                 searchText = it
             },
-            onBackButtonClick = onBackButtonClick,
+            onBackButtonClick = { onAction(ExploreSearchAction.ClickBack) },
             onSearchAction = {
-                onSearch(searchText)
+                onAction(ExploreSearchAction.Search(searchText))
             },
             focusRequester = focusRequester,
             searchType = searchType
@@ -211,7 +193,7 @@ private fun ExploreSearchScreen(
                     onClick = {
                         if (tabRowIndex != index) {
                             tabRowIndex = index
-                            onSwitchType(title)
+                            onAction(ExploreSearchAction.SwitchType(title))
                         }
                     },
                     selectedContentColor = SpoonyAndroidTheme.colors.white
@@ -236,11 +218,11 @@ private fun ExploreSearchScreen(
                             true -> ExploreSearchRecentEmptyScreen(searchType = searchType)
                             else ->
                                 ExploreSearchRecentContent(
-                                    onRemoveRecentSearchItem = onRemoveRecentSearchItem,
-                                    onClearRecentSearchItem = onClearRecentSearchItem,
+                                    onRemoveRecentSearchItem = { onAction(ExploreSearchAction.RemoveRecentSearch(it)) },
+                                    onClearRecentSearchItem = { onAction(ExploreSearchAction.ClearRecentSearch) },
                                     onItemClick = {
                                         searchText = it
-                                        onSearch(searchText)
+                                        onAction(ExploreSearchAction.Search(searchText))
                                         focusManager.clearFocus()
                                     },
                                     recentQueryList = recentUserSearchQueryList
@@ -263,9 +245,9 @@ private fun ExploreSearchScreen(
                                         ExploreSearchUserItem(
                                             onItemClick = {
                                                 if (userInfo.isMine) {
-                                                    onMyPageButtonClick()
+                                                    onAction(ExploreSearchAction.ClickMyPage)
                                                 } else {
-                                                    onUserButtonClick(userInfo.userId)
+                                                    onAction(ExploreSearchAction.ClickUser(userInfo.userId))
                                                 }
                                             },
                                             userInfo = userInfo
@@ -288,11 +270,11 @@ private fun ExploreSearchScreen(
                             true -> ExploreSearchRecentEmptyScreen(searchType = searchType)
                             else ->
                                 ExploreSearchRecentContent(
-                                    onRemoveRecentSearchItem = onRemoveRecentSearchItem,
-                                    onClearRecentSearchItem = onClearRecentSearchItem,
+                                    onRemoveRecentSearchItem = { onAction(ExploreSearchAction.RemoveRecentSearch(it)) },
+                                    onClearRecentSearchItem = { onAction(ExploreSearchAction.ClearRecentSearch) },
                                     onItemClick = {
                                         searchText = it
-                                        onSearch(searchText)
+                                        onAction(ExploreSearchAction.Search(searchText))
                                         focusManager.clearFocus()
                                     },
                                     recentQueryList = recentReviewSearchQueryList
@@ -332,8 +314,8 @@ private fun ExploreSearchScreen(
                                             review = placeReviewInfo.description,
                                             onMenuItemClick = {
                                                 when (it) {
-                                                    ExploreDropdownOption.REPORT.string -> onReviewReportButtonClick(placeReviewInfo.reviewId, ReportType.POST)
-                                                    ExploreDropdownOption.EDIT.string -> onEditReviewClick(placeReviewInfo.reviewId, RegisterType.EDIT)
+                                                    ExploreDropdownOption.REPORT.string -> onAction(ExploreSearchAction.ClickReviewReport(placeReviewInfo.reviewId, ReportType.POST))
+                                                    ExploreDropdownOption.EDIT.string -> onAction(ExploreSearchAction.ClickEditReview(placeReviewInfo.reviewId, RegisterType.EDIT))
                                                     ExploreDropdownOption.DELETE.string -> {
                                                         targetReviewId = placeReviewInfo.reviewId
                                                         isReviewDeleteDialogVisible = true
@@ -346,7 +328,7 @@ private fun ExploreSearchScreen(
                                             addMapCount = placeReviewInfo.addMapCount,
                                             imageList = placeReviewInfo.photoUrlList,
                                             menuItems = menuList,
-                                            onClick = onPlaceDetailButtonClick,
+                                            onClick = { placeId -> onAction(ExploreSearchAction.ClickPlaceDetail(placeId)) },
                                             category = ReviewCardCategory(
                                                 text = placeReviewInfo.category.text,
                                                 iconUrl = placeReviewInfo.category.iconUrl,
