@@ -81,16 +81,17 @@ fun RegisterEndRoute(
         onRegisterComplete = onRegisterComplete,
         onEditComplete = { postId ->
             onEditComplete(postId)
-
             tracker.commonEvents.reviewEdited(
                 reviewId = postId,
+                authorUserId = state.userId,
                 placeName = state.selectedPlace.placeName,
                 category = state.selectedCategory.categoryName,
                 menuCount = state.menuList.size,
                 satisfactionScore = state.userSatisfactionValue,
                 reviewLength = state.detailReview.length,
                 photoCount = state.selectedPhotos.size,
-                hasDisappointment = state.optionalReview.isNotEmpty()
+                hasDisappointment = state.optionalReview.isNotEmpty(),
+                savedCount = state.addMapCount
             )
         },
         postId = viewModel.postId,

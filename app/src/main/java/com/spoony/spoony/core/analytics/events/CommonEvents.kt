@@ -58,15 +58,15 @@ class CommonEvents @Inject constructor(
 
     fun reviewEdited(
         reviewId: Int,
-//        authorUserId: Int,
+        authorUserId: Int,
         placeName: String,
         category: String,
         menuCount: Int,
         satisfactionScore: Float,
         reviewLength: Int,
         photoCount: Int,
-        hasDisappointment: Boolean
-//        savedCount: Int,
+        hasDisappointment: Boolean,
+        savedCount: Int
 //        entryPoint: String
     ) {
         tracker.track(
@@ -74,13 +74,15 @@ class CommonEvents @Inject constructor(
             properties = """
                 {
                     "review_id": $reviewId,
+                    "author_user_id": $authorUserId,
                     "place_name": "$placeName",
                     "category": "$category",
                     "menu_count": $menuCount,
                     "satisfaction_score": $satisfactionScore,
                     "review_length": $reviewLength,
                     "photo_count": $photoCount,
-                    "has_disappointment": $hasDisappointment
+                    "has_disappointment": $hasDisappointment,
+                    "saved_count": $savedCount
                 }
             """.trimIndent()
         )
