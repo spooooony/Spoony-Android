@@ -111,7 +111,7 @@ fun ExploreRoute(
             viewModel.refresh()
         }
     }
-    // TODO:
+
     with(state) {
         ExploreScreen(
             paddingValues = paddingValues,

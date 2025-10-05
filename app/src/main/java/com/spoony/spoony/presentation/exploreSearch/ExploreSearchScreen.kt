@@ -76,7 +76,6 @@ fun ExploreSearchRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val showSnackBar = LocalSnackBarTrigger.current
-    val tracker = LocalTracker.current
 
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
@@ -122,6 +121,8 @@ private fun ExploreSearchScreen(
     placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>,
     onAction: (ExploreSearchAction) -> Unit
 ) {
+    val tracker = LocalTracker.current
+
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -169,6 +170,10 @@ private fun ExploreSearchScreen(
             onBackButtonClick = { onAction(ExploreSearchAction.ClickBack) },
             onSearchAction = {
                 onAction(ExploreSearchAction.Search(searchText))
+                tracker.exploreEvents.exploreSearched(
+                    searchTargetType = searchType.trackingCode,
+                    searchTerm = searchText
+                )
             },
             focusRequester = focusRequester,
             searchType = searchType
