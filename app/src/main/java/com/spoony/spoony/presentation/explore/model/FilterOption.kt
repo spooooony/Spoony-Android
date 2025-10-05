@@ -53,3 +53,22 @@ enum class FilterType(val defaultText: String) {
     REGION(defaultText = "지역"),
     AGE(defaultText = "연령대")
 }
+
+enum class FilterCategory {
+    LOCAL_REVIEW,
+    CATEGORY,
+    REGION,
+    AGE;
+
+    companion object {
+        fun fromFilterType(type: FilterType): FilterCategory? {
+            return when (type) {
+                FilterType.LOCAL_REVIEW -> LOCAL_REVIEW
+                FilterType.CATEGORY -> CATEGORY
+                FilterType.REGION -> REGION
+                FilterType.AGE -> AGE
+                else -> null
+            }
+        }
+    }
+}
