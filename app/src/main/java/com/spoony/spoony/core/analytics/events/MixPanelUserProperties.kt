@@ -9,4 +9,8 @@ class MixPanelUserProperties @Inject constructor(
     fun setUserProfile(userId: String, properties: Map<String, Any>) {
         tracker.setUserProfile(userId = userId, properties = properties)
     }
+
+    fun resetUserProfile() {
+        tracker.resetUserProfile()
+    }
 }

@@ -24,6 +24,10 @@ class MixPanelTracker @Inject constructor(
         }
     }
 
+    fun resetUserProfile() {
+        mixpanel.reset()
+    }
+
     fun track(eventName: String) {
         Timber.tag("mixpanel").d(eventName)
         mixpanel.track(eventName)
@@ -32,6 +36,11 @@ class MixPanelTracker @Inject constructor(
     fun track(eventName: String, properties: String) {
         Timber.tag("mixpanel").d("$eventName $properties")
         mixpanel.track(eventName, properties.toJsonObject())
+    }
+
+    fun track(eventName: String, properties: JSONObject) {
+        Timber.tag("mixpanel").d("$eventName $properties")
+        mixpanel.track(eventName, properties)
     }
 
     private fun String.toJsonObject(): JSONObject {
