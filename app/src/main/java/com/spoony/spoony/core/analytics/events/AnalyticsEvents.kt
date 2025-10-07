@@ -2,6 +2,7 @@ package com.spoony.spoony.core.analytics.events
 
 import com.spoony.spoony.core.analytics.MixPanelTracker
 import jakarta.inject.Inject
+import org.json.JSONObject
 
 class AnalyticsEvents @Inject constructor(
     private val tracker: MixPanelTracker
@@ -13,11 +14,9 @@ class AnalyticsEvents @Inject constructor(
     fun signupCompleted(signupMethod: String) {
         tracker.track(
             eventName = "signup_completed",
-            properties = """
-                {
-                    "signup_method": "$signupMethod"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("signup_method", signupMethod)
+            }
         )
     }
 

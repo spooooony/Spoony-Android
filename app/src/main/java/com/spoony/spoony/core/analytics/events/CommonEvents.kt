@@ -3,6 +3,7 @@ package com.spoony.spoony.core.analytics.events
 import com.spoony.spoony.core.analytics.MixPanelTracker
 import jakarta.inject.Inject
 import org.json.JSONArray
+import org.json.JSONObject
 
 class CommonEvents @Inject constructor(
     private val tracker: MixPanelTracker
@@ -10,11 +11,9 @@ class CommonEvents @Inject constructor(
     fun tabEntered(tabName: String) {
         tracker.track(
             eventName = "tab_entered",
-            properties = """
-                {
-                    "tab_name": "$tabName"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("tab_name", tabName)
+            }
         )
     }
 
@@ -36,23 +35,21 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "review_viewed",
-            properties = """
-                {
-                    "review_id": $reviewId,
-                    "author_user_id": $authorUserId,
-                    "place_name": "$placeName",
-                    "category" : "$category",
-                    "menu_count": $menuCount,
-                    "satisfaction_score": $satisfactionScore,
-                    "review_length": $reviewLength,
-                    "photo_count": $photoCount,
-                    "has_disappointment": $hasDisappointment,
-                    "saved_count": $savedCount,
-                    "is_self_review": $isSelfReview,
-                    "is_followed_user_review": $isFollowedUserReview,
-                    "is_saved_review": $isSavedReview
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("is_self_review", isSelfReview)
+                put("is_followed_user_review", isFollowedUserReview)
+                put("is_saved_review", isSavedReview)
+            }
         )
     }
 
@@ -71,20 +68,18 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "review_edited",
-            properties = """
-                {
-                    "review_id": $reviewId,
-                    "author_user_id": $authorUserId,
-                    "place_name": "$placeName",
-                    "category": "$category",
-                    "menu_count": $menuCount,
-                    "satisfaction_score": $satisfactionScore,
-                    "review_length": $reviewLength,
-                    "photo_count": $photoCount,
-                    "has_disappointment": $hasDisappointment,
-                    "saved_count": $savedCount
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+            }
         )
     }
 
@@ -96,13 +91,11 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "profile_viewed",
-            properties = """
-                {
-                    "profile_user_id": $profileUserId,
-                    "is_self_profile": $isSelfProfile,
-                    "is_following_profile_user": $isFollowingProfileUser
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("profile_user_id", profileUserId)
+                put("is_self_profile", isSelfProfile)
+                put("is_following_profile_user", isFollowingProfileUser)
+            }
         )
     }
 
@@ -112,12 +105,10 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "follow_user",
-            properties = """
-                {
-                    "followed_user_id": $followedUserId,
-                    "entry_point" : "$entryPoint"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("followed_user_id", followedUserId)
+                put("entry_point", entryPoint)
+            }
         )
     }
 
@@ -127,12 +118,10 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "unfollow_user",
-            properties = """
-                {
-                    "unfollowed_user_id": $unfollowedUserId,
-                    "entry_point": "$entryPoint"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("unfollowed_user_id", unfollowedUserId)
+                put("entry_point", entryPoint)
+            }
         )
     }
 
@@ -150,21 +139,19 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "follow_user_from_review",
-            properties = """
-                {
-                    "review_id": $reviewId,
-                    "author_user_id": $authorUserId,
-                    "place_name": "$placeName",
-                    "category": "$category",
-                    "menu_count": $menuCount,
-                    "satisfaction_score": $satisfactionScore,
-                    "review_length": $reviewLength,
-                    "photo_count": $photoCount,
-                    "has_disappointment": $hasDisappointment,
-                    "saved_count": $savedCount,
-                    "entry_point" : "review"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("entry_point", "review")
+            }
         )
     }
 
@@ -182,21 +169,19 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "unfollow_user_from_review",
-            properties = """
-                {
-                    "review_id": $reviewId,
-                    "author_user_id": $authorUserId,
-                    "place_name": "$placeName",
-                    "category": "$category",
-                    "menu_count": $menuCount,
-                    "satisfaction_score": $satisfactionScore,
-                    "review_length": $reviewLength,
-                    "photo_count": $photoCount,
-                    "has_disappointment": $hasDisappointment,
-                    "saved_count": $savedCount,
-                    "entry_point" : "review"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("entry_point", "review")
+            }
         )
     }
 
@@ -209,15 +194,13 @@ class CommonEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "filter_applied",
-            properties = """
-                {
-                    "page_applied": "$pageApplied",
-                    "local_review_filter": $localReviewFilter,
-                    "region_filters": ${JSONArray(regionFilters)},
-                    "category_filters": ${JSONArray(categoryFilters)},
-                    "age_group_filters": ${JSONArray(ageGroupFilters)}
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("page_applied", pageApplied)
+                put("local_review_filter", localReviewFilter)
+                put("region_filters", JSONArray(regionFilters))
+                put("category_filters", JSONArray(categoryFilters))
+                put("age_group_filters", JSONArray(ageGroupFilters))
+            }
         )
     }
 }

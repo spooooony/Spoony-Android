@@ -2,6 +2,7 @@ package com.spoony.spoony.core.analytics.events
 
 import com.spoony.spoony.core.analytics.MixPanelTracker
 import jakarta.inject.Inject
+import org.json.JSONObject
 
 class ReviewDetailEvents @Inject constructor(
     private val tracker: MixPanelTracker
@@ -21,21 +22,19 @@ class ReviewDetailEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "spoon_use_intent",
-            properties = """
-                {
-                    "review_id" : $reviewId,
-                    "author_user_id" : $authorUserId,
-                    "place_name" : "$placeName",
-                    "category" : "$category",
-                    "menu_count" : $menuCount,
-                    "satisfaction_score" : $satisfactionScore,
-                    "review_length" : $reviewLength,
-                    "photo_count" : $photoCount,
-                    "has_disappointment" : $hasDisappointment,
-                    "saved_count" : $savedCount,
-                    "is_following_author" : $isFollowingAuthor
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("is_following_author", isFollowingAuthor)
+            }
         )
     }
 
@@ -54,21 +53,19 @@ class ReviewDetailEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "spoon_used",
-            properties = """
-                {
-                    "review_id" : $reviewId,
-                    "author_user_id" : $authorUserId,
-                    "place_name" : "$placeName",
-                    "category": "$category",
-                    "menu_count" : $menuCount,
-                    "satisfaction_score" : $satisfactionScore,
-                    "review_length" : $reviewLength,
-                    "photo_count" : $photoCount,
-                    "has_disappointment" : $hasDisappointment,
-                    "saved_count" : $savedCount,
-                    "is_following_author" : $isFollowingAuthor
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("is_following_author", isFollowingAuthor)
+            }
         )
     }
 
@@ -91,21 +88,19 @@ class ReviewDetailEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "place_map_saved",
-            properties = """
-                {
-                    "review_id" : $reviewId,
-                    "author_user_id" : $authorUserId,
-                    "place_name" : "$placeName",
-                    "category" : "$category",
-                    "menu_count" : $menuCount,
-                    "satisfaction_score" : $satisfactionScore,
-                    "review_length" : $reviewLength,
-                    "photo_count" : $photoCount,
-                    "has_disappointment" : $hasDisappointment,
-                    "saved_count" : $savedCount,
-                    "is_following_author" : $isFollowingAuthor
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("is_following_author", isFollowingAuthor)
+            }
         )
     }
 
@@ -124,21 +119,19 @@ class ReviewDetailEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "place_map_removed",
-            properties = """
-                {
-                    "review_id" : $reviewId,
-                    "author_user_id" : $authorUserId,
-                    "place_name" : "$placeName",
-                    "category": "$category",
-                    "menu_count" : $menuCount,
-                    "satisfaction_score" : $satisfactionScore,
-                    "review_length" : $reviewLength,
-                    "photo_count" : $photoCount,
-                    "has_disappointment" : $hasDisappointment,
-                    "saved_count" : $savedCount,
-                    "is_following_author" : $isFollowingAuthor
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("is_following_author", isFollowingAuthor)
+            }
         )
     }
 
@@ -157,21 +150,19 @@ class ReviewDetailEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "direction_clicked",
-            properties = """
-                {
-                    "review_id" : $reviewId,
-                    "author_user_id" : $authorUserId,
-                    "place_name" : "$placeName",
-                    "category": "$category",
-                    "menu_count" : $menuCount,
-                    "satisfaction_score" : $satisfactionScore,
-                    "review_length" : $reviewLength,
-                    "photo_count" : $photoCount,
-                    "has_disappointment" : $hasDisappointment,
-                    "saved_count" : $savedCount,
-                    "is_following_author" : $isFollowingAuthor
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_id", reviewId)
+                put("author_user_id", authorUserId)
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+                put("satisfaction_score", satisfactionScore)
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+                put("saved_count", savedCount)
+                put("is_following_author", isFollowingAuthor)
+            }
         )
     }
 }

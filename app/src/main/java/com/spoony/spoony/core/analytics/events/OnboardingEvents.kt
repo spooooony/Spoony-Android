@@ -2,6 +2,7 @@ package com.spoony.spoony.core.analytics.events
 
 import com.spoony.spoony.core.analytics.MixPanelTracker
 import jakarta.inject.Inject
+import org.json.JSONObject
 
 class OnboardingEvents @Inject constructor(
     private val tracker: MixPanelTracker
@@ -16,12 +17,10 @@ class OnboardingEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "onboard_2_completed",
-            properties = """
-                {
-                    "birthdate_entered": $isBirthdateEntered,
-                    "active_region_entered": $isActiveRegionEntered
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("birthdate_entered", isBirthdateEntered)
+                put("active_region_entered", isActiveRegionEntered)
+            }
         )
     }
 
@@ -32,11 +31,9 @@ class OnboardingEvents @Inject constructor(
     fun onboard3Completed(bioLength: Int) {
         tracker.track(
             eventName = "onboard_3_completed",
-            properties = """
-                {
-                    "bio_length": $bioLength
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("bio_length", bioLength)
+            }
         )
     }
 

@@ -2,6 +2,7 @@ package com.spoony.spoony.core.analytics.events
 
 import com.spoony.spoony.core.analytics.MixPanelTracker
 import jakarta.inject.Inject
+import org.json.JSONObject
 
 class ExploreEvents @Inject constructor(
     private val tracker: MixPanelTracker
@@ -9,11 +10,9 @@ class ExploreEvents @Inject constructor(
     fun sortSelected(sortType: String) {
         tracker.track(
             eventName = "sort_selected",
-            properties = """
-                {
-                    "sort_type": "$sortType"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("sort_type", sortType)
+            }
         )
     }
 
@@ -23,12 +22,10 @@ class ExploreEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "explore_searched",
-            properties = """
-                {
-                    "search_target_type": "$searchTargetType",
-                    "search_term": "$searchTerm"
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("search_target_type", searchTargetType)
+                put("search_term", searchTerm)
+            }
         )
     }
 }

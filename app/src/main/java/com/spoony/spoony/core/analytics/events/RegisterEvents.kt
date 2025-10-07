@@ -2,6 +2,7 @@ package com.spoony.spoony.core.analytics.events
 
 import com.spoony.spoony.core.analytics.MixPanelTracker
 import jakarta.inject.Inject
+import org.json.JSONObject
 
 class RegisterEvents @Inject constructor(
     private val tracker: MixPanelTracker
@@ -13,13 +14,11 @@ class RegisterEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "review_1_completed",
-            properties = """
-                {
-                    "place_name": "$placeName",
-                    "category": "$category",
-                    "menu_count": $menuCount
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("place_name", placeName)
+                put("category", category)
+                put("menu_count", menuCount)
+            }
         )
     }
 
@@ -30,13 +29,11 @@ class RegisterEvents @Inject constructor(
     ) {
         tracker.track(
             eventName = "review_2_completed",
-            properties = """
-                {
-                    "review_length": $reviewLength,
-                    "photo_count": $photoCount,
-                    "has_disappointment": $hasDisappointment
-                }
-            """.trimIndent()
+            properties = JSONObject().apply {
+                put("review_length", reviewLength)
+                put("photo_count", photoCount)
+                put("has_disappointment", hasDisappointment)
+            }
         )
     }
 }
