@@ -41,10 +41,6 @@ fun MyPageRoute(
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
         viewModel.getSpoonCount()
-
-        if (userPageState.userType == UserType.MY_PAGE) {
-            tracker.commonEvents.tabEntered("mypage")
-        }
     }
 
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
@@ -58,6 +54,12 @@ fun MyPageRoute(
                     showSnackBar(effect.errorType.description)
                 }
             }
+        }
+    }
+
+    LaunchedEffect(userPageState.userType) {
+        if (userPageState.userType == UserType.MY_PAGE) {
+            tracker.commonEvents.tabEntered("mypage")
         }
     }
 
