@@ -133,15 +133,14 @@ fun PlaceDetailRoute(
         )
     }
 
-    when (val uiState = state.placeDetailModel) {
-        is UiState.Empty -> {}
-        is UiState.Loading -> {}
-        is UiState.Failure -> {}
-        is UiState.Success -> {
-            val postId = (state.reviewId as? UiState.Success)?.data ?: return
+    LaunchedEffect(state.reviewId, userProfile.userId) {
+        if (state.reviewId !is UiState.Success) return@LaunchedEffect
+        if (userProfile.userId == -1) return@LaunchedEffect
 
+        val uiState = state.placeDetailModel
+        if (uiState is UiState.Success) {
             tracker.commonEvents.reviewViewed(
-                reviewId = postId,
+                reviewId = (state.reviewId as UiState.Success<Int>).data,
                 authorUserId = userProfile.userId,
                 placeName = uiState.data.placeName,
                 category = uiState.data.category.categoryName,
@@ -155,6 +154,15 @@ fun PlaceDetailRoute(
                 isFollowedUserReview = state.isFollowing,
                 isSavedReview = state.isAddMap
             )
+        }
+    }
+
+    when (val uiState = state.placeDetailModel) {
+        is UiState.Empty -> {}
+        is UiState.Loading -> {}
+        is UiState.Failure -> {}
+        is UiState.Success -> {
+            val postId = (state.reviewId as? UiState.Success)?.data ?: return
 
             if (scoopDialogVisibility) {
                 ScoopDialog(
