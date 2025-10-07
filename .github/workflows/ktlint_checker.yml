@@ -1,4 +1,4 @@
-name: Spoony ktlint checker
+name: Spoony ktLint checker
 on:
   pull_request:
     branches: [ develop, main ]

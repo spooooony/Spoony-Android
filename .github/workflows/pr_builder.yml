@@ -1,4 +1,4 @@
-name: Spoony pr checker
+name: Spoony pr builder
 on:
   pull_request:
     branches: [ develop, main ]
@@ -10,7 +10,7 @@ defaults:
 
 jobs:
   build:
-    name: PR Checker
+    name: PR Builder
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
