@@ -1,4 +1,4 @@
-name: Spoony pr checker
+name: Spoony ktLint checker
 on:
   pull_request:
     branches: [ develop, main ]
@@ -10,7 +10,7 @@ defaults:
 
 jobs:
   build:
-    name: PR Checker
+    name: ktLint Checker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,7 +47,6 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           NATIVE_APP_KEY: ${{ secrets.NATIVE_APP_KEY }}
-          MIXPANEL_KEY: ${{ secrets.MIXPANEL_KEY }}
         run: |
           echo prod.base.url=\"$PROD_BASE_URL\" >> local.properties
           echo dev.base.url=\"$DEV_BASE_URL\" >> local.properties
@@ -56,18 +55,8 @@ jobs:
           echo keyAlias=$RELEASE_KEY_ALIAS >> local.properties
           echo keyPassword=$RELEASE_KEY_PASSWORD >> local.properties
           echo storePassword=$RELEASE_STORE_PASSWORD >> local.properties
-          echo native.app.key=\"$NATIVE_APP_KEY\" >> local.properties
+          echo native.app.key=\"$NATIVE_APP_KEY\" >> local.properties 
           echo nativeAppKey=$NATIVE_APP_KEY >> local.properties
-          echo mixpanelDevKey=\"$MIXPANEL_KEY\" >> local.properties
-          echo mixpanelProdKey=\"$MIXPANEL_KEY\" >> local.properties
-
-      - name: Create Google Services JSON
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
 
       - name: Lint Check
         run: ./gradlew ktlintCheck -PcompileSdkVersion=35
-
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug -PcompileSdkVersion=35
