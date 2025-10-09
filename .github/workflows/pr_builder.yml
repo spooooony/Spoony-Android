@@ -1,0 +1,67 @@
+name: Spoony pr builder
+on:
+  pull_request:
+    branches: [ develop, main ]
+
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+
+jobs:
+  build:
+    name: PR Builder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Gradle cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: set up JDK 18
+        uses: actions/setup-java@v3
+        with:
+          java-version: 18
+          distribution: 'temurin'
+
+      - name: Change gradlew permissions
+        run: chmod +x ./gradlew
+
+      - name: Touch local properties
+        run: touch local.properties
+
+      - name: Access Local Properties
+        env:
+          PROD_BASE_URL: ${{ secrets.PROD_BASE_URL }}
+          DEV_BASE_URL: ${{ secrets.DEV_BASE_URL }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          NATIVE_APP_KEY: ${{ secrets.NATIVE_APP_KEY }}
+        run: |
+          echo prod.base.url=\"$PROD_BASE_URL\" >> local.properties
+          echo dev.base.url=\"$DEV_BASE_URL\" >> local.properties
+          echo naver.client.id=\"$NAVER_CLIENT_ID\" >> local.properties
+          echo naverClientId=$NAVER_CLIENT_ID >> local.properties
+          echo keyAlias=$RELEASE_KEY_ALIAS >> local.properties
+          echo keyPassword=$RELEASE_KEY_PASSWORD >> local.properties
+          echo storePassword=$RELEASE_STORE_PASSWORD >> local.properties
+          echo native.app.key=\"$NATIVE_APP_KEY\" >> local.properties
+          echo nativeAppKey=$NATIVE_APP_KEY >> local.properties
+
+      - name: Create Google Services JSON
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug -PcompileSdkVersion=35
