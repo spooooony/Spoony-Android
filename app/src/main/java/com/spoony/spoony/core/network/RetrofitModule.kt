@@ -1,5 +1,7 @@
 package com.spoony.spoony.core.network
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.spoony.spoony.BuildConfig.BASE_URL
 import com.spoony.spoony.core.network.qualifier.Auth
@@ -7,6 +9,7 @@ import com.spoony.spoony.core.network.qualifier.CoilClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
@@ -81,13 +84,19 @@ object RetrofitModule {
 
     @Provides
     @Singleton
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor = ChuckerInterceptor.Builder(context).build()
+
+    @Provides
+    @Singleton
     fun provideClient(
         loggingInterceptor: HttpLoggingInterceptor,
         authInterceptor: Interceptor,
-        tokenAuthenticator: TokenAuthenticator
+        tokenAuthenticator: TokenAuthenticator,
+        chuckerInterceptor: ChuckerInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .addInterceptor(authInterceptor)
+        .addInterceptor(chuckerInterceptor)
         .authenticator(tokenAuthenticator)
         .build()
 
@@ -95,18 +104,22 @@ object RetrofitModule {
     @Singleton
     @Auth
     fun provideAuthClient(
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
+        chuckerInterceptor: ChuckerInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        .addInterceptor(chuckerInterceptor)
         .build()
 
     @Provides
     @Singleton
     @CoilClient
     fun provideCoilClient(
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
+        chuckerInterceptor: ChuckerInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        .addInterceptor(chuckerInterceptor)
         .build()
 
     @Provides
