@@ -159,7 +159,8 @@ fun PhotoPicker(
                         model = photo.uri,
                         modifier = Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(8.dp),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        showLoadingIndicator = true
                     )
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_delete_filled_24),

@@ -173,7 +173,8 @@ private fun ImageGrid(
                     .aspectRatio(1f),
                 shape = RoundedCornerShape(imageRadius),
                 contentScale = ContentScale.Crop,
-                contentDescription = null
+                contentDescription = null,
+                showLoadingIndicator = true
             )
         }
     }
