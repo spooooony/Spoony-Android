@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.spoony.spoony.core.analytics.events.LocalTracker
+import com.spoony.spoony.core.analytics.model.ReviewTrackingModel
 import com.spoony.spoony.core.designsystem.component.button.FollowButton
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
@@ -140,16 +141,18 @@ fun PlaceDetailRoute(
         val uiState = state.placeDetailModel
         if (uiState is UiState.Success) {
             tracker.commonEvents.reviewViewed(
-                reviewId = (state.reviewId as UiState.Success<Int>).data,
-                authorUserId = userProfile.userId,
-                placeName = uiState.data.placeName,
-                category = uiState.data.category.categoryName,
-                menuCount = uiState.data.menuList.size,
-                satisfactionScore = uiState.data.value,
-                reviewLength = uiState.data.description.length,
-                photoCount = uiState.data.photoUrlList.size,
-                hasDisappointment = uiState.data.cons.isNotEmpty(),
-                savedCount = state.addMapCount,
+                reviewTrackingModel = ReviewTrackingModel(
+                    reviewId = (state.reviewId as UiState.Success<Int>).data,
+                    authorUserId = userProfile.userId,
+                    placeName = uiState.data.placeName,
+                    category = uiState.data.category.categoryName,
+                    menuCount = uiState.data.menuList.size,
+                    satisfactionScore = uiState.data.value,
+                    reviewLength = uiState.data.description.length,
+                    photoCount = uiState.data.photoUrlList.size,
+                    hasDisappointment = uiState.data.cons.isNotEmpty(),
+                    savedCount = state.addMapCount
+                ),
                 isSelfReview = uiState.data.isMine,
                 isFollowedUserReview = state.isFollowing,
                 isSavedReview = state.isAddMap
@@ -170,16 +173,18 @@ fun PlaceDetailRoute(
                         viewModel.useSpoon(postId)
                         scoopDialogVisibility = false
                         tracker.reviewDetailEvents.spoonUsed(
-                            reviewId = postId,
-                            authorUserId = userProfile.userId,
-                            placeName = uiState.data.placeName,
-                            category = uiState.data.category.categoryName,
-                            menuCount = uiState.data.menuList.size,
-                            satisfactionScore = uiState.data.value,
-                            reviewLength = uiState.data.description.length,
-                            photoCount = uiState.data.photoUrlList.size,
-                            hasDisappointment = uiState.data.cons.isNotEmpty(),
-                            savedCount = state.addMapCount,
+                            reviewTrackingModel = ReviewTrackingModel(
+                                reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                authorUserId = userProfile.userId,
+                                placeName = uiState.data.placeName,
+                                category = uiState.data.category.categoryName,
+                                menuCount = uiState.data.menuList.size,
+                                satisfactionScore = uiState.data.value,
+                                reviewLength = uiState.data.description.length,
+                                photoCount = uiState.data.photoUrlList.size,
+                                hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                savedCount = state.addMapCount
+                            ),
                             isFollowingAuthor = state.isFollowing
                         )
                     },
@@ -230,16 +235,18 @@ fun PlaceDetailRoute(
                             isAddMap = state.isAddMap,
                             onSearchMapClick = {
                                 tracker.reviewDetailEvents.directionClicked(
-                                    reviewId = postId,
-                                    authorUserId = userProfile.userId,
-                                    placeName = uiState.data.placeName,
-                                    category = uiState.data.category.categoryName,
-                                    menuCount = uiState.data.menuList.size,
-                                    satisfactionScore = uiState.data.value,
-                                    reviewLength = uiState.data.description.length,
-                                    photoCount = uiState.data.photoUrlList.size,
-                                    hasDisappointment = uiState.data.cons.isNotEmpty(),
-                                    savedCount = state.addMapCount,
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
                                     isFollowingAuthor = state.isFollowing
                                 )
                                 searchPlaceNaverMap(
@@ -253,32 +260,36 @@ fun PlaceDetailRoute(
                             onAddMapButtonClick = {
                                 viewModel.addMyMap(postId)
                                 tracker.reviewDetailEvents.placeMapSaved(
-                                    reviewId = postId,
-                                    authorUserId = userProfile.userId,
-                                    placeName = uiState.data.placeName,
-                                    category = uiState.data.category.categoryName,
-                                    menuCount = uiState.data.menuList.size,
-                                    satisfactionScore = uiState.data.value,
-                                    reviewLength = uiState.data.description.length,
-                                    photoCount = uiState.data.photoUrlList.size,
-                                    hasDisappointment = uiState.data.cons.isNotEmpty(),
-                                    savedCount = state.addMapCount,
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
                                     isFollowingAuthor = state.isFollowing
                                 )
                             },
                             onDeletePinMapButtonClick = {
                                 viewModel.deletePinMap(postId)
                                 tracker.reviewDetailEvents.placeMapRemoved(
-                                    reviewId = postId,
-                                    authorUserId = userProfile.userId,
-                                    placeName = uiState.data.placeName,
-                                    category = uiState.data.category.categoryName,
-                                    menuCount = uiState.data.menuList.size,
-                                    satisfactionScore = uiState.data.value,
-                                    reviewLength = uiState.data.description.length,
-                                    photoCount = uiState.data.photoUrlList.size,
-                                    hasDisappointment = uiState.data.cons.isNotEmpty(),
-                                    savedCount = state.addMapCount,
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
                                     isFollowingAuthor = state.isFollowing
                                 )
                             }
@@ -314,29 +325,33 @@ fun PlaceDetailRoute(
 
                                 if (state.isFollowing) {
                                     tracker.commonEvents.unfollowUserFromReview(
-                                        reviewId = postId,
-                                        authorUserId = userProfile.userId,
-                                        placeName = uiState.data.placeName,
-                                        category = uiState.data.category.categoryName,
-                                        menuCount = uiState.data.menuList.size,
-                                        satisfactionScore = uiState.data.value,
-                                        reviewLength = uiState.data.description.length,
-                                        photoCount = uiState.data.photoUrlList.size,
-                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
-                                        savedCount = state.addMapCount
+                                        reviewTrackingModel = ReviewTrackingModel(
+                                            reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                            authorUserId = userProfile.userId,
+                                            placeName = uiState.data.placeName,
+                                            category = uiState.data.category.categoryName,
+                                            menuCount = uiState.data.menuList.size,
+                                            satisfactionScore = uiState.data.value,
+                                            reviewLength = uiState.data.description.length,
+                                            photoCount = uiState.data.photoUrlList.size,
+                                            hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                            savedCount = state.addMapCount
+                                        )
                                     )
                                 } else {
                                     tracker.commonEvents.followUserFromReview(
-                                        reviewId = postId,
-                                        authorUserId = userProfile.userId,
-                                        placeName = uiState.data.placeName,
-                                        category = uiState.data.category.categoryName,
-                                        menuCount = uiState.data.menuList.size,
-                                        satisfactionScore = uiState.data.value,
-                                        reviewLength = uiState.data.description.length,
-                                        photoCount = uiState.data.photoUrlList.size,
-                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
-                                        savedCount = state.addMapCount
+                                        reviewTrackingModel = ReviewTrackingModel(
+                                            reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                            authorUserId = userProfile.userId,
+                                            placeName = uiState.data.placeName,
+                                            category = uiState.data.category.categoryName,
+                                            menuCount = uiState.data.menuList.size,
+                                            satisfactionScore = uiState.data.value,
+                                            reviewLength = uiState.data.description.length,
+                                            photoCount = uiState.data.photoUrlList.size,
+                                            hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                            savedCount = state.addMapCount
+                                        )
                                     )
                                 }
                             },
@@ -352,16 +367,18 @@ fun PlaceDetailRoute(
                             onShowSnackBar = viewModel::showSnackBar,
                             trackSpoonUseIntent = {
                                 tracker.reviewDetailEvents.spoonUseIntent(
-                                    reviewId = postId,
-                                    authorUserId = userProfile.userId,
-                                    placeName = uiState.data.placeName,
-                                    category = uiState.data.category.categoryName,
-                                    menuCount = uiState.data.menuList.size,
-                                    satisfactionScore = uiState.data.value,
-                                    reviewLength = uiState.data.description.length,
-                                    photoCount = uiState.data.photoUrlList.size,
-                                    hasDisappointment = uiState.data.cons.isNotEmpty(),
-                                    savedCount = state.addMapCount,
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
                                     isFollowingAuthor = state.isFollowing
                                 )
                             },

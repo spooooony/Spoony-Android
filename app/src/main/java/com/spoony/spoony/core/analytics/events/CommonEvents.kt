@@ -1,6 +1,7 @@
 package com.spoony.spoony.core.analytics.events
 
 import com.spoony.spoony.core.analytics.MixPanelTracker
+import com.spoony.spoony.core.analytics.model.ReviewTrackingModel
 import jakarta.inject.Inject
 import org.json.JSONArray
 import org.json.JSONObject
@@ -18,34 +19,24 @@ class CommonEvents @Inject constructor(
     }
 
     fun reviewViewed(
-        reviewId: Int,
-        authorUserId: Int,
-        placeName: String,
-        category: String,
-        menuCount: Int,
-        satisfactionScore: Double,
-        reviewLength: Int,
-        photoCount: Int,
-        hasDisappointment: Boolean,
-        savedCount: Int,
+        reviewTrackingModel: ReviewTrackingModel,
         isSelfReview: Boolean,
         isFollowedUserReview: Boolean,
         isSavedReview: Boolean
-//        entryPoint: String
     ) {
         tracker.track(
             eventName = "review_viewed",
             properties = JSONObject().apply {
-                put("review_id", reviewId)
-                put("author_user_id", authorUserId)
-                put("place_name", placeName)
-                put("category", category)
-                put("menu_count", menuCount)
-                put("satisfaction_score", satisfactionScore)
-                put("review_length", reviewLength)
-                put("photo_count", photoCount)
-                put("has_disappointment", hasDisappointment)
-                put("saved_count", savedCount)
+                put("review_id", reviewTrackingModel.reviewId)
+                put("author_user_id", reviewTrackingModel.authorUserId)
+                put("place_name", reviewTrackingModel.placeName)
+                put("category", reviewTrackingModel.category)
+                put("menu_count", reviewTrackingModel.menuCount)
+                put("satisfaction_score", reviewTrackingModel.satisfactionScore)
+                put("review_length", reviewTrackingModel.reviewLength)
+                put("photo_count", reviewTrackingModel.photoCount)
+                put("has_disappointment", reviewTrackingModel.hasDisappointment)
+                put("saved_count", reviewTrackingModel.savedCount)
                 put("is_self_review", isSelfReview)
                 put("is_followed_user_review", isFollowedUserReview)
                 put("is_saved_review", isSavedReview)
@@ -54,31 +45,21 @@ class CommonEvents @Inject constructor(
     }
 
     fun reviewEdited(
-        reviewId: Int,
-        authorUserId: Int,
-        placeName: String,
-        category: String,
-        menuCount: Int,
-        satisfactionScore: Float,
-        reviewLength: Int,
-        photoCount: Int,
-        hasDisappointment: Boolean,
-        savedCount: Int
-//        entryPoint: String
+        reviewTrackingModel: ReviewTrackingModel
     ) {
         tracker.track(
             eventName = "review_edited",
             properties = JSONObject().apply {
-                put("review_id", reviewId)
-                put("author_user_id", authorUserId)
-                put("place_name", placeName)
-                put("category", category)
-                put("menu_count", menuCount)
-                put("satisfaction_score", satisfactionScore)
-                put("review_length", reviewLength)
-                put("photo_count", photoCount)
-                put("has_disappointment", hasDisappointment)
-                put("saved_count", savedCount)
+                put("review_id", reviewTrackingModel.reviewId)
+                put("author_user_id", reviewTrackingModel.authorUserId)
+                put("place_name", reviewTrackingModel.placeName)
+                put("category", reviewTrackingModel.category)
+                put("menu_count", reviewTrackingModel.menuCount)
+                put("satisfaction_score", reviewTrackingModel.satisfactionScore)
+                put("review_length", reviewTrackingModel.reviewLength)
+                put("photo_count", reviewTrackingModel.photoCount)
+                put("has_disappointment", reviewTrackingModel.hasDisappointment)
+                put("saved_count", reviewTrackingModel.savedCount)
             }
         )
     }
@@ -126,60 +107,42 @@ class CommonEvents @Inject constructor(
     }
 
     fun followUserFromReview(
-        reviewId: Int,
-        authorUserId: Int,
-        placeName: String,
-        category: String,
-        menuCount: Int,
-        satisfactionScore: Double,
-        reviewLength: Int,
-        photoCount: Int,
-        hasDisappointment: Boolean,
-        savedCount: Int
+        reviewTrackingModel: ReviewTrackingModel
     ) {
         tracker.track(
             eventName = "follow_user_from_review",
             properties = JSONObject().apply {
-                put("review_id", reviewId)
-                put("author_user_id", authorUserId)
-                put("place_name", placeName)
-                put("category", category)
-                put("menu_count", menuCount)
-                put("satisfaction_score", satisfactionScore)
-                put("review_length", reviewLength)
-                put("photo_count", photoCount)
-                put("has_disappointment", hasDisappointment)
-                put("saved_count", savedCount)
+                put("review_id", reviewTrackingModel.reviewId)
+                put("author_user_id", reviewTrackingModel.authorUserId)
+                put("place_name", reviewTrackingModel.placeName)
+                put("category", reviewTrackingModel.category)
+                put("menu_count", reviewTrackingModel.menuCount)
+                put("satisfaction_score", reviewTrackingModel.satisfactionScore)
+                put("review_length", reviewTrackingModel.reviewLength)
+                put("photo_count", reviewTrackingModel.photoCount)
+                put("has_disappointment", reviewTrackingModel.hasDisappointment)
+                put("saved_count", reviewTrackingModel.savedCount)
                 put("entry_point", "review")
             }
         )
     }
 
     fun unfollowUserFromReview(
-        reviewId: Int,
-        authorUserId: Int,
-        placeName: String,
-        category: String,
-        menuCount: Int,
-        satisfactionScore: Double,
-        reviewLength: Int,
-        photoCount: Int,
-        hasDisappointment: Boolean,
-        savedCount: Int
+        reviewTrackingModel: ReviewTrackingModel
     ) {
         tracker.track(
             eventName = "unfollow_user_from_review",
             properties = JSONObject().apply {
-                put("review_id", reviewId)
-                put("author_user_id", authorUserId)
-                put("place_name", placeName)
-                put("category", category)
-                put("menu_count", menuCount)
-                put("satisfaction_score", satisfactionScore)
-                put("review_length", reviewLength)
-                put("photo_count", photoCount)
-                put("has_disappointment", hasDisappointment)
-                put("saved_count", savedCount)
+                put("review_id", reviewTrackingModel.reviewId)
+                put("author_user_id", reviewTrackingModel.authorUserId)
+                put("place_name", reviewTrackingModel.placeName)
+                put("category", reviewTrackingModel.category)
+                put("menu_count", reviewTrackingModel.menuCount)
+                put("satisfaction_score", reviewTrackingModel.satisfactionScore)
+                put("review_length", reviewTrackingModel.reviewLength)
+                put("photo_count", reviewTrackingModel.photoCount)
+                put("has_disappointment", reviewTrackingModel.hasDisappointment)
+                put("saved_count", reviewTrackingModel.savedCount)
                 put("entry_point", "review")
             }
         )

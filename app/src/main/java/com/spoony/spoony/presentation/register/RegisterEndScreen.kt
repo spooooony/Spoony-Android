@@ -25,6 +25,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
 import com.spoony.spoony.core.analytics.events.LocalTracker
+import com.spoony.spoony.core.analytics.model.ReviewTrackingModel
 import com.spoony.spoony.core.designsystem.component.dialog.SingleButtonDialog
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -82,16 +83,18 @@ fun RegisterEndRoute(
         onEditComplete = { postId ->
             onEditComplete(postId)
             tracker.commonEvents.reviewEdited(
-                reviewId = postId,
-                authorUserId = state.userId,
-                placeName = state.selectedPlace.placeName,
-                category = state.selectedCategory.categoryName,
-                menuCount = state.menuList.size,
-                satisfactionScore = state.userSatisfactionValue,
-                reviewLength = state.detailReview.length,
-                photoCount = state.selectedPhotos.size,
-                hasDisappointment = state.optionalReview.isNotEmpty(),
-                savedCount = state.addMapCount
+                reviewTrackingModel = ReviewTrackingModel(
+                    reviewId = postId,
+                    authorUserId = state.userId,
+                    placeName = state.selectedPlace.placeName,
+                    category = state.selectedCategory.categoryName,
+                    menuCount = state.menuList.size,
+                    satisfactionScore = state.userSatisfactionValue.toDouble(),
+                    reviewLength = state.detailReview.length,
+                    photoCount = state.selectedPhotos.size,
+                    hasDisappointment = state.optionalReview.isNotEmpty(),
+                    savedCount = state.addMapCount
+                )
             )
         },
         postId = viewModel.postId,
