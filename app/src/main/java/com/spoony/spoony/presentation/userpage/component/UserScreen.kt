@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.screen.EmptyContent
@@ -55,9 +57,21 @@ fun UserPageScreen(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+    val tracker = LocalTracker.current
+
     var isReviewDeleteDialogVisible by remember { mutableStateOf(false) }
     var isUserBlockDialogVisible by remember { mutableStateOf(false) }
     val topBarMenuItemList = persistentListOf("차단하기", "신고하기")
+
+    LaunchedEffect(state.profileId) {
+        if (state.profileId != 0) {
+            tracker.commonEvents.profileViewed(
+                profileUserId = state.profileId,
+                isSelfProfile = state.userType == UserType.MY_PAGE,
+                isFollowingProfileUser = state.profile.isFollowing
+            )
+        }
+    }
 
     LazyColumn(
         modifier = modifier

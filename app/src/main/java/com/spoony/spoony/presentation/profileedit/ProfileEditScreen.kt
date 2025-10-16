@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePickerBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBottomSheet
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
@@ -61,6 +62,8 @@ fun ProfileEditScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileEditViewModel = hiltViewModel()
 ) {
+    val tracker = LocalTracker.current
+
     val profileEditModel by viewModel.profileEditModel.collectAsStateWithLifecycle()
     val nicknameState by viewModel.nicknameState.collectAsStateWithLifecycle()
     val saveButtonEnabled by viewModel.saveButtonEnabled.collectAsStateWithLifecycle()
@@ -125,7 +128,10 @@ fun ProfileEditScreen(
             )
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_question_24),
-                modifier = Modifier.noRippleClickable { isImageBottomSheetVisible = true },
+                modifier = Modifier.noRippleClickable {
+                    isImageBottomSheetVisible = true
+                    tracker.mypageEvents.spoonCharacterViewed()
+                },
                 tint = Color.Unspecified,
                 contentDescription = null
             )
@@ -197,7 +203,12 @@ fun ProfileEditScreen(
 
         SaveButton(
             enabled = saveButtonEnabled,
-            onClick = viewModel::updateProfileInfo,
+            onClick = {
+                viewModel.updateProfileInfo()
+                tracker.mypageEvents.profileUpdated(
+                    fieldsUpdated = viewModel.fieldsUpdated
+                )
+            },
             modifier = Modifier.padding(horizontal = 20.dp)
         )
 

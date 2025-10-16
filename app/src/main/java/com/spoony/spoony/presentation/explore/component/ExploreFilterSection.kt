@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.presentation.explore.ExploreAction
 import com.spoony.spoony.presentation.explore.ExploreFilterItems
 import com.spoony.spoony.presentation.explore.ExploreFilterState
@@ -30,6 +31,8 @@ fun ExploreFilterSection(
     filterItems: ExploreFilterItems,
     onAction: (ExploreAction) -> Unit
 ) {
+    val tracker = LocalTracker.current
+
     var isSortingBottomSheetVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var exploreFilterBottomSheetTabIndex by remember { mutableIntStateOf(0) }
@@ -48,7 +51,14 @@ fun ExploreFilterSection(
             onFilterClick = { filterType ->
                 handleFilterClick(
                     filterType = filterType,
-                    onLocalReviewButtonClick = { onAction(ExploreAction.ClickLocalReview) },
+                    onLocalReviewButtonClick = {
+                        tracker.commonEvents.filterApplied(
+                            pageApplied = "explore",
+                            localReviewFilter = !(selectedFilterState.properties[2] ?: false)
+                        )
+
+                        onAction(ExploreAction.ClickLocalReview)
+                    },
                     updateBottomSheetState = { index, isVisible ->
                         exploreFilterBottomSheetTabIndex = index
                         isFilterBottomSheetVisible = isVisible
@@ -62,7 +72,10 @@ fun ExploreFilterSection(
     if (isSortingBottomSheetVisible) {
         ExploreSortingBottomSheet(
             onDismiss = { isSortingBottomSheetVisible = false },
-            onClick = { onAction(ExploreAction.ChangeSorting(it)) },
+            onClick = { sortType ->
+                onAction(ExploreAction.ChangeSorting(sortType))
+                tracker.exploreEvents.sortSelected(sortType.trackingCode)
+            },
             currentSortingOption = selectedSortingOption
         )
     }

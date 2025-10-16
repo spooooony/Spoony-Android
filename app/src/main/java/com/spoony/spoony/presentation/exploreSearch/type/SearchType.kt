@@ -1,8 +1,10 @@
 package com.spoony.spoony.presentation.exploreSearch.type
 
-enum class SearchType {
-    USER,
-    REVIEW
+enum class SearchType(
+    val trackingCode: String
+) {
+    USER("user"),
+    REVIEW("review")
 }
 
 fun SearchType.toKoreanText(): String {
