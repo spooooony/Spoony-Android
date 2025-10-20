@@ -78,6 +78,7 @@ import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.location.FusedLocationSource
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyAdvancedBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyBasicDragHandle
 import com.spoony.spoony.core.designsystem.component.chip.IconChip
@@ -132,6 +133,7 @@ fun MapRoute(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val showSnackBar = LocalSnackBarTrigger.current
+    val tracker = LocalTracker.current
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition(
@@ -176,6 +178,7 @@ fun MapRoute(
     with(state.locationModel) {
         LaunchedEffect(placeId) {
             if (placeId == null) {
+                tracker.commonEvents.tabEntered("map")
                 viewModel.getAddedPlaceList(DEFAULT_CATEGORY_ID)
             } else {
                 viewModel.getAddedPlaceListByLocation(locationId = placeId)
@@ -313,6 +316,7 @@ private fun MapScreen(
     onGpsButtonClick: () -> Unit,
     onCategoryClick: (Int) -> Unit
 ) {
+    val tracker = LocalTracker.current
     val density = LocalDensity.current
 
     val sheetState = rememberBottomSheetState(
@@ -476,6 +480,11 @@ private fun MapScreen(
                                 onClick = {
                                     selectedCategoryId = categoryId
                                     onCategoryClick(categoryId)
+
+                                    tracker.commonEvents.filterApplied(
+                                        pageApplied = "map",
+                                        regionFilters = listOf(categoryName)
+                                    )
                                 },
                                 isSelected = categoryId == selectedCategoryId,
                                 isGradient = true,

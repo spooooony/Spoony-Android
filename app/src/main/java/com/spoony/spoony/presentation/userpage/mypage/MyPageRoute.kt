@@ -10,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.presentation.follow.model.FollowType
@@ -35,6 +36,7 @@ fun MyPageRoute(
     val userPageState by viewModel.state.collectAsStateWithLifecycle()
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = LocalTracker.current
 
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
@@ -47,10 +49,17 @@ fun MyPageRoute(
                 is MyPageSideEffect.ShowSnackbar -> {
                     showSnackBar(effect.message)
                 }
+
                 is MyPageSideEffect.ShowError -> {
                     showSnackBar(effect.errorType.description)
                 }
             }
+        }
+    }
+
+    LaunchedEffect(userPageState.userType) {
+        if (userPageState.userType == UserType.MY_PAGE) {
+            tracker.commonEvents.tabEntered("mypage")
         }
     }
 

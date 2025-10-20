@@ -19,7 +19,8 @@ data class PlaceReviewModel(
     val placeAddress: String,
     val latitude: Double,
     val longitude: Double,
-    val category: CategoryState
+    val category: CategoryState,
+    val addMapCount: Int
 )
 
 fun PlaceReviewEntity.toModel(): PlaceReviewModel =
@@ -36,7 +37,8 @@ fun PlaceReviewEntity.toModel(): PlaceReviewModel =
         placeAddress = placeAddress ?: "",
         latitude = latitude ?: 0.0,
         longitude = longitude ?: 0.0,
-        category = category?.toModel() ?: CategoryState(0, "", "", "")
+        category = category?.toModel() ?: CategoryState(0, "", "", ""),
+        addMapCount = addMapCount ?: -1
     )
 
 fun PlaceReviewModel.toRegisterState(currentState: RegisterState): RegisterState =
@@ -56,5 +58,7 @@ fun PlaceReviewModel.toRegisterState(currentState: RegisterState): RegisterState
         originalPhotoUrls = photoUrls,
         selectedPhotos = photoUrls.map { url ->
             SelectedPhoto(uri = url.toUri(), isFromServer = true)
-        }.toImmutableList()
+        }.toImmutableList(),
+        userId = this.userId,
+        addMapCount = this.addMapCount
     )

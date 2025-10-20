@@ -46,6 +46,10 @@ class ProfileEditViewModel @Inject constructor(
     val sideEffect: SharedFlow<ProfileEditSideEffect>
         get() = _sideEffect.asSharedFlow()
 
+    private val _fieldsUpdated: MutableSet<String> = mutableSetOf()
+    val fieldsUpdated: List<String>
+        get() = _fieldsUpdated.toList()
+
     init {
         loadProfileEditData()
     }
@@ -79,6 +83,7 @@ class ProfileEditViewModel @Inject constructor(
     fun updateNickname(nickname: String) {
         _profileEditModel.update { it.copy(userName = nickname) }
         updateSaveButtonState()
+        _fieldsUpdated.add("nickname")
     }
 
     fun updateNicknameState(state: NicknameTextFieldState) {
@@ -129,6 +134,7 @@ class ProfileEditViewModel @Inject constructor(
         _profileEditModel.update {
             it.copy(introduction = introduction.takeIf { it.isNotBlank() })
         }
+        _fieldsUpdated.add("bio")
     }
 
     fun selectImageLevel(level: Int) {
@@ -142,6 +148,7 @@ class ProfileEditViewModel @Inject constructor(
                 profileImages = updatedImages
             )
         }
+        _fieldsUpdated.add("profile_image")
     }
 
     fun selectDate(year: String, month: String, day: String) {
@@ -153,6 +160,7 @@ class ProfileEditViewModel @Inject constructor(
                 isBirthSelected = true
             )
         }
+        _fieldsUpdated.add("birthdate")
     }
 
     fun selectRegion(regionId: Int, regionName: String) {
@@ -163,6 +171,7 @@ class ProfileEditViewModel @Inject constructor(
                 isRegionSelected = true
             )
         }
+        _fieldsUpdated.add("active_region")
     }
 
     fun updateProfileInfo() {

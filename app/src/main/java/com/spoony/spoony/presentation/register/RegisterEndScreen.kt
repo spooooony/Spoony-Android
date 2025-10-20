@@ -24,6 +24,8 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.events.LocalTracker
+import com.spoony.spoony.core.analytics.model.ReviewTrackingModel
 import com.spoony.spoony.core.designsystem.component.dialog.SingleButtonDialog
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -48,6 +50,8 @@ fun RegisterEndRoute(
     viewModel: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
+    val tracker = LocalTracker.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val registerType = viewModel.registerType
 
@@ -66,9 +70,33 @@ fun RegisterEndRoute(
         onDetailReviewChange = viewModel::updateDetailReview,
         onPhotosSelected = viewModel::updatePhotos,
         onOptionalReviewChange = viewModel::updateOptionalReview,
-        onRegisterPost = viewModel::registerPost,
+        onRegisterPost = {
+            viewModel.registerPost(it)
+
+            tracker.registerEvents.review2Completed(
+                reviewLength = state.detailReview.length,
+                photoCount = state.selectedPhotos.size,
+                hasDisappointment = state.optionalReview.isNotEmpty()
+            )
+        },
         onRegisterComplete = onRegisterComplete,
-        onEditComplete = onEditComplete,
+        onEditComplete = { postId ->
+            onEditComplete(postId)
+            tracker.commonEvents.reviewEdited(
+                reviewTrackingModel = ReviewTrackingModel(
+                    reviewId = postId,
+                    authorUserId = state.userId,
+                    placeName = state.selectedPlace.placeName,
+                    category = state.selectedCategory.categoryName,
+                    menuCount = state.menuList.size,
+                    satisfactionScore = state.userSatisfactionValue.toDouble(),
+                    reviewLength = state.detailReview.length,
+                    photoCount = state.selectedPhotos.size,
+                    hasDisappointment = state.optionalReview.isNotEmpty(),
+                    savedCount = state.addMapCount
+                )
+            )
+        },
         postId = viewModel.postId,
         modifier = modifier
     )
