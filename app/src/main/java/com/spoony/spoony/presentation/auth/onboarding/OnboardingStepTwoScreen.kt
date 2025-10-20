@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyDatePickerBottomSheet
 import com.spoony.spoony.core.designsystem.component.bottomsheet.SpoonyRegionBottomSheet
 import com.spoony.spoony.core.designsystem.component.button.RegionSelectButton
@@ -36,6 +37,7 @@ fun OnboardingStepTwoRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showSnackbar = LocalSnackBarTrigger.current
+    val tracker = LocalTracker.current
 
     var isButtonEnabled by remember { mutableStateOf(false) }
     var birthBottomSheetVisibility by remember { mutableStateOf(false) }
@@ -66,7 +68,13 @@ fun OnboardingStepTwoRoute(
             regionBottomSheetVisibility = true
             viewModel.getRegionList()
         },
-        onNextButtonClick = onNextButtonClick
+        onNextButtonClick = {
+            onNextButtonClick()
+            tracker.onboardingEvents.onboard2Completed(
+                isBirthdateEntered = !state.birth.isNullOrBlank(),
+                isActiveRegionEntered = state.region != null
+            )
+        }
     )
 
     if (birthBottomSheetVisibility) {

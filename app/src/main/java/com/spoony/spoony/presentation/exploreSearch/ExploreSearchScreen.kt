@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.card.ReviewCard
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
@@ -120,6 +121,8 @@ private fun ExploreSearchScreen(
     placeReviewInfoList: UiState<ImmutableList<ExploreSearchPlaceReviewModel>>,
     onAction: (ExploreSearchAction) -> Unit
 ) {
+    val tracker = LocalTracker.current
+
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var tabRowIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -167,6 +170,10 @@ private fun ExploreSearchScreen(
             onBackButtonClick = { onAction(ExploreSearchAction.ClickBack) },
             onSearchAction = {
                 onAction(ExploreSearchAction.Search(searchText))
+                tracker.exploreEvents.exploreSearched(
+                    searchTargetType = searchType.trackingCode,
+                    searchTerm = searchText
+                )
             },
             focusRequester = focusRequester,
             searchType = searchType
@@ -229,6 +236,7 @@ private fun ExploreSearchScreen(
                                 )
                         }
                     }
+
                     searchKeyword.isBlank() && searchText.isNotBlank() -> {}
                     else -> {
                         when (userInfoList) {
@@ -255,14 +263,17 @@ private fun ExploreSearchScreen(
                                     }
                                 }
                             }
+
                             is UiState.Empty -> {
                                 ExploreSearchEmptyScreen(searchType = searchType)
                             }
-                            else -> { }
+
+                            else -> {}
                         }
                     }
                 }
             }
+
             1 -> {
                 when {
                     searchKeyword.isBlank() && searchText.isBlank() -> {
@@ -281,6 +292,7 @@ private fun ExploreSearchScreen(
                                 )
                         }
                     }
+
                     searchKeyword.isBlank() && searchText.isNotBlank() -> {}
                     else -> {
                         when (placeReviewInfoList) {
@@ -339,10 +351,12 @@ private fun ExploreSearchScreen(
                                     }
                                 }
                             }
+
                             is UiState.Empty -> {
                                 ExploreSearchEmptyScreen(searchType = searchType)
                             }
-                            else -> { }
+
+                            else -> {}
                         }
                     }
                 }

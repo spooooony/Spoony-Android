@@ -23,6 +23,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.spoony.spoony.R
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.ButtonSize
@@ -35,8 +36,11 @@ fun OnboardingEndRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val tracker = LocalTracker.current
+
     LaunchedEffect(Unit) {
         viewModel.updateCurrentStep(OnboardingSteps.END)
+        tracker.analyticsEvents.signupCompleted("kakao")
     }
 
     OnboardingEndScreen(

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.textfield.SpoonyLargeTextField
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.addFocusCleaner
@@ -22,6 +23,7 @@ fun OnboardingStepThreeRoute(
     viewModel: OnboardingViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val tracker = LocalTracker.current
 
     LaunchedEffect(Unit) {
         viewModel.updateCurrentStep(OnboardingSteps.THREE)
@@ -30,7 +32,10 @@ fun OnboardingStepThreeRoute(
     OnboardingStepThreeScreen(
         introduction = state.introduction,
         onValueChanged = viewModel::updateIntroduction,
-        onButtonClick = viewModel::signUp
+        onButtonClick = {
+            viewModel.signUp()
+            tracker.onboardingEvents.onboard3Completed(state.introduction?.length ?: 0)
+        }
     )
 }
 

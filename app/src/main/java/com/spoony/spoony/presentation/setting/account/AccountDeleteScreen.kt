@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import com.jakewharton.processphoenix.ProcessPhoenix
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.button.SpoonyButton
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -46,9 +47,11 @@ fun AccountDeleteScreen(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = LocalTracker.current
 
     LaunchedEffect(viewModel.restartTrigger, lifecycleOwner) {
         viewModel.restartTrigger.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            tracker.userProperties.resetUserProfile()
             ProcessPhoenix.triggerRebirth(context)
         }
     }

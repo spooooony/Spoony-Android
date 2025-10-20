@@ -24,7 +24,10 @@ data class RegisterState(
     val currentStep: Float = 1f,
     val isLoading: Boolean = false,
     val isSubmitting: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+
+    val userId: Int = -1,
+    val addMapCount: Int = -1
 ) {
     companion object {
         const val DEFAULT = 50f

@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.dialog.TwoButtonDialog
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
@@ -40,9 +40,11 @@ internal fun AccountManagementScreen(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = LocalTracker.current
 
     LaunchedEffect(viewModel.restartTrigger, lifecycleOwner) {
         viewModel.restartTrigger.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
+            tracker.userProperties.resetUserProfile()
             ProcessPhoenix.triggerRebirth(context)
         }
     }

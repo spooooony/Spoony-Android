@@ -6,6 +6,7 @@ import com.spoony.spoony.domain.entity.LocationEntity
 fun LocationListResponseDto.LocationResponseDto.toDomain(): LocationEntity = LocationEntity(
     locationId = this.locationId,
     locationName = this.locationName,
+    locationType = this.locationType.locationTypeName,
     locationAddress = this.locationAddress,
     scope = this.locationType.scope,
     latitude = this.latitude,

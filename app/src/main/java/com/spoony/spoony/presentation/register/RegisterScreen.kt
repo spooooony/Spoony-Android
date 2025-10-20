@@ -23,12 +23,14 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.spoony.spoony.core.analytics.events.LocalTracker
 import com.spoony.spoony.core.designsystem.component.topappbar.TitleTopAppBar
 import com.spoony.spoony.core.designsystem.event.LocalSnackBarTrigger
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.util.extension.noRippleClickable
 import com.spoony.spoony.presentation.register.component.TopLinearProgressBar
 import com.spoony.spoony.presentation.register.model.RegisterState
+import com.spoony.spoony.presentation.register.model.RegisterType
 import com.spoony.spoony.presentation.register.navigation.RegisterRoute
 import com.spoony.spoony.presentation.register.navigation.registerGraph
 
@@ -45,6 +47,7 @@ fun RegisterRoute(
     val navController = rememberNavController()
     val showSnackBar = LocalSnackBarTrigger.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = LocalTracker.current
 
     LaunchedEffect(viewModel.sideEffect, lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle).collect { effect ->
@@ -62,6 +65,9 @@ fun RegisterRoute(
 
     LaunchedEffect(Unit) {
         viewModel.loadState()
+        if (viewModel.registerType == RegisterType.CREATE) {
+            tracker.commonEvents.tabEntered("upload")
+        }
     }
 
     RegisterScreen(

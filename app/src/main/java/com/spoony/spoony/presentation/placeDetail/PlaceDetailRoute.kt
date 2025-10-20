@@ -38,6 +38,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.spoony.spoony.core.analytics.events.LocalTracker
+import com.spoony.spoony.core.analytics.model.ReviewTrackingModel
 import com.spoony.spoony.core.designsystem.component.button.FollowButton
 import com.spoony.spoony.core.designsystem.component.snackbar.TextSnackbar
 import com.spoony.spoony.core.designsystem.component.topappbar.TagTopAppBar
@@ -76,6 +78,7 @@ fun PlaceDetailRoute(
     viewModel: PlaceDetailViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = LocalTracker.current
 
     val state by viewModel.state.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
 
@@ -101,6 +104,7 @@ fun PlaceDetailRoute(
                 is PlaceDetailSideEffect.ShowSnackbar -> {
                     onShowSnackBar(effect.message)
                 }
+
                 is PlaceDetailSideEffect.NavigateUp -> navigateUp()
             }
         }
@@ -130,17 +134,59 @@ fun PlaceDetailRoute(
         )
     }
 
-    when (state.placeDetailModel) {
+    LaunchedEffect(state.reviewId, userProfile.userId) {
+        if (state.reviewId !is UiState.Success) return@LaunchedEffect
+        if (userProfile.userId == -1) return@LaunchedEffect
+
+        val uiState = state.placeDetailModel
+        if (uiState is UiState.Success) {
+            tracker.commonEvents.reviewViewed(
+                reviewTrackingModel = ReviewTrackingModel(
+                    reviewId = (state.reviewId as UiState.Success<Int>).data,
+                    authorUserId = userProfile.userId,
+                    placeName = uiState.data.placeName,
+                    category = uiState.data.category.categoryName,
+                    menuCount = uiState.data.menuList.size,
+                    satisfactionScore = uiState.data.value,
+                    reviewLength = uiState.data.description.length,
+                    photoCount = uiState.data.photoUrlList.size,
+                    hasDisappointment = uiState.data.cons.isNotEmpty(),
+                    savedCount = state.addMapCount
+                ),
+                isSelfReview = uiState.data.isMine,
+                isFollowedUserReview = state.isFollowing,
+                isSavedReview = state.isAddMap
+            )
+        }
+    }
+
+    when (val uiState = state.placeDetailModel) {
         is UiState.Empty -> {}
         is UiState.Loading -> {}
         is UiState.Failure -> {}
         is UiState.Success -> {
             val postId = (state.reviewId as? UiState.Success)?.data ?: return
+
             if (scoopDialogVisibility) {
                 ScoopDialog(
                     onClickPositive = {
                         viewModel.useSpoon(postId)
                         scoopDialogVisibility = false
+                        tracker.reviewDetailEvents.spoonUsed(
+                            reviewTrackingModel = ReviewTrackingModel(
+                                reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                authorUserId = userProfile.userId,
+                                placeName = uiState.data.placeName,
+                                category = uiState.data.category.categoryName,
+                                menuCount = uiState.data.menuList.size,
+                                satisfactionScore = uiState.data.value,
+                                reviewLength = uiState.data.description.length,
+                                photoCount = uiState.data.photoUrlList.size,
+                                hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                savedCount = state.addMapCount
+                            ),
+                            isFollowingAuthor = state.isFollowing
+                        )
                     },
                     onClickNegative = {
                         scoopDialogVisibility = false
@@ -164,6 +210,7 @@ fun PlaceDetailRoute(
                         DropdownOption.EDIT,
                         DropdownOption.DELETE
                     )
+
                     false -> persistentListOf(DropdownOption.REPORT)
                 }
                 Scaffold(
@@ -187,6 +234,21 @@ fun PlaceDetailRoute(
                             addMapCount = state.addMapCount,
                             isAddMap = state.isAddMap,
                             onSearchMapClick = {
+                                tracker.reviewDetailEvents.directionClicked(
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
+                                    isFollowingAuthor = state.isFollowing
+                                )
                                 searchPlaceNaverMap(
                                     latitude = data.latitude,
                                     longitude = data.longitude,
@@ -195,8 +257,42 @@ fun PlaceDetailRoute(
                                 )
                             },
                             isNotMine = !data.isMine,
-                            onAddMapButtonClick = { viewModel.addMyMap(postId) },
-                            onDeletePinMapButtonClick = { viewModel.deletePinMap(postId) }
+                            onAddMapButtonClick = {
+                                viewModel.addMyMap(postId)
+                                tracker.reviewDetailEvents.placeMapSaved(
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
+                                    isFollowingAuthor = state.isFollowing
+                                )
+                            },
+                            onDeletePinMapButtonClick = {
+                                viewModel.deletePinMap(postId)
+                                tracker.reviewDetailEvents.placeMapRemoved(
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
+                                    isFollowingAuthor = state.isFollowing
+                                )
+                            }
                         )
                     },
                     content = { paddingValues ->
@@ -224,7 +320,41 @@ fun PlaceDetailRoute(
                             userName = userProfile.userName,
                             userRegion = userProfile.userRegion,
                             isFollowing = state.isFollowing,
-                            onFollowButtonClick = { viewModel.onFollowButtonClick(userProfile.userId, state.isFollowing) },
+                            onFollowButtonClick = {
+                                viewModel.onFollowButtonClick(userProfile.userId, state.isFollowing)
+
+                                if (state.isFollowing) {
+                                    tracker.commonEvents.unfollowUserFromReview(
+                                        reviewTrackingModel = ReviewTrackingModel(
+                                            reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                            authorUserId = userProfile.userId,
+                                            placeName = uiState.data.placeName,
+                                            category = uiState.data.category.categoryName,
+                                            menuCount = uiState.data.menuList.size,
+                                            satisfactionScore = uiState.data.value,
+                                            reviewLength = uiState.data.description.length,
+                                            photoCount = uiState.data.photoUrlList.size,
+                                            hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                            savedCount = state.addMapCount
+                                        )
+                                    )
+                                } else {
+                                    tracker.commonEvents.followUserFromReview(
+                                        reviewTrackingModel = ReviewTrackingModel(
+                                            reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                            authorUserId = userProfile.userId,
+                                            placeName = uiState.data.placeName,
+                                            category = uiState.data.category.categoryName,
+                                            menuCount = uiState.data.menuList.size,
+                                            satisfactionScore = uiState.data.value,
+                                            reviewLength = uiState.data.description.length,
+                                            photoCount = uiState.data.photoUrlList.size,
+                                            hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                            savedCount = state.addMapCount
+                                        )
+                                    )
+                                }
+                            },
                             photoUrlList = data.photoUrlList,
                             date = data.createdAt.formatToYearMonthDay(),
                             placeAddress = data.placeAddress,
@@ -234,7 +364,27 @@ fun PlaceDetailRoute(
                             isScooped = state.isScooped || data.isMine,
                             dropdownMenuList = dropDownMenuList,
                             onReportButtonClick = { navigateToReport(postId, ReportType.POST) },
-                            onShowSnackBar = viewModel::showSnackBar
+                            onShowSnackBar = viewModel::showSnackBar,
+                            trackSpoonUseIntent = {
+                                tracker.reviewDetailEvents.spoonUseIntent(
+                                    reviewTrackingModel = ReviewTrackingModel(
+                                        reviewId = (state.reviewId as UiState.Success<Int>).data,
+                                        authorUserId = userProfile.userId,
+                                        placeName = uiState.data.placeName,
+                                        category = uiState.data.category.categoryName,
+                                        menuCount = uiState.data.menuList.size,
+                                        satisfactionScore = uiState.data.value,
+                                        reviewLength = uiState.data.description.length,
+                                        photoCount = uiState.data.photoUrlList.size,
+                                        hasDisappointment = uiState.data.cons.isNotEmpty(),
+                                        savedCount = state.addMapCount
+                                    ),
+                                    isFollowingAuthor = state.isFollowing
+                                )
+                            },
+                            trackSpoonUseFailed = {
+                                tracker.reviewDetailEvents.spoonUseFailed()
+                            }
                         )
                     }
                 )
@@ -268,7 +418,9 @@ private fun PlaceDetailScreen(
     isScooped: Boolean,
     dropdownMenuList: ImmutableList<DropdownOption>,
     onReportButtonClick: () -> Unit,
-    onShowSnackBar: (String) -> Unit
+    onShowSnackBar: (String) -> Unit,
+    trackSpoonUseIntent: () -> Unit,
+    trackSpoonUseFailed: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -309,9 +461,11 @@ private fun PlaceDetailScreen(
                                 DropdownOption.REPORT.name -> {
                                     onReportButtonClick()
                                 }
+
                                 DropdownOption.EDIT.name -> {
                                     onEditReviewClick()
                                 }
+
                                 DropdownOption.DELETE.name -> {
                                     onDeleteReviewClick()
                                 }
@@ -362,8 +516,10 @@ private fun PlaceDetailScreen(
                     onScoopButtonClick = {
                         if (spoonAmount > 0) {
                             onScoopButtonClick()
+                            trackSpoonUseIntent()
                         } else {
                             onShowSnackBar("남은 스푼이 없어요 ㅠ.ㅠ")
+                            trackSpoonUseFailed()
                         }
                     },
                     isBlurred = !isScooped

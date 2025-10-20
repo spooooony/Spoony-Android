@@ -1,6 +1,8 @@
 package com.spoony.spoony.presentation.placeDetail.model
 
 import com.spoony.spoony.domain.entity.PlaceReviewEntity
+import com.spoony.spoony.presentation.gourmet.map.model.CategoryModel
+import com.spoony.spoony.presentation.gourmet.map.model.toModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -16,7 +18,8 @@ data class PlaceDetailModel(
     val placeAddress: String,
     val latitude: Double,
     val longitude: Double,
-    val isMine: Boolean
+    val isMine: Boolean,
+    val category: CategoryModel
 )
 
 fun PlaceReviewEntity.toModel(): PlaceDetailModel = PlaceDetailModel(
@@ -30,5 +33,6 @@ fun PlaceReviewEntity.toModel(): PlaceDetailModel = PlaceDetailModel(
     placeAddress = this.placeAddress ?: "",
     latitude = this.latitude ?: 0.0,
     longitude = this.longitude ?: 0.0,
-    isMine = this.isMine ?: false
+    isMine = this.isMine ?: false,
+    category = this.category?.toModel() ?: CategoryModel()
 )

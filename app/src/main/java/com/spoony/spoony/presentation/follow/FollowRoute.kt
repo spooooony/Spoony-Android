@@ -169,7 +169,8 @@ private fun FollowScreen(
                     users = users,
                     onUserClick = onUserClick,
                     onMyClick = onMyClick,
-                    onButtonClick = onFollowButtonClick
+                    onButtonClick = onFollowButtonClick,
+                    type = type
                 )
             }
 

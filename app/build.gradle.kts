@@ -56,6 +56,12 @@ android {
                 "BASE_URL",
                 properties.getProperty("dev.base.url")
             )
+
+            buildConfigField(
+                "String",
+                "MIXPANEL_KEY",
+                properties["mixpanelDevKey"] as? String ?: ""
+            )
         }
 
         release {
@@ -63,6 +69,12 @@ android {
                 "String",
                 "BASE_URL",
                 properties.getProperty("prod.base.url")
+            )
+
+            buildConfigField(
+                "String",
+                "MIXPANEL_KEY",
+                properties["mixpanelProdKey"] as? String ?: ""
             )
 
             isMinifyEnabled = true
@@ -150,6 +162,8 @@ dependencies {
     implementation(libs.pebble)
     implementation(libs.jakewharton.process.phoenix)
     implementation(libs.play.services.oss.licenses)
+
+    implementation(libs.mixpanel)
 }
 
 ktlint {
