@@ -113,6 +113,10 @@ dependencies {
 
     // Debug
     debugImplementation(libs.bundles.debug)
+    debugImplementation(libs.chucker.library)
+
+    // Release
+    releaseImplementation(libs.chucker.library.no.op)
 
     // Androidx
     implementation(libs.bundles.androidx)
