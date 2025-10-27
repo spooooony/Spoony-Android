@@ -43,19 +43,24 @@ fun SpoonyImage(
             modifier = modifier.clip(shape),
             loading = {
                 if (showLoadingIndicator) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = SpoonyAndroidTheme.colors.gray300
-                        )
-                    }
+                    LoadingIndicator()
                 }
             },
             success = {
                 SubcomposeAsyncImageContent()
             }
+        )
+    }
+}
+
+@Composable
+private fun LoadingIndicator() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = SpoonyAndroidTheme.colors.gray300
         )
     }
 }
