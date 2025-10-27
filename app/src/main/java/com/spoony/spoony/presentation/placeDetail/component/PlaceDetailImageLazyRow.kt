@@ -36,7 +36,8 @@ fun PlaceDetailImageLazyRow(
                 model = imageUrl,
                 shape = RoundedCornerShape(10.dp),
                 contentScale = ContentScale.Crop,
-                contentDescription = null
+                contentDescription = null,
+                showLoadingIndicator = true
             )
         }
     }

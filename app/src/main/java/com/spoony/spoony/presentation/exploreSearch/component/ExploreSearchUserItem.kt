@@ -42,7 +42,8 @@ fun ExploreSearchUserItem(
             modifier = Modifier.size(48.dp),
             shape = CircleShape,
             contentScale = ContentScale.Crop,
-            contentDescription = null
+            contentDescription = null,
+            showLoadingIndicator = true
         )
         Spacer(modifier = Modifier.width(14.dp))
         Column {

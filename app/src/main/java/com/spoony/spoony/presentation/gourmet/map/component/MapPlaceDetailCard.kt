@@ -67,7 +67,8 @@ fun MapPlaceDetailCard(
                         model = url,
                         modifier = Modifier
                             .height(103.dp)
-                            .weight(1f)
+                            .weight(1f),
+                        showLoadingIndicator = true
                     )
                 }
             }
