@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import com.spoony.spoony.core.designsystem.theme.SpoonyAndroidTheme
 import com.spoony.spoony.core.designsystem.type.AdvancedSheetState
 import io.morfly.compose.bottomsheet.material3.BottomSheetScaffold
@@ -16,6 +17,7 @@ fun SpoonyAdvancedBottomSheet(
     sheetContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     sheetSwipeEnabled: Boolean = true,
+    sheetMaxWidth: Dp = Dp.Infinity,
     dragHandle: @Composable () -> Unit = { SpoonyBasicDragHandle() },
     content: @Composable () -> Unit
 ) {
@@ -27,7 +29,8 @@ fun SpoonyAdvancedBottomSheet(
         sheetSwipeEnabled = sheetSwipeEnabled,
         modifier = modifier,
         sheetContainerColor = SpoonyAndroidTheme.colors.white,
-        sheetDragHandle = dragHandle
+        sheetDragHandle = dragHandle,
+        sheetMaxWidth = sheetMaxWidth
     ) {
         content()
     }
