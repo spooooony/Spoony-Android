@@ -86,6 +86,25 @@ fun ExploreFilterSection(
             onFilterReset = { tempFilterState.reset() },
             onSave = {
                 isFilterBottomSheetVisible = false
+
+                val categoryFilters = filterItems.categories.filter { tempFilterState.categories[it.id] == true }.map { it.name }
+                val regionFilters = filterItems.regions.filter { tempFilterState.regions[it.id] == true }.map { it.name }
+                val ageGroupFilters = filterItems.ages.filter { tempFilterState.ages[it.id] == true }.map { it.name }
+                val isLocalReviewEnabled = filterItems.properties.firstOrNull()?.let { tempFilterState.properties[it.id] == true } ?: false
+
+                tracker.commonEvents.filterApplied(
+                    pageApplied = "explore",
+                    localReviewFilter = isLocalReviewEnabled
+                )
+
+                if (categoryFilters.isNotEmpty() || regionFilters.isNotEmpty() || ageGroupFilters.isNotEmpty() || isLocalReviewEnabled) {
+                    tracker.exploreEvents.exploreFilterApplied(
+                        categoryFilters = categoryFilters,
+                        regionFilters = regionFilters,
+                        ageGroupFilters = ageGroupFilters
+                    )
+                }
+
                 onAction(ExploreAction.ApplyFilter(tempFilterState.toPersistent()))
             },
             onToggleFilter = { id, type ->
