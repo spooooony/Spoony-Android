@@ -97,7 +97,7 @@ fun ExploreFilterSection(
                     localReviewFilter = isLocalReviewEnabled
                 )
 
-                if (categoryFilters.isNotEmpty() || regionFilters.isNotEmpty() || ageGroupFilters.isNotEmpty() || isLocalReviewEnabled) {
+                if (categoryFilters.isNotEmpty() || regionFilters.isNotEmpty() || ageGroupFilters.isNotEmpty()) {
                     tracker.exploreEvents.exploreFilterApplied(
                         categoryFilters = categoryFilters,
                         regionFilters = regionFilters,
