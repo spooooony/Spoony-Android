@@ -28,19 +28,4 @@ class ExploreEvents @Inject constructor(
             }
         )
     }
-
-    fun exploreFilterApplied(
-        categoryFilters: List<String>,
-        regionFilters: List<String>,
-        ageGroupFilters: List<String>
-    ) {
-        tracker.track(
-            eventName = "explore_filter_applied",
-            properties = JSONObject().apply {
-                put("category_filters", categoryFilters)
-                put("region_filters", regionFilters)
-                put("age_group_filters", ageGroupFilters)
-            }
-        )
-    }
 }

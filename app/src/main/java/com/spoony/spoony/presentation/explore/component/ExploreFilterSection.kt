@@ -92,13 +92,10 @@ fun ExploreFilterSection(
                 val ageGroupFilters = filterItems.ages.filter { tempFilterState.ages[it.id] == true }.map { it.name }
                 val isLocalReviewEnabled = filterItems.properties.firstOrNull()?.let { tempFilterState.properties[it.id] == true } ?: false
 
-                tracker.commonEvents.filterApplied(
-                    pageApplied = "explore",
-                    localReviewFilter = isLocalReviewEnabled
-                )
-
-                if (categoryFilters.isNotEmpty() || regionFilters.isNotEmpty() || ageGroupFilters.isNotEmpty()) {
-                    tracker.exploreEvents.exploreFilterApplied(
+                if (categoryFilters.isNotEmpty() || regionFilters.isNotEmpty() || ageGroupFilters.isNotEmpty() || isLocalReviewEnabled) {
+                    tracker.commonEvents.filterApplied(
+                        pageApplied = "explore",
+                        localReviewFilter = isLocalReviewEnabled,
                         categoryFilters = categoryFilters,
                         regionFilters = regionFilters,
                         ageGroupFilters = ageGroupFilters
